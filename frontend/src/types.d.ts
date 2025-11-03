@@ -9,6 +9,7 @@ export interface User {
 export interface RegisterMutation {
   email: string;
   password: string;
+  displayName: string;
 }
 
 export interface LoginMutation {

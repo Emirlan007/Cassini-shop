@@ -1,15 +1,18 @@
 export interface User {
-  id: string;
+  _id: string;
   email: string;
   displayName: string;
+  phoneNumber?: string;
+  avatar?: string | null;
   token: string;
-  role: string;
 }
 
 export interface RegisterMutation {
   email: string;
   password: string;
   displayName: string;
+  phoneNumber?: string;
+  avatar?: File | null;
 }
 
 export interface LoginMutation {

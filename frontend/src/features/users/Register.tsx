@@ -17,6 +17,8 @@ const Register = () => {
         email: '',
         displayName: '',
         password: '',
+        phoneNumber: '',
+        avatar: null,
     });
 
     const getFieldError = (fieldName: string) => {
@@ -32,11 +34,28 @@ const Register = () => {
         setState((prevState) => ({ ...prevState, [name]: value }));
     };
 
+    const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setState((prevState) => ({ ...prevState, avatar: file }));
+    };
+
     const submitFormHandler = async (e: FormEvent) => {
         e.preventDefault();
 
+        const formData = new FormData();
+        formData.append('email', state.email);
+        formData.append('displayName', state.displayName);
+        formData.append('password', state.password);
+
+        if (state.phoneNumber) {
+            formData.append('phoneNumber', state.phoneNumber);
+        }
+        if (state.avatar) {
+            formData.append('avatar', state.avatar);
+        }
+
         try {
-            await dispatch(registerThunk(state)).unwrap();
+            await dispatch(registerThunk(formData as unknown as RegisterMutation)).unwrap();
             navigate('/');
         } catch (e) {
             console.log(e);
@@ -149,6 +168,41 @@ const Register = () => {
                             },
                         }}
                     />
+                    <TextField
+                        fullWidth
+                        label="Phone number"
+                        name="phoneNumber"
+                        value={state.phoneNumber}
+                        onChange={inputChangeHandler}
+                        autoComplete="tel"
+                        error={Boolean(getFieldError('phoneNumber'))}
+                        helperText={getFieldError('phoneNumber')}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': { borderColor: '#660033' },
+                                '&:hover fieldset': { borderColor: '#F0544F' },
+                            },
+                            '& .MuiInputLabel-root': { color: '#660033' },
+                        }}
+                    />
+                    <Button
+                        variant="outlined"
+                        component="label"
+                        sx={{
+                            borderColor: '#660033',
+                            color: '#660033',
+                            '&:hover': { borderColor: '#F0544F', color: '#F0544F' },
+                        }}
+                    >
+                        Загрузить аватар
+                        <input hidden type="file" accept="image/*" onChange={fileChangeHandler} />
+                    </Button>
+
+                    {state.avatar && (
+                        <Typography variant="body2" sx={{ color: '#660033' }}>
+                            Выбран файл: {state.avatar.name}
+                        </Typography>
+                    )}
                     <Button
                         type="submit"
                         fullWidth

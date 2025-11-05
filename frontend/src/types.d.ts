@@ -32,3 +32,22 @@ export interface IValidationError {
     _message: string;
   };
 }
+
+export interface Product {
+  _id: string;
+  name: string;
+  description?: string;
+  sizes?: string;
+  images?: string[];
+  video?: string;
+  price: number;
+}
+
+export interface ProductInput {
+  name: string;
+  description?: string;
+  sizes?: string;
+  images?: File[];
+  video?: string;
+  price: number;
+}

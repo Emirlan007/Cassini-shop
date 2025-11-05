@@ -3,7 +3,7 @@ export interface User {
   email: string;
   displayName: string;
   token: string;
-  role: string;
+  role: 'user' | 'admin';
   googleId?: string;
   avatar?: string;
 }

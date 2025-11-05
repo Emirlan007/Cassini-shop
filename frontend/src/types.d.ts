@@ -5,6 +5,7 @@ export interface User {
   token: string;
   role: 'user' | 'admin';
   googleId?: string;
+  phoneNumber?: string;
   avatar?: string;
 }
 
@@ -12,6 +13,8 @@ export interface RegisterMutation {
   email: string;
   password: string;
   displayName: string;
+  phoneNumber?: string;
+  avatar?: File | null;
 }
 
 export interface LoginMutation {

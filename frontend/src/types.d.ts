@@ -4,6 +4,8 @@ export interface User {
   displayName: string;
   token: string;
   role: string;
+  googleId?: string;
+  avatar?: string;
 }
 
 export interface RegisterMutation {

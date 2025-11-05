@@ -1,10 +1,25 @@
-const App = () => {
+import { Container } from "@mui/material";
+import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
+import { Route, Routes } from "react-router-dom";
+import PageNotFound from "./PageNotFound";
+import Register from "./features/users/Register";
+import Login from "./features/users/Login";
 
+const App = () => {
   return (
     <>
+      <AppToolbar />
 
+      <Container maxWidth="xl" component="main">
+        <Routes>
+          <Route path="/" element={<h1>Home</h1>} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Container>
     </>
-  )
+  );
 };
 
 export default App;

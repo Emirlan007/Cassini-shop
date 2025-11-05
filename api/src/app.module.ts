@@ -4,6 +4,7 @@ import { User, UserSchema } from './schemas/user.schema';
 import { UsersController } from './users/users.controller';
 import { ConfigModule } from '@nestjs/config';
 import { IsUserExistsValidator } from './validators/is-user-exists.validator';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { IsUserExistsValidator } from './validators/is-user-exists.validator';
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [UsersController],
-  providers: [IsUserExistsValidator],
+  providers: [IsUserExistsValidator, AuthService],
 })
 export class AppModule {}

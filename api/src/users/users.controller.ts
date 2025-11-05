@@ -6,7 +6,7 @@ import {
   Headers,
   HttpCode,
   Post,
-  // UnauthorizedException,
+  UnauthorizedException,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,8 +14,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { RegisterUserDto } from './register-user.dto';
-// import { LoginUserDto } from './login-user.dto';
-// import { AuthService } from 'src/auth/auth.service';
+import { LoginUserDto } from './login-user.dto';
+import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
@@ -27,7 +27,7 @@ export class UsersController {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
-    // private authService: AuthService,
+    private authService: AuthService,
   ) {
     const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     this.googleClient = new OAuth2Client(clientId);
@@ -54,18 +54,18 @@ export class UsersController {
     return await user.save();
   }
 
-  // @Post('login')
-  // async login(@Body() userData: LoginUserDto) {
-  //   const { email, password } = userData;
+  @Post('login')
+  async login(@Body() userData: LoginUserDto) {
+    const { email, password } = userData;
 
-  //   const user = await this.authService.validateUser(username, password);
+    const user = await this.authService.validateUser(username, password);
 
-  //   if (!user) {
-  //     throw new UnauthorizedException();
-  //   }
+    if (!user) {
+      throw new UnauthorizedException();
+    }
 
-  //   return user;
-  // }
+    return user;
+  }
 
   @Post('google')
   async loginWithGoogle(@Body('credential') credential: string) {

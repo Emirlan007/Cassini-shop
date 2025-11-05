@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { IsUserExistsValidator } from './validators/is-user-exists.validator';
 import { AuthService } from './auth/auth.service';
 import { Product, ProductSchema } from './schemas/product.schema';
+import { ProductsController } from './products/products.controller';
+import { ProductsService } from './products/products.service';
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { Product, ProductSchema } from './schemas/product.schema';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
   ],
-  controllers: [UsersController],
-  providers: [IsUserExistsValidator, AuthService],
+  controllers: [UsersController, ProductsController],
+  providers: [IsUserExistsValidator, AuthService, ProductsService],
 })
 export class AppModule {}

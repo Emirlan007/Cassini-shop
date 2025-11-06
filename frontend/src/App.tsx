@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
+import HomePage from "./pages/HomePage.tsx";
 
 const App = () => {
   return (
@@ -12,7 +13,7 @@ const App = () => {
 
       <Container maxWidth="xl" component="main">
         <Routes>
-          <Route path="/" element={<h1>Home</h1>} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<PageNotFound />} />

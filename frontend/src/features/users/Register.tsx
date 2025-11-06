@@ -18,7 +18,6 @@ const Register = () => {
         displayName: '',
         password: '',
         phoneNumber: '',
-        avatar: null,
     });
 
     const getFieldError = (fieldName: string) => {
@@ -34,28 +33,11 @@ const Register = () => {
         setState((prevState) => ({ ...prevState, [name]: value }));
     };
 
-    const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setState((prevState) => ({ ...prevState, avatar: file }));
-    };
-
     const submitFormHandler = async (e: FormEvent) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('email', state.email);
-        formData.append('displayName', state.displayName);
-        formData.append('password', state.password);
-
-        if (state.phoneNumber) {
-            formData.append('phoneNumber', state.phoneNumber);
-        }
-        if (state.avatar) {
-            formData.append('avatar', state.avatar);
-        }
-
         try {
-            await dispatch(registerThunk(formData as unknown as RegisterMutation)).unwrap();
+            await dispatch(registerThunk(state)).unwrap();
             navigate('/');
         } catch (e) {
             console.log(e);
@@ -113,6 +95,9 @@ const Register = () => {
                                 '&:hover fieldset': {
                                     borderColor: '#F0544F',
                                 },
+                                '&:active fieldset': {
+                                    borderColor: '#F0544F',
+                                },
                             },
                             '& .MuiInputLabel-root': {
                                 color: '#660033',
@@ -135,6 +120,9 @@ const Register = () => {
                                     borderColor: '#660033',
                                 },
                                 '&:hover fieldset': {
+                                    borderColor: '#F0544F',
+                                },
+                                '&:active fieldset': {
                                     borderColor: '#F0544F',
                                 },
                             },
@@ -162,6 +150,9 @@ const Register = () => {
                                 '&:hover fieldset': {
                                     borderColor: '#F0544F',
                                 },
+                                '&:active fieldset': {
+                                    borderColor: '#F0544F',
+                                },
                             },
                             '& .MuiInputLabel-root': {
                                 color: '#660033',
@@ -169,40 +160,33 @@ const Register = () => {
                         }}
                     />
                     <TextField
+                        required
                         fullWidth
-                        label="Phone number"
+                        type="phoneNumber"
+                        label="Phone Number"
                         name="phoneNumber"
                         value={state.phoneNumber}
                         onChange={inputChangeHandler}
-                        autoComplete="tel"
+                        autoComplete="new-phoneNumber"
                         error={Boolean(getFieldError('phoneNumber'))}
                         helperText={getFieldError('phoneNumber')}
                         sx={{
                             '& .MuiOutlinedInput-root': {
-                                '& fieldset': { borderColor: '#660033' },
-                                '&:hover fieldset': { borderColor: '#F0544F' },
+                                '& fieldset': {
+                                    borderColor: '#660033',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#F0544F',
+                                },
+                                '&:active fieldset': {
+                                    borderColor: '#F0544F',
+                                },
                             },
-                            '& .MuiInputLabel-root': { color: '#660033' },
+                            '& .MuiInputLabel-root': {
+                                color: '#660033',
+                            },
                         }}
                     />
-                    <Button
-                        variant="outlined"
-                        component="label"
-                        sx={{
-                            borderColor: '#660033',
-                            color: '#660033',
-                            '&:hover': { borderColor: '#F0544F', color: '#F0544F' },
-                        }}
-                    >
-                        Загрузить аватар
-                        <input hidden type="file" accept="image/*" onChange={fileChangeHandler} />
-                    </Button>
-
-                    {state.avatar && (
-                        <Typography variant="body2" sx={{ color: '#660033' }}>
-                            Выбран файл: {state.avatar.name}
-                        </Typography>
-                    )}
                     <Button
                         type="submit"
                         fullWidth

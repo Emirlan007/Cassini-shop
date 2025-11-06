@@ -16,7 +16,6 @@ import { User, UserDocument } from 'src/schemas/user.schema';
 import { RegisterUserDto } from './register-user.dto';
 import { LoginUserDto } from './login-user.dto';
 import { AuthService } from 'src/auth/auth.service';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { FileUploadInterceptorAvatar } from 'src/shared/file-upload/file-upload.interceptor';

@@ -37,6 +37,15 @@ export class ProductsService {
     return createdProduct.save();
   }
 
+  async createMany(dataArray: CreateProductDto[]): Promise<Product[]> {
+    const products: Product[] = [];
+    for (const data of dataArray) {
+      const product = await this.create(data);
+      products.push(product);
+    } 
+    return products;
+  }
+
   async findAll(): Promise<Product[]> {
     return this.productModel.find().exec();
   }

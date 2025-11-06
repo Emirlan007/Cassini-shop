@@ -117,7 +117,7 @@ export class UsersController {
 
     return user;
   }
-
+  
   @Delete('logout')
   @HttpCode(204)
   async logout(@Headers('authorization') token?: string): Promise<void> {

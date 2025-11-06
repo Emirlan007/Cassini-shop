@@ -3,8 +3,9 @@ export interface User {
   email: string;
   displayName: string;
   token: string;
-  role: string;
+  role: 'user' | 'admin';
   googleId?: string;
+  phoneNumber?: string;
   avatar?: string;
 }
 
@@ -12,6 +13,8 @@ export interface RegisterMutation {
   email: string;
   password: string;
   displayName: string;
+  phoneNumber?: string;
+  avatar?: File | null;
 }
 
 export interface LoginMutation {
@@ -33,4 +36,23 @@ export interface IValidationError {
     name: string;
     _message: string;
   };
+}
+
+export interface Product {
+  _id: string;
+  name: string;
+  description?: string;
+  sizes?: string;
+  images?: string[];
+  video?: string;
+  price: number;
+}
+
+export interface ProductInput {
+  name: string;
+  description?: string;
+  sizes?: string;
+  images?: File[];
+  video?: string;
+  price: number;
 }

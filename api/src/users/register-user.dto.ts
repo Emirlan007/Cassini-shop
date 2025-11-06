@@ -16,4 +16,5 @@ export class RegisterUserDto {
 
   @IsNotEmpty()
   displayName: string;
+
 }

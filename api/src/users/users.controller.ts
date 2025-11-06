@@ -19,11 +19,11 @@ import { AuthService } from 'src/auth/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
+import { FileUploadInterceptorAvatar } from 'src/shared/file-upload/file-upload.interceptor';
 
 @Controller('users')
 export class UsersController {
   private googleClient: OAuth2Client;
-
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
@@ -34,19 +34,18 @@ export class UsersController {
   }
 
   @Post('register')
-  @UseInterceptors(FileInterceptor('avatar', { dest: './public/images' }))
+  @UseInterceptors(FileUploadInterceptorAvatar)
   async register(
     @Body() userData: RegisterUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const { email, phoneNumber, password, displayName } = userData;
-
     const user = new this.userModel({
       email,
       phoneNumber,
       password,
       displayName,
-      avatar: file ? '/images/' + file.filename : null,
+      avatar: file ? `/public/files/${file.filename}` : null,
     });
 
     user.generateToken();

@@ -7,13 +7,26 @@ import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
   app.enableCors({
     origin: 'http://localhost:5173',
     credentials: true,
   });
+  
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.useGlobalPipes(new ValidationPipe());
+  
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: false,
+      },
+    }),
+  );
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.listen(process.env.PORT ?? 8000);
 }
-bootstrap();
+void bootstrap();

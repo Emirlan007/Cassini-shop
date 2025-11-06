@@ -9,6 +9,7 @@ import { FileUploadModule } from './shared/file-upload/file-upload.module';
 import { Product, ProductSchema } from './schemas/product.schema';
 import { ProductsController } from './products/products.controller';
 import { ProductsService } from './products/products.service';
+import { Banner, BannerSchema } from './schemas/banner.schema';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProductsService } from './products/products.service';
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Product.name, schema: ProductSchema },
+      { name: Banner.name, schema: BannerSchema },
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
   ],

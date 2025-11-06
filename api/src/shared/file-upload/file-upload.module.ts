@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import multer from 'multer';
 import { multerConfig } from './multer.config';
 import { FileUploadService } from './file-upload.service';
 

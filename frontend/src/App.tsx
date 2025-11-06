@@ -1,25 +1,37 @@
-import { Container } from "@mui/material";
+import {Box, Container} from "@mui/material";
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
 import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
+import HomePage from "./pages/HomePage.tsx";
+import Footer from "./components/Footer/Footer.tsx";
 
 const App = () => {
-  return (
-    <>
-      <AppToolbar />
+    return (
+        <Box
+            display="flex"
+            flexDirection="column"
+            minHeight="100vh"
+        >
+            <AppToolbar />
 
-      <Container maxWidth="xl" component="main">
-        <Routes>
-          <Route path="/" element={<h1>Home</h1>} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Container>
-    </>
-  );
+            <Container
+                maxWidth="xl"
+                component="main"
+                sx={{ flex: 1, py: 4 }}
+            >
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="*" element={<PageNotFound />} />
+                </Routes>
+            </Container>
+
+            <Footer />
+        </Box>
+    );
 };
 
 export default App;

@@ -4,6 +4,8 @@ export interface User {
   displayName: string;
   token: string;
   role: string;
+  googleId?: string;
+  avatar?: string;
 }
 
 export interface RegisterMutation {
@@ -31,4 +33,23 @@ export interface IValidationError {
     name: string;
     _message: string;
   };
+}
+
+export interface Product {
+  _id: string;
+  name: string;
+  description?: string;
+  sizes?: string;
+  images?: string[];
+  video?: string;
+  price: number;
+}
+
+export interface ProductInput {
+  name: string;
+  description?: string;
+  sizes?: string;
+  images?: File[];
+  video?: string;
+  price: number;
 }

@@ -85,7 +85,7 @@ const Login = () => {
                 </Alert>
             )}
 
-            <Box sx={{ mt: 2, width: '100%' }}>
+            <Box sx={{ mt: 2 }}>
                 <GoogleLogin
                     onSuccess={googleLoginHandler}
                     onError={() => {

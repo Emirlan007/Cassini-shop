@@ -23,8 +23,8 @@ export class Product {
   @Prop()
   video?: string;
 
-  @Prop()
-  image?: string;
+  @Prop({ type: [String] })
+  images?: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

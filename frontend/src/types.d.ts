@@ -54,3 +54,20 @@ export interface ProductInput {
   video?: string;
   price: number;
 }
+
+export interface Banner {
+    _id: string;
+    title: string;
+    description?: string;
+    image: string;
+    link?: string;
+    isActive: boolean;
+}
+
+export interface BannerFormData {
+    title: string;
+    description?: string;
+    link?: string;
+    isActive: boolean;
+    image: File | null;
+}

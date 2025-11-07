@@ -4,6 +4,7 @@ configDotenv();
 const rootPath = __dirname;
 
 const config = {
+  db:'mongodb://localhost/cassini-shop',
   rootPath,
   publicPath: path.join(rootPath, 'public'),
   google: {

@@ -10,12 +10,15 @@ import { Product, ProductSchema } from './schemas/product.schema';
 import { ProductsController } from './products/products.controller';
 import { ProductsService } from './products/products.service';
 import { Banner, BannerSchema } from './schemas/banner.schema';
+import config from 'config';
+import { UserService } from './users/user.service';
+import { BannerService } from './banners/banner.service';
 import { BannersController } from './banners/banners.controller';
 
 @Module({
   imports: [
     FileUploadModule,
-    MongooseModule.forRoot('mongodb://localhost/cassini-shop'),
+    MongooseModule.forRoot(config.db),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Product.name, schema: ProductSchema },
@@ -24,6 +27,6 @@ import { BannersController } from './banners/banners.controller';
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [UsersController, ProductsController, BannersController],
-  providers: [IsUserExistsValidator, AuthService, ProductsService],
+  providers: [ IsUserExistsValidator, AuthService, ProductsService, UserService, BannerService,],
 })
 export class AppModule {}

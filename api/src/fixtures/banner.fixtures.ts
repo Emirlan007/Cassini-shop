@@ -1,4 +1,4 @@
-import { BannerService } from '../banners/banner..service';
+import { BannerService } from '../banners/banner.service';
 
 export async function createBannerFixtures(bannerService: BannerService) {
   console.log('Creating banners...');
@@ -21,21 +21,21 @@ export async function createBannerFixtures(bannerService: BannerService) {
     {
       title: 'Dress Fresh Arrive',
       description: 'Come and take for 50% off',
-     image: '/fixtures/dress4.png',
+      image: '/fixtures/dress4.png',
       link: 'https://www.dobell.com/sale/tuxedos?srsltid=AfmBOooPHBQXNpSO3SHpDPqLukNUYIXnOl1DWAHwjuW2VC1iWoCMOzxK',
       isActive: true,
     },
     {
       title: 'Dress Hot Discount',
       description: 'Come and take for 50% off',
-    image: '/fixtures/dress6.png',
+      image: '/fixtures/dress6.png',
       link: 'https://www.dobell.com/sale/tuxedos?srsltid=AfmBOooPHBQXNpSO3SHpDPqLukNUYIXnOl1DWAHwjuW2VC1iWoCMOzxK',
       isActive: true,
     },
     {
       title: 'Dress Hot Sales',
       description: 'Come and take for 50% off',
-     image: '/fixtures/dress1.webp',
+      image: '/fixtures/dress1.webp',
       link: 'https://www.dobell.com/sale/tuxedos?srsltid=AfmBOooPHBQXNpSO3SHpDPqLukNUYIXnOl1DWAHwjuW2VC1iWoCMOzxK',
       isActive: true,
     },

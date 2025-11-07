@@ -12,7 +12,7 @@ import { ProductsService } from './products/products.service';
 import { Banner, BannerSchema } from './schemas/banner.schema';
 import config from 'config';
 import { UserService } from './users/user.service';
-import { BannerService } from './banners/banner..service';
+import { BannerService } from './banners/banner.service';
 
 @Module({
   imports: [
@@ -26,6 +26,12 @@ import { BannerService } from './banners/banner..service';
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [UsersController, ProductsController],
-  providers: [IsUserExistsValidator, AuthService, ProductsService, UserService, BannerService],
+  providers: [
+    IsUserExistsValidator,
+    AuthService,
+    ProductsService,
+    UserService,
+    BannerService,
+  ],
 })
 export class AppModule {}

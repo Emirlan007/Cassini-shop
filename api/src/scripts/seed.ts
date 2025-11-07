@@ -1,14 +1,18 @@
-import { NestFactory } from "@nestjs/core";
-import { getModelToken } from "@nestjs/mongoose";
-import { AppModule } from "src/app.module";
-import { BannerService } from "src/banners/banner..service";
-import { createBannerFixtures, createProductFixtures, createUserFixtures } from "src/fixtures/index";
+import { NestFactory } from '@nestjs/core';
+import { getModelToken } from '@nestjs/mongoose';
+import { AppModule } from 'src/app.module';
+import { BannerService } from 'src/banners/banner.service';
+import {
+  createBannerFixtures,
+  createProductFixtures,
+  createUserFixtures,
+} from 'src/fixtures/index';
 
-import { ProductsService } from "src/products/products.service";
-import { Banner } from "src/schemas/banner.schema";
-import { Product } from "src/schemas/product.schema";
-import { User } from "src/schemas/user.schema";
-import { UserService } from "src/users/user.service";
+import { ProductsService } from 'src/products/products.service';
+import { Banner } from 'src/schemas/banner.schema';
+import { Product } from 'src/schemas/product.schema';
+import { User } from 'src/schemas/user.schema';
+import { UserService } from 'src/users/user.service';
 
 async function bootstrap() {
   try {

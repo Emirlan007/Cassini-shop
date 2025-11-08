@@ -9,6 +9,6 @@ export class FileUploadService {
   }
 
   getPublicPath(filename: string): string {
-    return `/${config.publicPath}/files/${filename}`;
+    return `/files/${filename}`;
   }
 }

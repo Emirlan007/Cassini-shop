@@ -7,12 +7,22 @@ import {
     Box,
 } from "@mui/material";
 import type { Product } from "../../types";
+import { API_URL } from "../../constants";
 
 interface Props {
     product: Product;
 }
 
 const ProductCard = ({ product }: Props) => {
+    const getImageUrl = (imagePath: string) => {
+        if (!imagePath) return "";
+        if (imagePath.startsWith("http")) {
+            return imagePath;
+        }
+        const cleanPath = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+        return `${API_URL}${cleanPath}`;
+    };
+
     return (
         <Card
             sx={{
@@ -34,7 +44,7 @@ const ProductCard = ({ product }: Props) => {
                 <CardMedia
                     component="img"
                     height="200"
-                    image={product.images[0]}
+                    image={getImageUrl(product.images[0])}
                     alt={product.name}
                     sx={{ objectFit: "cover" }}
                 />

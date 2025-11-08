@@ -7,14 +7,14 @@ import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  
+
   app.enableCors({
     origin: 'http://localhost:5173',
     credentials: true,
   });
-  
-  app.useStaticAssets(join(__dirname, '..', 'public'));
-  
+
+  app.useStaticAssets(join(process.cwd(), 'public'));
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

@@ -12,9 +12,11 @@ interface Props {
 }
 
 const ProductList = ({ products }: Props) => {
+    const defaultProducts = useAppSelector(selectProducts);
     const loading = useAppSelector(selectProductsFetchLoading);
     const error = useAppSelector(selectProductsFetchError);
-    const items = products ?? useAppSelector(selectProducts);
+
+    const items = products ?? defaultProducts;
 
     if (loading) {
         return (
@@ -26,7 +28,7 @@ const ProductList = ({ products }: Props) => {
 
     if (error) {
         return (
-            <Typography color="#F0544F" textAlign="center" mt={2}>
+            <Typography color="#F0544F" textAlign="center" mt={2} px={2}>
                 Ошибка при загрузке товаров: {error}
             </Typography>
         );
@@ -36,11 +38,17 @@ const ProductList = ({ products }: Props) => {
         <Box
             sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: 3,
-                px: 2,
+                gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "repeat(2, 1fr)",
+                    md: "repeat(3, 1fr)",
+                    lg: "repeat(auto-fit, minmax(280px, 1fr))"
+                },
+                gap: { xs: 2, sm: 3 },
+                px: { xs: 2, sm: 3 },
                 width: "100%",
                 maxWidth: "1200px",
+                mx: "auto"
             }}
         >
             {items.map((product) => (

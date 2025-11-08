@@ -9,17 +9,17 @@ export class BannerService {
     @InjectModel(Banner.name) private bannerModel: Model<BannerDocument>,
   ) {}
 
-  async create(data:Partial<Banner>){
-    const createBanner = new this.bannerModel(data)
-    return createBanner.save()
+  async create(data: Partial<Banner>) {
+    const createBanner = new this.bannerModel(data);
+    return createBanner.save();
   }
 
   async createMany(dataArray: Partial<Banner>[]) {
-   const banners:BannerDocument[] =[];
-   for(const data of dataArray){
-    const banner = await this.create(data)
-    banners.push(banner)
-   } 
-   return banners
+    const banners: BannerDocument[] = [];
+    for (const data of dataArray) {
+      const banner = await this.create(data);
+      banners.push(banner);
+    }
+    return banners;
   }
 }

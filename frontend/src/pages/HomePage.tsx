@@ -15,14 +15,16 @@ const HomePage = () => {
     }, [dispatch]);
 
     return (
-        <Box sx={{ backgroundColor: "#FFFFFF", minHeight: "100vh", py: 4 }}>
-            <Stack spacing={3} alignItems="center">
+        <Box sx={{ backgroundColor: "#FFFFFF", minHeight: "100vh", py: { xs: 3, sm: 4 }}}>
+            <Stack spacing={{ xs: 2, sm: 3 }} alignItems="center">
                 <Typography
                     variant="h4"
                     sx={{
                         color: "#660033",
                         fontWeight: 600,
                         textAlign: "center",
+                        fontSize: { xs: "1.75rem", sm: "2.125rem" },
+                        px: 2
                     }}
                 >
                     Популярные товары

@@ -42,7 +42,7 @@ const bannersSlice = createSlice({
                 state.fetchBannersError = null;
             })
             .addCase(fetchBanners.fulfilled, (state, { payload }) => {
-                state.fetchBannersLoading = true;
+                state.fetchBannersLoading = false;
                 state.banners = payload;
             })
             .addCase(fetchBanners.rejected, (state, { payload }) => {

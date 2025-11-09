@@ -22,6 +22,7 @@ const theme = createTheme({
       active: "#F0544F",
       hover: "#f58784",
       selected: "#f3a29f",
+      disabled: "#f0544f33",
     },
   },
   components: {

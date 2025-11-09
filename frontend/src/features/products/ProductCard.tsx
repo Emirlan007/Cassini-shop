@@ -19,29 +19,27 @@ const ProductCard = ({ product }: Props) => {
 
   const getImageUrl = (imagePath: string) => {
     if (!imagePath) return "";
-    if (imagePath.startsWith("http")) {
-      return imagePath;
-    }
+    if (imagePath.startsWith("http")) return imagePath;
+
     const cleanPath = imagePath.startsWith("/")
       ? imagePath.slice(1)
       : imagePath;
+
     return `${API_URL}${cleanPath}`;
   };
 
   return (
     <Card
       sx={{
-        width: 300,
-        borderRadius: "16px",
+        width: "100%",
+        maxWidth: { xs: "100%", sm: 300 },
+        borderRadius: { xs: "12px", sm: "16px" },
         boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
         backgroundColor: "#FFFFFF",
         color: "#660033",
         transition: "transform 0.2s ease",
         "&:hover": {
-          transform: "scale(1.02)",
-        },
-        "@media (max-width: 400px)": {
-          width: "100%",
+          transform: { xs: "none", sm: "scale(1.02)" },
         },
       }}
     >
@@ -68,13 +66,19 @@ const ProductCard = ({ product }: Props) => {
         </Box>
       )}
 
-      <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 600, mb: 1, fontSize: { xs: "1rem", sm: "1.25rem" } }}
+        >
           {product.name}
         </Typography>
 
         {product.description && (
-          <Typography variant="body2" sx={{ mb: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{ mb: 1, fontSize: { xs: "0.875rem", sm: "0.9rem" } }}
+          >
             {product.description.length > 60
               ? product.description.slice(0, 60) + "..."
               : product.description}
@@ -83,20 +87,27 @@ const ProductCard = ({ product }: Props) => {
 
         <Typography
           variant="subtitle1"
-          sx={{ fontWeight: 500, mb: 2, flexGrow: 1 }}
+          sx={{
+            fontWeight: 500,
+            mb: 2,
+            fontSize: { xs: "1rem", sm: "1.1rem" },
+          }}
         >
           {product.price} ₸
         </Typography>
 
         <Button
           variant="contained"
+          fullWidth
           sx={{
             backgroundColor: "#F0544F",
             "&:hover": { backgroundColor: "#d9443f" },
             textTransform: "none",
             borderRadius: "8px",
+            py: { xs: 1, sm: 1.5 },
+            fontSize: { xs: "0.875rem", sm: "1rem" },
           }}
-          onClick={() => navigate(`products/${product._id}`)}
+          onClick={() => navigate(`/products/${product._id}`)}
         >
           Подробнее
         </Button>

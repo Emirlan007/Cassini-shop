@@ -3,6 +3,7 @@ import DocLinks from "./DocLinks.tsx";
 import Contacts from "./Contacts.tsx";
 import SocialLinks from "./SocialLinks.tsx";
 
+
 const Footer = () => {
     return (
         <Box sx={{
@@ -12,8 +13,9 @@ const Footer = () => {
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center' ,
+            flexDirection: { xs: 'column', md: 'row', sm: 'column' },
             justifyContent: 'center',
-            gap: 20
+            gap: { xs: 4, sm: 4 , md: 12, lg: 20 },
         }}>
             <SocialLinks />
             <Contacts />

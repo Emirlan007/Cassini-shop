@@ -23,6 +23,26 @@ export async function createProductFixtures(productsService: ProductsService) {
         'fixtures/dressPos2.png',
       ],
     },
+
+    {
+      name: 'Test Height Picture',
+      colors: ['Black', 'Navy Blue', 'Charcoal Gray', 'Midnight Blue'],
+      description:
+        'Timeless and elegant, this black tuxedo features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie weddings, its tailored silhouette creates a refined and confident look that never goes out of style.',
+      size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      price: 999,
+      video: 'fixtures/dressVideo11.mp4',
+      images: [
+        'fixtures/heightPic22.png',
+        'fixtures/heightPic2.png',
+        'fixtures/heightPic3.png',
+        'fixtures/heightPic4.jgp',
+        'fixtures/heightPic5.jgp',
+        'fixtures/heightPic6.png',
+        'fixtures/heightPic7.jgp',
+        'fixtures/heightPic8.png',
+      ],
+    },
     {
       name: 'Midnight Blue Peak Lapel Dress',
       colors: ['Black', 'Navy Blue', 'Charcoal Gray', 'Midnight Blue'],

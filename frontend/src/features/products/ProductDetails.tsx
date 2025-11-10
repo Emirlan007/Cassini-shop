@@ -64,43 +64,20 @@ const ProductDetails = () => {
 
   return (
     <>
-      <Stack
-        sx={{
-          height: { xs: 180, sm: 250, md: 400 },
-          backgroundColor: "#00000033",
-          borderRadius: 1,
-          justifyContent: "space-between",
-        }}
-        direction="row"
-      >
-        <IconButton
-          sx={{
-            borderRadius: 0,
-          }}
-          onClick={handlePrevClick}
-          disabled={isFirstImage}
-        >
-          <ArrowBackIosNewIcon color={isFirstImage ? "disabled" : "action"} />
-        </IconButton>
-        <img src={imageUrl} alt={product?.name} />
-        <IconButton
-          sx={{
-            borderRadius: 0,
-          }}
-          onClick={handleNextClick}
-          disabled={isLastImage}
-        >
-          <ArrowForwardIosIcon color={isLastImage ? "disabled" : "action"} />
-        </IconButton>
-      </Stack>
-
-      <Typography variant="h6">
-        <b>{product?.name}</b>
-      </Typography>
-      <Typography variant="h5">
-        <b>{product?.price}</b>
-      </Typography>
-      <Typography variant="body1">{product?.description}</Typography>
+      <Box component="div" sx={{ display: "flex", gap:1, paddingRight:2}}>
+        <Box component="div">
+          <img height={300} src={imageUrl} alt={product?.name} />
+        </Box>
+        <Box component="div" sx={{display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
+          <Typography variant="h6" sx={{fontSize:"17px"}}>
+            <b>{product?.name}</b>
+          </Typography>
+          <Typography variant="subtitle2" sx={{fontSize:"13px"}}>
+            <b>Price: {product?.price}</b>
+          </Typography>
+          <Typography variant="body1" sx={{fontSize:"11px"}}>{product?.description}</Typography>
+        </Box>
+      </Box>
     </>
   );
 };

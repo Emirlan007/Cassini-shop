@@ -27,6 +27,12 @@ import { BannersController } from './banners/banners.controller';
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [UsersController, ProductsController, BannersController],
-  providers: [ IsUserExistsValidator, AuthService, ProductsService, UserService, BannerService,],
+  providers: [
+    IsUserExistsValidator,
+    AuthService,
+    ProductsService,
+    UserService,
+    BannerService,
+  ],
 })
 export class AppModule {}

@@ -5,22 +5,15 @@ import {
   selectProductFetchError,
   selectProductFetchLoading,
 } from "./productsSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchProductById } from "./productsThunks";
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 
 const ProductDetails = () => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
   const dispatch = useAppDispatch();
   const product = useAppSelector(selectProduct);
   const loading = useAppSelector(selectProductFetchLoading);
@@ -32,20 +25,6 @@ const ProductDetails = () => {
     dispatch(fetchProductById(productId));
   }, [dispatch, productId]);
 
-  const imageUrl = API_URL + product?.images?.[currentImageIndex];
-
-  const isFirstImage = currentImageIndex === 0;
-
-  const isLastImage = currentImageIndex === (product?.images?.length ?? 0) - 1;
-
-  const handlePrevClick = () => {
-    setCurrentImageIndex((prev) => (!isFirstImage ? prev - 1 : prev));
-  };
-
-  const handleNextClick = () => {
-    setCurrentImageIndex((prev) => (!isLastImage ? prev + 1 : prev));
-  };
-
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -54,7 +33,7 @@ const ProductDetails = () => {
     );
   }
 
-  if (error) {
+  if (error || !product?.images) {
     return (
       <Typography textAlign="center" mt={2}>
         Ошибка при загрузке товара: {error}
@@ -64,41 +43,39 @@ const ProductDetails = () => {
 
   return (
     <>
-      <Stack
+      <Box
         sx={{
-          height: { xs: 180, sm: 250, md: 400 },
-          backgroundColor: "#00000033",
-          borderRadius: 1,
-          justifyContent: "space-between",
+          width: "100%",
+          maxWidth: { lg: "1200px", md: "800px", sm: "600px", xs: "320px" },
+          mx: "auto",
+          mt: 1,
+          mb: 3,
         }}
-        direction="row"
       >
-        <IconButton
-          sx={{
-            borderRadius: 0,
-          }}
-          onClick={handlePrevClick}
-          disabled={isFirstImage}
+        <Swiper
+          modules={[Pagination]}
+          pagination={{ clickable: true }}
+          className="mySwiper"
         >
-          <ArrowBackIosNewIcon color={isFirstImage ? "disabled" : "action"} />
-        </IconButton>
-        <img src={imageUrl} alt={product?.name} />
-        <IconButton
-          sx={{
-            borderRadius: 0,
-          }}
-          onClick={handleNextClick}
-          disabled={isLastImage}
-        >
-          <ArrowForwardIosIcon color={isLastImage ? "disabled" : "action"} />
-        </IconButton>
-      </Stack>
+          {product?.images.map((image) => (
+            <SwiperSlide key={image}>
+              <Box
+                sx={{
+                  height: { xs: 320, sm: 400 },
+                }}
+              >
+                <img src={API_URL + image} alt={product.name} />
+              </Box>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Box>
 
       <Typography variant="h6">
         <b>{product?.name}</b>
       </Typography>
       <Typography variant="h5">
-        <b>{product?.price}</b>
+        <b>{product?.price} ₸</b>
       </Typography>
       <Typography variant="body1">{product?.description}</Typography>
     </>

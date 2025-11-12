@@ -7,10 +7,7 @@ import { User, UserDocument } from '../schemas/user.schema';
 export class AuthService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async validateUser(
-    phoneNumber: string,
-    displayName: string,
-  ): Promise<UserDocument | null> {
+  async validateUser(phoneNumber: string, displayName: string): Promise<any> {
     const user = await this.userModel.findOne({
       phoneNumber: phoneNumber,
       displayName: displayName,

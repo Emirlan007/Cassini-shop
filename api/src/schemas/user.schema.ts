@@ -17,8 +17,8 @@ export class User {
   })
   phoneNumber: string;
 
-  @Prop()
-  googleId: string;
+  // @Prop()
+  // googleId: string;
 
   @Prop({ required: true })
   displayName: string;

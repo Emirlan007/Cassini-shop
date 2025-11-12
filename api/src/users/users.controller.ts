@@ -1,5 +1,5 @@
 import {
-  // BadRequestException,
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -17,19 +17,19 @@ import { RegisterUserDto } from './register-user.dto';
 import { LoginUserDto } from './login-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
-// import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client } from 'google-auth-library';
 import { FileUploadInterceptorAvatar } from 'src/shared/file-upload/file-upload.interceptor';
 
 @Controller('users')
 export class UsersController {
-  // private googleClient: OAuth2Client;
+  private googleClient: OAuth2Client;
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
     private authService: AuthService,
   ) {
-    // const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
-    // this.googleClient = new OAuth2Client(clientId);
+    const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+    this.googleClient = new OAuth2Client(clientId);
   }
 
   @Post('register')
@@ -63,56 +63,56 @@ export class UsersController {
     return user;
   }
 
-  // @Post('google')
-  // async loginWithGoogle(@Body('credential') credential: string) {
-  //   if (!credential) {
-  //     throw new BadRequestException('Google credential is required');
-  //   }
-  //
-  //   const ticket = await this.googleClient.verifyIdToken({
-  //     idToken: credential,
-  //     audience: this.configService.get<string>('GOOGLE_CLIENT_ID'),
-  //   });
-  //
-  //   const payload = ticket.getPayload();
-  //
-  //   if (!payload || !payload.email || !payload.sub) {
-  //     throw new BadRequestException('Not enough user data to continue');
-  //   }
-  //
-  //   const {
-  //     email,
-  //     sub: googleId,
-  //     name: displayName,
-  //     picture: avatar,
-  //   } = payload;
-  //
-  //   let user = await this.userModel.findOne({ googleId });
-  //
-  //   if (!user) {
-  //     user = await this.userModel.findOne({ email });
-  //   }
-  //
-  //   if (!user) {
-  //     user = new this.userModel({
-  //       phoneNumber: email,
-  //       googleId,
-  //       displayName,
-  //       avatar,
-  //     });
-  //   } else if (!user.googleId) {
-  //     user.googleId = googleId;
-  //   }
-  //
-  //   if (displayName) user.displayName = displayName;
-  //   if (avatar) user.avatar = avatar;
-  //
-  //   user.generateToken();
-  //
-  //   await user.save();
-  //
-  //   return user;
-  // }
+  @Post('google')
+  async loginWithGoogle(@Body('credential') credential: string) {
+    if (!credential) {
+      throw new BadRequestException('Google credential is required');
+    }
+
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken: credential,
+      audience: this.configService.get<string>('GOOGLE_CLIENT_ID'),
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email || !payload.sub) {
+      throw new BadRequestException('Not enough user data to continue');
+    }
+
+    const {
+      email,
+      sub: googleId,
+      name: displayName,
+      picture: avatar,
+    } = payload;
+
+    let user = await this.userModel.findOne({ googleId });
+
+    if (!user) {
+      user = await this.userModel.findOne({ email });
+    }
+
+    if (!user) {
+      user = new this.userModel({
+        phoneNumber: email,
+        googleId,
+        displayName,
+        avatar,
+      });
+    } else if (!user.googleId) {
+      user.googleId = googleId;
+    }
+
+    if (displayName) user.displayName = displayName;
+    if (avatar) user.avatar = avatar;
+
+    user.generateToken();
+
+    await user.save();
+
+    return user;
+  }
 
   @Delete('logout')
   @HttpCode(204)

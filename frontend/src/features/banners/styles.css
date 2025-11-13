@@ -45,6 +45,21 @@
   background-color: #f0544f;
 }
 
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ffffff;
+  background-color: #f0544f;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+@media (max-width: 56.25rem) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: none;
+  }
+}
+
 @media (max-width: 37.5rem) {
   .swiper {
     height: 20rem;

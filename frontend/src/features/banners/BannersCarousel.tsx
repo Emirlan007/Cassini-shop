@@ -1,5 +1,5 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { Link } from "react-router-dom";
@@ -34,7 +34,8 @@ const BannersCarousel = () => {
           }}
         >
           <Swiper
-            modules={[Pagination, Autoplay]}
+            modules={[Pagination, Autoplay, Navigation]}
+            navigation={true}
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
             loop={true}
@@ -45,7 +46,7 @@ const BannersCarousel = () => {
                 <Box
                   sx={{
                     width: "100%",
-                    pr: { xs: "0px", lg: "100px" },
+                    pr: { xs: "0px", md: "100px" },
                     height: "100%",
                     gap: "3",
                     display: "flex",

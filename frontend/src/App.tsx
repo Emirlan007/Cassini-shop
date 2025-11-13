@@ -19,6 +19,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/products/:productId" element={<ProductDetails />} />
+          <Route path={'/addProduct'}></Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

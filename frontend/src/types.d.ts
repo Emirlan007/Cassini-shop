@@ -41,6 +41,7 @@ export interface Product {
   name: string;
   description?: string;
   sizes?: string;
+  category?: string[];
   images?: string[];
   video?: string;
   price: number;
@@ -50,6 +51,7 @@ export interface ProductInput {
   name: string;
   description?: string;
   sizes?: string;
+  category?: string[];
   images?: File[];
   video?: string;
   price: number;

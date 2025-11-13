@@ -4,8 +4,9 @@ import { Avatar, Box, Button, Link, Stack, TextField, Typography } from '@mui/ma
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectRegisterError, selectRegisterLoading } from './usersSlice';
-import { registerThunk } from './usersThunks';
+import {googleLoginThunk, registerThunk} from './usersThunks';
 import type { RegisterMutation } from '../../types';
+import {type CredentialResponse, GoogleLogin} from "@react-oauth/google";
 
 const Register = () => {
     const dispatch = useAppDispatch();
@@ -14,9 +15,7 @@ const Register = () => {
     const navigate = useNavigate();
 
     const [state, setState] = useState<RegisterMutation>({
-        email: '',
         displayName: '',
-        password: '',
         phoneNumber: '',
     });
 
@@ -44,6 +43,17 @@ const Register = () => {
         }
     };
 
+    const googleRegisterHandler = async (credentialResponse: CredentialResponse) => {
+        if (credentialResponse.credential) {
+            try {
+                await dispatch(googleLoginThunk(credentialResponse.credential)).unwrap();
+                navigate('/');
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -67,6 +77,16 @@ const Register = () => {
             >
                 Создать аккаунт
             </Typography>
+            <Box sx={{ mt: 2 }}>
+                <GoogleLogin
+                    onSuccess={googleRegisterHandler}
+                    onError={() => {
+                        console.log('Google Login Failed');
+                    }}
+                    useOneTap
+                    width="100%"
+                />
+            </Box>
             <Box
                 component="form"
                 onSubmit={submitFormHandler}
@@ -77,33 +97,6 @@ const Register = () => {
                 }}
             >
                 <Stack spacing={2}>
-                    <TextField
-                        required
-                        fullWidth
-                        label="Email"
-                        name="email"
-                        value={state.email}
-                        onChange={inputChangeHandler}
-                        autoComplete="email"
-                        error={Boolean(getFieldError('email'))}
-                        helperText={getFieldError('email')}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#660033',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#F0544F',
-                                },
-                                '&:active fieldset': {
-                                    borderColor: '#F0544F',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: '#660033',
-                            },
-                        }}
-                    />
                     <TextField
                         required
                         fullWidth
@@ -131,34 +124,7 @@ const Register = () => {
                             },
                         }}
                     />
-                    <TextField
-                        required
-                        fullWidth
-                        type="password"
-                        label="Password"
-                        name="password"
-                        value={state.password}
-                        onChange={inputChangeHandler}
-                        autoComplete="new-password"
-                        error={Boolean(getFieldError('password'))}
-                        helperText={getFieldError('password')}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#660033',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#F0544F',
-                                },
-                                '&:active fieldset': {
-                                    borderColor: '#F0544F',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: '#660033',
-                            },
-                        }}
-                    />
+
                     <TextField
                         required
                         fullWidth
@@ -208,21 +174,6 @@ const Register = () => {
                     </Button>
                 </Stack>
             </Box>
-            <Link
-                component={RouterLink}
-                to="/login"
-                sx={{
-                    mt: 2,
-                    color: '#660033',
-                    textDecoration: 'none',
-                    '&:hover': {
-                        color: '#F0544F',
-                        textDecoration: 'underline',
-                    },
-                }}
-            >
-                У вас уже есть аккаунт? Войти
-            </Link>
         </Box>
     );
 };

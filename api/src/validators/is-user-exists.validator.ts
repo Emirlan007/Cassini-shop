@@ -18,7 +18,7 @@ export class IsUserExistsValidator implements ValidatorConstraintInterface {
     const shouldExist = args.constraints[0] as boolean;
 
     const user = await this.userModel.findOne({
-      $or: [{ email: value }, { phoneNumber: value }],
+      $or: [{ displayName: value }, { phoneNumber: value }],
     });
 
     return shouldExist ? !!user : !user;
@@ -29,7 +29,7 @@ export class IsUserExistsValidator implements ValidatorConstraintInterface {
 
     return shouldExist
       ? 'User does not exist'
-      : 'User with this email or phone already registered';
+      : 'User with this displayName or phone already registered';
   }
 }
 

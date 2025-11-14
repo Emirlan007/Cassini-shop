@@ -48,9 +48,10 @@ export interface Product {
 export interface ProductInput {
   name: string;
   description?: string;
-  sizes?: string;
+  size: string[];
+  colors: string[];
+  images: File[] | null;
   category?: string[];
-  images?: File[];
   video?: string;
   price: number;
 }

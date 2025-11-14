@@ -8,7 +8,6 @@ import type {
 } from "../../types";
 import {axiosApi} from "../../axiosApi";
 import {isAxiosError} from "axios";
-import type {RootState} from "../../app/store";
 import {unSetUser} from "./usersSlice";
 
 export const registerThunk = createAsyncThunk<User, RegisterMutation, { rejectValue: IValidationError }>(
@@ -48,7 +47,7 @@ export const loginThunk = createAsyncThunk<User, LoginMutation, { rejectValue: I
         }
     });
 
-export const logoutThunk = createAsyncThunk<void, void, { state: RootState }>(
+export const logoutThunk = createAsyncThunk(
     "/users/logout",
     async (_, {dispatch}) => {
         try {

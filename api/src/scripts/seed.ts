@@ -6,7 +6,7 @@ import {
   createBannerFixtures,
   createProductFixtures,
   createUserFixtures,
-} from 'src/fixtures/index';
+} from '../fixtures';
 
 import { ProductsService } from 'src/products/products.service';
 import { Banner } from 'src/schemas/banner.schema';
@@ -22,13 +22,19 @@ async function bootstrap() {
     const productsService = appContext.get(ProductsService);
     const bannerService = appContext.get(BannerService);
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const userModel = appContext.get(getModelToken(User.name));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const productModel = appContext.get(getModelToken(Product.name));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const bannerModel = appContext.get(getModelToken(Banner.name));
 
     console.log('Clearing existing data...');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     await userModel.deleteMany({});
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     await productModel.deleteMany({});
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     await bannerModel.deleteMany({});
 
     await createUserFixtures(userService);

@@ -1,4 +1,3 @@
-types.d.tsimport { Box, Container } from "@mui/material";
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
 import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
@@ -7,6 +6,7 @@ import Login from "./features/users/Login";
 import HomePage from "./pages/HomePage.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import ProductDetails from "./features/products/ProductDetails.tsx";
+import {Box, Container} from "@mui/material";
 
 const App = () => {
   return (
@@ -23,7 +23,6 @@ const App = () => {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>
-
       <Footer />
     </Box>
   );

@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { fetchProductById } from "./productsThunks";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 
@@ -53,7 +53,8 @@ const ProductDetails = () => {
         }}
       >
         <Swiper
-          modules={[Pagination]}
+          modules={[Pagination, Navigation]}
+          navigation={true}
           pagination={{ clickable: true }}
           className="mySwiper"
         >

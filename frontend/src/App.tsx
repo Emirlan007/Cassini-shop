@@ -1,4 +1,3 @@
-import { Box, Container } from "@mui/material";
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
 import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
@@ -11,6 +10,7 @@ import NewProduct from "./features/products/NewProduct.tsx";
 // import {useAppSelector} from "./app/hooks.ts";
 // import {selectUser} from "./features/users/usersSlice.ts";
 // import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
+import {Box, Container} from "@mui/material";
 
 const App = () => {
     // const user = useAppSelector(selectUser);
@@ -33,10 +33,10 @@ const App = () => {
                     // </ProtectedRoute>
                 }
             />
+          <Route path={'/addProduct'}></Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>
-
       <Footer />
     </Box>
   );

@@ -1,6 +1,8 @@
 import { ProductsService } from '../products/products.service';
 
-export async function createProductFixtures(productsService: ProductsService) {
+export async function createProductFixtures(
+  productsService: ProductsService,)
+{
   console.log('Creating products...');
   return await productsService.createMany([
     {

@@ -9,15 +9,13 @@ export interface User {
 }
 
 export interface RegisterMutation {
-  email: string;
-  password: string;
   displayName: string;
   phoneNumber: string;
 }
 
 export interface LoginMutation {
-  email: string;
-  password: string;
+    displayName: string;
+    phoneNumber: string;
 }
 
 export interface IGlobalError {
@@ -41,6 +39,7 @@ export interface Product {
   name: string;
   description?: string;
   sizes?: string;
+  category?: string[];
   images?: string[];
   video?: string;
   price: number;
@@ -52,6 +51,7 @@ export interface ProductInput {
   size: string[];
   colors: string[];
   images: File[] | null;
+  category?: string[];
   video?: string;
   price: number;
 }

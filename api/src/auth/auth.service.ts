@@ -7,16 +7,16 @@ import { User, UserDocument } from '../schemas/user.schema';
 export class AuthService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userModel.findOne({ email: email });
+  async validateUser(
+    phoneNumber: string,
+    displayName: string,
+  ): Promise<UserDocument | null> {
+    const user = await this.userModel.findOne({
+      phoneNumber: phoneNumber,
+      displayName: displayName,
+    });
 
     if (!user) {
-      return null;
-    }
-
-    const isMatch = await user.checkPassword(password);
-
-    if (!isMatch) {
       return null;
     }
 

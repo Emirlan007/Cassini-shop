@@ -14,6 +14,7 @@ import config from 'config';
 import { UserService } from './users/user.service';
 import { BannerService } from './banners/banner.service';
 import { BannersController } from './banners/banners.controller';
+import { Category, CategorySchema } from './schemas/category.schema';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { BannersController } from './banners/banners.controller';
       { name: User.name, schema: UserSchema },
       { name: Product.name, schema: ProductSchema },
       { name: Banner.name, schema: BannerSchema },
+      { name: Category.name, schema: CategorySchema },
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
   ],

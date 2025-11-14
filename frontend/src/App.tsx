@@ -1,12 +1,12 @@
-import { Box, Container } from "@mui/material";
+types.d.tsimport { Box, Container } from "@mui/material";
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
 import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
+import Register from "./features/users/Register";
 import Login from "./features/users/Login";
 import HomePage from "./pages/HomePage.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import ProductDetails from "./features/products/ProductDetails.tsx";
-import UpdateCreateWrap from "./components/UpdateCreateWrap/UpdateCreateWrap.tsx";
 
 const App = () => {
   return (
@@ -16,11 +16,11 @@ const App = () => {
       <Container maxWidth="xl" component="main" sx={{ flex: 1, py: 4 }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/products/:productId" element={<ProductDetails />} />
-            <Route path="/products/:productUpdate" element={<UpdateCreateWrap />} />
-
-            <Route path="*" element={<PageNotFound />} />
+          <Route path={'/addProduct'}></Route>
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>
 

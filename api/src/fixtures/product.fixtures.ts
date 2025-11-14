@@ -2,7 +2,6 @@ import { ProductsService } from '../products/products.service';
 
 export async function createProductFixtures(productsService: ProductsService) {
   console.log('Creating products...');
-
   return await productsService.createMany([
     {
       name: 'Classic Black Shawl Lapel Dress',
@@ -32,8 +31,8 @@ export async function createProductFixtures(productsService: ProductsService) {
       price: 999,
       video: 'fixtures/dressVideo22.mp4',
       images: [
-        'fixtures/dress1.webp',
         'fixtures/dress2.webp',
+        'fixtures/dress1.webp',
         'fixtures/dress3.png',
         'fixtures/dress4.png',
         'fixtures/dress5.png',
@@ -51,9 +50,9 @@ export async function createProductFixtures(productsService: ProductsService) {
       price: 999,
       video: 'fixtures/dressVideo11.mp4',
       images: [
-        'fixtures/dress1.webp',
-        'fixtures/dress2.webp',
         'fixtures/dress3.png',
+        'fixtures/dress2.webp',
+        'fixtures/dress1.webp',
         'fixtures/dress4.png',
         'fixtures/dress5.png',
         'fixtures/dress6.png',
@@ -70,10 +69,10 @@ export async function createProductFixtures(productsService: ProductsService) {
       price: 999,
       video: 'fixtures/dressVideo22.mp4',
       images: [
-        'fixtures/dress1.webp',
+        'fixtures/dress4.png',
         'fixtures/dress2.webp',
         'fixtures/dress3.png',
-        'fixtures/dress4.png',
+        'fixtures/dress1.webp',
         'fixtures/dress5.png',
         'fixtures/dress6.png',
         'fixtures/dressPos1.png',
@@ -89,11 +88,11 @@ export async function createProductFixtures(productsService: ProductsService) {
       price: 999,
       video: 'fixtures/dressVideo11.mp4',
       images: [
-        'fixtures/dress1.webp',
+        'fixtures/dress5.png',
         'fixtures/dress2.webp',
         'fixtures/dress3.png',
         'fixtures/dress4.png',
-        'fixtures/dress5.png',
+        'fixtures/dress1.webp',
         'fixtures/dress6.png',
         'fixtures/dressPos1.png',
         'fixtures/dressPos2.png',
@@ -108,12 +107,12 @@ export async function createProductFixtures(productsService: ProductsService) {
       price: 999,
       video: 'fixtures/dressVideo22.mp4',
       images: [
-        'fixtures/dress1.webp',
+        'fixtures/dress6.png',
         'fixtures/dress2.webp',
         'fixtures/dress3.png',
         'fixtures/dress4.png',
         'fixtures/dress5.png',
-        'fixtures/dress6.png',
+        'fixtures/dress1.webp',
         'fixtures/dressPos1.png',
         'fixtures/dressPos2.png',
       ],

@@ -94,11 +94,11 @@ const ProductDetails = () => {
         </IconButton>
       </Stack>
 
-      <Typography variant="h6">
+      <Typography variant="h6" sx={{mt: 1}}>
         <b>{product?.name}</b>
       </Typography>
       <Typography variant="h5">
-        <b>{product?.price}</b>
+        <b>{product?.price}</b> ₸
       </Typography>
       <Typography variant="body1">{product?.description}</Typography>
     </>

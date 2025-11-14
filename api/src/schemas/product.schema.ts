@@ -17,6 +17,9 @@ export class Product {
   @Prop({ type: [String], required: true })
   size: string[];
 
+  @Prop({ type: [String] })
+  category?: string[];
+
   @Prop({ required: true })
   price: number;
 

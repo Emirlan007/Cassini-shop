@@ -1,5 +1,6 @@
 export interface User {
   id: string;
+  email: string;
   displayName: string;
   token: string;
   role: string;
@@ -8,13 +9,15 @@ export interface User {
 }
 
 export interface RegisterMutation {
+  email: string;
+  password: string;
   displayName: string;
   phoneNumber: string;
 }
 
 export interface LoginMutation {
-  displayName: string;
-  phoneNumber: string;
+  email: string;
+  password: string;
 }
 
 export interface IGlobalError {
@@ -36,9 +39,9 @@ export interface IValidationError {
 export interface Product {
   _id: string;
   name: string;
-  colors: string[];
   description?: string;
   sizes?: string;
+  category?: string[];
   images?: string[];
   video?: string;
   price: number;
@@ -48,6 +51,7 @@ export interface ProductInput {
   name: string;
   description?: string;
   sizes?: string;
+  category?: string[];
   images?: File[];
   video?: string;
   price: number;

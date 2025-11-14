@@ -17,8 +17,8 @@ export class Product {
   @Prop({ type: [String], required: true })
   size: string[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }] })
-  category?: Types.ObjectId[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Category' }], required: true })
+  category: Types.ObjectId[];
 
   @Prop({ required: true })
   price: number;

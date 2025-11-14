@@ -15,6 +15,8 @@ import { UserService } from './users/user.service';
 import { BannerService } from './banners/banner.service';
 import { BannersController } from './banners/banners.controller';
 import { Category, CategorySchema } from './schemas/category.schema';
+import { CategoriesController } from './categories/categories.controller';
+import { CategoriesService } from './categories/categories.service';
 
 @Module({
   imports: [
@@ -28,13 +30,19 @@ import { Category, CategorySchema } from './schemas/category.schema';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
   ],
-  controllers: [UsersController, ProductsController, BannersController],
+  controllers: [
+    UsersController,
+    ProductsController,
+    BannersController,
+    CategoriesController,
+  ],
   providers: [
     IsUserExistsValidator,
     AuthService,
     ProductsService,
     UserService,
     BannerService,
+    CategoriesService,
   ],
 })
 export class AppModule {}

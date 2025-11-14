@@ -34,12 +34,18 @@ export interface IValidationError {
   };
 }
 
+export interface ICategory {
+  _id: string;
+  title: string;
+  slug: string;
+}
+
 export interface Product {
   _id: string;
   name: string;
   description?: string;
   sizes?: string;
-  category?: string[];
+  category?: ICategory;
   images?: string[];
   video?: string;
   price: number;
@@ -49,7 +55,7 @@ export interface ProductInput {
   name: string;
   description?: string;
   sizes?: string;
-  category?: string[];
+  category?: ICategory;
   images?: File[];
   video?: string;
   price: number;

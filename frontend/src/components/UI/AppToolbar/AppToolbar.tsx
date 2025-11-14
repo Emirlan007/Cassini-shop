@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import { selectLoginLoading, selectUser } from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
+import Categories from "../../../features/categories/Categories.tsx";
 
 const AppToolbar = () => {
   const user = useAppSelector(selectUser);
@@ -24,25 +25,11 @@ const AppToolbar = () => {
     navigate("/login");
   };
 
-  const categories = [
-    "Верхняя одежда",
-    "Платья и сарафаны",
-    "Блузы и рубашки",
-    "Брюки и шорты",
-    "Юбки",
-    "Свитеры и кардиганы",
-    "Спортивная одежда",
-    "Нижнее бельё",
-    "Купальники и пляжная одежда",
-    "Домашняя одежда",
-  ];
-
   return (
       <>
         <AppBar position="sticky">
           <Toolbar sx={{justifyContent: "space-between", backgroundColor: "secondary.main",}}>
             <Box display="flex" alignItems="center" gap={1}>
-              {/* БУРГЕР */}
               <IconButton color="primary" onClick={toggleDrawer(true)}>
                 <MenuIcon />
               </IconButton>
@@ -119,13 +106,7 @@ const AppToolbar = () => {
             </Box>
 
             <List>
-              {categories.map((category, i) => (
-                  <ListItemButton
-                      key={i}
-                      onClick={() => {setOpenCategories(false);}}>
-                    <ListItemText primary={category} />
-                  </ListItemButton>
-              ))}
+              <Categories />
             </List>
           </Box>
         </Drawer>

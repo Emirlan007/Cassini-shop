@@ -45,10 +45,9 @@ export class CreateProductDto {
 
   @IsArray()
   @Transform(transformToArray)
-  @IsOptional()
   @ArrayMinSize(1)
   @IsString({ each: true })
-  category?: string[];
+  category: string[];
 
   @IsNumber()
   @Min(0)

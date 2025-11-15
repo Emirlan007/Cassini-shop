@@ -44,7 +44,8 @@ export interface Product {
   _id: string;
   name: string;
   description?: string;
-  sizes?: string;
+  size: string[];
+  colors?: string[];
   category?: ICategory;
   images?: string[];
   video?: string;

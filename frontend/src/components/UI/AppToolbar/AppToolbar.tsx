@@ -16,10 +16,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
-import { selectLoginLoading, selectUser } from "../../../features/users/usersSlice";
+import {
+  selectLoginLoading,
+  selectUser,
+} from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
 
 const AppToolbar = () => {
   const user = useAppSelector(selectUser);
@@ -39,7 +43,7 @@ const AppToolbar = () => {
   };
 
   return (
-      <>
+         <>
         <AppBar position="sticky">
           <Toolbar sx={{justifyContent: "space-between", backgroundColor: "secondary.main",}}>
             <Box display="flex" alignItems="center" gap={1}>

@@ -9,6 +9,7 @@ import {
 import type { Product } from "../../types";
 import { API_URL } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   product: Product;
@@ -16,6 +17,7 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const getImageUrl = (imagePath: string) => {
     if (!imagePath) return "";
@@ -69,7 +71,11 @@ const ProductCard = ({ product }: Props) => {
       <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Typography
           variant="h6"
-          sx={{ fontWeight: 600, mb: 1, fontSize: { xs: "1rem", sm: "1.25rem" } }}
+          sx={{
+            fontWeight: 600,
+            mb: 1,
+            fontSize: { xs: "1rem", sm: "1.25rem" },
+          }}
         >
           {product.name}
         </Typography>
@@ -109,7 +115,7 @@ const ProductCard = ({ product }: Props) => {
           }}
           onClick={() => navigate(`/products/${product._id}`)}
         >
-          Подробнее
+          {t("moreDetails")}
         </Button>
       </CardContent>
     </Card>

@@ -22,7 +22,6 @@ import {
 } from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
 
 const AppToolbar = () => {
@@ -43,92 +42,130 @@ const AppToolbar = () => {
   };
 
   return (
-         <>
-        <AppBar position="sticky">
-          <Toolbar sx={{justifyContent: "space-between", backgroundColor: "secondary.main",}}>
-            <Box display="flex" alignItems="center" gap={1}>
-              <IconButton color="primary" onClick={toggleDrawer(true)}>
-                <MenuIcon />
-              </IconButton>
-            </Box>
+      <>
+          <AppBar position="sticky">
+              <Toolbar
+                  sx={{
+                      justifyContent: "space-between",
+                      backgroundColor: "secondary.main",
+                  }}
+              >
+                  <Box display="flex" alignItems="center" gap={1}>
+                      <IconButton color="primary" onClick={toggleDrawer(true)}>
+                          <MenuIcon />
+                      </IconButton>
+                  </Box>
 
-            {isLoading && <CircularProgress color="primary" />}
+                  {isLoading && <CircularProgress color="primary" />}
 
-            <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-              <img src="/logo.png" alt="Cassini" style={{ width: '70px' }} />
-            </Link>
-          </Toolbar>
-        </AppBar>
+                  <Stack direction="row" spacing={2}>
+                      <LanguageSelect />
 
-        <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-          <Box sx={{ width: 260, position: "relative", height: "100%" }}>
-            <IconButton
-                onClick={toggleDrawer(false)}
-                sx={{ position: "absolute", top: 8, right: 8 }}>
-              <CloseIcon />
-            </IconButton>
+                      <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+                          <img src="/logo.png" alt="Cassini" style={{ width: "70px" }} />
+                      </Link>
+                  </Stack>
+              </Toolbar>
+          </AppBar>
 
-            <Box
-                sx={{mt: 6,}}>
-            </Box>
+          <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+              <Box sx={{ width: 260, position: "relative", height: "100%" }}>
+                  <IconButton
+                      onClick={toggleDrawer(false)}
+                      sx={{ position: "absolute", top: 8, right: 8 }}
+                  >
+                      <CloseIcon />
+                  </IconButton>
 
-            <List>
-              {user ? (
-                  <>
-                    <Stack direction="row" alignItems="center" gap={1} px={2} pb={2} sx={{ borderBottom: '2px solid #ccc' }}>
-                      <AccountCircleIcon />
-                      <Box>{user.displayName}</Box>
-                    </Stack>
+                  <Box sx={{ mt: 6 }}></Box>
 
-                    {user.role === 'admin' && (
-                        <ListItemButton onClick={() => {navigate("/products/new"); toggleDrawer(false)()}}>
-                          <ListItemText primary="Add product" />
-                        </ListItemButton>
-                    )}
+                  <List>
+                      {user ? (
+                          <>
+                              <Box display="flex" alignItems="center" gap={2} px={2} mb={2}>
+                                  <Typography variant="subtitle1">
+                                      {user.displayName}
+                                  </Typography>
+                              </Box>
 
-                    <ListItemButton onClick={() => {setOpenCategories(true); toggleDrawer(false)()}}>
-                      <ListItemText primary="Category" />
-                    </ListItemButton>
+                              {user.role === "admin" && (
+                                  <ListItemButton
+                                      onClick={() => {
+                                          navigate("/addProduct");
+                                          toggleDrawer(false)();
+                                      }}
+                                  >
+                                      <ListItemText primary="Add product" />
+                                  </ListItemButton>
+                              )}
 
-                    <ListItemButton onClick={() => {handleLogout(); toggleDrawer(false)()}}>
-                      <ListItemText primary="Logout" />
-                    </ListItemButton>
-                  </>
-              ) : (
-                  <>
-                    <ListItemButton onClick={() => {navigate("/login"); toggleDrawer(false)()}}>
-                      <ListItemText primary="Sign In" />
-                    </ListItemButton>
+                              <ListItemButton
+                                  onClick={() => {
+                                      setOpenCategories(true);
+                                      toggleDrawer(false)();
+                                  }}
+                              >
+                                  <ListItemText primary="Category" />
+                              </ListItemButton>
 
-                    <ListItemButton onClick={() => {navigate("/register"); toggleDrawer(false)()}}>
-                      <ListItemText primary="Sign Up"/>
-                    </ListItemButton>
-                  </>
-              )}
-            </List>
-          </Box>
-        </Drawer>
+                              <ListItemButton
+                                  onClick={() => {
+                                      handleLogout();
+                                      toggleDrawer(false)();
+                                  }}
+                              >
+                                  <ListItemText primary="Logout" />
+                              </ListItemButton>
+                          </>
+                      ) : (
+                          <>
+                              <ListItemButton
+                                  onClick={() => {
+                                      navigate("/login");
+                                      toggleDrawer(false)();
+                                  }}
+                              >
+                                  <ListItemText primary="Sign In" />
+                              </ListItemButton>
 
-        <Drawer anchor="left" open={openCategories} onClose={() => setOpenCategories(false)}>
-          <Box sx={{ width: 260, position: "relative", height: "100%" }}>
+                              <ListItemButton
+                                  onClick={() => {
+                                      navigate("/register");
+                                      toggleDrawer(false)();
+                                  }}
+                              >
+                                  <ListItemText primary="Sign Up" />
+                              </ListItemButton>
+                          </>
+                      )}
+                  </List>
+              </Box>
+          </Drawer>
 
-            <IconButton
-                onClick={() => setOpenCategories(false)}
-                sx={{ position: "absolute", top: 8, right: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
+          <Drawer
+              anchor="left"
+              open={openCategories}
+              onClose={() => setOpenCategories(false)}
+          >
+              <Box sx={{ width: 260, position: "relative", height: "100%" }}>
+                  <IconButton
+                      onClick={() => setOpenCategories(false)}
+                      sx={{ position: "absolute", top: 8, right: 8 }}
+                  >
+                      <CloseIcon />
+                  </IconButton>
 
-            <Box sx={{ mt: 6, px: 2 }}>
-              <Typography variant="h6" mb={2}>Категории</Typography>
-            </Box>
+                  <Box sx={{ mt: 6, px: 2 }}>
+                      <Typography variant="h6" mb={2}>
+                          Категории
+                      </Typography>
+                  </Box>
 
-            <List>
-              <Categories />
-            </List>
-          </Box>
-        </Drawer>
-
+                  <List>
+                      <Categories />
+                  </List>
+              </Box>
+          </Drawer>
       </>
   );
 };

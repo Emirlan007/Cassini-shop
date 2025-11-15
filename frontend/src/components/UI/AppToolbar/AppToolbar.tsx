@@ -23,6 +23,7 @@ import {
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const AppToolbar = () => {
   const user = useAppSelector(selectUser);
@@ -82,11 +83,10 @@ const AppToolbar = () => {
                   <List>
                       {user ? (
                           <>
-                              <Box display="flex" alignItems="center" gap={2} px={2} mb={2}>
-                                  <Typography variant="subtitle1">
-                                      {user.displayName}
-                                  </Typography>
-                              </Box>
+                              <Stack direction="row" alignItems="center" gap={1} px={2} pb={2} sx={{ borderBottom: '2px solid #ccc' }}>
+                                  <AccountCircleIcon />
+                                  <Box>{user.displayName}</Box>
+                              </Stack>
 
                               {user.role === "admin" && (
                                   <ListItemButton

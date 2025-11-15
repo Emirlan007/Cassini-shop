@@ -58,6 +58,17 @@ const ProductDetails = () => {
                     pagination={{ clickable: true }}
                     className="mySwiper"
                 >
+                    {product?.video && (
+                        <SwiperSlide key="video">
+                            <Box sx={{ height: { xs: 320, sm: 400 } }}>
+                                <video width="100%" height="100%" controls>
+                                    <source src={API_URL + product.video} type="video/mp4" />
+                                    Ваш браузер не поддерживает видео.
+                                </video>
+                            </Box>
+                        </SwiperSlide>
+                    )}
+
                     {product?.images.map((image) => (
                         <SwiperSlide key={image}>
                             <Box

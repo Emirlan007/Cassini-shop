@@ -215,7 +215,6 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
             <FileInput label="Video" name="video" onChange={videoChangeHandler} />
             <Button
                 type="submit"
-                color="primary"
                 variant="contained"
                 loading={loading}
             >

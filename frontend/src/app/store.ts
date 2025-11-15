@@ -1,17 +1,37 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import { usersReducer } from "../features/users/usersSlice";
 import { productsReducer } from "../features/products/productsSlice";
 import {bannersReducer} from "../features/banners/bannersSlice.ts";
 import {categoriesReducer} from "../features/categories/categorySlice.ts";
+import storage from 'redux-persist/lib/storage';
+import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
+import { persistReducer, persistStore } from 'redux-persist';
+
+const userPersistConfig = {
+  key: 'shop:users',
+  storage,
+  whitelist: ['user'],
+};
+
+
+const rootReducer = combineReducers({
+  products: productsReducer,
+  banners: bannersReducer,
+  categories: categoriesReducer,
+  users: persistReducer(userPersistConfig, usersReducer),
+});
 
 export const store = configureStore({
-  reducer: {
-    users: usersReducer,
-    products: productsReducer,
-    banners: bannersReducer,
-    categories: categoriesReducer,
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    });
   },
 });
 
+export const persistor = persistStore(store);
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

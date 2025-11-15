@@ -9,13 +9,17 @@ interface Props {
 
 const FileInput: FC<Props> = ({ onChange, name, label }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const [fileName, setFileName] = useState('');
+    const [fileNames, setFileNames] = useState<string[]>([]);
+
 
     const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFileName(e.target.files[0].name);
+        const files = e.target.files;
+
+        if (files && files.length > 0) {
+            const namesArray = Array.from(files).map((file) => file.name);
+            setFileNames(namesArray);
         } else {
-            setFileName('');
+            setFileNames([]);
         }
 
         onChange(e);
@@ -29,18 +33,27 @@ const FileInput: FC<Props> = ({ onChange, name, label }) => {
 
     return (
         <>
-            <input type="file" style={{ display: 'none' }} name={name} ref={inputRef} onChange={onFileChange} />
+            <input
+                type="file"
+                multiple
+                style={{ display: 'none' }}
+                name={name}
+                ref={inputRef}
+                id={name}
+                onChange={onFileChange}
+            />
             <Stack direction="row" spacing={2} alignItems={'center'}>
                 <TextField
+                    required
                     sx={{width: '100%', mr: 2}}
                     slotProps={{
                         input: { readOnly: true },
                     }}
                     label={label}
-                    value={fileName}
+                    value={fileNames.join(', ')}
                     onClick={activateInput}
                 />
-                <Button variant="contained" onClick={activateInput}>
+                <Button color="success" variant="contained" onClick={activateInput}>
                     Browse
                 </Button>
             </Stack>

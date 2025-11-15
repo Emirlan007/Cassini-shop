@@ -82,26 +82,37 @@ const ProductDetails = () => {
           mt: 1,
           mb: 3,
         }}
-      >
-        <Swiper
-          modules={[Pagination, Navigation]}
-          navigation={true}
-          pagination={{ clickable: true }}
-          className="mySwiper"
-        >
-          {product?.images.map((image) => (
-            <SwiperSlide key={image}>
-              <Box
-                sx={{
-                  height: { xs: 320, sm: 400 },
-                }}
-              >
-                <img src={API_URL + image} alt={product.name} />
-              </Box>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </Box>
+            >
+                <Swiper
+                    modules={[Pagination, Navigation]}
+                    navigation={true}
+                    pagination={{ clickable: true }}
+                    className="mySwiper"
+                >
+                    {product?.video && (
+                        <SwiperSlide key="video">
+                            <Box sx={{ height: { xs: 320, sm: 400 } }}>
+                                <video width="100%" height="100%" controls>
+                                    <source src={API_URL + product.video} type="video/mp4" />
+                                    Ваш браузер не поддерживает видео.
+                                </video>
+                            </Box>
+                        </SwiperSlide>
+                    )}
+
+                    {product?.images.map((image) => (
+                        <SwiperSlide key={image}>
+                            <Box
+                                sx={{
+                                    height: { xs: 320, sm: 400 },
+                                }}
+                            >
+                                <img src={API_URL + image} alt={product.name} />
+                            </Box>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </Box>
 
             <Typography variant="h6">
                 <b>{product?.name}</b>

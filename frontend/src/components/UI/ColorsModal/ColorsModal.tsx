@@ -1,5 +1,5 @@
-import {Box, Checkbox, FormControlLabel, Modal, Stack} from "@mui/material";
-import type {ChangeEvent} from "react";
+import {Box, Button, Chip, Modal, Stack} from "@mui/material";
+import {useState} from "react";
 
 interface ColorsModalProps {
     open: boolean;
@@ -21,30 +21,50 @@ const style = {
 };
 
 const ColorsModal = ({ open, onClose, colors, onChange }: ColorsModalProps) => {
+    const [currentColor, setCurrentColor] = useState("#000000");
 
-    const handleColorsChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { value, checked } = e.target;
-        onChange(value, checked);
+    const handleAddColor = () => {
+        if (!colors.includes(currentColor)) {
+            onChange(currentColor, true);
+        }
+    };
+
+    const handleRemoveColor = (color: string) => {
+        onChange(color, false);
     };
 
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={style}>
-                <Stack mb={2}>Выберите цветов</Stack>
-                <Stack direction="row" spacing={2}>
-                    {["Black", "Silver", "White", "Red"].map(color => (
-                        <FormControlLabel
-                            key={color}
-                            control={
-                                <Checkbox
-                                    value={color}
-                                    checked={colors.includes(color)}
-                                    onChange={handleColorsChange}
-                                />
-                            }
-                            label={color}
+                <Stack spacing={2}>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <input
+                            type="color"
+                            value={currentColor}
+                            onChange={(e) => setCurrentColor(e.target.value)}
                         />
-                    ))}
+                        <Button variant="contained" onClick={handleAddColor}>
+                            Add Color
+                        </Button>
+                    </Stack>
+
+                    <Stack direction="row" spacing={1} flexWrap="wrap">
+                        {colors.map((color) => (
+                            <Chip
+                                style={{margin: '0 10px 10px 0'}}
+                                key={color}
+                                label={color}
+                                sx={{
+                                    backgroundColor: color,
+                                    color: '#fff',
+                                    '& .MuiChip-deleteIcon': {
+                                        color: '#fff',
+                                    }
+                                }}
+                                onDelete={() => handleRemoveColor(color)}
+                            />
+                        ))}
+                    </Stack>
                 </Stack>
             </Box>
         </Modal>

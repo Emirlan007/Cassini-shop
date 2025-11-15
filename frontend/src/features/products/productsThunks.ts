@@ -45,9 +45,14 @@ export const createProduct = createAsyncThunk<Product, ProductInput, { rejectVal
 
             formData.append("name", productData.name);
             formData.append("price", String(productData.price));
+            formData.append('category', productData.category)
 
             if (productData.size) {
                 formData.append("size", JSON.stringify(productData.size));
+            }
+
+            if (productData.colors) {
+                formData.append("colors", JSON.stringify(productData.colors));
             }
 
             if (productData.description) {

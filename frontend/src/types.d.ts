@@ -54,11 +54,12 @@ export interface Product {
 export interface ProductInput {
   name: string;
   description?: string;
-  sizes?: string;
-  category?: ICategory;
-  images?: File[];
-  video?: string;
+  size: string[];
+  colors: string[];
+  images: File[] | null;
+  video?: File | null;
   price: number;
+  category: string;
 }
 
 export interface Banner {

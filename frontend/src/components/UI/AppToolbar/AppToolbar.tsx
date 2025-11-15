@@ -63,7 +63,7 @@ const AppToolbar = () => {
                     </Box>
 
                     {user.role === 'admin' && (
-                        <ListItemButton onClick={() => {navigate("/addProduct"); toggleDrawer(false)()}}>
+                        <ListItemButton onClick={() => {navigate("/products/new"); toggleDrawer(false)()}}>
                           <ListItemText primary="Add product" />
                         </ListItemButton>
                     )}

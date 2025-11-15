@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { usersReducer } from "../features/users/usersSlice";
 import { productsReducer } from "../features/products/productsSlice";
 import {bannersReducer} from "../features/banners/bannersSlice.ts";
+import {categoriesReducer} from "../features/categories/categorySlice.ts";
 
 export const store = configureStore({
   reducer: {
     users: usersReducer,
     products: productsReducer,
-      banners: bannersReducer,
+    banners: bannersReducer,
+    categories: categoriesReducer,
   },
 });
 

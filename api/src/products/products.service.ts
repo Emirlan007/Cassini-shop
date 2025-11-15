@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -19,7 +23,17 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     files?: { images?: Express.Multer.File[]; video?: Express.Multer.File[] },
   ): Promise<Product> {
-    const productData: Partial<Product> = { ...createProductDto };
+    const { category, ...restDto } = createProductDto;
+
+    const productData: Omit<Partial<Product>, 'category'> & {
+      category?: Types.ObjectId;
+    } = {
+      ...restDto,
+    };
+
+    if (category) {
+      productData.category = this.validateAndConvertCategory(category);
+    }
 
     if (files?.images && files.images.length > 0) {
       productData.images = files.images.map((file) =>
@@ -36,27 +50,31 @@ export class ProductsService {
     const createdProduct = new this.productModel(productData);
     return createdProduct.save();
   }
-  
+
   async createMany(dataArray: CreateProductDto[]): Promise<Product[]> {
     const products: Product[] = [];
     for (const data of dataArray) {
       const product = await this.create(data);
       products.push(product);
-    } 
+    }
     return products;
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+    return this.productModel.find().populate('category', 'title slug').exec();
   }
 
   async findOne(id: string): Promise<Product> {
-    const product = await this.productModel.findById(id).exec();
+    const product = await this.productModel
+      .findById(id)
+      .populate('category', 'title slug')
+      .exec();
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
     return product;
   }
+
   async update(
     id: string,
     updateProductDto: UpdateProductDto,
@@ -68,7 +86,17 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
-    const updateData: Partial<Product> = { ...updateProductDto };
+    const { category, ...restDto } = updateProductDto;
+
+    const updateData: Omit<Partial<Product>, 'category'> & {
+      category?: Types.ObjectId;
+    } = {
+      ...restDto,
+    };
+
+    if (category) {
+      updateData.category = this.validateAndConvertCategory(category);
+    }
 
     if (files?.images && files.images.length > 0) {
       if (product.images && product.images.length > 0) {
@@ -109,6 +137,7 @@ export class ProductsService {
 
     const updatedProduct = await this.productModel
       .findByIdAndUpdate(id, updateData, { new: true })
+      .populate('category', 'title slug')
       .exec();
 
     return updatedProduct!;
@@ -148,5 +177,20 @@ export class ProductsService {
     }
 
     await this.productModel.findByIdAndDelete(id).exec();
+  }
+  private validateAndConvertCategories(categories: string[]): Types.ObjectId[] {
+    return categories.map((id) => {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new BadRequestException(`Invalid category ID: ${id}`);
+      }
+      return new Types.ObjectId(id);
+    });
+  }
+
+  private validateAndConvertCategory(categoryId: string): Types.ObjectId {
+    if (!Types.ObjectId.isValid(categoryId)) {
+      throw new BadRequestException(`Invalid category ID: ${categoryId}`);
+    }
+    return new Types.ObjectId(categoryId);
   }
 }

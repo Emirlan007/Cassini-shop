@@ -43,6 +43,10 @@ export class CreateProductDto {
   @Transform(transformToArray)
   size: string[];
 
+  @IsString()
+  @IsNotEmpty()
+  category: string;
+
   @IsNumber()
   @Min(0)
   @Transform(({ value }) => Number(value))

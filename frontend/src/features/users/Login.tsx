@@ -15,8 +15,8 @@ const Login = () => {
     const navigate = useNavigate();
 
     const [state, setState] = useState<LoginMutation>({
-        email: '',
-        password: '',
+        displayName: '',
+        phoneNumber: '',
     });
 
     const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +49,7 @@ const Login = () => {
     return (
         <Box
             sx={{
-                marginTop: { xs: 4, sm: 8 },
+                marginTop: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -109,11 +109,11 @@ const Login = () => {
                     <TextField
                         required
                         fullWidth
-                        label="Email"
-                        name="email"
-                        value={state.email}
+                        label="Display Name"
+                        name="displayName"
+                        value={state.displayName}
                         onChange={inputChangeHandler}
-                        autoComplete="email"
+                        autoComplete="displayName"
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
@@ -131,10 +131,10 @@ const Login = () => {
                     <TextField
                         required
                         fullWidth
-                        type="password"
-                        label="Password"
-                        name="password"
-                        value={state.password}
+                        type="phoneNumber"
+                        label="Phone Number"
+                        name="phoneNumber"
+                        value={state.phoneNumber}
                         onChange={inputChangeHandler}
                         autoComplete="current-password"
                         sx={{

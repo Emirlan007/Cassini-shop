@@ -3,7 +3,7 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
 import {Typography} from "@mui/material";
 import ProductForm from "./components/ProductForm.tsx";
 import type {ProductInput} from "../../types";
-import {createProduct} from "./productsThunks.ts";
+import {createProduct, fetchProducts} from "./productsThunks.ts";
 import {selectProductCreateLoading} from "./productsSlice.ts";
 
 
@@ -14,6 +14,7 @@ const NewProduct = () => {
 
     const onFormSubmit = async (product: ProductInput) => {
         await dispatch(createProduct(product)).unwrap();
+        dispatch(fetchProducts());
         navigate('/');
     };
     return (

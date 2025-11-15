@@ -99,24 +99,6 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log("Submitting state:", state);
-        console.log("Colors:", state.colors);
-        console.log("Size:", state.size);
-        console.log("Category:", state.category);
-
-        if (!state.category) {
-            alert("Please select a category");
-            return;
-        }
-        if (!state.colors.length) {
-            alert("Please select at least one color");
-            return;
-        }
-        if (!state.size.length) {
-            alert("Please select at least one size");
-            return;
-        }
-
         try {
             onSubmit(state)
             navigate('/')

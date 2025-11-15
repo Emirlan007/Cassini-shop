@@ -35,30 +35,32 @@ export interface IValidationError {
 }
 
 export interface ICategory {
-  _id: string;
-  title: string;
-  slug: string;
+    _id: string;
+    title: string;
+    slug: string;
 }
 
 export interface Product {
-  _id: string;
-  name: string;
-  description?: string;
-  sizes?: string;
-  category?: ICategory;
-  images?: string[];
-  video?: string;
-  price: number;
+    _id: string;
+    name: string;
+    description?: string;
+    size: string[];
+    category: ICategory;
+    colors: string[];
+    images?: string[];
+    video?: string;
+    price: number;
 }
 
 export interface ProductInput {
-  name: string;
-  description?: string;
-  sizes?: string;
-  category?: ICategory;
-  images?: File[];
-  video?: string;
-  price: number;
+    name: string;
+    description?: string;
+    size: string[];
+    colors: string[];
+    category: string;
+    images: File[] | null;
+    video: File | null;
+    price: number;
 }
 
 export interface Banner {

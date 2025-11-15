@@ -1,11 +1,12 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { Alert, Box, Button, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Link } from "react-router-dom";
-import { selectBanners, selectBannersError } from "./bannersSlice.ts";
+import { selectBanners, selectBannersError } from "./bannersSlice";
 import { useEffect } from "react";
-import { fetchBanners } from "./bannersThunks.ts";
+import { fetchBanners } from "./bannersThunks";
+import { API_URL } from "../../constants";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";
 import "./styles.css";
@@ -56,7 +57,7 @@ const BannersCarousel = () => {
                                         backgroundPosition: "center",
                                         backgroundSize: "contain",
                                         backgroundImage:
-                                            "url(" + "http://localhost:8000" + banner.image + ")",
+                                            `url(${API_URL}${banner.image.startsWith('/') ? banner.image.slice(1) : banner.image})`,
                                     }}
                                 >
                                     <Box

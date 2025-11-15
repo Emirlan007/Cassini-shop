@@ -60,8 +60,17 @@ export class ProductsService {
     return products;
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.productModel.find().populate('category', 'title slug').exec();
+  async findAll(categoryId?: string): Promise<Product[]> {
+    const query = this.productModel.find();
+    
+    if (categoryId) {
+      if (!Types.ObjectId.isValid(categoryId)) {
+        throw new BadRequestException(`Invalid category ID: ${categoryId}`);
+      }
+      query.where('category').equals(new Types.ObjectId(categoryId));
+    }
+    
+    return query.populate('category', 'title slug').exec();
   }
 
   async findOne(id: string): Promise<Product> {

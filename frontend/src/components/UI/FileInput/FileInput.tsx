@@ -5,15 +5,21 @@ interface Props {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     name: string;
     label: string;
+    multiple?: boolean;
 }
 
-const FileInput: FC<Props> = ({ onChange, name, label }) => {
+const FileInput: FC<Props> = ({ onChange, name, label, multiple = false }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [fileName, setFileName] = useState('');
 
     const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFileName(e.target.files[0].name);
+        if (e.target.files && e.target.files.length > 0) {
+            if (multiple) {
+                const filesArray = Array.from(e.target.files);
+                setFileName(filesArray.map(f => f.name).join(', '));
+            } else {
+                setFileName(e.target.files[0].name);
+            }
         } else {
             setFileName('');
         }
@@ -29,10 +35,17 @@ const FileInput: FC<Props> = ({ onChange, name, label }) => {
 
     return (
         <>
-            <input type="file" style={{ display: 'none' }} name={name} ref={inputRef} onChange={onFileChange} />
+            <input
+                type="file"
+                style={{ display: 'none' }}
+                name={name}
+                ref={inputRef}
+                onChange={onFileChange}
+                multiple={multiple}
+            />
             <Stack direction="row" spacing={2} alignItems={'center'}>
                 <TextField
-                    sx={{width: '100%', mr: 2}}
+                    sx={{ width: '100%', mr: 2 }}
                     slotProps={{
                         input: { readOnly: true },
                     }}

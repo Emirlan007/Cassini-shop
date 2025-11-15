@@ -1,6 +1,7 @@
-import {AppBar, Box, CircularProgress, Toolbar, IconButton, Drawer, List, ListItemButton, ListItemText, Typography,} from "@mui/material";
+import {AppBar, Box, CircularProgress, Toolbar, IconButton, Drawer, ListItemButton, ListItemText, Typography, Divider,} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import CategoryIcon from "@mui/icons-material/Category";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
@@ -16,7 +17,6 @@ const AppToolbar = () => {
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [openCategories, setOpenCategories] = useState(false);
 
   const toggleDrawer = (value: boolean) => () => setOpen(value);
 
@@ -44,70 +44,177 @@ const AppToolbar = () => {
         </AppBar>
 
         <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-          <Box sx={{ width: 260, position: "relative", height: "100%" }}>
-            <IconButton
-                onClick={toggleDrawer(false)}
-                sx={{ position: "absolute", top: 8, right: 8 }}>
-              <CloseIcon />
-            </IconButton>
-
+          <Box sx={{ width: 280, position: "relative", height: "100%", backgroundColor: "#F7F7F7" }}>
             <Box
-                sx={{mt: 6,}}>
-            </Box>
-
-            <List>
-              {user ? (
-                  <>
-                    <Box display="flex" alignItems="center" gap={2} px={2} mb={2}>
-                      <Typography variant="subtitle1">{user.displayName}</Typography>
-                    </Box>
-
-                    {user.role === 'admin' && (
-                        <ListItemButton onClick={() => {navigate("/addProduct"); toggleDrawer(false)()}}>
-                          <ListItemText primary="Add product" />
-                        </ListItemButton>
-                    )}
-
-                    <ListItemButton onClick={() => {setOpenCategories(true); toggleDrawer(false)()}}>
-                      <ListItemText primary="Category" />
-                    </ListItemButton>
-
-                    <ListItemButton onClick={() => {handleLogout(); toggleDrawer(false)()}}>
-                      <ListItemText primary="Logout" />
-                    </ListItemButton>
-                  </>
-              ) : (
-                  <>
-                    <ListItemButton onClick={() => {navigate("/login"); toggleDrawer(false)()}}>
-                      <ListItemText primary="Sign In" />
-                    </ListItemButton>
-
-                    <ListItemButton onClick={() => {navigate("/register"); toggleDrawer(false)()}}>
-                      <ListItemText primary="Sign Up"/>
-                    </ListItemButton>
-                  </>
-              )}
-            </List>
-          </Box>
-        </Drawer>
-
-        <Drawer anchor="left" open={openCategories} onClose={() => setOpenCategories(false)}>
-          <Box sx={{ width: 260, position: "relative", height: "100%" }}>
-
-            <IconButton
-                onClick={() => setOpenCategories(false)}
-                sx={{ position: "absolute", top: 8, right: 8 }}
+              sx={{
+                backgroundColor: "secondary.main",
+                color: "primary.main",
+                p: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
             >
-              <CloseIcon />
-            </IconButton>
-
-            <Box sx={{ mt: 6, px: 2 }}>
-              <Typography variant="h6" mb={2}>Категории</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Меню
+              </Typography>
+              <IconButton
+                onClick={toggleDrawer(false)}
+                sx={{ color: "primary.main" }}
+              >
+                <CloseIcon />
+              </IconButton>
             </Box>
 
-            <List>
-              <Categories />
-            </List>
+            <Box sx={{ mt: 2 }}>
+              {user ? (
+                <>
+                  <Box sx={{ px: 2, py: 1.5, mb: 1 }}>
+                    <Typography variant="body2" sx={{ color: "text.secondary", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                      Пользователь
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: "text.primary", mt: 0.5 }}>
+                      {user.displayName}
+                    </Typography>
+                  </Box>
+
+                  <Divider sx={{ my: 1 }} />
+
+                  {user.role === 'admin' && (
+                    <>
+                      <ListItemButton 
+                        onClick={() => {navigate("/addProduct"); toggleDrawer(false)()}}
+                        sx={{
+                          mx: 1,
+                          borderRadius: 1,
+                          "&:hover": {
+                            backgroundColor: "action.hover",
+                          },
+                        }}
+                      >
+                        <ListItemText 
+                          primary="Добавить товар" 
+                          primaryTypographyProps={{
+                            fontSize: "0.95rem",
+                            fontWeight: 500,
+                          }}
+                        />
+                      </ListItemButton>
+                      <Divider sx={{ my: 1 }} />
+                    </>
+                  )}
+
+                  <Box sx={{ px: 2, py: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                      <CategoryIcon sx={{ fontSize: "1.2rem", color: "secondary.main" }} />
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: "secondary.main", 
+                          fontSize: "0.875rem", 
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px"
+                        }}
+                      >
+                        Категории
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ px: 1 }}>
+                    <Categories onCategoryClick={toggleDrawer(false)} />
+                  </Box>
+
+                  <Divider sx={{ my: 2 }} />
+
+                  <ListItemButton 
+                    onClick={() => {handleLogout(); toggleDrawer(false)()}}
+                    sx={{
+                      mx: 1,
+                      borderRadius: 1,
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                  >
+                    <ListItemText 
+                      primary="Выйти" 
+                      primaryTypographyProps={{
+                        fontSize: "0.95rem",
+                        fontWeight: 500,
+                      }}
+                    />
+                  </ListItemButton>
+                </>
+              ) : (
+                <>
+                  <ListItemButton 
+                    onClick={() => {navigate("/login"); toggleDrawer(false)()}}
+                    sx={{
+                      mx: 1,
+                      my: 1,
+                      borderRadius: 1,
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                  >
+                    <ListItemText 
+                      primary="Войти" 
+                      primaryTypographyProps={{
+                        fontSize: "0.95rem",
+                        fontWeight: 500,
+                      }}
+                    />
+                  </ListItemButton>
+
+                  <ListItemButton 
+                    onClick={() => {navigate("/register"); toggleDrawer(false)()}}
+                    sx={{
+                      mx: 1,
+                      mb: 1,
+                      borderRadius: 1,
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                  >
+                    <ListItemText 
+                      primary="Регистрация"
+                      primaryTypographyProps={{
+                        fontSize: "0.95rem",
+                        fontWeight: 500,
+                      }}
+                    />
+                  </ListItemButton>
+
+                  <Divider sx={{ my: 2 }} />
+
+                  <Box sx={{ px: 2, py: 1 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                      <CategoryIcon sx={{ fontSize: "1.2rem", color: "secondary.main" }} />
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: "secondary.main", 
+                          fontSize: "0.875rem", 
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px"
+                        }}
+                      >
+                        Категории
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ px: 1 }}>
+                    <Categories onCategoryClick={toggleDrawer(false)} />
+                  </Box>
+                </>
+              )}
+            </Box>
           </Box>
         </Drawer>
 

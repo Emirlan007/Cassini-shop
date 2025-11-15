@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk<
     "categories/fetchCategories",
     async (_, { rejectWithValue }) => {
       try {
-        const { data } = await axiosApi.get("/categories");
+        const { data } = await axiosApi.get<ICategory[]>("/categories");
         return data;
       } catch (err) {
         if (isAxiosError(err)) {
@@ -34,7 +34,7 @@ export const createCategory = createAsyncThunk<
     "categories/createCategory",
     async (data, { rejectWithValue }) => {
       try {
-        const { data: created } = await axiosApi.post("/categories", data);
+        const { data: created } = await axiosApi.post<ICategory>("/categories", data);
         return created;
       } catch (err) {
         if (isAxiosError(err)) {

@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   Patch,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -24,8 +25,8 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  async getAllProducts() {
-    return this.productsService.findAll();
+  async getAllProducts(@Query('categoryId') categoryId?: string) {
+    return this.productsService.findAll(categoryId);
   }
 
   @Get(':id')

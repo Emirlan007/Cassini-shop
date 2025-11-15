@@ -7,17 +7,18 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE_CLIENT_ID } from "./constants.ts";
 import theme from "./theme.ts";
-import {axiosApi} from "./axiosApi.ts";
+import { axiosApi } from "./axiosApi.ts";
+import "./i18n.ts";
 
 axiosApi.interceptors.request.use((config) => {
-    const state = store.getState();
-    const token = state.users.user?.token;
+  const state = store.getState();
+  const token = state.users.user?.token;
 
-    if (token && config.headers) {
-        config.headers.Authorization = token;
-    }
+  if (token && config.headers) {
+    config.headers.Authorization = token;
+  }
 
-    return config;
+  return config;
 });
 
 createRoot(document.getElementById("root")!).render(

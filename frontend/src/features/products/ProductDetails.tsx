@@ -163,7 +163,21 @@ const ProductDetails = () => {
                             }}
                         />
                       }
-                      label={color}
+                      label={
+                        <Box display="flex" alignItems="center">
+                          {color}
+                          <Box
+                              sx={{
+                                width: 18,
+                                height: 18,
+                                borderRadius: "50%",
+                                backgroundColor: color,
+                                border: "1px solid #ccc",
+                                ml: 1,
+                              }}
+                          />
+                        </Box>
+                      }
                   />
               ))}
             </Box>

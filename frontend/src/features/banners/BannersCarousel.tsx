@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { selectBanners, selectBannersError } from "./bannersSlice.ts";
 import { useEffect } from "react";
 import { fetchBanners } from "./bannersThunks.ts";
+import { useTranslation } from "react-i18next";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";
 import "./styles.css";
@@ -14,6 +15,7 @@ const BannersCarousel = () => {
   const dispatch = useAppDispatch();
   const banners = useAppSelector(selectBanners);
   const bannersError = useAppSelector(selectBannersError);
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(fetchBanners());
@@ -81,7 +83,7 @@ const BannersCarousel = () => {
                         variant="contained"
                         sx={{ color: "white", textDecoration: "none" }}
                       >
-                        More info
+                        {t("moreInfo")}
                       </Button>
                     </Link>
                   </Box>

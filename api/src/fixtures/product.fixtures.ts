@@ -1,16 +1,21 @@
 import { ProductsService } from '../products/products.service';
+import { CategoryDocument } from '../schemas/category.schema';
+import { Types } from 'mongoose';
 
 export async function createProductFixtures(
-  productsService: ProductsService,)
-{
+  productsService: ProductsService,
+  categories: (CategoryDocument & { _id: Types.ObjectId })[],
+) {
   console.log('Creating products...');
-  return await productsService.createMany([
+
+  const products = [
     {
       name: 'Classic Black Shawl Lapel Dress',
       colors: ['Black', 'Navy Blue', 'Charcoal Gray', 'Midnight Blue'],
       description:
-        'Timeless and elegant, this black tuxedo features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie weddings, its tailored silhouette creates a refined and confident look that never goes out of style.',
+        'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      category: categories[0]._id.toString(),
       price: 999,
       video: 'fixtures/dressVideo11.mp4',
       images: [
@@ -30,6 +35,7 @@ export async function createProductFixtures(
       description:
         'A sophisticated twist on the traditional black, this midnight blue tuxedo commands attention under evening lights. The peak lapels and slim-fit design highlight modern elegance, making it an ideal choice for the man who wants to stand out—subtly.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      category: categories[1]._id.toString(),
       price: 999,
       video: 'fixtures/dressVideo22.mp4',
       images: [
@@ -49,6 +55,7 @@ export async function createProductFixtures(
       description:
         "Crisp, bold, and effortlessly suave, this white dinner jacket tuxedo pairs a cream or ivory jacket with black trousers. Featuring satin-covered buttons and a tailored fit, it channels a vintage James Bond aesthetic that's perfect for summer soirées or destination weddings.",
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      category: categories[2]._id.toString(),
       price: 999,
       video: 'fixtures/dressVideo11.mp4',
       images: [
@@ -68,6 +75,7 @@ export async function createProductFixtures(
       description:
         'Rich in color and texture, this burgundy velvet tuxedo brings luxury to the forefront. The plush fabric adds depth and warmth, while the black satin lapels introduce a sharp contrast. Ideal for evening events where you want to make a statement without saying a word.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      category: categories[3]._id.toString(),
       price: 999,
       video: 'fixtures/dressVideo22.mp4',
       images: [
@@ -87,6 +95,7 @@ export async function createProductFixtures(
       description:
         "Designed for the contemporary gentleman, this charcoal tuxedo blends formal tradition with modern tailoring. The narrow lapels and tapered trousers create a streamlined silhouette that's both minimalist and fashion-forward — perfect for creative professionals or urban weddings.",
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      category: categories[4]._id.toString(),
       price: 999,
       video: 'fixtures/dressVideo11.mp4',
       images: [
@@ -106,6 +115,7 @@ export async function createProductFixtures(
       description:
         'For the bold and fashion-savvy, this jacquard tuxedo features an intricate woven pattern that catches the light beautifully. The mix of texture and sheen gives a regal, couture-inspired feel, making it the centerpiece of any red-carpet or high-profile event.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+      category: categories[5 % categories.length]._id.toString(),
       price: 999,
       video: 'fixtures/dressVideo22.mp4',
       images: [
@@ -119,5 +129,7 @@ export async function createProductFixtures(
         'fixtures/dressPos2.png',
       ],
     },
-  ]);
+  ];
+
+  return await productsService.createMany(products);
 }

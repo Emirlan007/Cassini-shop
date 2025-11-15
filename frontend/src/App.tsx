@@ -7,33 +7,21 @@ import HomePage from "./pages/HomePage.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import ProductDetails from "./features/products/ProductDetails.tsx";
 import NewProduct from "./features/products/NewProduct.tsx";
-// import {useAppSelector} from "./app/hooks.ts";
-// import {selectUser} from "./features/users/usersSlice.ts";
-// import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
-import {Box, Container} from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 const App = () => {
-    // const user = useAppSelector(selectUser);
-
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <AppToolbar />
 
       <Container maxWidth="xl" component="main" sx={{ flex: 1, py: 4 }}>
         <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/products/:productId" element={<ProductDetails />} />
-            <Route
-                path="/products/new"
-                element={
-                    // <ProtectedRoute isAllowed={user && user.role === 'admin'}>
-                        <NewProduct />
-                    // </ProtectedRoute>
-                }
-            />
-          <Route path={'/addProduct'}></Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/products/:productId" element={<ProductDetails />} />
+          <Route path="/products/new" element={<NewProduct />} />
+          <Route path={"/addProduct"}></Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

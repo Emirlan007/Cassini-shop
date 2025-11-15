@@ -28,6 +28,28 @@ export class CategoriesService {
     });
   }
 
+  async createMany(dtos: CreateCategoryDto[]): Promise<CategoryDocument[]> {
+    const categories: CategoryDocument[] = [];
+
+    for (const dto of dtos) {
+      const slug =
+        dto.slug || slugify(dto.title, { lower: true, strict: true });
+
+      const existing = await this.categoryModel.findOne({ slug }).exec();
+      if (!existing) {
+        const category = await this.categoryModel.create({
+          ...dto,
+          slug,
+        });
+        categories.push(category);
+      } else {
+        categories.push(existing);
+      }
+    }
+
+    return categories;
+  }
+
   async findAll(): Promise<Category[]> {
     return this.categoryModel.find().exec();
   }

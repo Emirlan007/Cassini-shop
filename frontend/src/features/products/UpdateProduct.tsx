@@ -1,16 +1,16 @@
-// import type {Product} from "../../types";
-// import type {FC} from "react";
-//
-// interface Props {
-//     product: Product
-// }
-//
-// const UpdateProduct: FC<Props> = ({ product }) => {
-//     return (
-//         <div>
-//
-//         </div>
-//     );
-// };
-//
-// export default UpdateProduct;
+import type { Product } from "../../types";
+import type { FC } from "react";
+
+interface Props {
+  product: Product;
+}
+
+const UpdateProduct: FC<Props> = ({ product }) => {
+  return (
+    <div>
+      <h2>Update Product: {product.name}</h2>
+    </div>
+  );
+};
+
+export default UpdateProduct;

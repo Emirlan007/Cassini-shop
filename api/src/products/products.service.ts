@@ -26,19 +26,13 @@ export class ProductsService {
     const { category, ...restDto } = createProductDto;
 
     const productData: Omit<Partial<Product>, 'category'> & {
-      category?: Types.ObjectId[];
+      category?: Types.ObjectId;
     } = {
       ...restDto,
     };
 
     if (category) {
-      productData.category = this.validateAndConvertCategories(category);
-    }
-
-    if (createProductDto.category) {
-      productData.category = this.validateAndConvertCategories(
-        createProductDto.category,
-      );
+      productData.category = this.validateAndConvertCategory(category);
     }
 
     if (files?.images && files.images.length > 0) {
@@ -95,13 +89,13 @@ export class ProductsService {
     const { category, ...restDto } = updateProductDto;
 
     const updateData: Omit<Partial<Product>, 'category'> & {
-      category?: Types.ObjectId[];
+      category?: Types.ObjectId;
     } = {
       ...restDto,
     };
 
     if (category) {
-      updateData.category = this.validateAndConvertCategories(category);
+      updateData.category = this.validateAndConvertCategory(category);
     }
 
     if (files?.images && files.images.length > 0) {
@@ -191,5 +185,12 @@ export class ProductsService {
       }
       return new Types.ObjectId(id);
     });
+  }
+
+  private validateAndConvertCategory(categoryId: string): Types.ObjectId {
+    if (!Types.ObjectId.isValid(categoryId)) {
+      throw new BadRequestException(`Invalid category ID: ${categoryId}`);
+    }
+    return new Types.ObjectId(categoryId);
   }
 }

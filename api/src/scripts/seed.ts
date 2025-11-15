@@ -6,13 +6,17 @@ import {
   createBannerFixtures,
   createProductFixtures,
   createUserFixtures,
+  createCategoryFixtures,
 } from '../fixtures';
 
 import { ProductsService } from 'src/products/products.service';
 import { Banner } from 'src/schemas/banner.schema';
 import { Product } from 'src/schemas/product.schema';
 import { User } from 'src/schemas/user.schema';
+import { Category, CategoryDocument } from 'src/schemas/category.schema';
 import { UserService } from 'src/users/user.service';
+import { CategoriesService } from 'src/categories/categories.service';
+import { Types } from 'mongoose';
 
 async function bootstrap() {
   try {
@@ -21,24 +25,30 @@ async function bootstrap() {
     const userService = appContext.get(UserService);
     const productsService = appContext.get(ProductsService);
     const bannerService = appContext.get(BannerService);
+    const categoriesService = appContext.get(CategoriesService);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const userModel = appContext.get(getModelToken(User.name));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const productModel = appContext.get(getModelToken(Product.name));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const bannerModel = appContext.get(getModelToken(Banner.name));
+    const categoryModel = appContext.get(getModelToken(Category.name));
 
     console.log('Clearing existing data...');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     await userModel.deleteMany({});
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     await productModel.deleteMany({});
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     await bannerModel.deleteMany({});
+    await categoryModel.deleteMany({});
 
+    console.log('Creating fixtures...');
     await createUserFixtures(userService);
-    await createProductFixtures(productsService);
+
+    const categories = await createCategoryFixtures(categoriesService);
+    const typedCategories = categories.map((cat) => ({
+      ...cat,
+      _id: cat._id as Types.ObjectId,
+    })) as (CategoryDocument & { _id: Types.ObjectId })[];
+
+    await createProductFixtures(productsService, typedCategories);
+
     await createBannerFixtures(bannerService);
 
     console.log('Fixtures inserted successfully!');

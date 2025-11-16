@@ -15,6 +15,8 @@ import {useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
 import {selectCategories} from "../categories/categorySlice.ts";
 import {fetchCategories} from "../categories/categoryThunk.ts";
+import SizesModal from "../../components/UI/SizesModal/SizesModal.tsx";
+import ColorsModal from "../../components/UI/ColorsModal/ColorsModal.tsx";
 
 interface Props {
     product: ProductInput
@@ -23,6 +25,9 @@ interface Props {
 }
 
 const UpdateProduct: FC<Props> = ({product, onSubmit}) => {
+    const [isSizesOpen, setSizesOpen] = useState(false);
+    const [isColorsOpen, setColorsOpen] = useState(false);
+
     const navigate = useNavigate();
     const categories = useAppSelector(selectCategories);
     const dispatch = useAppDispatch();
@@ -71,6 +76,23 @@ const UpdateProduct: FC<Props> = ({product, onSubmit}) => {
         });
     };
 
+    const handleSizeUpdate = (value: string, checked: boolean) => {
+        setState((prev) => ({
+            ...prev,
+            size: checked
+                ? [...prev.size, value]
+                : prev.size.filter((s) => s !== value),
+        }));
+    };
+
+    const handleColorsUpdate = (value: string, checked: boolean) => {
+        setState((prev) => ({
+            ...prev,
+            colors: checked
+                ? [...prev.colors, value]
+                : prev.colors.filter((c) => c !== value),
+        }));
+    };
 
     const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target;
@@ -233,6 +255,40 @@ const UpdateProduct: FC<Props> = ({product, onSubmit}) => {
                                 </MenuItem>
                             ))}
                         </TextField>
+
+                        <SizesModal
+                            open={isSizesOpen}
+                            onClose={() => setSizesOpen(false)}
+                            sizes={state.size}
+                            onChange={handleSizeUpdate}
+                        />
+                        <Stack direction="row" spacing={2} alignItems={"center"}>
+                            <TextField
+                                sx={{ width: "100%" }}
+                                label="Selected Sizes"
+                                value={state.size.join(", ")}
+                            />
+                            <Button variant="contained" onClick={() => setSizesOpen(true)}>
+                                Sizes
+                            </Button>
+                        </Stack>
+
+                        <ColorsModal
+                            open={isColorsOpen}
+                            onClose={() => setColorsOpen(false)}
+                            colors={state.colors}
+                            onChange={handleColorsUpdate}
+                        />
+                        <Stack direction="row" spacing={2} alignItems={"center"}>
+                            <TextField
+                                sx={{ width: "100%" }}
+                                label="Selected Colors"
+                                value={state.colors.join(", ")}
+                            />
+                            <Button variant="contained" onClick={() => setColorsOpen(true)}>
+                                Colors
+                            </Button>
+                        </Stack>
 
                         <FilesInput label="Video" name="video" onChange={videoChangeHandler} />
 

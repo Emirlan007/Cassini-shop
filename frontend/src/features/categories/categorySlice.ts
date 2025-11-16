@@ -52,6 +52,11 @@ const categoriesSlice = createSlice({
           state.createError = action.payload ?? "Unknown error";
         });
   },
+    selectors: {
+        selectCategories: (state) => state.categoriesAll,
+        selectFetchingCategories: (state) => state.fetchingCategories,
+    }
 });
 
 export const categoriesReducer = categoriesSlice.reducer;
+export const {selectCategories, selectFetchingCategories} = categoriesSlice.selectors;

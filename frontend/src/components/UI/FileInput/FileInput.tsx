@@ -10,27 +10,23 @@ interface Props {
 
 const FileInput: FC<Props> = ({ onChange, name, label, multiple = false }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const [fileName, setFileName] = useState('');
+    const [fileNames, setFileNames] = useState<string[]>([]);
 
     const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            if (multiple) {
-                const filesArray = Array.from(e.target.files);
-                setFileName(filesArray.map(f => f.name).join(', '));
-            } else {
-                setFileName(e.target.files[0].name);
-            }
+        const files = e.target.files;
+
+        if (files && files.length > 0) {
+            const namesArray = Array.from(files).map(file => file.name);
+            setFileNames(namesArray);
         } else {
-            setFileName('');
+            setFileNames([]);
         }
 
         onChange(e);
     };
 
     const activateInput = () => {
-        if (inputRef.current) {
-            inputRef.current.click();
-        }
+        inputRef.current?.click();
     };
 
     return (
@@ -43,17 +39,22 @@ const FileInput: FC<Props> = ({ onChange, name, label, multiple = false }) => {
                 onChange={onFileChange}
                 multiple={multiple}
             />
-            <Stack direction="row" spacing={2} alignItems={'center'}>
+
+            <Stack direction="row" spacing={2} alignItems="center">
                 <TextField
+                    required
                     sx={{ width: '100%', mr: 2 }}
-                    slotProps={{
-                        input: { readOnly: true },
-                    }}
+                    slotProps={{ input: { readOnly: true } }}
                     label={label}
-                    value={fileName}
+                    value={fileNames.join(', ')}
                     onClick={activateInput}
                 />
-                <Button variant="contained" onClick={activateInput}>
+
+                <Button
+                    color="success"
+                    variant="contained"
+                    onClick={activateInput}
+                >
                     Browse
                 </Button>
             </Stack>

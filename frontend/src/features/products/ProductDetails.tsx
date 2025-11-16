@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   selectProduct,
@@ -12,12 +12,15 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
+import {selectUser} from "../users/usersSlice.ts";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
   const product = useAppSelector(selectProduct);
   const loading = useAppSelector(selectProductFetchLoading);
   const error = useAppSelector(selectProductFetchError);
+  const user = useAppSelector(selectUser);
+  const navigate = useNavigate();
 
   const { productId } = useParams() as { productId: string };
   const [sizeState, setSizeState] = useState<{
@@ -129,6 +132,10 @@ const ProductDetails = () => {
             <Button variant="contained" onClick={handleColorClick}>
               Расцветки
             </Button>
+
+              {
+                  user?.role === 'admin' ? <Button variant="contained" sx={{marginLeft: 'auto'}} onClick={() => navigate(`/products/${product._id}/update`)}>Edit</Button> : null
+              }
           </Box>
 
           <Popover

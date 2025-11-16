@@ -94,6 +94,7 @@ export const updateProduct = createAsyncThunk<Product, {product: ProductInput, _
 
         formData.append("name", product.name);
         formData.append("price", String(product.price));
+        formData.append('category', product.category)
 
         if (product.size) {
             formData.append("size", String(product.size));

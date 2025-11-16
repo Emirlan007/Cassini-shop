@@ -11,6 +11,7 @@ import {Box, Container} from "@mui/material";
 import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
 import {useAppSelector} from "./app/hooks.ts";
 import {selectUser} from "./features/users/usersSlice.ts";
+import UpdateCreateWrap from "./components/UpdateCreateWrap/UpdateCreateWrap.tsx";
 
 const App = () => {
     const user = useAppSelector(selectUser);
@@ -25,6 +26,7 @@ const App = () => {
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/products/:productId" element={<ProductDetails/>}/>
+                    <Route path="/products/:productUpdate/update" element={<UpdateCreateWrap/>}/>
                     <Route
                         path="/products/new"
                         element={

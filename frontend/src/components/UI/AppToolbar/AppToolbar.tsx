@@ -5,14 +5,15 @@ import {
     Toolbar,
     IconButton,
     Drawer,
-    List,
     ListItemButton,
     ListItemText,
     Typography,
+    Divider,
     Stack,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import CategoryIcon from "@mui/icons-material/Category";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -33,7 +34,6 @@ const AppToolbar = () => {
     const navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
-    const [openCategories, setOpenCategories] = useState(false);
 
     const toggleDrawer = (value: boolean) => () => setOpen(value);
 
@@ -69,64 +69,135 @@ const AppToolbar = () => {
                 </Toolbar>
             </AppBar>
 
-            {/* Главное меню */}
             <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-                <Box sx={{ width: 260, position: "relative", height: "100%" }}>
-                    <IconButton
-                        onClick={toggleDrawer(false)}
-                        sx={{ position: "absolute", top: 8, right: 8 }}
+                <Box
+                    sx={{
+                        width: 280,
+                        position: "relative",
+                        height: "100%",
+                        backgroundColor: "#F7F7F7",
+                    }}
+                >
+
+                    <Box
+                        sx={{
+                            backgroundColor: "secondary.main",
+                            color: "primary.main",
+                            p: 2,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                        }}
                     >
-                        <CloseIcon />
-                    </IconButton>
+                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                            Меню
+                        </Typography>
+                        <IconButton onClick={toggleDrawer(false)} sx={{ color: "primary.main" }}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
 
-                    <Box sx={{ mt: 6 }} />
-
-                    <List>
+                    <Box sx={{ mt: 2 }}>
                         {user ? (
                             <>
-                                {/* Пользователь */}
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                    gap={1}
-                                    px={2}
-                                    pb={2}
-                                    sx={{ borderBottom: "2px solid #ccc" }}
-                                >
-                                    <AccountCircleIcon />
-                                    <Box>{user.displayName}</Box>
-                                </Stack>
-
-                                {/* Админские функции */}
-                                {user.role === "admin" && (
-                                    <ListItemButton
-                                        onClick={() => {
-                                            navigate("/products/new");
-                                            toggleDrawer(false)();
+                                <Box sx={{ px: 2, py: 1.5, mb: 1 }}>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color: "text.secondary",
+                                            fontSize: "0.75rem",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.5px",
                                         }}
                                     >
-                                        <ListItemText primary="Add product" />
-                                    </ListItemButton>
+                                        Пользователь
+                                    </Typography>
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                        <AccountCircleIcon />
+                                        <Typography
+                                            variant="subtitle1"
+                                            sx={{ fontWeight: 600, color: "text.primary", mt: 0.5 }}
+                                        >
+                                            {user.displayName}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+
+                                <Divider sx={{ my: 1 }} />
+
+                                {user.role === "admin" && (
+                                    <>
+                                        <ListItemButton
+                                            onClick={() => {
+                                                navigate("/products/new");
+                                                toggleDrawer(false)();
+                                            }}
+                                            sx={{
+                                                mx: 1,
+                                                borderRadius: 1,
+                                                "&:hover": {
+                                                    backgroundColor: "action.hover",
+                                                },
+                                            }}
+                                        >
+                                            <ListItemText
+                                                primary="Добавить товар"
+                                                primaryTypographyProps={{
+                                                    fontSize: "0.95rem",
+                                                    fontWeight: 500,
+                                                }}
+                                            />
+                                        </ListItemButton>
+                                        <Divider sx={{ my: 1 }} />
+                                    </>
                                 )}
 
-                                {/* Категории */}
-                                <ListItemButton
-                                    onClick={() => {
-                                        setOpenCategories(true);
-                                        toggleDrawer(false)();
-                                    }}
-                                >
-                                    <ListItemText primary="Category" />
-                                </ListItemButton>
+                                <Box sx={{ px: 2, py: 1 }}>
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                        <CategoryIcon
+                                            sx={{ fontSize: "1.2rem", color: "secondary.main" }}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                color: "secondary.main",
+                                                fontSize: "0.875rem",
+                                                fontWeight: 600,
+                                                textTransform: "uppercase",
+                                                letterSpacing: "0.5px",
+                                            }}
+                                        >
+                                            Категории
+                                        </Typography>
+                                    </Box>
+                                </Box>
 
-                                {/* Logout */}
+                                <Box sx={{ px: 1 }}>
+                                    <Categories onCategoryClick={toggleDrawer(false)} />
+                                </Box>
+
+                                <Divider sx={{ my: 2 }} />
+
                                 <ListItemButton
                                     onClick={() => {
                                         handleLogout();
                                         toggleDrawer(false)();
                                     }}
+                                    sx={{
+                                        mx: 1,
+                                        borderRadius: 1,
+                                        "&:hover": {
+                                            backgroundColor: "action.hover",
+                                        },
+                                    }}
                                 >
-                                    <ListItemText primary="Logout" />
+                                    <ListItemText
+                                        primary="Выйти"
+                                        primaryTypographyProps={{
+                                            fontSize: "0.95rem",
+                                            fontWeight: 500,
+                                        }}
+                                    />
                                 </ListItemButton>
                             </>
                         ) : (
@@ -136,8 +207,22 @@ const AppToolbar = () => {
                                         navigate("/login");
                                         toggleDrawer(false)();
                                     }}
+                                    sx={{
+                                        mx: 1,
+                                        my: 1,
+                                        borderRadius: 1,
+                                        "&:hover": {
+                                            backgroundColor: "action.hover",
+                                        },
+                                    }}
                                 >
-                                    <ListItemText primary="Sign In" />
+                                    <ListItemText
+                                        primary="Войти"
+                                        primaryTypographyProps={{
+                                            fontSize: "0.95rem",
+                                            fontWeight: 500,
+                                        }}
+                                    />
                                 </ListItemButton>
 
                                 <ListItemButton
@@ -145,38 +230,52 @@ const AppToolbar = () => {
                                         navigate("/register");
                                         toggleDrawer(false)();
                                     }}
+                                    sx={{
+                                        mx: 1,
+                                        mb: 1,
+                                        borderRadius: 1,
+                                        "&:hover": {
+                                            backgroundColor: "action.hover",
+                                        },
+                                    }}
                                 >
-                                    <ListItemText primary="Sign Up" />
+                                    <ListItemText
+                                        primary="Регистрация"
+                                        primaryTypographyProps={{
+                                            fontSize: "0.95rem",
+                                            fontWeight: 500,
+                                        }}
+                                    />
                                 </ListItemButton>
+
+                                <Divider sx={{ my: 2 }} />
+
+                                <Box sx={{ px: 2, py: 1 }}>
+                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                        <CategoryIcon
+                                            sx={{ fontSize: "1.2rem", color: "secondary.main" }}
+                                        />
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                color: "secondary.main",
+                                                fontSize: "0.875rem",
+                                                fontWeight: 600,
+                                                textTransform: "uppercase",
+                                                letterSpacing: "0.5px",
+                                            }}
+                                        >
+                                            Категории
+                                        </Typography>
+                                    </Box>
+                                </Box>
+
+                                <Box sx={{ px: 1 }}>
+                                    <Categories onCategoryClick={toggleDrawer(false)} />
+                                </Box>
                             </>
                         )}
-                    </List>
-                </Box>
-            </Drawer>
-
-            {/* Категории */}
-            <Drawer
-                anchor="left"
-                open={openCategories}
-                onClose={() => setOpenCategories(false)}
-            >
-                <Box sx={{ width: 260, position: "relative", height: "100%" }}>
-                    <IconButton
-                        onClick={() => setOpenCategories(false)}
-                        sx={{ position: "absolute", top: 8, right: 8 }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-
-                    <Box sx={{ mt: 6, px: 2 }}>
-                        <Typography variant="h6" mb={2}>
-                            Категории
-                        </Typography>
                     </Box>
-
-                    <List>
-                        <Categories />
-                    </List>
                 </Box>
             </Drawer>
         </>

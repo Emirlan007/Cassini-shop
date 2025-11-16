@@ -110,7 +110,7 @@ const ProductDetails = () => {
                                     height: { xs: 320, sm: 400 },
                                 }}
                             >
-                                <img src={API_URL + image} alt={product.name} />
+                                <img src={`${API_URL}${image.startsWith('/') ? image.slice(1) : image}`} alt={product.name} />
                             </Box>
                         </SwiperSlide>
                     ))}

@@ -113,7 +113,7 @@ const ProductCard = ({ product }: Props) => {
             py: { xs: 1, sm: 1.5 },
             fontSize: { xs: "0.875rem", sm: "1rem" },
           }}
-          onClick={() => navigate(`/products/${product._id}`)}
+          onClick={() => navigate(`/product/${product._id}`)}
         >
           {t("moreDetails")}
         </Button>

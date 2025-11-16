@@ -4,6 +4,7 @@ import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
 import HomePage from "./pages/HomePage.tsx";
+import CategoryProductsPage from "./pages/CategoryProductsPage.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import ProductDetails from "./features/products/ProductDetails.tsx";
 import NewProduct from "./features/products/NewProduct.tsx";
@@ -14,7 +15,7 @@ import {selectUser} from "./features/users/usersSlice.ts";
 
 const App = () => {
     const user = useAppSelector(selectUser);
-
+  
     return (
         <Box display="flex" flexDirection="column" minHeight="100vh">
             <AppToolbar/>
@@ -24,6 +25,7 @@ const App = () => {
                     <Route path="/" element={<HomePage/>}/>
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/login" element={<Login/>}/>
+                     <Route path="/products/:categoryId" element={<CategoryProductsPage />} />
                     <Route path="/products/:productId" element={<ProductDetails/>}/>
                     <Route
                         path="/products/new"

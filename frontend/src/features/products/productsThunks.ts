@@ -5,11 +5,14 @@ import {isAxiosError} from "axios";
 
 export const fetchProducts = createAsyncThunk<
     Product[],
-    void,
+    string | undefined,
     { rejectValue: IGlobalError }
->("products/fetchAll", async (_, {rejectWithValue}) => {
+>("products/fetchAll", async (categoryId, {rejectWithValue}) => {
     try {
-        const {data} = await axiosApi.get<Product[]>("/products");
+        const url = categoryId 
+            ? `/products?categoryId=${categoryId}`
+            : "/products";
+        const {data} = await axiosApi.get<Product[]>(url);
         return data;
     } catch (error) {
         if (isAxiosError(error) && error.response) {

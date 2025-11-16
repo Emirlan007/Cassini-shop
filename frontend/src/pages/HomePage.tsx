@@ -11,7 +11,7 @@ const HomePage = () => {
     const products = useAppSelector(selectProducts);
 
     useEffect(() => {
-        dispatch(fetchProducts());
+        dispatch(fetchProducts(undefined));
     }, [dispatch]);
 
     return (

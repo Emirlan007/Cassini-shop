@@ -14,8 +14,8 @@ export interface RegisterMutation {
 }
 
 export interface LoginMutation {
-    displayName: string;
-    phoneNumber: string;
+  displayName: string;
+  phoneNumber: string;
 }
 
 export interface IGlobalError {
@@ -45,8 +45,8 @@ export interface Product {
   name: string;
   description?: string;
   size: string[];
-  colors?: string[];
-  category?: ICategory;
+  colors: string[];
+  category: ICategory;
   images?: string[];
   video?: string;
   price: number;
@@ -57,25 +57,25 @@ export interface ProductInput {
   description?: string;
   size: string[];
   colors: string[];
-  images: File[] | null;
-  video?: File | null;
-  price: number;
   category: string;
+  images: File[] | null;
+  video: File | null;
+  price: number;
 }
 
 export interface Banner {
-    _id: string;
-    title: string;
-    description?: string;
-    image: string;
-    link?: string;
-    isActive: boolean;
+  _id: string;
+  title: string;
+  description?: string;
+  image: string;
+  link?: string;
+  isActive: boolean;
 }
 
 export interface BannerFormData {
-    title: string;
-    description?: string;
-    link?: string;
-    isActive: boolean;
-    image: File | null;
+  title: string;
+  description?: string;
+  link?: string;
+  isActive: boolean;
+  image: File | null;
 }

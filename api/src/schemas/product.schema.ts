@@ -28,6 +28,9 @@ export class Product {
 
   @Prop({ type: [String] })
   images?: string[];
+
+  @Prop({ type: Map, of: [String] })
+  imagesByColor?: Record<string, string[]>;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

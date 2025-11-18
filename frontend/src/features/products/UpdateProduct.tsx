@@ -98,13 +98,10 @@ const UpdateProduct: FC<Props> = ({product, onSubmit}) => {
         const {name, value} = e.target;
         setState((prevState) => ({...prevState, [name]: value}));
 
-        console.log(name, value)
     };
 
     const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
-        console.log(state)
 
         onSubmit(state)
         navigate('/')

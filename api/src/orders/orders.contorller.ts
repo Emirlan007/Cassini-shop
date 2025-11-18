@@ -1,0 +1,30 @@
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { CreateOrderDto } from './dto/create-order-dto';
+import { type RequestWithUser, TokenAuthGuard } from '../auth/token-auth.guard';
+import { OrderService } from './orders.server';
+import { FileUploadInterceptorOrder } from '../shared/file-upload/file-upload.interceptor';
+
+@Controller('orders')
+export class OrdersController {
+  constructor(private readonly ordersService: OrderService) {}
+
+  @UseGuards(TokenAuthGuard)
+  @UseInterceptors(FileUploadInterceptorOrder)
+  @Post()
+  async createOrder(
+    @Body() orderData: CreateOrderDto,
+    @UploadedFiles() file: { image: Express.Multer.File },
+    @Req() req: RequestWithUser,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.ordersService.create(orderData, file, req.user.id);
+  }
+}

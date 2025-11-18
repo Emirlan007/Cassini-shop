@@ -1,11 +1,13 @@
 import {
-  ArrayMinSize,
+  ArrayUnique,
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Min,
+  ValidateIf,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -27,20 +29,18 @@ export class CreateProductDto {
   @IsNotEmpty()
   name: string;
 
-  @IsArray()
-  @ArrayMinSize(1)
-  @IsString({ each: true })
-  @Transform(transformToArray)
-  colors: string[];
-
   @IsOptional()
   @IsString()
   description?: string;
 
   @IsArray()
-  @ArrayMinSize(1)
   @IsString({ each: true })
-  @Transform(transformToArray)
+  @ArrayUnique()
+  colors: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayUnique()
   size: string[];
 
   @IsString()
@@ -60,4 +60,9 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   images?: string[];
+
+  @IsOptional()
+  @IsObject()
+  @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
+  imagesByColor?: Record<string, string[]>;
 }

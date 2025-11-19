@@ -1,1 +1,21 @@
-{}
+{
+  "moreInfo": "Көбүрөөк билүү",
+  "moreDetails": "Толугураак",
+  "addToCart": "Себетке кошуу",
+  "color": "Түстөр",
+  "size": "Өлчөмдөр",
+  "emptyCart": "Себет бош",
+  "startShopping": "Сатып алууну баштоо",
+  "search": "издөө",
+  "logout": "чыгуу",
+  "login": "кирүү",
+  "register": "катталуу",
+  "profile": "профиль",
+  "category": "категориялар",
+  "menu": "башкы бет",
+  "user": "колдонуучу",
+  "popularProducts": "Популярдуу товарлар",
+  "phoneNumber": "номер телефона",
+  "displayName": "никнейм",
+  "pageNotFound":"Барак табылган жок"
+}

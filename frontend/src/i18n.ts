@@ -14,7 +14,7 @@ i18n
       kg: { translation: kg },
       ru: { translation: ru },
     },
-    fallbackLng: "en",
+    fallbackLng: "ru",
     detection: {
       order: [
         "localStorage",

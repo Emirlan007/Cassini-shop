@@ -13,6 +13,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 import {selectUser} from "../users/usersSlice.ts";
+import { useTranslation } from "react-i18next";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +22,7 @@ const ProductDetails = () => {
   const error = useAppSelector(selectProductFetchError);
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
+  const {t} = useTranslation()
 
   const { productId } = useParams() as { productId: string };
   const [sizeState, setSizeState] = useState<{
@@ -127,10 +129,10 @@ const ProductDetails = () => {
 
           <Box mt={2} display="flex" gap={2}>
             <Button variant="contained" onClick={handleSizeClick}>
-              Размеры
+              {t("size")}
             </Button>
             <Button variant="contained" onClick={handleColorClick}>
-              Расцветки
+              {t("color")}
             </Button>
 
               {

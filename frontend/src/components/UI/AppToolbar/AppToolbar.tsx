@@ -16,7 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CategoryIcon from "@mui/icons-material/Category";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import {
     selectLoginLoading,
@@ -25,11 +25,14 @@ import {
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
+import { useTranslation } from "react-i18next";
+
 
 const AppToolbar = () => {
     const user = useAppSelector(selectUser);
     const isLoading = useAppSelector(selectLoginLoading);
 
+    const {t} = useTranslation()
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -90,7 +93,7 @@ const AppToolbar = () => {
                         }}
                     >
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            Меню
+                            {t("menu")}
                         </Typography>
                         <IconButton onClick={toggleDrawer(false)} sx={{ color: "primary.main" }}>
                             <CloseIcon />
@@ -110,7 +113,7 @@ const AppToolbar = () => {
                                             letterSpacing: "0.5px",
                                         }}
                                     >
-                                        Пользователь
+                                        {t("user")}
                                     </Typography>
                                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                         <AccountCircleIcon />
@@ -141,7 +144,7 @@ const AppToolbar = () => {
                                             }}
                                         >
                                             <ListItemText
-                                                primary="Добавить товар"
+                                                primary={t("addToCart")}
                                                 primaryTypographyProps={{
                                                     fontSize: "0.95rem",
                                                     fontWeight: 500,
@@ -167,7 +170,7 @@ const AppToolbar = () => {
                                                 letterSpacing: "0.5px",
                                             }}
                                         >
-                                            Категории
+                                            {t("category")}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -192,7 +195,7 @@ const AppToolbar = () => {
                                     }}
                                 >
                                     <ListItemText
-                                        primary="Выйти"
+                                        primary={t("logout")}
                                         primaryTypographyProps={{
                                             fontSize: "0.95rem",
                                             fontWeight: 500,
@@ -217,7 +220,7 @@ const AppToolbar = () => {
                                     }}
                                 >
                                     <ListItemText
-                                        primary="Войти"
+                                        primary={t("login")}
                                         primaryTypographyProps={{
                                             fontSize: "0.95rem",
                                             fontWeight: 500,
@@ -240,7 +243,7 @@ const AppToolbar = () => {
                                     }}
                                 >
                                     <ListItemText
-                                        primary="Регистрация"
+                                        primary={t("register")}
                                         primaryTypographyProps={{
                                             fontSize: "0.95rem",
                                             fontWeight: 500,
@@ -265,7 +268,7 @@ const AppToolbar = () => {
                                                 letterSpacing: "0.5px",
                                             }}
                                         >
-                                            Категории
+                                                  {t("category")}
                                         </Typography>
                                     </Box>
                                 </Box>

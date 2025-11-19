@@ -13,6 +13,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 import {selectUser} from "../users/usersSlice.ts";
+import {addToCart} from "../cart/cartSlice.ts";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +40,23 @@ const ProductDetails = () => {
     selected: null,
   });
 
+    const handleAddToCart = () => {
+
+        if (!product || !sizeState.selected || !colorState.selected) return;
+
+        dispatch(addToCart({
+            productId: product._id,
+            title: product.name,
+            price: product.price,
+            quantity: 1,
+            selectedColor: colorState.selected,
+            selectedSize: sizeState.selected,
+            image: product!.images![0],
+        }))
+
+        alert("Товар добавлен в корзину");
+    };
+
   const handleSizeClick = (e: React.MouseEvent<HTMLElement>) => {
     setSizeState((prev) => ({ ...prev, anchor: e.currentTarget }));
   };
@@ -58,6 +76,7 @@ const ProductDetails = () => {
   useEffect(() => {
     dispatch(fetchProductById(productId));
   }, [dispatch, productId]);
+
 
   if (loading) {
     return (
@@ -132,9 +151,16 @@ const ProductDetails = () => {
             <Button variant="contained" onClick={handleColorClick}>
               Расцветки
             </Button>
-
+              <Button
+                  variant="contained"
+                  sx={{marginLeft: 'auto'}}
+                  disabled={!colorState.selected || !sizeState.selected}
+                  onClick={handleAddToCart}
+              >
+                  Add to Cart
+              </Button>
               {
-                  user?.role === 'admin' ? <Button variant="contained" sx={{marginLeft: 'auto'}} onClick={() => navigate(`/products/${product._id}/update`)}>Edit</Button> : null
+                  user?.role === 'admin' ? <Button variant="contained" sx={{marginLeft: '10px'}} onClick={() => navigate(`/products/${product._id}/update`)}>Edit</Button> : null
               }
           </Box>
 

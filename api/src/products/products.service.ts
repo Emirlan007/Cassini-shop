@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -62,14 +62,14 @@ export class ProductsService {
 
   async findAll(categoryId?: string): Promise<Product[]> {
     const query = this.productModel.find();
-    
+
     if (categoryId) {
       if (!Types.ObjectId.isValid(categoryId)) {
         throw new BadRequestException(`Invalid category ID: ${categoryId}`);
       }
       query.where('category').equals(new Types.ObjectId(categoryId));
     }
-    
+
     return query.populate('category', 'title slug').exec();
   }
 
@@ -82,6 +82,64 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
     return product;
+  }
+
+  async searchProducts(params: {
+    query: string;
+    category?: string;
+    colors?: string[];
+    limit?: number;
+  }) {
+    const { query, category, colors, limit = 20 } = params;
+
+    const filter: FilterQuery<ProductDocument> = {};
+
+    if (category && Types.ObjectId.isValid(category)) {
+      filter.category = new Types.ObjectId(category);
+    }
+
+    if (colors?.length) {
+      filter.colors = { $in: colors };
+    }
+
+    const textFilter = {
+      ...filter,
+      $text: { $search: query },
+    };
+
+    const textResults = await this.productModel
+      .find(textFilter, {
+        score: { $meta: 'textScore' },
+      })
+      .sort({
+        score: { $meta: 'textScore' },
+      })
+      .limit(limit)
+      .lean();
+
+    const regexFilter = {
+      ...filter,
+      name: { $regex: query, $options: 'i' },
+    };
+
+    const regexResults = await this.productModel
+      .find(regexFilter)
+      .limit(limit)
+      .lean();
+
+    const map = new Map<string, any>();
+
+    for (const item of [...textResults, ...regexResults]) {
+      map.set((item._id as Types.ObjectId).toString(), item);
+    }
+
+    const products = [...map.values()].slice(0, limit) as Product[];
+
+    return {
+      products,
+      totalCount: products.length,
+      searchQuery: query,
+    };
   }
 
   async update(

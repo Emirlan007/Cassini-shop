@@ -1,4 +1,21 @@
 {
   "moreInfo": "Узнать больше",
-  "moreDetails": "Подробнее"
+  "moreDetails": "Подробнее",
+  "addToCart": "Добавить в Корзину",
+  "color": "Цвета",
+  "size": "Размеры",
+  "emptyCart": "Корзина пуста",
+  "startShopping": "Приступить к покупке",
+  "search": "поисе",
+  "logout": "выход",
+  "login": "войти",
+  "register": "зарегистрироваться",
+  "profile": "профиль",
+  "category": "категории",
+  "menu": "меню",
+  "user": "пользователь",
+  "popularProducts": "Популярные товары",
+  "phoneNumber": "номер телефона",
+  "displayName": "никнейм",
+  "pageNotFound":"Страница не найдена"
 }

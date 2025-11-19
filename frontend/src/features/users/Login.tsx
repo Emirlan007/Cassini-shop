@@ -1,18 +1,19 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectLoginError, selectLoginLoading } from './usersSlice';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { type ChangeEvent, type FormEvent, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useState} from 'react';
 import type { LoginMutation } from '../../types';
-import { googleLoginThunk, loginThunk } from './usersThunks';
+import { loginThunk } from './usersThunks';
 import { Alert, Avatar, Box, Button, Link, Stack, TextField, Typography } from '@mui/material';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
     const dispatch = useAppDispatch();
     const error = useAppSelector(selectLoginError);
     const loading = useAppSelector(selectLoginLoading);
     const navigate = useNavigate();
+    const {t}=useTranslation()
 
     const [state, setState] = useState<LoginMutation>({
         displayName: '',
@@ -32,17 +33,6 @@ const Login = () => {
             navigate('/');
         } catch (e) {
             console.log(e);
-        }
-    };
-
-    const googleLoginHandler = async (credentialResponse: CredentialResponse) => {
-        if (credentialResponse.credential) {
-            try {
-                await dispatch(googleLoginThunk(credentialResponse.credential)).unwrap();
-                navigate('/');
-            } catch (e) {
-                console.log(e);
-            }
         }
     };
 
@@ -67,9 +57,9 @@ const Login = () => {
                 variant="h5"
                 sx={{ color: '#660033' }}
             >
-                Войти
+               
             </Typography>
-
+ {t("login")}
             {error && (
                 <Alert
                     severity="error"
@@ -85,16 +75,7 @@ const Login = () => {
                 </Alert>
             )}
 
-            <Box sx={{ mt: 2 }}>
-                <GoogleLogin
-                    onSuccess={googleLoginHandler}
-                    onError={() => {
-                        console.log('Google Login Failed');
-                    }}
-                    useOneTap
-                    width="100%"
-                />
-            </Box>
+          
 
             <Box
                 component="form"
@@ -109,7 +90,7 @@ const Login = () => {
                     <TextField
                         required
                         fullWidth
-                        label="Display Name"
+                        label={t("displayName")}
                         name="displayName"
                         value={state.displayName}
                         onChange={inputChangeHandler}
@@ -132,7 +113,7 @@ const Login = () => {
                         required
                         fullWidth
                         type="phoneNumber"
-                        label="Phone Number"
+                        label={t("phoneNumber")}
                         name="phoneNumber"
                         value={state.phoneNumber}
                         onChange={inputChangeHandler}
@@ -168,7 +149,7 @@ const Login = () => {
                             },
                         }}
                     >
-                        {loading ? 'Вход...' : 'Войти'}
+                        {loading ? t("login") + "..." : t("login")}
                     </Button>
                 </Stack>
             </Box>

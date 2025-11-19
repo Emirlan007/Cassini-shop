@@ -1,4 +1,21 @@
 {
   "moreInfo": "More Info",
-  "moreDetails": "More details"
+  "moreDetails": "More details",
+  "addToCart": "add to cart",
+  "color": "color",
+  "size": "size",
+  "emptyCart": "empty Cart",
+  "startShopping": "start Shopping",
+  "search": "search",
+  "logout": "logout",
+  "login": "login",
+  "register": "register",
+  "profile": "profile",
+  "category": "categories",
+  "menu":"menu",
+  "user":"user",
+  "popularProducts":"Best Sellers",
+  "phoneNumber":"Phone number",
+  "displayName":"nickname",
+ "pageNotFound":"Page not found"
 }

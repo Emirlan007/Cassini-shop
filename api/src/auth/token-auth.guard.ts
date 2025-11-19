@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
 import { HydratedDocument, Model } from 'mongoose';
@@ -18,13 +23,13 @@ export class TokenAuthGuard implements CanActivate {
     const token = request.get('Authorization');
 
     if (!token) {
-      return false;
+      throw new UnauthorizedException('Токен не найден');
     }
 
     const user = await this.userModel.findOne({ token: token });
 
     if (!user) {
-      return false;
+      throw new UnauthorizedException('Требуется авторизация');
     }
 
     request.user = user;

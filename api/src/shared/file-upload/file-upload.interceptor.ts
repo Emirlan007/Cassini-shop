@@ -28,3 +28,9 @@ export class FileUploadInterceptorProduct extends FileFieldsInterceptor(
   ],
   { storage: multerConfig.storage },
 ) {}
+
+@Injectable()
+export class FileUploadInterceptorOrder extends FileFieldsInterceptor(
+  [{ name: 'image', maxCount: 1 }],
+  { storage: multerConfig.storage },
+) {}

@@ -17,6 +17,9 @@ import { BannersController } from './banners/banners.controller';
 import { Category, CategorySchema } from './schemas/category.schema';
 import { CategoriesController } from './categories/categories.controller';
 import { CategoriesService } from './categories/categories.service';
+import { Order, OrderSchema } from './schemas/order.schema';
+import { OrdersController } from './orders/orders.contorller';
+import { OrderService } from './orders/orders.server';
 
 @Module({
   imports: [
@@ -27,6 +30,7 @@ import { CategoriesService } from './categories/categories.service';
       { name: Product.name, schema: ProductSchema },
       { name: Banner.name, schema: BannerSchema },
       { name: Category.name, schema: CategorySchema },
+      { name: Order.name, schema: OrderSchema },
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
   ],
@@ -35,6 +39,7 @@ import { CategoriesService } from './categories/categories.service';
     ProductsController,
     BannersController,
     CategoriesController,
+    OrdersController,
   ],
   providers: [
     IsUserExistsValidator,
@@ -43,6 +48,7 @@ import { CategoriesService } from './categories/categories.service';
     UserService,
     BannerService,
     CategoriesService,
+    OrderService,
   ],
 })
 export class AppModule {}

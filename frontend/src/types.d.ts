@@ -78,3 +78,13 @@ export interface BannerFormData {
   isActive: boolean;
   image: File | null;
 }
+
+export interface CartItem {
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+  selectedColor: string;
+  selectedSize: string;
+  image: string;
+}

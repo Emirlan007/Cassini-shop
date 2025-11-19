@@ -15,24 +15,25 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import CategoryIcon from "@mui/icons-material/Category";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useTransition } from "react";
-import { useAppSelector, useAppDispatch } from "../../../app/hooks";
+import {Link, useNavigate} from "react-router-dom";
+import {useState} from "react";
+import {useAppSelector, useAppDispatch} from "../../../app/hooks";
 import {
     selectLoginLoading,
     selectUser,
 } from "../../../features/users/usersSlice";
-import { logoutThunk } from "../../../features/users/usersThunks";
+import {logoutThunk} from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
-import { useTranslation } from "react-i18next";
-
+import Badge from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import {selectTotalQuantity} from "../../../features/cart/cartSlice.ts";
 
 const AppToolbar = () => {
     const user = useAppSelector(selectUser);
     const isLoading = useAppSelector(selectLoginLoading);
+    const totalQuantity = useAppSelector(selectTotalQuantity);
 
-    const {t} = useTranslation()
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -56,17 +57,24 @@ const AppToolbar = () => {
                 >
                     <Box display="flex" alignItems="center" gap={1}>
                         <IconButton color="primary" onClick={toggleDrawer(true)}>
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                     </Box>
 
-                    {isLoading && <CircularProgress color="primary" />}
+                    {isLoading && <CircularProgress color="primary"/>}
 
                     <Stack direction="row" spacing={2} alignItems="center">
-                        <LanguageSelect />
-
-                        <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-                            <img src="/logo.png" alt="Cassini" style={{ width: "70px" }} />
+                        <LanguageSelect/>
+                        <Badge
+                            badgeContent={totalQuantity}
+                            max={99}
+                            color="error"
+                            onClick={() => navigate("/cart")}
+                        >
+                            <ShoppingCartIcon sx={{color: "white"}} />
+                        </Badge>
+                        <Link to="/" style={{display: "flex", alignItems: "center"}}>
+                            <img src="/logo.png" alt="Cassini" style={{width: "70px"}}/>
                         </Link>
                     </Stack>
                 </Toolbar>
@@ -92,41 +100,27 @@ const AppToolbar = () => {
                             justifyContent: "space-between",
                         }}
                     >
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            {t("menu")}
+                        <Typography variant="h6" sx={{fontWeight: 600}}>
+                            Меню
                         </Typography>
-                        <IconButton onClick={toggleDrawer(false)} sx={{ color: "primary.main" }}>
-                            <CloseIcon />
+                        <IconButton onClick={toggleDrawer(false)} sx={{color: "primary.main"}}>
+                            <CloseIcon/>
                         </IconButton>
                     </Box>
 
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{mt: 2}}>
                         {user ? (
                             <>
-                                <Box sx={{ px: 2, py: 1.5, mb: 1 }}>
+                                <Box sx={{display: "flex", alignItems: "center", gap: 1, px: 2, py: 1.5, mb: 1}}>
+                                    <AccountCircleIcon/>
                                     <Typography
-                                        variant="body2"
-                                        sx={{
-                                            color: "text.secondary",
-                                            fontSize: "0.75rem",
-                                            textTransform: "uppercase",
-                                            letterSpacing: "0.5px",
-                                        }}
+                                        variant="subtitle1"
+                                        sx={{fontWeight: 600, color: "text.primary", mt: 0.5}}
                                     >
-                                        {t("user")}
+                                        {user.displayName}
                                     </Typography>
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                        <AccountCircleIcon />
-                                        <Typography
-                                            variant="subtitle1"
-                                            sx={{ fontWeight: 600, color: "text.primary", mt: 0.5 }}
-                                        >
-                                            {user.displayName}
-                                        </Typography>
-                                    </Box>
                                 </Box>
-
-                                <Divider sx={{ my: 1 }} />
+                                <Divider sx={{my: 1}}/>
 
                                 {user.role === "admin" && (
                                     <>
@@ -144,21 +138,21 @@ const AppToolbar = () => {
                                             }}
                                         >
                                             <ListItemText
-                                                primary={t("addToCart")}
+                                                primary="Добавить товар"
                                                 primaryTypographyProps={{
                                                     fontSize: "0.95rem",
                                                     fontWeight: 500,
                                                 }}
                                             />
                                         </ListItemButton>
-                                        <Divider sx={{ my: 1 }} />
+                                        <Divider sx={{my: 1}}/>
                                     </>
                                 )}
 
-                                <Box sx={{ px: 2, py: 1 }}>
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                <Box sx={{px: 2, py: 1}}>
+                                    <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>
                                         <CategoryIcon
-                                            sx={{ fontSize: "1.2rem", color: "secondary.main" }}
+                                            sx={{fontSize: "1.2rem", color: "secondary.main"}}
                                         />
                                         <Typography
                                             variant="body2"
@@ -170,16 +164,16 @@ const AppToolbar = () => {
                                                 letterSpacing: "0.5px",
                                             }}
                                         >
-                                            {t("category")}
+                                            Категории
                                         </Typography>
                                     </Box>
                                 </Box>
 
-                                <Box sx={{ px: 1 }}>
-                                    <Categories onCategoryClick={toggleDrawer(false)} />
+                                <Box sx={{px: 1}}>
+                                    <Categories onCategoryClick={toggleDrawer(false)}/>
                                 </Box>
 
-                                <Divider sx={{ my: 2 }} />
+                                <Divider sx={{my: 2}}/>
 
                                 <ListItemButton
                                     onClick={() => {
@@ -195,7 +189,7 @@ const AppToolbar = () => {
                                     }}
                                 >
                                     <ListItemText
-                                        primary={t("logout")}
+                                        primary="Выйти"
                                         primaryTypographyProps={{
                                             fontSize: "0.95rem",
                                             fontWeight: 500,
@@ -220,7 +214,7 @@ const AppToolbar = () => {
                                     }}
                                 >
                                     <ListItemText
-                                        primary={t("login")}
+                                        primary="Войти"
                                         primaryTypographyProps={{
                                             fontSize: "0.95rem",
                                             fontWeight: 500,
@@ -243,7 +237,7 @@ const AppToolbar = () => {
                                     }}
                                 >
                                     <ListItemText
-                                        primary={t("register")}
+                                        primary="Регистрация"
                                         primaryTypographyProps={{
                                             fontSize: "0.95rem",
                                             fontWeight: 500,
@@ -251,12 +245,12 @@ const AppToolbar = () => {
                                     />
                                 </ListItemButton>
 
-                                <Divider sx={{ my: 2 }} />
+                                <Divider sx={{my: 2}}/>
 
-                                <Box sx={{ px: 2, py: 1 }}>
-                                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                                <Box sx={{px: 2, py: 1}}>
+                                    <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>
                                         <CategoryIcon
-                                            sx={{ fontSize: "1.2rem", color: "secondary.main" }}
+                                            sx={{fontSize: "1.2rem", color: "secondary.main"}}
                                         />
                                         <Typography
                                             variant="body2"
@@ -268,13 +262,13 @@ const AppToolbar = () => {
                                                 letterSpacing: "0.5px",
                                             }}
                                         >
-                                                  {t("category")}
+                                            Категории
                                         </Typography>
                                     </Box>
                                 </Box>
 
-                                <Box sx={{ px: 1 }}>
-                                    <Categories onCategoryClick={toggleDrawer(false)} />
+                                <Box sx={{px: 1}}>
+                                    <Categories onCategoryClick={toggleDrawer(false)}/>
                                 </Box>
                             </>
                         )}

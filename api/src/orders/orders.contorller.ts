@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Get,
   Post,
   Req,
   UploadedFiles,
@@ -15,6 +15,13 @@ import { FileUploadInterceptorOrder } from '../shared/file-upload/file-upload.in
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrderService) {}
+
+  @UseGuards(TokenAuthGuard)
+  @Get('my')
+  async getMyOrders(@Req() req: RequestWithUser) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.ordersService.getMyOrders(req.user.id);
+  }
 
   @UseGuards(TokenAuthGuard)
   @UseInterceptors(FileUploadInterceptorOrder)

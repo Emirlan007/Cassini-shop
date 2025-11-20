@@ -13,6 +13,10 @@ export class OrderService {
     private fileUploadService: FileUploadService,
   ) {}
 
+  async getMyOrders(userId: string) {
+    return this.orderModel.find({ user: userId });
+  }
+
   async create(
     createOrderDto: CreateOrderDto,
     file: { image: Express.Multer.File },

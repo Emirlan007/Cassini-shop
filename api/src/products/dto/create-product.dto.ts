@@ -36,11 +36,13 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   @ArrayUnique()
+  @Transform((value) => transformToArray(value))
   colors: string[];
 
   @IsArray()
   @IsString({ each: true })
   @ArrayUnique()
+  @Transform(transformToArray)
   size: string[];
 
   @IsString()
@@ -59,6 +61,7 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
+  @Transform((value) => transformToArray(value))
   images?: string[];
 
   @IsOptional()

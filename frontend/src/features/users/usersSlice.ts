@@ -1,7 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {IGlobalError, IValidationError, User} from "../../types";
 import {
-    googleLoginThunk,
     loginThunk,
     logoutThunk,
     registerThunk,
@@ -13,7 +12,6 @@ interface IUserReducerState {
     registerError: null | IValidationError;
     loginLoading: boolean;
     loginError: IGlobalError | null;
-    googleLoginLoading: boolean;
     logoutLoading: boolean;
 }
 
@@ -23,7 +21,6 @@ const initialState: IUserReducerState = {
     registerError: null,
     loginLoading: false,
     loginError: null,
-    googleLoginLoading: false,
     logoutLoading: false,
 };
 
@@ -73,17 +70,6 @@ const usersSlice = createSlice({
                 state.logoutLoading = false;
             });
 
-        builder
-            .addCase(googleLoginThunk.pending, (state) => {
-                state.googleLoginLoading = true;
-            })
-            .addCase(googleLoginThunk.fulfilled, (state, {payload}) => {
-                state.googleLoginLoading = false;
-                state.user = payload;
-            })
-            .addCase(googleLoginThunk.rejected, (state) => {
-                state.googleLoginLoading = false;
-            });
     },
     selectors: {
         selectUser: (state) => state.user,
@@ -91,7 +77,6 @@ const usersSlice = createSlice({
         selectRegisterError: (state) => state.registerError,
         selectLoginLoading: (state) => state.loginLoading,
         selectLoginError: (state) => state.loginError,
-        selectGoogleLoginLoading: (state) => state.googleLoginLoading,
         selectLogoutLoading: (state) => state.logoutLoading,
     },
 });
@@ -104,6 +89,5 @@ export const {
     selectRegisterError,
     selectLoginLoading,
     selectLoginError,
-    selectGoogleLoginLoading,
     selectLogoutLoading,
 } = usersSlice.selectors;

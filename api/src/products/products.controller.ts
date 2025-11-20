@@ -29,6 +29,23 @@ export class ProductsController {
     return this.productsService.findAll(categoryId);
   }
 
+  @Get('search')
+  async search(
+    @Query('q') query: string,
+    @Query('category') category: string,
+    @Query('colors') colors: string,
+    @Query('limit') limit = '20',
+  ) {
+    const colorsArray = colors ? colors.split(',') : undefined;
+
+    return this.productsService.searchProducts({
+      query,
+      category,
+      colors: colorsArray,
+      limit: Number(limit),
+    });
+  }
+
   @Get(':id')
   async getProductById(@Param('id') id: string) {
     return this.productsService.findOne(id);

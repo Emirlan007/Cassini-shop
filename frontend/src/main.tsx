@@ -4,8 +4,6 @@ import { Provider } from "react-redux";
 import {persistor, store} from "./app/store.ts";
 import { BrowserRouter } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GOOGLE_CLIENT_ID } from "./constants.ts";
 import theme from "./theme.ts";
 import {axiosApi} from "./axiosApi.ts";
 import {PersistGate} from "redux-persist/integration/react";
@@ -23,7 +21,6 @@ axiosApi.interceptors.request.use((config) => {
 });
 
 createRoot(document.getElementById("root")!).render(
-  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
     <Provider store={store}>
         <PersistGate persistor={persistor}>
             <BrowserRouter>
@@ -34,5 +31,4 @@ createRoot(document.getElementById("root")!).render(
             </BrowserRouter>
         </PersistGate>
     </Provider>
-  </GoogleOAuthProvider>
 );

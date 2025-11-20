@@ -5,10 +5,12 @@ import { fetchProducts } from "../features/products/productsThunks";
 import { selectProducts } from "../features/products/productsSlice";
 import ProductList from "../features/products/ProductsList.tsx";
 import BannersCarousel from "../features/banners/BannersCarousel.tsx";
+import { useTranslation } from "react-i18next";
 
 const HomePage = () => {
     const dispatch = useAppDispatch();
     const products = useAppSelector(selectProducts);
+    const {t} = useTranslation()
 
     useEffect(() => {
         dispatch(fetchProducts(undefined));
@@ -27,12 +29,11 @@ const HomePage = () => {
                         px: 2
                     }}
                 >
-                    Популярные товары
+                    {t("popularProducts")}
                 </Typography>
 
                 <Box>
                     <BannersCarousel />
-
                 </Box>
                 <ProductList products={products} />
             </Stack>

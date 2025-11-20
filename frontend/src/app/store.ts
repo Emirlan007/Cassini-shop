@@ -6,6 +6,7 @@ import {categoriesReducer} from "../features/categories/categorySlice.ts";
 import storage from 'redux-persist/lib/storage';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import { persistReducer, persistStore } from 'redux-persist';
+import {cartReducer} from "../features/cart/cartSlice.ts";
 
 const userPersistConfig = {
   key: 'shop:users',
@@ -13,12 +14,18 @@ const userPersistConfig = {
   whitelist: ['user'],
 };
 
+const cartPersistConfig = {
+  key: 'shop:cart',
+  storage,
+  whitelist: ['items', 'totalPrice', 'totalQuantity'],
+}
 
 const rootReducer = combineReducers({
   products: productsReducer,
   banners: bannersReducer,
   categories: categoriesReducer,
   users: persistReducer(userPersistConfig, usersReducer),
+  cart: persistReducer(cartPersistConfig, cartReducer),
 });
 
 export const store = configureStore({

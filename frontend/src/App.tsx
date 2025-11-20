@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
 import {useAppSelector} from "./app/hooks.ts";
 import {selectUser} from "./features/users/usersSlice.ts";
 import UpdateCreateWrap from "./components/UpdateCreateWrap/UpdateCreateWrap.tsx";
+import Cart from "./features/cart/Cart.tsx";
 
 const App = () => {
     const user = useAppSelector(selectUser);
@@ -42,6 +43,7 @@ const App = () => {
                         }
                     />
                     <Route path={"/addProduct"}></Route>
+                    <Route path="/cart" element={<Cart />} />
                     <Route path="*" element={<PageNotFound/>}/>
                 </Routes>
             </Container>

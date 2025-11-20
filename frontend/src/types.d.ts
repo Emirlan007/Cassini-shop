@@ -4,7 +4,6 @@ export interface User {
   displayName: string;
   token: string;
   role: string;
-  googleId?: string;
   avatar?: string;
 }
 
@@ -79,4 +78,14 @@ export interface BannerFormData {
   link?: string;
   isActive: boolean;
   image: File | null;
+}
+
+export interface CartItem {
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+  selectedColor: string;
+  selectedSize: string;
+  image: string;
 }

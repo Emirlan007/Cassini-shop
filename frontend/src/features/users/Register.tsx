@@ -4,15 +4,16 @@ import { Avatar, Box, Button, Stack, TextField, Typography } from '@mui/material
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectRegisterError, selectRegisterLoading } from './usersSlice';
-import {googleLoginThunk, registerThunk} from './usersThunks';
+import {registerThunk} from './usersThunks';
 import type { RegisterMutation } from '../../types';
-import {type CredentialResponse, GoogleLogin} from "@react-oauth/google";
+import { useTranslation } from 'react-i18next';
 
 const Register = () => {
     const dispatch = useAppDispatch();
     const loading = useAppSelector(selectRegisterLoading);
     const error = useAppSelector(selectRegisterError);
     const navigate = useNavigate();
+    const {t} = useTranslation()
 
     const [state, setState] = useState<RegisterMutation>({
         displayName: '',
@@ -43,17 +44,7 @@ const Register = () => {
         }
     };
 
-    const googleRegisterHandler = async (credentialResponse: CredentialResponse) => {
-        if (credentialResponse.credential) {
-            try {
-                await dispatch(googleLoginThunk(credentialResponse.credential)).unwrap();
-                navigate('/');
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    };
-
+  
     return (
         <Box
             sx={{
@@ -75,18 +66,9 @@ const Register = () => {
                 variant="h5"
                 sx={{ color: '#660033' }}
             >
-                Создать аккаунт
+               {t("register")}
             </Typography>
-            <Box sx={{ mt: 2 }}>
-                <GoogleLogin
-                    onSuccess={googleRegisterHandler}
-                    onError={() => {
-                        console.log('Google Login Failed');
-                    }}
-                    useOneTap
-                    width="100%"
-                />
-            </Box>
+          
             <Box
                 component="form"
                 onSubmit={submitFormHandler}
@@ -100,7 +82,7 @@ const Register = () => {
                     <TextField
                         required
                         fullWidth
-                        label="Display name"
+                        label={t("displayName")}
                         name="displayName"
                         value={state.displayName}
                         onChange={inputChangeHandler}
@@ -129,7 +111,7 @@ const Register = () => {
                         required
                         fullWidth
                         type="phoneNumber"
-                        label="Phone Number"
+                        label={t("phoneNumber")}
                         name="phoneNumber"
                         value={state.phoneNumber}
                         onChange={inputChangeHandler}
@@ -170,7 +152,7 @@ const Register = () => {
                             },
                         }}
                     >
-                        {loading ? 'Регистрация...' : 'Зарегистрироваться'}
+                        {loading ? t("register")+"..." : t("register")}
                     </Button>
                 </Stack>
             </Box>

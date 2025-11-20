@@ -4,6 +4,7 @@
   "addToCart": "add to cart",
   "color": "color",
   "size": "size",
+  "price":"price",
   "emptyCart": "empty Cart",
   "startShopping": "start Shopping",
   "search": "search",
@@ -17,5 +18,9 @@
   "popularProducts":"Best Sellers",
   "phoneNumber":"Phone number",
   "displayName":"nickname",
- "pageNotFound":"Page not found"
+ "pageNotFound":"Page not found",
+ "total":"total",
+ "addProductToStartShopping": "Add products to place an order",
+ "placeAnOrder":"Place an order",
+ "continueShopping":"Continue shopping"
 }

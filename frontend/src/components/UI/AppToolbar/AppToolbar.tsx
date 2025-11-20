@@ -18,7 +18,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CategoryIcon from "@mui/icons-material/Category";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import {
   selectLoginLoading,
@@ -31,29 +31,60 @@ import Badge from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { selectTotalQuantity } from "../../../features/cart/cartSlice.ts";
 import SearchIcon from "@mui/icons-material/Search";
+import { useDebouncedCallback } from "use-debounce";
+import { fetchSearchedProducts } from "../../../features/products/productsThunks.ts";
 
 const AppToolbar = () => {
   const user = useAppSelector(selectUser);
   const isLoading = useAppSelector(selectLoginLoading);
   const totalQuantity = useAppSelector(selectTotalQuantity);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const [searchProduct, setSearchProduct] = useState("")
-
+  const [searchProduct, setSearchProduct] = useState("");
+  const searchRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    if (isSearchOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchOpen]);
 
   const toggleDrawer = (value: boolean) => () => setOpen(value);
 
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
+  const openSearchInput = () => {
+    setIsSearchOpen(true);
+  };
+  const closeSearchInput = () => {
+    setIsSearchOpen(false);
+    setSearchProduct("");
+    debouncedInput();
   };
 
-  const handleSearchInput = (e:React.ChangeEvent<HTMLInputElement>)=>{
-    setSearchProduct(e.target.value)
-    console.log(searchProduct)
+  const debouncedInput = useDebouncedCallback(() => {
+    dispatch(fetchSearchedProducts(searchProduct));
+  }, 2000);
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchProduct(e.target.value);
+  };
+
+  if (searchProduct.length >= 2 || searchProduct.length == 0) {
+    debouncedInput();
   }
 
   const handleLogout = async () => {
@@ -88,10 +119,19 @@ const AppToolbar = () => {
             >
               <ShoppingCartIcon sx={{ color: "white" }} />
             </Badge>
-            <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
-              <IconButton onClick={toggleSearch}>
-                <SearchIcon sx={{ color: "white" }} />
-              </IconButton>
+            <Box
+              ref={searchRef}
+              sx={{ display: "flex", alignItems: "center", width: "100%" }}
+            >
+              {isSearchOpen ? (
+                <IconButton onClick={closeSearchInput}>
+                  <CloseIcon sx={{ color: "white" }} />
+                </IconButton>
+              ) : (
+                <IconButton onClick={openSearchInput}>
+                  <SearchIcon sx={{ color: "white" }} />
+                </IconButton>
+              )}
 
               <Collapse
                 orientation="horizontal"
@@ -116,7 +156,7 @@ const AppToolbar = () => {
                     "& fieldset": { border: "none" },
                     backgroundColor: "white",
                     borderRadius: "6px",
-                    width:"180px"
+                    width: "180px",
                   }}
                 />
               </Collapse>

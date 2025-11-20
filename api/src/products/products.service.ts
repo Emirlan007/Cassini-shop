@@ -62,14 +62,22 @@ export class ProductsService {
 
   async findAll(categoryId?: string): Promise<Product[]> {
     const query = this.productModel.find();
-
     if (categoryId) {
       if (!Types.ObjectId.isValid(categoryId)) {
         throw new BadRequestException(`Invalid category ID: ${categoryId}`);
       }
       query.where('category').equals(new Types.ObjectId(categoryId));
     }
+    return query.populate('category', 'title slug').exec();
+  }
 
+  async findBySearch(searchValue?: string): Promise<Product[]> {
+    const query = this.productModel.find();
+    if (searchValue) {
+      query.find({
+        name: { $regex: searchValue, $options: 'i' },
+      });
+    }
     return query.populate('category', 'title slug').exec();
   }
 

@@ -110,30 +110,88 @@ export const createProduct = createAsyncThunk<
   }
 });
 
-export const updateProduct = createAsyncThunk<
-  Product,
-  { product: ProductInput; _productId: string },
-  { state: RootState }
->("products/update", async ({ product, _productId }, { getState }) => {
-  const token = getState().users.user?.token;
+export const createProduct = createAsyncThunk<Product, ProductInput, { rejectValue: IGlobalError }>(
+    "products/create",
+    async (productData, {rejectWithValue}) => {
+        try {
+            const formData = new FormData();
 
-  const formData = new FormData();
+            formData.append("name", productData.name);
+            formData.append("price", String(productData.price));
+            formData.append('category', productData.category)
 
-  formData.append("name", product.name);
-  formData.append("price", String(product.price));
-  formData.append("category", product.category);
+            if (productData.size) {
+                formData.append("size", JSON.stringify(productData.size));
+            }
 
-  if (product.size) {
-    formData.append("size", String(product.size));
-  }
+            if (productData.colors) {
+                formData.append("colors", JSON.stringify(productData.colors));
+            }
 
-  if (product.description) {
-    formData.append("description", product.description);
-  }
+            if (productData.description) {
+                formData.append("description", productData.description);
+            }
 
-  if (product.images) {
-    for (const image of product.images) {
-      formData.append("images", image);
+            if (productData.images) {
+                for (const image of productData.images) {
+                    formData.append("images", image);
+                }
+            }
+
+            if (productData.video) {
+                formData.append("video", productData.video);
+            }
+
+            const {data: product} = await axiosApi.post<Product>(
+                "/products",
+                formData
+            );
+
+            return product;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            }
+
+            throw error;
+        }
+    });
+
+export const updateProduct = createAsyncThunk<Product, {product: ProductInput, _productId: string}, { state: RootState}>(
+    "products/update",
+    async ({ product, _productId }, { getState }) => {
+        const token = getState().users.user?.token;
+
+        const formData = new FormData();
+
+        formData.append("name", product.name);
+        formData.append("price", String(product.price));
+        formData.append('category', product.category)
+
+        if (product.size) {
+            formData.append("size", JSON.stringify(product.size));
+        }
+
+        if (product.colors) {
+            formData.append("colors", JSON.stringify(product.colors));
+        }
+
+        if (product.description) {
+            formData.append("description", product.description);
+        }
+
+        if (product.images) {
+            for (const image of product.images) {
+                formData.append("images", image);
+            }
+        }
+
+        if (product.video) {
+            formData.append("video", product.video);
+        }
+
+        const {data} = await axiosApi.patch(`/products/${_productId}`, formData, {headers: {Authorization: token}});
+        return data;
     }
   }
 

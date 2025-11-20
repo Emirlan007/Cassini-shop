@@ -4,6 +4,7 @@
   "addToCart": "Себетке кошуу",
   "color": "Түстөр",
   "size": "Өлчөмдөр",
+  "price":"Баасы",
   "emptyCart": "Себет бош",
   "startShopping": "Сатып алууну баштоо",
   "search": "издөө",
@@ -17,5 +18,9 @@
   "popularProducts": "Популярдуу товарлар",
   "phoneNumber": "номер телефона",
   "displayName": "никнейм",
-  "pageNotFound":"Барак табылган жок"
+  "pageNotFound": "Барак табылган жок",
+  "total": "жалпы",
+  "addProductToStartShopping": "Заказ кылыш үчүн товарларды кошуңуз",
+  "placeAnOrder":"Заказ берүү",
+   "continueShopping":"Соода кылууну улантуу"
 }

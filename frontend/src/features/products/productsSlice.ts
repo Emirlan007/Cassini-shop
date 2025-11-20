@@ -5,6 +5,7 @@ import {
   deleteProduct,
   fetchProductById,
   fetchProducts,
+  fetchSearchedProducts,
 } from "./productsThunks";
 
 interface ProductsState {
@@ -84,6 +85,22 @@ const productsSlice = createSlice({
       .addCase(deleteProduct.rejected, (state) => {
         state.deleteLoading = false;
       });
+
+    builder
+      .addCase(fetchSearchedProducts.pending, (state) => {
+        state.fetchItemsLoading = true;
+      })
+      .addCase(
+        fetchSearchedProducts.fulfilled,
+        (state, { payload: products }) => {
+          state.fetchItemsLoading = false;
+          state.items = products;
+        }
+      )
+      .addCase(fetchSearchedProducts.rejected, (state, { payload: error }) => {
+        state.fetchItemsLoading = false;
+        state.fetchItemsError = error?.error ?? null;
+      });
   },
   selectors: {
     selectProducts: (state) => state.items,
@@ -99,7 +116,6 @@ const productsSlice = createSlice({
 });
 
 export const productsReducer = productsSlice.reducer;
-
 export const {
   selectProducts,
   selectProduct,

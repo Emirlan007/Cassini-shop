@@ -25,7 +25,13 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  async getAllProducts(@Query('categoryId') categoryId?: string) {
+  async getAllProducts(
+    @Query('searchValue') searchValue?: string,
+    @Query('categoryId') categoryId?: string,
+  ) {
+    if(searchValue){
+      return this.productsService.findBySearch(searchValue);
+    }
     return this.productsService.findAll(categoryId);
   }
 

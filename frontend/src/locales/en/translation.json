@@ -5,6 +5,7 @@
   "color": "Color",
   "size": "Size",
   "emptyCart": "empty Cart",
+  "addProductToStartShopping": "Add product to start shopping",
   "startShopping": "start Shopping",
   "search": "search",
   "logout": "logout",
@@ -25,5 +26,7 @@
   "createdAt": "Created at",
   "price": "Price",
   "quantity": "Quantity",
-  "total": "Total"
+  "total": "Total",
+  "checkout": "Checkout",
+  "continueShopping": "Continue Shopping"
 }

@@ -5,6 +5,7 @@
   "color": "Цвет",
   "size": "Размер",
   "emptyCart": "Корзина пуста",
+  "addProductToStartShopping": "Добавьте товар, чтобы начать покупки",
   "startShopping": "Приступить к покупке",
   "search": "поисе",
   "logout": "выход",
@@ -25,5 +26,7 @@
   "createdAt": "Дата создания",
   "price": "Цена",
   "quantity": "Количество",
-  "total": "Итого"
+  "total": "Итого",
+  "checkout": "Оформить заказ",
+  "continueShopping": "Продолжить покупки"
 }

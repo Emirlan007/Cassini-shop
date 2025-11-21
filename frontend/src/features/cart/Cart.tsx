@@ -7,6 +7,7 @@ import {API_URL} from "../../constants.ts";
 import toast from "react-hot-toast";
 import {selectUser} from "../users/usersSlice.ts";
 import {createOrder} from "../orders/ordersThunk.ts";
+import {useTranslation} from "react-i18next";
 
 
 const Cart = () => {
@@ -15,6 +16,7 @@ const Cart = () => {
     const items = useAppSelector(selectItems);
     const totalPrice = useAppSelector(selectTotalPrice);
     const user = useAppSelector(selectUser);
+    const { t } = useTranslation();
 
     const handleCheckout = async () => {
         try {
@@ -38,9 +40,9 @@ const Cart = () => {
                 textAlign="center"
                 gap={2}
             >
-                <Typography variant="h4" fontWeight="bold">Корзина пуста</Typography>
-                <Typography variant="body1">Добавьте товары, чтобы сделать заказ</Typography>
-                <Button variant="contained" onClick={() => navigate("/")}>Начать покупки</Button>
+                <Typography variant="h4" fontWeight="bold">{t("emptyCart")}</Typography>
+                <Typography variant="body1">{t("addProductToStartShopping")}</Typography>
+                <Button variant="contained" onClick={() => navigate("/")}>{t("startShopping")}</Button>
             </Box>
         );
     }
@@ -66,9 +68,9 @@ const Cart = () => {
                     />
                     <Box flex={1}>
                         <Typography fontWeight="bold" sx={{xs: 'h6', sm: 'body1'}}>{item.title}</Typography>
-                        <Typography variant="body2">Цвет: {item.selectedColor}</Typography>
-                        <Typography variant="body2">Размер: {item.selectedSize}</Typography>
-                        <Typography variant="body2">Цена: {item.price}₸</Typography>
+                        <Typography variant="body2">{t("color")}: {item.selectedColor}</Typography>
+                        <Typography variant="body2">{t("size")}: {item.selectedSize}</Typography>
+                        <Typography variant="body2">{t("price")}: {item.price}₸</Typography>
                     </Box>
 
                     <Box display="flex" alignItems="center" gap={1}>
@@ -119,7 +121,7 @@ const Cart = () => {
 
             >
                 <Typography variant="h6" textAlign={{xs: "center", sm: "left"}}>
-                    Итого: {totalPrice}₸
+                    {t("total")}: {totalPrice}₸
                 </Typography>
                 <Box
                     display="flex"
@@ -138,9 +140,9 @@ const Cart = () => {
                             }
                         }}
                     >
-                        Оформить заказ
+                        {t("checkout")}
                     </Button>
-                    <Button variant="contained" onClick={() => navigate("/")}>Продолжить покупки</Button>
+                    <Button variant="contained" onClick={() => navigate("/")}>{t("continueShopping")}</Button>
                 </Box>
             </Box>
         </Stack>

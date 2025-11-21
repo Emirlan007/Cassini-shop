@@ -7,6 +7,7 @@ import storage from 'redux-persist/lib/storage';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import { persistReducer, persistStore } from 'redux-persist';
 import {cartReducer} from "../features/cart/cartSlice.ts";
+import {ordersReducer} from "../features/orders/ordersSlice.ts";
 
 const userPersistConfig = {
   key: 'shop:users',
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   products: productsReducer,
   banners: bannersReducer,
   categories: categoriesReducer,
+  orders: ordersReducer,
   users: persistReducer(userPersistConfig, usersReducer),
   cart: persistReducer(cartPersistConfig, cartReducer),
 });

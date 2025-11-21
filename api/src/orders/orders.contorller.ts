@@ -1,9 +1,9 @@
 import {
   Body,
-  Controller, Get,
+  Controller,
+  Get,
   Post,
   Req,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -27,11 +27,10 @@ export class OrdersController {
   @UseInterceptors(FileUploadInterceptorOrder)
   @Post()
   async createOrder(
-    @Body() orderData: CreateOrderDto,
-    @UploadedFiles() file: { image: Express.Multer.File },
+    @Body() orderData: CreateOrderDto[],
     @Req() req: RequestWithUser,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.ordersService.create(orderData, file, req.user.id);
+    return this.ordersService.create(orderData, req.user.id);
   }
 }

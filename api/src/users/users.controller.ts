@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -26,9 +25,7 @@ export class UsersController {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
     private authService: AuthService,
-  ) {
-  
-  }
+  ) {}
 
   @Post('register')
   @UseInterceptors(FileUploadInterceptorAvatar)
@@ -57,7 +54,6 @@ export class UsersController {
     }
     return user;
   }
-
 
   @Delete('logout')
   @HttpCode(204)

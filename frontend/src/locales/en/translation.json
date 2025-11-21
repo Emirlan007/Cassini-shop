@@ -2,9 +2,8 @@
   "moreInfo": "More Info",
   "moreDetails": "More details",
   "addToCart": "add to cart",
-  "color": "color",
-  "size": "size",
-  "price":"price",
+  "color": "Color",
+  "size": "Size",
   "emptyCart": "empty Cart",
   "startShopping": "start Shopping",
   "search": "search",
@@ -19,8 +18,12 @@
   "phoneNumber":"Phone number",
   "displayName":"nickname",
  "pageNotFound":"Page not found",
- "total":"total",
- "addProductToStartShopping": "Add products to place an order",
- "placeAnOrder":"Place an order",
- "continueShopping":"Continue shopping"
+  "yourOrders": "Your Orders",
+  "loading": "Loading...",
+  "noOrders": "No orders yet",
+  "orderNumber": "Order #",
+  "createdAt": "Created at",
+  "price": "Price",
+  "quantity": "Quantity",
+  "total": "Total"
 }

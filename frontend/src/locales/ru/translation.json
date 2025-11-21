@@ -17,5 +17,13 @@
   "popularProducts": "Популярные товары",
   "phoneNumber": "номер телефона",
   "displayName": "никнейм",
-  "pageNotFound":"Страница не найдена"
+  "pageNotFound":"Страница не найдена",
+  "yourOrders": "Ваши заказы",
+  "loading": "Загрузка...",
+  "noOrders": "Заказов пока нет",
+  "orderNumber": "Заказ #",
+  "createdAt": "Дата создания",
+  "price": "Цена",
+  "quantity": "Количество",
+  "total": "Итого"
 }

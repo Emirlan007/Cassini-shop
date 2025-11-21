@@ -88,3 +88,11 @@ export interface CartItem {
   selectedSize: string;
   image: string;
 }
+
+export interface OrderItem extends  CartItem{
+  _id: string;
+  userId: string;
+  createdAt: string;
+  items: CartItem[];
+  totalPrice: number;
+}

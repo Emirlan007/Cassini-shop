@@ -14,6 +14,8 @@ import {useAppSelector} from "./app/hooks.ts";
 import {selectUser} from "./features/users/usersSlice.ts";
 import UpdateCreateWrap from "./components/UpdateCreateWrap/UpdateCreateWrap.tsx";
 import Cart from "./features/cart/Cart.tsx";
+import {Toaster} from "react-hot-toast";
+import AccountPage from "./pages/AccountPage.tsx";
 
 const App = () => {
     const user = useAppSelector(selectUser);
@@ -40,10 +42,12 @@ const App = () => {
                     />
                     <Route path={"/addProduct"}></Route>
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/account" element={<AccountPage />} />
                     <Route path="*" element={<PageNotFound/>}/>
                 </Routes>
             </Container>
             <Footer/>
+            <Toaster position="top-center" reverseOrder={false} />
         </Box>
     );
 };

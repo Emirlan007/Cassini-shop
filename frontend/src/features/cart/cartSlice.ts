@@ -2,9 +2,10 @@ import type {CartItem} from "../../types";
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
 
 interface CartState {
-    items: CartItem[]
-    totalPrice: number
-    totalQuantity: number
+    items: CartItem[];
+    totalPrice: number;
+    totalQuantity: number;
+
 }
 
 const initialState: CartState = {

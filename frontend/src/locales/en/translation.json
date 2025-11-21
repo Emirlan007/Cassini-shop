@@ -2,8 +2,8 @@
   "moreInfo": "More Info",
   "moreDetails": "More details",
   "addToCart": "add to cart",
-  "color": "color",
-  "size": "size",
+  "color": "Color",
+  "size": "Size",
   "emptyCart": "empty Cart",
   "startShopping": "start Shopping",
   "search": "search",
@@ -17,5 +17,13 @@
   "popularProducts":"Best Sellers",
   "phoneNumber":"Phone number",
   "displayName":"nickname",
- "pageNotFound":"Page not found"
+ "pageNotFound":"Page not found",
+  "yourOrders": "Your Orders",
+  "loading": "Loading...",
+  "noOrders": "No orders yet",
+  "orderNumber": "Order #",
+  "createdAt": "Created at",
+  "price": "Price",
+  "quantity": "Quantity",
+  "total": "Total"
 }

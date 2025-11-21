@@ -1,9 +1,12 @@
 import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
-import {removeFromCart, selectItems, selectTotalPrice, updateQuantity} from "./cartSlice.ts";
+import {clearCart, removeFromCart, selectItems, selectTotalPrice, updateQuantity} from "./cartSlice.ts";
 import {Box, Button, IconButton, Stack, Typography} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {API_URL} from "../../constants.ts";
+import toast from "react-hot-toast";
+import {selectUser} from "../users/usersSlice.ts";
+import {createOrder} from "../orders/ordersThunk.ts";
 
 
 const Cart = () => {
@@ -11,6 +14,18 @@ const Cart = () => {
     const dispatch = useAppDispatch();
     const items = useAppSelector(selectItems);
     const totalPrice = useAppSelector(selectTotalPrice);
+    const user = useAppSelector(selectUser);
+
+    const handleCheckout = async () => {
+        try {
+            await dispatch(createOrder(items)).unwrap();
+            dispatch(clearCart());
+            navigate("/account");
+            toast.success("Заказ успешно оформлен!");
+        } catch {
+            toast.error("Ошибка при создании заказа");
+        }
+    };
 
     if (!items.length) {
         return (
@@ -98,22 +113,33 @@ const Cart = () => {
             <Box display="flex"
                  flexDirection={{xs: "column", sm: "row"}}
                  justifyContent="space-between"
-                 alignItems={{ xs: "center", sm: "center" }}
-                 gap={{ xs: 2, sm: 0 }}
+                 alignItems={{xs: "center", sm: "center"}}
+                 gap={{xs: 2, sm: 0}}
                  mt={2}
 
             >
-                <Typography variant="h6" textAlign={{ xs: "center", sm: "left" }}>
+                <Typography variant="h6" textAlign={{xs: "center", sm: "left"}}>
                     Итого: {totalPrice}₸
                 </Typography>
                 <Box
                     display="flex"
-                    flexDirection={{ xs: "column", sm: "row" }}
+                    flexDirection={{xs: "column", sm: "row"}}
                     gap={2}
-                    width={{ xs: "100%", sm: "auto" }}
-                    mt={{ xs: 2, sm: 0 }}
+                    width={{xs: "100%", sm: "auto"}}
+                    mt={{xs: 2, sm: 0}}
                 >
-                    <Button variant="contained" onClick={() => navigate("/register")}>Оформить заказ</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            if (!user) {
+                                navigate("/register");
+                            } else {
+                                void handleCheckout();
+                            }
+                        }}
+                    >
+                        Оформить заказ
+                    </Button>
                     <Button variant="contained" onClick={() => navigate("/")}>Продолжить покупки</Button>
                 </Box>
             </Box>

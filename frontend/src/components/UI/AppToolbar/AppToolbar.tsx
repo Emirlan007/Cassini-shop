@@ -74,7 +74,7 @@ const AppToolbar = () => {
                             <ShoppingCartIcon sx={{color: "white"}} />
                         </Badge>
                         <Link to="/" style={{display: "flex", alignItems: "center"}}>
-                            <img src="/logo.png" alt="Cassini" style={{width: "70px"}}/>
+                            <img src="/logo.png" alt="Cassini" style={{width: "80px"}}/>
                         </Link>
                     </Stack>
                 </Toolbar>
@@ -121,13 +121,11 @@ const AppToolbar = () => {
                                     </Typography>
                                 </Box>
                                 <Divider sx={{my: 1}}/>
-
-                                {user.role === "admin" && (
-                                    <>
+                                <>
+                                    {user && (
                                         <ListItemButton
                                             onClick={() => {
-                                                navigate("/products/new");
-                                                toggleDrawer(false)();
+                                                navigate("/account");
                                             }}
                                             sx={{
                                                 mx: 1,
@@ -138,16 +136,43 @@ const AppToolbar = () => {
                                             }}
                                         >
                                             <ListItemText
-                                                primary="Добавить товар"
+                                                primary="Личный кабинет"
                                                 primaryTypographyProps={{
                                                     fontSize: "0.95rem",
                                                     fontWeight: 500,
                                                 }}
                                             />
                                         </ListItemButton>
-                                        <Divider sx={{my: 1}}/>
-                                    </>
-                                )}
+                                    )}
+                                    <Divider sx={{my: 1}}/>
+                                    {user.role === "admin" && (
+                                        <>
+                                            <ListItemButton
+                                                onClick={() => {
+                                                    navigate("/products/new");
+                                                    toggleDrawer(false)();
+                                                }}
+                                                sx={{
+                                                    mx: 1,
+                                                    borderRadius: 1,
+                                                    "&:hover": {
+                                                        backgroundColor: "action.hover",
+                                                    },
+                                                }}
+                                            >
+                                                <ListItemText
+                                                    primary="Добавить товар"
+                                                    primaryTypographyProps={{
+                                                        fontSize: "0.95rem",
+                                                        fontWeight: 500,
+                                                    }}
+                                                />
+                                            </ListItemButton>
+                                            <Divider sx={{my: 1}}/>
+                                        </>
+                                    )}
+                                </>
+
 
                                 <Box sx={{px: 2, py: 1}}>
                                     <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>

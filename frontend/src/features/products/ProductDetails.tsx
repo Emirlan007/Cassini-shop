@@ -14,6 +14,7 @@ import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 import {selectUser} from "../users/usersSlice.ts";
 import {addToCart} from "../cart/cartSlice.ts";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -54,7 +55,7 @@ const ProductDetails = () => {
             image: product!.images![0],
         }))
 
-        alert("Товар добавлен в корзину");
+        toast.success("Товар добавлен в корзину!");
     };
 
   const handleSizeClick = (e: React.MouseEvent<HTMLElement>) => {

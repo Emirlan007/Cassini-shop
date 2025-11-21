@@ -17,5 +17,13 @@
   "popularProducts": "Популярдуу товарлар",
   "phoneNumber": "номер телефона",
   "displayName": "никнейм",
-  "pageNotFound":"Барак табылган жок"
+  "pageNotFound":"Барак табылган жок",
+  "yourOrders": "Сиздин буйрутмаларыңыз",
+  "loading": "Жүктөлүүдө...",
+  "noOrders": "Заказдар азырынча жок",
+  "orderNumber": "Буйрутма #",
+  "createdAt": "Буйрутма жасалган кун",
+  "price": "Баасы",
+  "quantity": "Саны",
+  "total": "Жалпы саны"
 }

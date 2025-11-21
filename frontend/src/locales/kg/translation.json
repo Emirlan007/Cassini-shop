@@ -5,6 +5,7 @@
   "color": "Түс",
   "size": "Өлчөм",
   "emptyCart": "Себет бош",
+  "addProductToStartShopping": "Сатып алууну баштоо үчүн продуктту кошуңуз",
   "startShopping": "Сатып алууну баштоо",
   "search": "издөө",
   "logout": "чыгуу",
@@ -25,5 +26,7 @@
   "createdAt": "Буйрутма жасалган кун",
   "price": "Баасы",
   "quantity": "Саны",
-  "total": "Жалпы саны"
+  "total": "Жалпы саны",
+  "checkout": "Заказды кетирүү",
+  "continueShopping": "Сатып алууну улантуу"
 }

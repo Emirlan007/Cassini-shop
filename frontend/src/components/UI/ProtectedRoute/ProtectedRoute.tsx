@@ -6,7 +6,6 @@ interface Props extends PropsWithChildren {
 }
 
 const ProtectedRoute: FC<Props> = ({ isAllowed, children }) => {
-    console.log("ProtectedRoute -> isAllowed:", isAllowed);
     if (!isAllowed) {
         return <Navigate to="/login" />;
     }

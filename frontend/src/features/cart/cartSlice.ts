@@ -5,7 +5,6 @@ interface CartState {
     items: CartItem[];
     totalPrice: number;
     totalQuantity: number;
-
 }
 
 const initialState: CartState = {

@@ -1,36 +1,56 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
-import type {IGlobalError, Product, ProductInput} from "../../types";
-import {axiosApi} from "../../axiosApi";
-import {isAxiosError} from "axios";
-import type {RootState} from "../../app/store.ts";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import type { IGlobalError, Product, ProductInput } from "../../types";
+import { axiosApi } from "../../axiosApi";
+import { isAxiosError } from "axios";
+import type { RootState } from "../../app/store.ts";
 
 export const fetchProducts = createAsyncThunk<
     Product[],
     string | undefined,
     { rejectValue: IGlobalError }
->("products/fetchAll", async (categoryId, {rejectWithValue}) => {
+>("products/fetchAll", async (categoryId, { rejectWithValue }) => {
     try {
-        const url = categoryId 
-            ? `/products?categoryId=${categoryId}`
-            : "/products";
-        const {data} = await axiosApi.get<Product[]>(url);
+        const url = categoryId ? `/products?categoryId=${categoryId}` : "/products";
+        const { data } = await axiosApi.get<Product[]>(url);
         return data;
     } catch (error) {
         if (isAxiosError(error) && error.response) {
             return rejectWithValue(error.response.data);
         }
-
         throw error;
     }
 });
+
+export const fetchSearchedProducts = createAsyncThunk<
+    Product[],
+    string | undefined,
+    { rejectValue: IGlobalError }
+>(
+    "products/fetchSearchedProducts",
+    async (searchValue, { rejectWithValue }) => {
+        try {
+            const url = searchValue
+                ? `/products?searchValue=${searchValue}`
+                : "/products";
+            const { data } = await axiosApi.get<Product[]>(url);
+
+            return data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            }
+            throw error;
+        }
+    }
+);
 
 export const fetchProductById = createAsyncThunk<
     Product,
     string,
     { rejectValue: IGlobalError }
->("products/fetchOne", async (id, {rejectWithValue}) => {
+>("products/fetchOne", async (id, { rejectWithValue }) => {
     try {
-        const {data: product} = await axiosApi.get<Product>("/products/" + id);
+        const { data: product } = await axiosApi.get<Product>("/products/" + id);
         return product;
     } catch (error) {
         if (isAxiosError(error) && error.response) {
@@ -41,54 +61,60 @@ export const fetchProductById = createAsyncThunk<
     }
 });
 
-export const createProduct = createAsyncThunk<Product, ProductInput, { rejectValue: IGlobalError }>(
-    "products/create",
-    async (productData, {rejectWithValue}) => {
-        try {
-            const formData = new FormData();
+export const createProduct = createAsyncThunk<
+    Product,
+    ProductInput,
+    { rejectValue: IGlobalError }
+>("products/create", async (productData, { rejectWithValue }) => {
+    try {
+        const formData = new FormData();
 
-            formData.append("name", productData.name);
-            formData.append("price", String(productData.price));
-            formData.append('category', productData.category)
+        formData.append("name", productData.name);
+        formData.append("price", String(productData.price));
+        formData.append("category", productData.category);
 
-            if (productData.size) {
-                formData.append("size", JSON.stringify(productData.size));
-            }
-
-            if (productData.colors) {
-                formData.append("colors", JSON.stringify(productData.colors));
-            }
-
-            if (productData.description) {
-                formData.append("description", productData.description);
-            }
-
-            if (productData.images) {
-                for (const image of productData.images) {
-                    formData.append("images", image);
-                }
-            }
-
-            if (productData.video) {
-                formData.append("video", productData.video);
-            }
-
-            const {data: product} = await axiosApi.post<Product>(
-                "/products",
-                formData
-            );
-
-            return product;
-        } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                return rejectWithValue(error.response.data);
-            }
-
-            throw error;
+        if (productData.size) {
+            formData.append("size", JSON.stringify(productData.size));
         }
-    });
 
-export const updateProduct = createAsyncThunk<Product, {product: ProductInput, _productId: string}, { state: RootState}>(
+        if (productData.colors) {
+            formData.append("colors", JSON.stringify(productData.colors));
+        }
+
+        if (productData.description) {
+            formData.append("description", productData.description);
+        }
+
+        if (productData.images) {
+            for (const image of productData.images) {
+                formData.append("images", image);
+            }
+        }
+
+        if (productData.video) {
+            formData.append("video", productData.video);
+        }
+
+        const { data: product } = await axiosApi.post<Product>(
+            "/products",
+            formData
+        );
+
+        return product;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            return rejectWithValue(error.response.data);
+        }
+
+        throw error;
+    }
+});
+
+export const updateProduct = createAsyncThunk<
+    Product,
+    { product: ProductInput; _productId: string },
+    { state: RootState }
+>(
     "products/update",
     async ({ product, _productId }, { getState }) => {
         const token = getState().users.user?.token;
@@ -97,7 +123,7 @@ export const updateProduct = createAsyncThunk<Product, {product: ProductInput, _
 
         formData.append("name", product.name);
         formData.append("price", String(product.price));
-        formData.append('category', product.category)
+        formData.append("category", product.category);
 
         if (product.size) {
             formData.append("size", JSON.stringify(product.size));
@@ -121,7 +147,9 @@ export const updateProduct = createAsyncThunk<Product, {product: ProductInput, _
             formData.append("video", product.video);
         }
 
-        const {data} = await axiosApi.patch(`/products/${_productId}`, formData, {headers: {Authorization: token}});
+        const { data } = await axiosApi.patch(`/products/${_productId}`, formData, {
+            headers: { Authorization: token },
+        });
         return data;
     }
 );

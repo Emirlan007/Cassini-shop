@@ -49,6 +49,7 @@ export interface Product {
   images?: string[];
   video?: string;
   price: number;
+  imagesByColor?: Record<string, string[]>;
 }
 
 export interface ProductInput {

@@ -2,11 +2,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { IGlobalError, Product, ProductInput } from "../../types";
 import { axiosApi } from "../../axiosApi";
 import { isAxiosError } from "axios";
+import type { RootState } from "../../app/store.ts";
 
 export const fetchProducts = createAsyncThunk<
-  Product[],
-  string | undefined,
-  { rejectValue: IGlobalError }
+    Product[],
+    string | undefined,
+    { rejectValue: IGlobalError }
 >("products/fetchAll", async (categoryId, { rejectWithValue }) => {
   try {
     const url = categoryId ? `/products?categoryId=${categoryId}` : "/products";
@@ -21,32 +22,32 @@ export const fetchProducts = createAsyncThunk<
 });
 
 export const fetchSearchedProducts = createAsyncThunk<
-  Product[],
-  string | undefined,
-  { rejectValue: IGlobalError }
+    Product[],
+    string | undefined,
+    { rejectValue: IGlobalError }
 >(
-  "products/fetchSearchedProducts",
-  async (searchValue, { rejectWithValue }) => {
-    try {
-      const url = searchValue
-        ? `/products?searchValue=${searchValue}`
-        : "/products";
-      const { data } = await axiosApi.get<Product[]>(url);
+    "products/fetchSearchedProducts",
+    async (searchValue, { rejectWithValue }) => {
+      try {
+        const url = searchValue
+            ? `/products?searchValue=${searchValue}`
+            : "/products";
+        const { data } = await axiosApi.get<Product[]>(url);
 
-      return data;
-    } catch (error) {
-      if (isAxiosError(error) && error.response) {
-        return rejectWithValue(error.response.data);
+        return data;
+      } catch (error) {
+        if (isAxiosError(error) && error.response) {
+          return rejectWithValue(error.response.data);
+        }
+        throw error;
       }
-      throw error;
     }
-  }
 );
 
 export const fetchProductById = createAsyncThunk<
-  Product,
-  string,
-  { rejectValue: IGlobalError }
+    Product,
+    string,
+    { rejectValue: IGlobalError }
 >("products/fetchOne", async (id, { rejectWithValue }) => {
   try {
     const { data: product } = await axiosApi.get<Product>("/products/" + id);
@@ -61,9 +62,9 @@ export const fetchProductById = createAsyncThunk<
 });
 
 export const createProduct = createAsyncThunk<
-  Product,
-  ProductInput,
-  { rejectValue: IGlobalError }
+    Product,
+    ProductInput,
+    { rejectValue: IGlobalError }
 >("products/create", async (productData, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -95,8 +96,8 @@ export const createProduct = createAsyncThunk<
     }
 
     const { data: product } = await axiosApi.post<Product>(
-      "/products",
-      formData
+        "/products",
+        formData
     );
 
     return product;
@@ -110,55 +111,45 @@ export const createProduct = createAsyncThunk<
 });
 
 export const updateProduct = createAsyncThunk<
-  Product,
-  { product: ProductInput; _productId: string },
-  { rejectValue: IGlobalError }
->("products/update", async ({ product, _productId }, { rejectWithValue }) => {
-  try {
-    const formData = new FormData();
+    Product,
+    { product: ProductInput; _productId: string },
+    { state: RootState }
+>("products/update", async ({ product, _productId }, { getState }) => {
+  const token = getState().users.user?.token;
 
-    formData.append("name", product.name);
-    formData.append("price", String(product.price));
-    formData.append("category", product.category);
+  const formData = new FormData();
 
-    if (product.size) {
-      formData.append("size", JSON.stringify(product.size));
-    }
+  formData.append("name", product.name);
+  formData.append("price", String(product.price));
+  formData.append("category", product.category);
 
-    if (product.colors) {
-      formData.append("colors", JSON.stringify(product.colors));
-    }
-
-    if (product.description) {
-      formData.append("description", product.description);
-    }
-
-    if (product.images) {
-      for (const image of product.images) {
-        formData.append("images", image);
-      }
-    }
-
-    if (product.video) {
-      formData.append("video", product.video);
-    }
-
-    const { data } = await axiosApi.patch<Product>(
-      `/products/${_productId}`,
-      formData
-    );
-    return data;
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      return rejectWithValue(error.response.data);
-    }
-    throw error;
+  if (product.size) {
+    formData.append("size", String(product.size));
   }
+
+  if (product.description) {
+    formData.append("description", product.description);
+  }
+
+  if (product.images) {
+    for (const image of product.images) {
+      formData.append("images", image);
+    }
+  }
+
+  if (product.video) {
+    formData.append("video", product.video);
+  }
+
+  const { data } = await axiosApi.patch(`/products/${_productId}`, formData, {
+    headers: { Authorization: token },
+  });
+  return data;
 });
 
 export const deleteProduct = createAsyncThunk<void, string>(
-  "products/delete",
-  async (id) => {
-    await axiosApi.delete("/products/" + id);
-  }
+    "products/delete",
+    async (id) => {
+      await axiosApi.delete("/products/" + id);
+    }
 );

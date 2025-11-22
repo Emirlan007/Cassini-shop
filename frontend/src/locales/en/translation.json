@@ -28,5 +28,24 @@
   "quantity": "Quantity",
   "total": "Total",
   "checkout": "Checkout",
-  "continueShopping": "Continue Shopping"
+  "remove": "Remove",
+  "continueShopping": "Continue Shopping",
+  "newProduct": "New Product",
+  "browse": "Browse",
+  "selectSizes": "Select sizes",
+  "addColor": "Add Color",
+  "productForm": {
+    "name": "Name",
+    "description": "Description",
+    "price": "Price",
+    "category": "Category",
+    "sizes": "Sizes",
+    "colors": "Colors",
+    "selectedSizes": "Selected Sizes",
+    "selectedColors": "Selected Colors",
+    "images": "Images",
+    "video": "Video",
+    "create": "Create",
+    "creating": "Creating..."
+  }
 }

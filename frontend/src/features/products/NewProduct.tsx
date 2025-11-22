@@ -5,12 +5,14 @@ import ProductForm from "./components/ProductForm.tsx";
 import type {ProductInput} from "../../types";
 import {createProduct, fetchProducts} from "./productsThunks.ts";
 import {selectProductCreateLoading} from "./productsSlice.ts";
+import {useTranslation} from "react-i18next";
 
 
 const NewProduct = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const productCreating = useAppSelector(selectProductCreateLoading)
+    const { t } = useTranslation();
 
     const onFormSubmit = async (product: ProductInput) => {
         await dispatch(createProduct(product)).unwrap();
@@ -20,7 +22,7 @@ const NewProduct = () => {
     return (
         <>
             <Typography variant="h4" sx={{ mb: 2 }}>
-                New Product
+                {t("newProduct")}
             </Typography>
             <ProductForm onSubmit={onFormSubmit} loading={productCreating} />
         </>

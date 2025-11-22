@@ -28,5 +28,24 @@
   "quantity": "Саны",
   "total": "Жалпы саны",
   "checkout": "Заказды кетирүү",
-  "continueShopping": "Сатып алууну улантуу"
+  "continueShopping": "Сатып алууну улантуу",
+  "newProduct": "Жаңы товар",
+  "remove": "Өчүрүү",
+  "browse": "Жүктөө",
+  "selectSizes": "Размерди танданыз",
+  "addColor": "Түстү кошуу",
+  "productForm": {
+    "name": "Аталышы",
+    "description": "Сыпаттамасы",
+    "price": "Баасы",
+    "category": "Категория",
+    "sizes": "Өлчөмдөр",
+    "colors": "Түстөр",
+    "selectedSizes": "Тандалган өлчөмдөр",
+    "selectedColors": "Тандалган түстөр",
+    "images": "Сүрөттөр",
+    "video": "Видео",
+    "create": "Жаратуу",
+    "creating": "Жаратууда..."
+  }
 }

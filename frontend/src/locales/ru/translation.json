@@ -28,5 +28,24 @@
   "quantity": "Количество",
   "total": "Итого",
   "checkout": "Оформить заказ",
-  "continueShopping": "Продолжить покупки"
+  "continueShopping": "Продолжить покупки",
+  "newProduct": "Новый товар",
+  "remove": "Удалить",
+  "browse": "Загрузить",
+  "selectSizes": "Выберите размеры",
+  "addColor": "Добавить",
+  "productForm": {
+    "name": "Название",
+    "description": "Описание",
+    "price": "Цена",
+    "category": "Категория",
+    "sizes": "Размеры",
+    "colors": "Цвета",
+    "selectedSizes": "Выбранные размеры",
+    "selectedColors": "Выбранные цвета",
+    "images": "Изображения",
+    "video": "Видео",
+    "create": "Создать",
+    "creating": "Создание..."
+  }
 }

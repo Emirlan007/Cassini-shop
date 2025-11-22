@@ -50,6 +50,7 @@ const App = () => {
                     <Route path="*" element={<PageNotFound/>}/>
                 </Routes>
             </Container>
+            {/*{!hideFooter && <Footer/>}*/}
             <Footer/>
             <Toaster position="top-center" reverseOrder={false} />
         </Box>

@@ -1,5 +1,6 @@
 import { type ChangeEvent, type FC, useRef, useState } from 'react';
 import { Button, Stack, TextField } from '@mui/material';
+import {useTranslation} from "react-i18next";
 
 interface Props {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -11,6 +12,7 @@ interface Props {
 const FileInput: FC<Props> = ({ onChange, name, label, multiple = false }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [fileNames, setFileNames] = useState<string[]>([]);
+    const { t } = useTranslation();
 
     const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -40,7 +42,11 @@ const FileInput: FC<Props> = ({ onChange, name, label, multiple = false }) => {
                 multiple={multiple}
             />
 
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack
+                direction={{xs: "column", sm: "row"}}
+                spacing={2}
+                alignItems="center"
+            >
                 <TextField
                     required
                     sx={{ width: '100%', mr: 2 }}
@@ -54,8 +60,9 @@ const FileInput: FC<Props> = ({ onChange, name, label, multiple = false }) => {
                     color="success"
                     variant="contained"
                     onClick={activateInput}
+                    sx={{width: {xs: "100%", sm: "20%", md: "15%"}}}
                 >
-                    Browse
+                    {t("browse")}
                 </Button>
             </Stack>
         </>

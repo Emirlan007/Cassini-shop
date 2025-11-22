@@ -1,5 +1,6 @@
 import {type ChangeEvent} from "react";
 import {Box, Checkbox, FormControlLabel, Modal, Stack} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 interface SizesModalProps {
     open: boolean;
@@ -13,7 +14,7 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 450,
+    width: "90%",
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -21,6 +22,7 @@ const style = {
 };
 
 const SizesModal = ({ open, onClose, sizes, onChange }: SizesModalProps) => {
+    const { t } = useTranslation();
 
     const handleSizeChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = e.target;
@@ -30,8 +32,8 @@ const SizesModal = ({ open, onClose, sizes, onChange }: SizesModalProps) => {
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={style}>
-                <Stack mb={2}>Выберите размеры</Stack>
-                <Stack direction="row" spacing={2}>
+                <Stack mb={2}>{t("selectSizes")}</Stack>
+                <Stack direction="row" spacing={2} flexWrap="wrap">
                     {["XS", "S", "M", "L"].map(size => (
                         <FormControlLabel
                             key={size}

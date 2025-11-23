@@ -34,43 +34,64 @@ const BannersCarousel = () => {
             mx: "auto",
             mt: 1,
             mb: 3,
+            py:{xs: 'none', md: 5},
+            bgcolor:  "rgba(102, 0, 51, 0.05)",
           }}
         >
           <Swiper
             modules={[Pagination, Autoplay]}
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 3000 }}
+            // autoplay={{ delay: 3000 }}
             loop={true}
             className="mySwiper"
+            style={{minHeight: "550px",}}
           >
             {banners.map((banner) => (
               <SwiperSlide key={banner._id}>
                 <Box
                   sx={{
-                    width: "100%",
-                    pr: { xs: "0px", md: "100px" },
+                    msxWidth: "100%",
+                    width: '1200px',
+                    pr: { xs: "0px", md: "12.8px" },
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: { sm: "center", md: "flex-end" },
+                    alignItems: { xs: "center", sm: "flex-end" },
                     justifyContent: "center",
                     backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
+                    backgroundPosition: "left",
                     backgroundSize: "contain",
+                    ml: {md: 3},
                     backgroundImage: `url(${API_URL}${banner.image.startsWith('/') ? banner.image.slice(1) : banner.image})`,
                   }}
                 >
                   <Box
                     sx={{
-                      backgroundColor: "#cccccc4b",
+                      ml: "auto",
                       borderRadius: 3,
+                      mt: {xs: "auto", md: "0px"},
                       p: 2,
-                      backdropFilter: "blur(5px)",
+                      maxWidth: 320,
                       mx: 1,
                     }}
                   >
-                    <Typography variant="h4">{banner.title}</Typography>
-                    <Typography variant="h6">{banner.description}</Typography>
+                    <Typography sx={{
+                      fontWeight: {xs: 700, md: 800 },
+                      fontSize: "36px",
+                      lineHeight: "133%",
+                      letterSpacing: "-0.04em",
+                      textAlign: {xs: "left", md: "center"},
+                      color: {xs: "#fff", sm: "#111827"},
+                      mb: "6.4px",
+                    }} variant="h4">{banner.title}</Typography>
+
+                    <Typography sx={{
+                      fontWeight: 400,
+                      fontSize: "12px",
+                      lineHeight: "150%",
+                      mb: "25px",
+                      textAlign: {xs: "left", md: "center"},
+                      color: {xs: "#fff", sm: "#374151"},
+                    }} variant="h6">{banner.description}</Typography>
 
                     <Link
                       target="_blank"
@@ -79,7 +100,7 @@ const BannersCarousel = () => {
                     >
                       <Button
                         variant="contained"
-                        sx={{ color: "white", textDecoration: "none" }}
+                        sx={{display: {xs: 'none', sm: 'inline-block'}, textAlign: {xs: "left", sm: "center"}, bgcolor: "#660033", color: "white", textDecoration: "none",}}
                       >
                         {t("moreInfo")}
                       </Button>

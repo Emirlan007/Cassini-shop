@@ -99,15 +99,21 @@ const AppToolbar = () => {
             <AppBar position="sticky">
                 <Toolbar
                     sx={{
+                        backdropFilter: 'blur(3.200000047683716px)',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                         justifyContent: "space-between",
-                        backgroundColor: "secondary.main",
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
                     }}
                 >
                     <Box display="flex" alignItems="center" gap={1}>
-                        <IconButton color="primary" onClick={toggleDrawer(true)}>
+                        <IconButton sx={{color: '#d9d9d9'}} onClick={toggleDrawer(true)}>
                             <MenuIcon />
                         </IconButton>
                     </Box>
+
+                    <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+                        <img src="/newLogo.png" alt="Cassini" style={{ width: "70px" }} />
+                    </Link>
 
                     {isLoading && <CircularProgress color="primary" />}
 
@@ -120,7 +126,7 @@ const AppToolbar = () => {
                             onClick={() => navigate("/cart")}
                             sx={{ cursor: "pointer" }}
                         >
-                            <ShoppingCartIcon sx={{ color: "white" }} />
+                            <ShoppingCartIcon sx={{ color: "#374151" }} />
                         </Badge>
                         <Box
                             ref={searchRef}
@@ -128,11 +134,11 @@ const AppToolbar = () => {
                         >
                             {isSearchOpen ? (
                                 <IconButton onClick={closeSearchInput}>
-                                    <CloseIcon sx={{ color: "white" }} />
+                                    <CloseIcon sx={{ color: "#808080" }} />
                                 </IconButton>
                             ) : (
                                 <IconButton onClick={openSearchInput}>
-                                    <SearchIcon sx={{ color: "white" }} />
+                                    <SearchIcon sx={{ color: "#808080" }} />
                                 </IconButton>
                             )}
 
@@ -164,9 +170,6 @@ const AppToolbar = () => {
                                 />
                             </Collapse>
                         </Box>
-                        <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-                            <img src="/logo.png" alt="Cassini" style={{ width: "70px" }} />
-                        </Link>
                     </Stack>
                 </Toolbar>
             </AppBar>

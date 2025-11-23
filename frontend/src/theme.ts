@@ -15,8 +15,8 @@ const theme = createTheme({
       paper: "#F7F7F7",
     },
     text: {
-      primary: "#660033",
-      secondary: "#000000",
+      primary: "#111827",
+      secondary: "#4b5563",
     },
     action: {
       active: "#F0544F",
@@ -30,7 +30,7 @@ const theme = createTheme({
       styleOverrides: {
         contained: {
           color: "#FFFFFF",
-          backgroundColor: "#F0544F",
+          backgroundColor: "#660033",
         },
         outlined: {
           color: "#FFFFFF",

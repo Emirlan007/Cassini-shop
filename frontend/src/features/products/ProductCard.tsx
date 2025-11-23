@@ -106,8 +106,8 @@ const ProductCard = ({ product }: Props) => {
           variant="contained"
           fullWidth
           sx={{
-            backgroundColor: "#F0544F",
-            "&:hover": { backgroundColor: "#d9443f" },
+            backgroundColor: "#660033",
+            "&:hover": { backgroundColor: "#660033" },
             textTransform: "none",
             borderRadius: "8px",
             py: { xs: 1, sm: 1.5 },

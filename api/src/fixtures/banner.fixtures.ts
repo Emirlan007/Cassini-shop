@@ -7,7 +7,7 @@ export async function createBannerFixtures(bannerService: BannerService) {
     {
       title: 'Tuxedo Discount',
       description: 'Come and take for 50% off',
-      image: '/fixtures/dressPos1.png',
+      image: '/fixtures/dress_carousel.png',
       link: 'https://www.dobell.com/sale/tuxedos?srsltid=AfmBOooPHBQXNpSO3SHpDPqLukNUYIXnOl1DWAHwjuW2VC1iWoCMOzxK',
       isActive: true,
     },

@@ -20,6 +20,7 @@ import { CategoriesService } from './categories/categories.service';
 import { Order, OrderSchema } from './schemas/order.schema';
 import { OrdersController } from './orders/orders.contorller';
 import { OrderService } from './orders/orders.server';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { OrderService } from './orders/orders.server';
       { name: Order.name, schema: OrderSchema },
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [
     UsersController,

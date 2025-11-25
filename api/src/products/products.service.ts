@@ -10,6 +10,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { promises as fs } from 'fs';
+import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ProductsService {
@@ -218,6 +220,26 @@ export class ProductsService {
     return updatedProduct!;
   }
 
+  async updateDiscount(productId: string, updateData: UpdateDiscountDto) {
+    const { discount, discountUntil } = updateData;
+
+    const product = await this.productModel.findById(productId).exec();
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${productId} not found`);
+    }
+
+    if (discount !== undefined) {
+      product.discount = discount;
+    }
+
+    if (discountUntil !== undefined) {
+      product.discountUntil = new Date(discountUntil);
+    }
+
+    return product.save();
+  }
+
   async remove(id: string): Promise<void> {
     const product = await this.productModel.findById(id).exec();
 
@@ -267,5 +289,23 @@ export class ProductsService {
       throw new BadRequestException(`Invalid category ID: ${categoryId}`);
     }
     return new Types.ObjectId(categoryId);
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async removeExpiredDiscounts() {
+    const now = new Date();
+
+    await this.productModel.updateMany(
+      {
+        discount: { $ne: null },
+        discountUntil: { $lt: now },
+      },
+      {
+        $set: {
+          discount: null,
+          discountUntil: null,
+        },
+      },
+    );
   }
 }

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -31,6 +32,13 @@ export class OrdersController {
   @Get('admin/orders')
   async getAdminOrders() {
     return this.ordersService.getAdminOrders();
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Get('admin/user/:userId')
+  async getUserOrders(@Param('userId') userId: string) {
+    return this.ordersService.getUserOrders(userId);
   }
 
   @UseGuards(TokenAuthGuard)

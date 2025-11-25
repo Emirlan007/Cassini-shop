@@ -33,16 +33,21 @@ const ProductList = ({ products }: Props) => {
   }
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-        gap: 3,
-        px: 2,
-        width: "100%",
-        maxWidth: "1200px",
-      }}
-    >
+      <Box
+          sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                  xs: "repeat(2, 1fr)",  // мобильная версия
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
+                  lg: "repeat(4, 1fr)",  // десктоп
+              },
+              gap: { xs: 2, sm: 3 },
+              px: { xs: 1, sm: 2 },
+              width: "100%",
+              maxWidth: "1400px",
+          }}
+      >
       {items.length == 0 && (
         <Box sx={{textAlign:"center", textDecoration:"underline"}}>
           <Typography variant="h3" component="h3">Nothing Found</Typography>

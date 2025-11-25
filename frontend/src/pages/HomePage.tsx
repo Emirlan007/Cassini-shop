@@ -19,16 +19,23 @@ const HomePage = () => {
     return (
         <Box sx={{ backgroundColor: "#FFFFFF", minHeight: "100vh", py: { xs: 3, sm: 4 }}}>
             <Stack spacing={{ xs: 2, sm: 3 }} alignItems="center">
-                <Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        maxWidth: "1408px",
+                        mx: "auto",
+                        px: { xs: 2, sm: 3 }
+                    }}
+                >
                     <BannersCarousel />
                 </Box>
                 <Box
                     alignSelf='flex-start'
                     sx={{
                         pl: {
-                            xl: 20,
-                            lg: 16,
-                            md: 12,
+                            // xl: 20,
+                            // lg: 16,
+                            // md: 12,
                             sm: 8,
                             xs: 4
                         }
@@ -38,7 +45,7 @@ const HomePage = () => {
                         variant="h4"
                         sx={{
                             fontWeight: 700,
-                            fontSize: '17px',
+                            fontSize: '17.6px',
                             lineHeight: '125%',
                             letterSpacing: '-0.02em',
                             color: '#111827',

@@ -50,6 +50,9 @@ export interface Product {
   video?: string;
   price: number;
   imagesByColor?: Record<string, string[]>;
+  discount?: number;
+  discountUntil?: string;
+  finalPrice?: number;
 }
 
 export interface ProductInput {

@@ -7,7 +7,7 @@
   "emptyCart": "empty Cart",
   "addProductToStartShopping": "Add product to start shopping",
   "startShopping": "start Shopping",
-  "search": "search",
+ 
   "logout": "logout",
   "login": "login",
   "register": "register",
@@ -47,5 +47,11 @@
     "video": "Video",
     "create": "Create",
     "creating": "Creating..."
+  },
+  "touchBar":{
+    "home":"home",
+    "search":"search",
+    "cart":"cart",
+    "account":"account"
   }
 }

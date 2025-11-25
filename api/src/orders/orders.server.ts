@@ -17,6 +17,18 @@ export class OrderService {
     return this.orderModel.find({ user: userId });
   }
 
+  async findOne(id: string): Promise<Order> {
+    const order = await this.orderModel.findById(id)
+        .populate('user', 'displayName phoneNumber')
+        .exec();
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+
+    return order;
+  }
+
   async getAdminOrders() {
     return this.orderModel
       .find()

@@ -17,7 +17,7 @@ const HomePage = () => {
     }, [dispatch]);
 
     return (
-        <Box sx={{ backgroundColor: "#FFFFFF", minHeight: "100vh", py: { xs: 3, sm: 4 }}}>
+        <Box sx={{ backgroundColor: "#FFFFFF", minHeight: "100vh", py: { xs: 3, sm: 4 }, overflow: "hidden" }}>
             <Stack spacing={{ xs: 2, sm: 3 }} alignItems="center">
                 <Box
                     sx={{

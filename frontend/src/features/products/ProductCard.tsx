@@ -41,7 +41,6 @@ const ProductCard = ({ product }: Props) => {
                 if (discountUntil > now) {
                     setHasActiveDiscount(true);
 
-                    // Расчет оставшегося времени
                     const diff = discountUntil.getTime() - now.getTime();
                     const hours = Math.floor(diff / (1000 * 60 * 60));
                     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -63,7 +62,6 @@ const ProductCard = ({ product }: Props) => {
 
         checkDiscount();
 
-        // Обновляем таймер каждую минуту
         const interval = setInterval(checkDiscount, 60000);
 
         return () => clearInterval(interval);
@@ -84,13 +82,20 @@ const ProductCard = ({ product }: Props) => {
     <Card
         onClick={() => navigate(`/product/${product._id}`)}
         sx={{
-            width: { xs: "100%", md: "336px" },
-            height: { xs: "auto", md: "504.2px" },
+            width: "100%",
+            maxWidth: { xs: "180px", sm: "220px", md: "280px", lg: "336px" },
+            height: {
+                xs: "auto",
+                sm: "380px",
+                md: "450px",
+                lg: "504.2px"
+            },
             borderRadius: "5px",
             boxShadow: "none",
             backgroundColor: "#fff",
             cursor: "pointer",
             position: "relative",
+            mx: "auto",
       }}
     >
 
@@ -113,7 +118,6 @@ const ProductCard = ({ product }: Props) => {
             </Box>
         )}
 
-        {/* Таймер скидки */}
         {showDiscount && timeLeft && (
             <Box
                 sx={{
@@ -140,7 +144,12 @@ const ProductCard = ({ product }: Props) => {
             alt={product.name}
             sx={{
                 width: "100%",
-                height: { xs: "auto", md: "448px" },
+                height: {
+                    xs: "180px",
+                    sm: "240px",
+                    md: "320px",
+                    lg: "448px"
+                },
                 objectFit: "cover",
                 borderRadius: "5px",
             }}
@@ -149,7 +158,12 @@ const ProductCard = ({ product }: Props) => {
         <Box
             sx={{
                 width: "100%",
-                height: { xs: 200, md: "448px" },
+                height: {
+                    xs: "180px",
+                    sm: "240px",
+                    md: "320px",
+                    lg: "448px"
+                },
                 backgroundColor: "#f3f4f6",
                 display: "flex",
                 alignItems: "center",
@@ -161,7 +175,11 @@ const ProductCard = ({ product }: Props) => {
         </Box>
       )}
 
-      <CardContent sx={{ p: 0, mt: 1 }}>
+      <CardContent sx={{
+          p: { xs: 1, sm: 0 },
+          mt: { xs: 0.5, sm: 1 },
+          px: { xs: 1, sm: 0 }
+      }}>
           <Typography
               sx={{
                   fontWeight: 500,

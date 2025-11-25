@@ -37,15 +37,17 @@ const ProductList = ({ products }: Props) => {
           sx={{
               display: "grid",
               gridTemplateColumns: {
-                  xs: "repeat(2, 1fr)",  // мобильная версия
-                  sm: "repeat(2, 1fr)",
-                  md: "repeat(3, 1fr)",
-                  lg: "repeat(4, 1fr)",  // десктоп
+                  xs: "repeat(auto-fit, minmax(150px, 1fr))",
+                  sm: "repeat(auto-fit, minmax(200px, 1fr))",
+                  md: "repeat(auto-fit, minmax(250px, 1fr))",
+                  lg: "repeat(auto-fit, minmax(280px, 1fr))",
               },
               gap: { xs: 2, sm: 3 },
               px: { xs: 1, sm: 2 },
               width: "100%",
               maxWidth: "1400px",
+              mx: "auto",
+              boxSizing: "border-box"
           }}
       >
       {items.length == 0 && (

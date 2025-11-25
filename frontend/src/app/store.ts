@@ -1,25 +1,33 @@
-import {combineReducers, configureStore} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { usersReducer } from "../features/users/usersSlice";
 import { productsReducer } from "../features/products/productsSlice";
-import {bannersReducer} from "../features/banners/bannersSlice.ts";
-import {categoriesReducer} from "../features/categories/categorySlice.ts";
-import storage from 'redux-persist/lib/storage';
-import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
-import { persistReducer, persistStore } from 'redux-persist';
-import {cartReducer} from "../features/cart/cartSlice.ts";
-import {ordersReducer} from "../features/orders/ordersSlice.ts";
+import { bannersReducer } from "../features/banners/bannersSlice.ts";
+import { categoriesReducer } from "../features/categories/categorySlice.ts";
+import storage from "redux-persist/lib/storage";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist/es/constants";
+import { persistReducer, persistStore } from "redux-persist";
+import { cartReducer } from "../features/cart/cartSlice.ts";
+import { ordersReducer } from "../features/orders/ordersSlice.ts";
+import uiReducer from "../features/ui/uiSlice.ts";
 
 const userPersistConfig = {
-  key: 'shop:users',
+  key: "shop:users",
   storage,
-  whitelist: ['user'],
+  whitelist: ["user"],
 };
 
 const cartPersistConfig = {
-  key: 'shop:cart',
+  key: "shop:cart",
   storage,
-  whitelist: ['items', 'totalPrice', 'totalQuantity'],
-}
+  whitelist: ["items", "totalPrice", "totalQuantity"],
+};
 
 const rootReducer = combineReducers({
   products: productsReducer,
@@ -28,6 +36,7 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
   users: persistReducer(userPersistConfig, usersReducer),
   cart: persistReducer(cartPersistConfig, cartReducer),
+  ui: uiReducer,
 });
 
 export const store = configureStore({

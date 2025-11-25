@@ -7,7 +7,7 @@
   "emptyCart": "Себет бош",
   "addProductToStartShopping": "Сатып алууну баштоо үчүн продуктту кошуңуз",
   "startShopping": "Сатып алууну баштоо",
-  "search": "издөө",
+
   "logout": "чыгуу",
   "login": "кирүү",
   "register": "катталуу",
@@ -18,7 +18,7 @@
   "popularProducts": "Популярдуу товарлар",
   "phoneNumber": "номер телефона",
   "displayName": "никнейм",
-  "pageNotFound":"Барак табылган жок",
+  "pageNotFound": "Барак табылган жок",
   "yourOrders": "Сиздин буйрутмаларыңыз",
   "loading": "Жүктөлүүдө...",
   "noOrders": "Заказдар азырынча жок",
@@ -47,5 +47,11 @@
     "video": "Видео",
     "create": "Жаратуу",
     "creating": "Жаратууда..."
+  },
+  "touchBar": {
+    "home": "Башкы бет",
+    "search": "Издөө",
+    "cart": "Себет",
+    "account": "Аккаунт"
   }
 }

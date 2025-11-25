@@ -7,7 +7,6 @@
   "emptyCart": "Корзина пуста",
   "addProductToStartShopping": "Добавьте товар, чтобы начать покупки",
   "startShopping": "Приступить к покупке",
-  "search": "поисе",
   "logout": "выход",
   "login": "войти",
   "register": "зарегистрироваться",
@@ -18,7 +17,7 @@
   "popularProducts": "Популярные товары",
   "phoneNumber": "номер телефона",
   "displayName": "никнейм",
-  "pageNotFound":"Страница не найдена",
+  "pageNotFound": "Страница не найдена",
   "yourOrders": "Ваши заказы",
   "loading": "Загрузка...",
   "noOrders": "Заказов пока нет",
@@ -47,5 +46,11 @@
     "video": "Видео",
     "create": "Создать",
     "creating": "Создание..."
+  },
+  "touchBar": {
+    "home": "Главная",
+    "search": "Поиск",
+    "cart": "Корзина",
+    "account": "Аккаунт"
   }
 }

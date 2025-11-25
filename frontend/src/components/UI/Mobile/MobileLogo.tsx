@@ -1,7 +1,7 @@
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Box,
-  CircularProgress,
   Toolbar,
   IconButton,
   Stack,
@@ -9,34 +9,26 @@ import {
   TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "../../../app/hooks";
-import {
-  selectLoginLoading,
-  selectUser,
-} from "../../../features/users/usersSlice";
-import { logoutThunk } from "../../../features/users/usersThunks";
-import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
-import Badge from "@mui/material/Badge";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { selectTotalQuantity } from "../../../features/cart/cartSlice.ts";
-import SearchIcon from "@mui/icons-material/Search";
-import { useDebouncedCallback } from "use-debounce";
-import { fetchSearchedProducts } from "../../../features/products/productsThunks.ts";
-import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
+import { useEffect, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
-const AppToolbar = () => {
-  const user = useAppSelector(selectUser);
-  const isLoading = useAppSelector(selectLoginLoading);
-  const totalQuantity = useAppSelector(selectTotalQuantity);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchProduct, setSearchProduct] = useState("");
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import theme from "../../../theme.ts";
+import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
+import { fetchSearchedProducts } from "../../../features/products/productsThunks.ts";
+import { useDebouncedCallback } from "use-debounce";
+import {
+  selectIsSearchOpen,
+  selectSearchQuery,
+  toggleSearch,
+  setSearchQuery,
+} from "../../../features/ui/uiSlice.ts";
+
+const MobileLogo = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
+  const isSearchOpen = useAppSelector(selectIsSearchOpen);
+  const searchProduct = useAppSelector(selectSearchQuery);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -45,7 +37,7 @@ const AppToolbar = () => {
         searchRef.current &&
         !searchRef.current.contains(event.target as Node)
       ) {
-        setIsSearchOpen(false);
+        dispatch(toggleSearch(false));
       }
     };
 
@@ -56,7 +48,11 @@ const AppToolbar = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isSearchOpen]);
+  }, [isSearchOpen, dispatch]);
+
+  const toggleDrawer = (value: boolean) => () => {
+    setOpen(value);
+  };
 
   const debouncedSearch = useDebouncedCallback(() => {
     if (searchProduct.length >= 2 || searchProduct.length === 0) {
@@ -64,27 +60,10 @@ const AppToolbar = () => {
     }
   }, 500);
 
-  const toggleDrawer = (value: boolean) => () => setOpen(value);
-
-  const openSearchInput = () => {
-    setIsSearchOpen(true);
-  };
-
-  const closeSearchInput = () => {
-    setIsSearchOpen(false);
-    setSearchProduct("");
-    dispatch(fetchSearchedProducts(""));
-  };
-
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchProduct(value);
+    dispatch(setSearchQuery(value));
     debouncedSearch();
-  };
-
-  const handleLogout = async () => {
-    await dispatch(logoutThunk());
-    navigate("/login");
   };
 
   return (
@@ -105,36 +84,12 @@ const AppToolbar = () => {
           </Box>
 
           <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-            <img src="/newLogo.png" alt="Cassini" style={{ width: "70px" }} />
+            <img src="/logo.png" alt="Cassini" style={{ width: "70px" }} />
           </Link>
 
-          {isLoading && <CircularProgress color="primary" />}
-
           <Stack direction="row" spacing={2} alignItems="center">
-            <LanguageSelect />
-            <Badge
-              badgeContent={totalQuantity}
-              max={99}
-              color="error"
-              onClick={() => navigate("/cart")}
-              sx={{ cursor: "pointer" }}
-            >
-              <ShoppingCartIcon sx={{ color: "#374151" }} />
-            </Badge>
-            <Box
-              ref={searchRef}
-              sx={{ display: "flex", alignItems: "center", width: "100%" }}
-            >
-              {isSearchOpen ? (
-                <IconButton onClick={closeSearchInput}>
-                  <CloseIcon sx={{ color: "#808080" }} />
-                </IconButton>
-              ) : (
-                <IconButton onClick={openSearchInput}>
-                  <SearchIcon sx={{ color: "#808080" }} />
-                </IconButton>
-              )}
-
+            <NotificationsIcon sx={{ color: theme.palette.secondary.light }} />
+            <div ref={searchRef}>
               <Collapse
                 orientation="horizontal"
                 in={isSearchOpen}
@@ -162,7 +117,7 @@ const AppToolbar = () => {
                   }}
                 />
               </Collapse>
-            </Box>
+            </div>
           </Stack>
         </Toolbar>
       </AppBar>
@@ -172,4 +127,4 @@ const AppToolbar = () => {
   );
 };
 
-export default AppToolbar;
+export default MobileLogo;

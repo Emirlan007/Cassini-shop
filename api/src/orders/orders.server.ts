@@ -17,6 +17,14 @@ export class OrderService {
     return this.orderModel.find({ user: userId });
   }
 
+  async getAdminOrders() {
+    return this.orderModel
+      .find()
+      .populate('user', 'displayName phoneNumber')
+      .sort({ createdAt: -1 })
+      .exec();
+  }
+
   async create(createOrderDto: CreateOrderDto[], userId: string) {
     const totalPrice = createOrderDto.reduce(
       (sum, item) => sum + item.price * item.quantity,

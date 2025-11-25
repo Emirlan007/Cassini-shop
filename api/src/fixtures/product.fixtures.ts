@@ -17,6 +17,8 @@ export async function createProductFixtures(
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
       price: 999,
+      discount: 20,
+      discountUntil: null,
       video: 'fixtures/dressVideo11.mp4',
       images: [
         'fixtures/dress1.webp',
@@ -42,6 +44,8 @@ export async function createProductFixtures(
       size: ['XS', 'XXL'],
       category: categories[1]._id.toString(),
       price: 999,
+      discount: 20,
+      discountUntil: null,
       video: 'fixtures/dressVideo22.mp4',
       images: [
         'fixtures/dress2.webp',
@@ -67,6 +71,8 @@ export async function createProductFixtures(
       size: ['XS', 'XL', 'XXL'],
       category: categories[2]._id.toString(),
       price: 999,
+      discount: 20,
+      discountUntil: '2026-01-01T00:00:00.000Z',
       video: 'fixtures/dressVideo11.mp4',
       images: [
         'fixtures/dress3.png',
@@ -92,6 +98,8 @@ export async function createProductFixtures(
       size: ['XS', 'S'],
       category: categories[3]._id.toString(),
       price: 999,
+      discount: 20,
+      discountUntil: '2026-01-01T00:00:00.000Z',
       video: 'fixtures/dressVideo22.mp4',
       images: [
         'fixtures/dress4.png',

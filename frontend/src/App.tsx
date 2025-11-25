@@ -16,6 +16,7 @@ import UpdateCreateWrap from "./components/UpdateCreateWrap/UpdateCreateWrap.tsx
 import Cart from "./features/cart/Cart.tsx";
 import {Toaster} from 'react-hot-toast';
 import AccountPage from "./pages/AccountPage.tsx";
+import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 
 const App = () => {
     const user = useAppSelector(selectUser);
@@ -47,6 +48,11 @@ const App = () => {
                     <Route path={"/addProduct"}></Route>
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/account" element={<AccountPage />} />
+                    <Route path={'/admin/banners/new'} element={
+                      <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+                        <CreateBanner/>
+                      </ProtectedRoute>
+                    }></Route>
                     <Route path="*" element={<PageNotFound/>}/>
                 </Routes>
             </Container>

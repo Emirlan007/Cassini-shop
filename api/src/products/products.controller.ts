@@ -19,6 +19,7 @@ import { TokenAuthGuard } from '../auth/token-auth.guard';
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { FileUploadInterceptorProduct } from '../shared/file-upload/file-upload.interceptor';
 import { UpdateProductDto } from './dto/update-product.dto';
+import {UpdateDiscountDto} from "./dto/update-discount.dto";
 
 @Controller('products')
 export class ProductsController {
@@ -29,7 +30,7 @@ export class ProductsController {
     @Query('searchValue') searchValue?: string,
     @Query('categoryId') categoryId?: string,
   ) {
-    if(searchValue){
+    if (searchValue) {
       return this.productsService.findBySearch(searchValue);
     }
     return this.productsService.findAll(categoryId);
@@ -86,6 +87,16 @@ export class ProductsController {
     },
   ) {
     return this.productsService.update(id, updateProductDto, files);
+  }
+
+  @Patch(':id/discount')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async updateProductDiscount(
+    @Param('id') id: string,
+    @Body() discountData: UpdateDiscountDto,
+  ) {
+    return this.productsService.updateDiscount(id, discountData);
   }
 
   @Delete(':id')

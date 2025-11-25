@@ -31,6 +31,12 @@ export class Product {
 
   @Prop({ type: Map, of: [String] })
   imagesByColor?: Record<string, string[]>;
+
+  @Prop({ min: 0, max: 100 })
+  discount?: number;
+
+  @Prop()
+  discountUntil?: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
@@ -49,3 +55,19 @@ ProductSchema.index(
     },
   },
 );
+
+ProductSchema.virtual('finalPrice').get(function () {
+  const now = new Date();
+
+  if (this.discount && this.discountUntil && this.discountUntil < now) {
+    return this.price;
+  }
+
+  if (this.discount) {
+    return Math.round(this.price * (1 - this.discount / 100));
+  }
+
+  return this.price;
+});
+
+ProductSchema.set('toJSON', { virtuals: true });

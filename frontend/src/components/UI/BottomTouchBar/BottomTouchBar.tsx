@@ -84,7 +84,7 @@ const BottomTouchBar = () => {
           label={t("touchBar.account")}
           value="account"
           icon={<AccountCircleIcon />}
-          onClick={() => navigate("/userPage")}
+          onClick={() => navigate("/account")}
         />
       ) : (
         <BottomNavigationAction

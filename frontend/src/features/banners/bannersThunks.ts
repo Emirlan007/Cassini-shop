@@ -20,6 +20,36 @@ export const fetchBanners = createAsyncThunk<
     }
 });
 
+export const createBanner = createAsyncThunk<
+    Banner,
+    BannerFormData,
+    { rejectValue: IGlobalError }
+>("banners/createBanner", async (bannerData, { rejectWithValue }) => {
+    try {
+        const formData = new FormData();
+        formData.append("title", bannerData.title);
+        formData.append("isActive", bannerData.isActive.toString());
+
+        if (bannerData.description) {
+            formData.append("description", bannerData.description);
+        }
+        if (bannerData.link) {
+            formData.append("link", bannerData.link);
+        }
+        if (bannerData.image) {
+            formData.append("image", bannerData.image);
+        }
+
+        const response = await axiosApi.post<Banner>("/banners", formData);
+        return response.data;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            return rejectWithValue(error.response.data);
+        }
+        throw error;
+    }
+});
+
 export const updateBanner = createAsyncThunk<
     Banner,
     { id: string; data: BannerFormData },

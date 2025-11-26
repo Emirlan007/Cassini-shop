@@ -75,18 +75,11 @@ export interface Banner {
   isActive: boolean;
 }
 
-export interface BannerInput {
-  title: string;
-  description: string;
-  link: string;
-  image: File | null;
-}
-
 export interface BannerFormData {
   title: string;
   description?: string;
-  isActive: boolean;
   link?: string;
+  isActive: boolean;
   image: File | null;
 }
 

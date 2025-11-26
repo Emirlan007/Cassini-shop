@@ -360,7 +360,8 @@ const ProductDetails = () => {
                             display: { xs: "block", sm: "none" },
                             alignSelf: "center",
                         }}
-                    >${product.price}
+                    >
+                        ${finalPrice}
                     </Typography>
                     <Button
                         variant="contained"

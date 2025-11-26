@@ -85,6 +85,7 @@ export interface BannerInput {
 export interface BannerFormData {
   title: string;
   description?: string;
+  isActive: boolean;
   link?: string;
   image: File | null;
 }

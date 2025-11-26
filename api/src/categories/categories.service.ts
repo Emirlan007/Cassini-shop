@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import slugify from 'slugify';
@@ -56,5 +56,14 @@ export class CategoriesService {
 
   async findBySlug(slug: string): Promise<Category | null> {
     return this.categoryModel.findOne({ slug }).exec();
+  }
+
+  async delete(id: string): Promise<CategoryDocument> {
+    const category = await this.categoryModel.findByIdAndDelete(id).exec();
+
+    if (!category) {
+      throw new NotFoundException(`Category with id "${id}" not found`);
+    }
+    return category;
   }
 }

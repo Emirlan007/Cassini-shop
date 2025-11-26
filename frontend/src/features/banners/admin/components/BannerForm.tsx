@@ -1,6 +1,7 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import type { BannerInput } from "../../../../types";
+import FileInput from "../../../../components/UI/FileInput/FileInput.tsx";
 
 interface Props {
   onSubmit: (data: BannerInput) => void;
@@ -30,18 +31,17 @@ const BannerForm = ({ onSubmit, loading }: Props) => {
   };
 
   return (
-      <Stack spacing={2} component="form" onSubmit={submitHandler} sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+      <Stack spacing={2} component="form" onSubmit={submitHandler} sx={{ maxWidth: 650, mx: "auto", mt: 4 }}>
         <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
           Создать баннер
         </Typography>
 
-        <TextField name="title" label="Название баннера *" value={state.title} onChange={changeHandler} required />
+        <TextField name="title" label="Название баннера" value={state.title} onChange={changeHandler} required />
         <TextField name="description" label="Описание" value={state.description} onChange={changeHandler} multiline minRows={3} />
         <TextField name="link" label="Ссылка" value={state.link} onChange={changeHandler} />
 
         <Box>
-          <Typography sx={{ mb: 1 }}>Изображение *</Typography>
-          <input type="file" accept="image/*" onChange={imageHandler} />
+          <FileInput label={("Изображение ")} name="images" onChange={imageHandler}/>
           {state.image && <Typography sx={{ fontSize: 13, mt: 1 }}>{state.image.name}</Typography>}
         </Box>
 

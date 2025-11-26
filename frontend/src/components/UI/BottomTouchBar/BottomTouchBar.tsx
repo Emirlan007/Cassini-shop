@@ -2,6 +2,7 @@ import {
   Badge,
   BottomNavigation,
   BottomNavigationAction,
+  Box,
   IconButton,
 } from "@mui/material";
 import { useState } from "react";
@@ -51,13 +52,13 @@ const BottomTouchBar = () => {
         onClick={() => dispatch(toggleSearch(true))}
         icon={
           isSearchOpen ? (
-            <IconButton onClick={() => dispatch(toggleSearch(false))}>
+            <Box component="div" onClick={() => dispatch(toggleSearch(false))}>
               <CloseIcon sx={{ color: "#808080" }} />
-            </IconButton>
+            </Box>
           ) : (
-            <IconButton onClick={() => dispatch(toggleSearch(true))}>
+            <Box component="div" onClick={() => dispatch(toggleSearch(true))}>
               <SearchIcon sx={{ color: "#808080" }} />
-            </IconButton>
+            </Box>
           )
         }
       />

@@ -27,6 +27,11 @@ export class OrdersController {
     return this.ordersService.getMyOrders(req.user.id);
   }
 
+  @Get(':id')
+  getOrderById(@Param('id') id: string) {
+    return this.ordersService.findOne(id);
+  }
+
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Get('admin/orders')

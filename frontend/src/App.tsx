@@ -18,6 +18,7 @@ import { Toaster } from "react-hot-toast";
 import AccountPage from "./pages/AccountPage.tsx";
 import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
+import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -60,6 +61,11 @@ const App = () => {
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route path={'/admin/banners/new'} element={
+            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
+              <CreateBanner/>
+            </ProtectedRoute>
+          }></Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

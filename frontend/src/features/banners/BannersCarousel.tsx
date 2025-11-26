@@ -61,7 +61,7 @@ const BannersCarousel = () => {
                     backgroundPosition: "left",
                     backgroundSize: "contain",
                     ml: {md: 3},
-                    backgroundImage: `url(${API_URL}${banner.image.replace('public/', '')})`,
+                    backgroundImage: `url(${API_URL}${banner.image.startsWith('/') ? banner.image.slice(1) : banner.image})`,
                   }}
                 >
                   <Box

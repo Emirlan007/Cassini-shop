@@ -1,5 +1,5 @@
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
@@ -20,13 +20,14 @@ import AccountPage from "./pages/AccountPage.tsx";
 import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
+import UsersList from "./features/users/admin/UsersList.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
-  const location = useLocation();
+  // const location = useLocation();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const hideFooter = isMobile && location.pathname.startsWith("/product/");
+  // const hideFooter = isMobile && location.pathname.startsWith("/product/");
 
   return (
     <Box
@@ -63,6 +64,14 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<AccountPage />} />
           <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                  <UsersList />
+                </ProtectedRoute>
+              }
+          />
+          <Route
             path="/admin/products"
             element={
               <ProtectedRoute isAllowed={user && user.role === "admin"}>
@@ -79,7 +88,6 @@ const App = () => {
         </Routes>
       </Container>
       {isMobile ? <BottomTouchBar /> : <Footer />}
-
       <Toaster position="top-center" reverseOrder={false} />
     </Box>
   );

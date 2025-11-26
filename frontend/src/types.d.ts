@@ -7,6 +7,14 @@ export interface User {
   avatar?: string;
 }
 
+export interface AdminUser {
+  _id: string;
+  displayName: string;
+  phoneNumber: string;
+  role: string;
+  avatar?: string;
+}
+
 export interface RegisterMutation {
   displayName: string;
   phoneNumber: string;

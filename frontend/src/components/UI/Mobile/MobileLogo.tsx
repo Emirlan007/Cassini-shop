@@ -84,7 +84,7 @@ const MobileLogo = () => {
           </Box>
 
           <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-            <img src="/logo.png" alt="Cassini" style={{ width: "70px" }} />
+            <img src="/newLogo.png" alt="Cassini" style={{ width: "70px" }} />
           </Link>
 
           <Stack direction="row" spacing={2} alignItems="center">

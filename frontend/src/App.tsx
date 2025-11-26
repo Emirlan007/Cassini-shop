@@ -63,8 +63,6 @@ const App = () => {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>
-      {/*{!hideFooter && <Footer/>}*/}
-
       {isMobile ? <BottomTouchBar /> : <Footer />}
 
       <Toaster position="top-center" reverseOrder={false} />

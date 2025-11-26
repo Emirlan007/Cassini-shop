@@ -1,5 +1,5 @@
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
@@ -8,6 +8,7 @@ import CategoryProductsPage from "./pages/CategoryProductsPage.tsx";
 import Footer from "./components/Footer/Footer.tsx";
 import ProductDetails from "./features/products/ProductDetails.tsx";
 import NewProduct from "./features/products/NewProduct.tsx";
+import AdminProductsList from "./features/products/admin/AdminProductsList.tsx";
 import { Box, Container, useMediaQuery } from "@mui/material";
 import ProtectedRoute from "./components/UI/ProtectedRoute/ProtectedRoute.tsx";
 import { useAppSelector } from "./app/hooks.ts";
@@ -60,6 +61,14 @@ const App = () => {
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<AccountPage />} />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <AdminProductsList />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

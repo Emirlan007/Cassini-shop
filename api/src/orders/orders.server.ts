@@ -18,9 +18,10 @@ export class OrderService {
   }
 
   async findOne(id: string): Promise<Order> {
-    const order = await this.orderModel.findById(id)
-        .populate('user', 'displayName phoneNumber')
-        .exec();
+    const order = await this.orderModel
+      .findById(id)
+      .populate('user', 'displayName phoneNumber')
+      .exec();
 
     if (!order) {
       throw new NotFoundException(`Order with ID ${id} not found`);

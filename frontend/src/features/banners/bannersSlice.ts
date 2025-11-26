@@ -2,11 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import type {Banner, IGlobalError} from "../../types";
 import {
     fetchBanners,
-    createBanner,
     updateBanner,
     toggleBannerActive,
     deleteBanner,
 } from "./bannersThunks";
+import {createBanner} from "./admin/BannersThunks.ts";
 
 
 interface BannersState {

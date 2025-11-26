@@ -65,7 +65,7 @@ export class BannersController {
       description,
       link,
       isActive,
-      image: `/public/files/${file.filename}`,
+      image: `/files/${file.filename}`,
     });
 
     return banner.save();

@@ -74,6 +74,11 @@ export interface ProductInput {
   price: number;
 }
 
+export interface ProductDiscountInput {
+  discount: number;
+  discountUntil?: string | null;
+}
+
 export interface Banner {
   _id: string;
   title: string;

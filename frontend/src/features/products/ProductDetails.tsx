@@ -5,9 +5,9 @@ import {
     selectProductFetchError,
     selectProductFetchLoading,
 } from "./productsSlice";
-import {useEffect, useState} from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
 import {fetchProductById} from "./productsThunks";
-import {Box, Button, CircularProgress, Tab, Tabs, Typography} from "@mui/material";
+import {Box, Button, CircularProgress, Tab, Tabs, TextField, Typography} from "@mui/material";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import "swiper/swiper.css";
@@ -15,6 +15,11 @@ import {API_URL} from "../../constants";
 import {selectUser} from "../users/usersSlice.ts";
 import {addToCart} from "../cart/cartSlice.ts";
 import toast from "react-hot-toast";
+import {
+    selectAdminUpdateDiscountError,
+    selectAdminUpdateDiscountLoading
+} from "./admin/adminProductsSlice.ts";
+import {updateProductDiscount} from "./admin/adminProductsThunks.ts";
 
 const ProductDetails = () => {
     const dispatch = useAppDispatch();
@@ -22,6 +27,8 @@ const ProductDetails = () => {
     const loading = useAppSelector(selectProductFetchLoading);
     const error = useAppSelector(selectProductFetchError);
     const user = useAppSelector(selectUser);
+    const updateDiscountLoading = useAppSelector(selectAdminUpdateDiscountLoading);
+    const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
     const navigate = useNavigate();
 
     const {productId} = useParams() as { productId: string };
@@ -29,6 +36,8 @@ const ProductDetails = () => {
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
     const [timeLeft, setTimeLeft] = useState<string>("");
     const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
+    const [discountValue, setDiscountValue] = useState<string>("0");
+    const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
 
     const handleAddToCart = () => {
         if (!product || !selectedSize || !selectedColor) return;
@@ -49,6 +58,16 @@ const ProductDetails = () => {
     useEffect(() => {
         dispatch(fetchProductById(productId));
     }, [dispatch, productId]);
+
+    useEffect(() => {
+        if (product) {
+            const discount = typeof product.discount === "number" ? product.discount : 0;
+            setDiscountValue(discount.toString());
+            setDiscountUntilValue(
+                product.discountUntil ? product.discountUntil.slice(0, 10) : ""
+            );
+        }
+    }, [product?._id, product?.discount, product?.discountUntil]);
 
     useEffect(() => {
         const checkDiscount = () => {
@@ -97,6 +116,45 @@ const ProductDetails = () => {
 
     const finalPrice = calculateFinalPrice();
     const showDiscount = product?.discount && hasActiveDiscount;
+    const todayDate = new Date().toISOString().split("T")[0];
+
+    const handleDiscountChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+
+        if (value === "") {
+            setDiscountValue("");
+            return;
+        }
+
+        const numericValue = Math.max(0, Math.min(100, Number(value)));
+        setDiscountValue(numericValue.toString());
+    };
+
+    const handleDiscountSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!product || discountValue === "") return;
+
+        try {
+            await dispatch(
+                updateProductDiscount({
+                    productId: product._id,
+                    discountData: {
+                        discount: Number(discountValue),
+                        discountUntil: discountUntilValue || null,
+                    },
+                })
+            ).unwrap();
+            toast.success("Скидка обновлена");
+            await dispatch(fetchProductById(product._id));
+        } catch (err) {
+            toast.error("Не удалось обновить скидку");
+        }
+    };
+
+    const isDiscountValid =
+        discountValue !== "" &&
+        Number(discountValue) >= 0 &&
+        Number(discountValue) <= 100;
 
     if (loading) {
         return (
@@ -372,16 +430,67 @@ const ProductDetails = () => {
                     </Button>
                     {
                         user?.role === 'admin' ? (
-                            <Button
-                                variant="contained"
-                                sx={{marginLeft: 'auto'}}
-                                onClick={() => navigate(`/products/${product._id}/update`)}
-                            >
-                                Edit
-                            </Button>
+                            <>
+                                <Box
+                                    component="form"
+                                    onSubmit={handleDiscountSubmit}
+                                    sx={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: 1,
+                                        alignItems: "center",
+                                        flex: 1,
+                                    }}
+                                >
+                                    <TextField
+                                        label="Discount (%)"
+                                        type="number"
+                                        value={discountValue}
+                                        onChange={handleDiscountChange}
+                                        required
+                                        inputProps={{ min: 0, max: 100 }}
+                                        sx={{ minWidth: 120 }}
+                                    />
+                                    <TextField
+                                        label="Действует до"
+                                        type="date"
+                                        value={discountUntilValue}
+                                        onChange={(event) =>
+                                            setDiscountUntilValue(event.target.value)
+                                        }
+                                        InputLabelProps={{ shrink: true }}
+                                        inputProps={{ min: todayDate }}
+                                        sx={{ minWidth: 160 }}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        variant="outlined"
+                                        disabled={!isDiscountValid || updateDiscountLoading}
+                                        sx={{ minWidth: 180 }}
+                                    >
+                                        {updateDiscountLoading ? (
+                                            <CircularProgress size={20} />
+                                        ) : (
+                                            "Обновить скидку"
+                                        )}
+                                    </Button>
+                                </Box>
+                                <Button
+                                    variant="contained"
+                                    sx={{marginLeft: 'auto'}}
+                                    onClick={() => navigate(`/products/${product._id}/update`)}
+                                >
+                                    Edit
+                                </Button>
+                            </>
                         ) : null
                     }
                 </Box>
+                {user?.role === 'admin' && updateDiscountError && (
+                    <Typography color="#F0544F" mt={1}>
+                        {updateDiscountError}
+                    </Typography>
+                )}
             </Box>
         </Box>
     );

@@ -47,6 +47,12 @@ export interface ICategory {
   slug: string;
 }
 
+
+interface UpdateCategoryPayload {
+  _id: string;
+  title: string;
+}
+
 export interface Product {
   _id: string;
   name: string;

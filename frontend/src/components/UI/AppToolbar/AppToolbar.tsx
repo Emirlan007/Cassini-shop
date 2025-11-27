@@ -13,11 +13,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
-import {
-  selectLoginLoading,
-  selectUser,
-} from "../../../features/users/usersSlice";
-import { logoutThunk } from "../../../features/users/usersThunks";
+import { selectLoginLoading } from "../../../features/users/usersSlice";
+// import { logoutThunk } from "../../../features/users/usersThunks";
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
 import Badge from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -28,7 +25,7 @@ import { fetchSearchedProducts } from "../../../features/products/productsThunks
 import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
 
 const AppToolbar = () => {
-  const user = useAppSelector(selectUser);
+  // const user = useAppSelector(selectUser);
   const isLoading = useAppSelector(selectLoginLoading);
   const totalQuantity = useAppSelector(selectTotalQuantity);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -81,11 +78,11 @@ const AppToolbar = () => {
     setSearchProduct(value);
     debouncedSearch();
   };
-
-  const handleLogout = async () => {
-    await dispatch(logoutThunk());
-    navigate("/login");
-  };
+  //
+  // const handleLogout = async () => {
+  //   await dispatch(logoutThunk());
+  //   navigate("/login");
+  // };
 
   return (
     <>

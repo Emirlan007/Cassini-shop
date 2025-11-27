@@ -18,6 +18,7 @@ import { ordersReducer } from "../features/orders/ordersSlice.ts";
 import uiReducer from "../features/ui/uiSlice.ts";
 import {adminUsersReducer} from "../features/users/admin/usersSlice.ts";
 import {adminProductsReducer} from "../features/products/admin/adminProductsSlice.ts";
+import {adminCategoriesReducer} from "../features/categories/admin/categorySlice.ts";
 
 const userPersistConfig = {
   key: "shop:users",
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   orders: ordersReducer,
   adminUsers: adminUsersReducer,
   adminProducts: adminProductsReducer,
+  adminCategories: adminCategoriesReducer,
   users: persistReducer(userPersistConfig, usersReducer),
   cart: persistReducer(cartPersistConfig, cartReducer),
   ui: uiReducer,

@@ -16,7 +16,7 @@
   "menu": "башкы бет",
   "user": "колдонуучу",
   "popularProducts": "Популярдуу товарлар",
-  "phoneNumber": "номер телефона",
+  "phoneNumber": "телефон номери",
   "displayName": "никнейм",
   "pageNotFound": "Барак табылган жок",
   "yourOrders": "Сиздин буйрутмаларыңыз",
@@ -53,5 +53,7 @@
     "search": "Издөө",
     "cart": "Себет",
     "account": "Аккаунт"
-  }
+  },
+  "backToOrders": "Заказдарга кайтуу",
+  "customerInfo": "Кардар боюнча маалымат"
 }

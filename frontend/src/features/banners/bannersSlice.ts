@@ -2,11 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type {Banner, IGlobalError} from "../../types";
 import {
     fetchBanners,
-    updateBanner,
     toggleBannerActive,
     deleteBanner,
 } from "./bannersThunks";
-import {createBanner} from "./admin/BannersThunks.ts";
+import {createBanner, fetchBannerById, updateBanner} from "./admin/BannersThunks.ts";
 
 
 interface BannersState {
@@ -16,11 +15,15 @@ interface BannersState {
     createBannerLoading: boolean;
     updateBannerLoading: boolean;
     deleteBannerLoading: boolean;
+    banner: Banner | null;
+    fetchBannerLoading: boolean;
 }
 
 const initialState: BannersState = {
     banners: [],
+    banner: null,
     fetchBannersLoading: false,
+    fetchBannerLoading: false,
     fetchBannersError: null,
     createBannerLoading: false,
     updateBannerLoading: false,
@@ -33,6 +36,9 @@ const bannersSlice = createSlice({
     reducers: {
         clearBannersError: (state) => {
             state.fetchBannersError = null;
+        },
+        clearBanner: (state) => {
+            state.banner = null;
         },
     },
     extraReducers: (builder) => {
@@ -48,6 +54,18 @@ const bannersSlice = createSlice({
             .addCase(fetchBanners.rejected, (state, { payload }) => {
                 state.fetchBannersLoading = false;
                 state.fetchBannersError = (payload as IGlobalError)?.error || "Failed to fetch banners";
+            });
+
+        builder
+            .addCase(fetchBannerById.pending, (state) => {
+                state.fetchBannerLoading = true;
+            })
+            .addCase(fetchBannerById.fulfilled, (state, { payload }) => {
+                state.fetchBannerLoading = false;
+                state.banner = payload;
+            })
+            .addCase(fetchBannerById.rejected, (state) => {
+                state.fetchBannerLoading = false;
             });
 
         builder
@@ -73,6 +91,9 @@ const bannersSlice = createSlice({
                 );
                 if (index !== -1) {
                     state.banners[index] = payload;
+                }
+                if (state.banner && state.banner._id === payload._id) {
+                    state.banner = payload;
                 }
             })
             .addCase(updateBanner.rejected, (state) => {
@@ -104,7 +125,9 @@ const bannersSlice = createSlice({
     },
     selectors: {
         selectBanners: (state) => state.banners,
+        selectBanner: (state) => state.banner,
         selectFetchBannersLoading: (state) => state.fetchBannersLoading,
+        selectFetchBannerLoading: (state) => state.fetchBannerLoading,
         selectCreateBannerLoading: (state) => state.createBannerLoading,
         selectUpdateBannerLoading: (state) => state.updateBannerLoading,
         selectDeleteBannerLoading: (state) => state.deleteBannerLoading,
@@ -113,10 +136,12 @@ const bannersSlice = createSlice({
 });
 
 export const bannersReducer = bannersSlice.reducer;
-export const { clearBannersError } = bannersSlice.actions;
+export const { clearBannersError, clearBanner } = bannersSlice.actions;
 export const {
     selectBanners,
+    selectBanner,
     selectFetchBannersLoading,
+    selectFetchBannerLoading,
     selectCreateBannerLoading,
     selectUpdateBannerLoading,
     selectDeleteBannerLoading,

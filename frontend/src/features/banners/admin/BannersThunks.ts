@@ -2,6 +2,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import type {Banner, BannerFormData, IGlobalError} from "../../../types";
 import {axiosApi} from "../../../axiosApi.ts";
 import {isAxiosError} from "axios";
+import type {RootState} from "../../../app/store.ts";
 
 export const createBanner = createAsyncThunk<
     Banner,
@@ -51,9 +52,11 @@ export const fetchBannerById = createAsyncThunk<
 export const updateBanner = createAsyncThunk<
     Banner,
     { id: string; data: BannerFormData },
-    { rejectValue: IGlobalError }
->("banners/updateBanner", async ({ id, data }, { rejectWithValue }) => {
+    { rejectValue: IGlobalError; state: RootState }
+>("banners/updateBanner", async ({ id, data }, { rejectWithValue, getState }) => {
     try {
+        const token = getState().users.user?.token;
+
         const formData = new FormData();
         formData.append("title", data.title);
 
@@ -67,7 +70,9 @@ export const updateBanner = createAsyncThunk<
             formData.append("image", data.image);
         }
 
-        const response = await axiosApi.put<Banner>(`/banners/${id}`, formData);
+        const response = await axiosApi.put<Banner>(`/banners/${id}`, formData, {
+            headers: { Authorization: token },
+        });
         return response.data;
     } catch (error) {
         if (isAxiosError(error) && error.response) {

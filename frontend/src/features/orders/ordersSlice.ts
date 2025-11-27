@@ -1,12 +1,12 @@
-import type {OrderItem} from "../../types";
+import type {Order} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {createOrder, fetchOrderById, fetchOrders} from "./ordersThunk.ts";
 
 interface OrdersSlice {
-    orders: OrderItem[];
+    orders: Order[];
     isCreating: boolean;
     isLoading: boolean;
-    orderDetails: OrderItem | null;
+    orderDetails: Order | null;
     orderDetailsLoading: boolean;
 
 }

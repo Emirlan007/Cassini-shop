@@ -53,5 +53,7 @@
     "search":"search",
     "cart":"cart",
     "account":"account"
-  }
+  },
+  "backToOrders": "Back to orders",
+  "customerInfo": "Customer Information"
 }

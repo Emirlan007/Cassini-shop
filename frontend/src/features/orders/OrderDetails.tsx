@@ -12,6 +12,7 @@ import {
 import { API_URL } from "../../constants";
 import { useTranslation } from "react-i18next";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import {selectUser} from "../users/usersSlice.ts";
 
 const OrderDetails = () => {
     const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ const OrderDetails = () => {
     const loading = useAppSelector(selectOrderDetailsLoading);
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const user = useAppSelector(selectUser);
 
     const { orderId } = useParams() as { orderId: string };
 
@@ -75,6 +77,27 @@ const OrderDetails = () => {
                     </Typography>
                 </Box>
 
+                {user.role === "admin" && order.user && (
+                    <Box
+                        mb={3}
+                        p={2}
+                        border="1px solid #ccc"
+                        borderRadius={2}
+                    >
+                        <Typography variant="h6" sx={{ mb: 1 }}>
+                            {t("customerInfo")}
+                        </Typography>
+
+                        <Typography variant="body1">
+                            <b>{t("displayName")}:</b> {order.user.displayName}
+                        </Typography>
+
+                        <Typography variant="body1">
+                            <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
+                        </Typography>
+                    </Box>
+                )}
+
                 {order.items.map((item) => (
                     <Box
                         key={`${item.productId}-${item.selectedColor}-${item.selectedSize}`}
@@ -90,20 +113,27 @@ const OrderDetails = () => {
                             flexDirection="column"
                             sx={{
                                 height: {xs: 320, sm: 400},
+                                width: '100%',
+                                overflow: 'hidden',
+                                borderRadius: 2,
                             }}
                         >
                             <img
                                 src={`${API_URL}/${item.image.replace(/^\/+/, "")}`}
                                 alt={item.title}
                                 style={{
-                                    objectFit: "cover",
-                                    borderRadius: 8
+                                    objectFit: "contain",
+                                    borderRadius: 8,
+                                    maxWidth: '100%',
+                                    maxHeight: '100%',
+                                    width: 'auto',
+                                    height: 'auto'
                                 }}
                             />
                         </Box>
 
                         <Box>
-                            <Typography variant="h6" sx={{ mb: 1, mt: 3}}>
+                            <Typography variant="h6" sx={{ mb: 1, mt: 2}}>
                                 <b>{item.title}</b>
                             </Typography>
 
@@ -124,8 +154,6 @@ const OrderDetails = () => {
                         </Box>
                     </Box>
                 ))}
-
-                {/* Общая стоимость заказа */}
                 <Box
                     display="flex"
                     justifyContent="space-between"

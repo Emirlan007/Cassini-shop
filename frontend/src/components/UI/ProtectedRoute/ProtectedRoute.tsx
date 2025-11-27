@@ -1,5 +1,5 @@
-import { Navigate } from 'react-router-dom';
-import type { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from "react";
+import PageNotFound from "../../../PageNotFound";
 
 interface Props extends PropsWithChildren {
     isAllowed: boolean | null;
@@ -7,7 +7,7 @@ interface Props extends PropsWithChildren {
 
 const ProtectedRoute: FC<Props> = ({ isAllowed, children }) => {
     if (!isAllowed) {
-        return <Navigate to="/login" />;
+        return <PageNotFound />;
     }
 
     return children;

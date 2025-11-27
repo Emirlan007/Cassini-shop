@@ -5,14 +5,12 @@ import {useEffect} from "react";
 import {fetchOrders} from "../features/orders/ordersThunk.ts";
 import {API_URL} from "../constants.ts";
 import {useTranslation} from "react-i18next";
-import {useNavigate} from "react-router-dom";
 
 const AccountPage = () => {
     const dispatch = useAppDispatch();
     const orders = useAppSelector(selectOrders);
     const loading = useAppSelector(selectIsLoading);
     const { t } = useTranslation();
-    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchOrders());
@@ -33,15 +31,6 @@ const AccountPage = () => {
                         mb={3} p={2}
                         border="1px solid #ccc"
                         borderRadius={2}
-                        sx={{
-                            cursor: 'pointer',
-                            transition: 'all 0.2s',
-                            '&:hover': {
-                                boxShadow: 3,
-                                transform: 'translateY(-2px)'
-                            }
-                        }}
-                        onClick={() => navigate(`/orders/${order._id}`)}
                     >
                         <Box
                             display="flex"
@@ -80,7 +69,7 @@ const AccountPage = () => {
                                     <Typography variant="body2">{t("size")}: {item.selectedSize}</Typography>
                                     <Typography variant="body2">{t("price")}: {item.price}₸</Typography>
                                     <Typography variant="body2">{t("quantity")}: {item.quantity}</Typography>
-                                    <Typography variant="body2" fontWeight="bold">{t("total")}: {item.price * item.quantity}₸</Typography>
+                                    <Typography variant="body2">{t("total")}: {item.price * item.quantity}₸</Typography>
                                 </Box>
                             </Box>
                         ))}

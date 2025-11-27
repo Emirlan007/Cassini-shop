@@ -21,7 +21,9 @@ import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 import UsersList from "./features/users/admin/UsersList.tsx";
+import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import OrderDetails from "./features/orders/OrderDetails.tsx";
+
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -80,6 +82,14 @@ const App = () => {
                 <AdminProductsList />
               </ProtectedRoute>
             }
+          />
+          <Route
+              path="/admin/categories"
+              element={
+                <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                  <AdminCategories/>
+                </ProtectedRoute>
+              }
           />
           <Route path={'/admin/banners/new'} element={
             <ProtectedRoute isAllowed={user && user.role === 'admin'}>

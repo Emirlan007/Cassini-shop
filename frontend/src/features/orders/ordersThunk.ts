@@ -34,3 +34,18 @@ export const fetchOrders = createAsyncThunk(
         }
     }
 );
+
+export const fetchOrderById = createAsyncThunk(
+    "orders/fetchOrderById",
+    async (orderId: string, { rejectWithValue }) => {
+        try {
+            const response = await axiosApi.get(`/orders/${orderId}`);
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            }
+            throw error;
+        }
+    }
+);

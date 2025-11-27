@@ -16,6 +16,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import { cartReducer } from "../features/cart/cartSlice.ts";
 import { ordersReducer } from "../features/orders/ordersSlice.ts";
 import uiReducer from "../features/ui/uiSlice.ts";
+import {adminUsersReducer} from "../features/users/admin/usersSlice.ts";
 
 const userPersistConfig = {
   key: "shop:users",
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   banners: bannersReducer,
   categories: categoriesReducer,
   orders: ordersReducer,
+  adminUsers: adminUsersReducer,
   users: persistReducer(userPersistConfig, usersReducer),
   cart: persistReducer(cartPersistConfig, cartReducer),
   ui: uiReducer,

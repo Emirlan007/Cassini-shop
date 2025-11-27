@@ -19,6 +19,7 @@ import { Toaster } from "react-hot-toast";
 import AccountPage from "./pages/AccountPage.tsx";
 import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
+import OrderDetails from "./features/orders/OrderDetails.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 
 const App = () => {
@@ -51,6 +52,7 @@ const App = () => {
             element={<CategoryProductsPage />}
           />
           <Route path="/product/:productId" element={<ProductDetails />} />
+            <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route
             path="/products/new"
             element={

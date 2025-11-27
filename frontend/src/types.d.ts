@@ -93,9 +93,17 @@ export interface CartItem {
   image: string;
 }
 
-export interface OrderItem extends  CartItem{
+export interface OrderItem extends CartItem {
   _id: string;
   userId: string;
+  createdAt: string;
+  items: CartItem[];
+  totalPrice: number;
+}
+
+export interface OrderItemAdmin {
+  _id: string;
+  user: User;
   createdAt: string;
   items: CartItem[];
   totalPrice: number;

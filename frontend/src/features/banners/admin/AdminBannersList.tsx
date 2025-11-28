@@ -13,6 +13,7 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
 import {
     selectBanners,
@@ -81,9 +82,30 @@ const AdminBannersList = () => {
                                             href={banner.link}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            underline="hover"
+                                            underline="none"
+                                            title={banner.link}
+                                            sx={{
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                gap: 1,
+                                                px: 1.5,
+                                                py: 0.75,
+                                                borderRadius: 2,
+                                                bgcolor: "rgba(0, 0, 0, 0.04)",
+                                                color: "text.primary",
+                                                fontWeight: 500,
+                                                maxWidth: 240,
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                transition: "background-color 0.2s",
+                                                "&:hover": {
+                                                    bgcolor: "rgba(0, 0, 0, 0.08)",
+                                                },
+                                            }}
                                         >
-                                            {banner.link}
+                                            <span>{banner.link}</span>
+                                            <OpenInNewRoundedIcon sx={{ fontSize: 18 }} />
                                         </MuiLink>
                                     ) : (
                                         "—"

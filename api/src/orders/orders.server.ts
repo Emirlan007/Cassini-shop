@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { Order, OrderDocument } from '../schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order-dto';
@@ -54,17 +58,22 @@ export class OrderService {
     return orders;
   }
 
-  async create(createOrderDto: CreateOrderDto[], userId: string) {
-    const totalPrice = createOrderDto.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0,
-    );
+  async create(createOrderDto: CreateOrderDto, userId: string) {
+    const { items, paymentMethod, status, userComment, totalPrice } =
+      createOrderDto;
 
     const createdOrder = new this.orderModel({
       user: userId,
-      items: createOrderDto,
-      createdAt: new Date().toISOString(),
-      totalPrice: totalPrice,
+      items: items.map((item) => ({
+        product: item.product,
+        quantity: item.quantity,
+      })),
+      paymentMethod,
+      status: status ?? 'pending',
+      userComment: userComment ?? null,
+      adminComments: [],
+      createdAt: new Date(),
+      totalPrice,
     });
 
     await createdOrder.save();
@@ -73,5 +82,44 @@ export class OrderService {
       message: 'Order created',
       orderId: createdOrder._id,
     };
+  }
+
+  async addUserComment(orderId: string, userId: string, comment: string) {
+    const order = await this.orderModel.findById(orderId);
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+    const orderUserId =
+      typeof order.user === 'string'
+        ? order.user
+        : (order.user as Types.ObjectId).toString();
+
+    if (orderUserId !== userId) {
+      throw new ForbiddenException('You can comment only your own orders');
+    }
+
+    if (order.userComment) {
+      return order;
+    }
+
+    order.userComment = comment;
+
+    await order.save();
+    return order;
+  }
+
+  async addAdminComment(orderId: string, comment: string) {
+    const order = await this.orderModel.findById(orderId);
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+    order.adminComments.push(comment);
+
+    await order.save();
+    return order;
   }
 }

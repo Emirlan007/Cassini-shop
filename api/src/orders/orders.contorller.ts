@@ -15,6 +15,7 @@ import { FileUploadInterceptorOrder } from '../shared/file-upload/file-upload.in
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
+import { CommentDto } from './dto/comment.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -50,10 +51,35 @@ export class OrdersController {
   @UseInterceptors(FileUploadInterceptorOrder)
   @Post()
   async createOrder(
-    @Body() orderData: CreateOrderDto[],
+    @Body() orderData: CreateOrderDto,
     @Req() req: RequestWithUser,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.ordersService.create(orderData, req.user.id);
+  }
+
+  @UseGuards(TokenAuthGuard)
+  @Post(':id/user-comment')
+  async addUserComment(
+    @Param('id') orderId: string,
+    @Body() commentDto: CommentDto,
+    @Req() req: RequestWithUser,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.ordersService.addUserComment(
+      orderId,
+      req.user.id,
+      commentDto.comment,
+    );
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Post(':id/admin-comment')
+  async addAdminComment(
+    @Param('id') orderId: string,
+    @Body() commentDto: CommentDto,
+  ) {
+    return this.ordersService.addAdminComment(orderId, commentDto.comment);
   }
 }

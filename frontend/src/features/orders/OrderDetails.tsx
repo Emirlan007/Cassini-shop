@@ -77,7 +77,7 @@ const OrderDetails = () => {
                     </Typography>
                 </Box>
 
-                {user.role === "admin" && order.user && (
+                {user?.role === "admin" && order.user && (
                     <Box
                         mb={3}
                         p={2}

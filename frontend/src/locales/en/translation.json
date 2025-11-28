@@ -55,5 +55,6 @@
     "account":"account"
   },
   "backToOrders": "Back to orders",
-  "customerInfo": "Customer Information"
+  "customerInfo": "Customer Information",
+  "edit": "Edit"
 }

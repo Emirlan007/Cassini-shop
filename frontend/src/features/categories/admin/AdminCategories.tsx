@@ -83,9 +83,8 @@ const AdminCategories = () => {
     return (
         <Box sx={{pb: 1}}>
             {categories.map((category) => (
-                <>
+                <Box  key={category._id}>
                     <Box
-                        key={category._id}
                         sx={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -108,6 +107,10 @@ const AdminCategories = () => {
                                         variant="contained"
                                         onClick={handleSave}
                                         disabled={updateLoading === category._id}
+                                        sx={{
+                                            backgroundColor: "#F0544F",
+                                            "&:hover": { backgroundColor: "#d33636" },
+                                        }}
                                     >
                                         {updateLoading === category._id ? (
                                             <CircularProgress size={20} color="inherit" />
@@ -115,14 +118,36 @@ const AdminCategories = () => {
                                             "Сохранить"
                                         )}
                                     </Button>
-                                    <Button variant="contained" color="secondary" onClick={handleCancel}>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={handleCancel}
+                                        sx={{
+                                            backgroundColor: "#F0544F",
+                                            "&:hover": { backgroundColor: "#d33636" },
+                                        }}
+                                    >
                                         Отмена
                                     </Button>
                                 </Box>
                             </Box>
                         ) : (
-                            <>
-                                <Typography sx={{ color: "#660033" }}>{category.title}</Typography>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: { xs: "column", sm: "row" },
+                                    justifyContent: "space-between",
+                                    alignItems: { xs: "flex-start", sm: "center" },
+                                    gap: { xs: 1, sm: 0 },
+                                    width: "100%",
+                                }}
+                            >
+                                <Typography
+                                    variant={'h6'}
+                                    sx={{ color: "#660033" }}
+                                >
+                                    {category.title}
+                                </Typography>
                                 <Box sx={{ display: "flex", gap: 2 }} >
                                     <Button
                                         variant="contained"
@@ -146,11 +171,11 @@ const AdminCategories = () => {
                                         {deleteLoading === category._id ? <CircularProgress size={20} color="inherit" /> : "Удалить"}
                                     </Button>
                                 </Box>
-                            </>
+                            </Box>
                         )}
                     </Box>
                     <Divider sx={{my: 1}}/>
-                </>
+                </Box>
             ))}
         </Box>
     );

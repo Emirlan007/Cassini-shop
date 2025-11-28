@@ -5,7 +5,7 @@ import {
     toggleBannerActive,
     deleteBanner,
 } from "./bannersThunks";
-import {createBanner, fetchBannerById, updateBanner} from "./admin/BannersThunks.ts";
+import {createBanner, fetchBannerById, fetchAllBanners, updateBanner} from "./admin/BannersThunks.ts";
 
 
 interface BannersState {
@@ -52,6 +52,20 @@ const bannersSlice = createSlice({
                 state.banners = payload;
             })
             .addCase(fetchBanners.rejected, (state, { payload }) => {
+                state.fetchBannersLoading = false;
+                state.fetchBannersError = (payload as IGlobalError)?.error || "Failed to fetch banners";
+            });
+
+        builder
+            .addCase(fetchAllBanners.pending, (state) => {
+                state.fetchBannersLoading = true;
+                state.fetchBannersError = null;
+            })
+            .addCase(fetchAllBanners.fulfilled, (state, { payload }) => {
+                state.fetchBannersLoading = false;
+                state.banners = payload;
+            })
+            .addCase(fetchAllBanners.rejected, (state, { payload }) => {
                 state.fetchBannersLoading = false;
                 state.fetchBannersError = (payload as IGlobalError)?.error || "Failed to fetch banners";
             });

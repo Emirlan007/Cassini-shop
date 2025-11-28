@@ -23,16 +23,25 @@ import { TokenAuthGuard } from 'src/auth/token-auth.guard';
 import { RolesGuard } from 'src/role-auth/role-auth.guard';
 import { Roles } from 'src/role-auth/roles.decorator';
 import { Role } from 'src/enums/role.enum';
+import { BannerService } from './banner.service';
 
 @Controller('banners')
 export class BannersController {
   constructor(
     @InjectModel(Banner.name) private bannerModel: Model<BannerDocument>,
+    private readonly bannerService: BannerService,
   ) {}
 
   @Get()
-  async getBanners() {
-    return this.bannerModel.find({ isActive: true });
+  async getActiveBanners() {
+    return this.bannerService.getActiveBanners();
+  }
+
+  @Get('all')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getAllBanners() {
+    return this.bannerService.getAllBanners();
   }
 
   @Get(':id')

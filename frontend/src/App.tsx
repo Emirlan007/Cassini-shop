@@ -1,5 +1,5 @@
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import {Route, Routes, useLocation } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
@@ -18,7 +18,7 @@ import { Toaster } from "react-hot-toast";
 import AccountPage from "./pages/AccountPage.tsx";
 import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
-import Orders from "./features/orders/admin/AdminOrders.tsx";
+
 import AdminOrders from "./features/orders/admin/AdminOrders.tsx";
 
 const App = () => {
@@ -62,7 +62,14 @@ const App = () => {
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<AccountPage />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
+           <Route
+            path="/admin/orders"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+             <AdminOrders />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

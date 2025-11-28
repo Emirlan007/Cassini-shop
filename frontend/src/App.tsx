@@ -1,5 +1,5 @@
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes, useLocation } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
@@ -19,13 +19,14 @@ import { Toaster } from "react-hot-toast";
 import AccountPage from "./pages/AccountPage.tsx";
 import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
-import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
-import UsersList from "./features/users/admin/UsersList.tsx";
-import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
-import OrderDetails from "./features/orders/OrderDetails.tsx";
-import UpdateBanner from "./features/banners/admin/UpdateBanner.tsx";
-import AdminBannersList from "./features/banners/admin/AdminBannersList.tsx";
 
+import AdminOrders from "./features/orders/admin/AdminOrders.tsx";
+import UpdateBanner from "./features/banners/admin/UpdateBanner.tsx";
+import OrderDetails from "./features/orders/OrderDetails.tsx";
+import UsersList from "./features/users/admin/UsersList.tsx";
+import AdminBannersList from "./features/banners/admin/AdminBannersList.tsx";
+import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
+import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -115,6 +116,14 @@ const App = () => {
                     </ProtectedRoute>
                 }
             />
+           <Route
+            path="/admin/orders"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+             <AdminOrders />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

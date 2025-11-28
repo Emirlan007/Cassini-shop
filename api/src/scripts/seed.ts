@@ -40,7 +40,6 @@ async function bootstrap() {
 
     console.log('Creating fixtures...');
     await createUserFixtures(userService);
-
     const categories = await createCategoryFixtures(categoriesService);
     const typedCategories = categories.map((cat) => ({
       ...cat,

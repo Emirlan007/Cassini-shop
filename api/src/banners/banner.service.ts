@@ -22,4 +22,12 @@ export class BannerService {
     }
     return banners;
   }
+
+  async getActiveBanners() {
+    return this.bannerModel.find({ isActive: true });
+  }
+
+  async getAllBanners() {
+    return this.bannerModel.find();
+  }
 }

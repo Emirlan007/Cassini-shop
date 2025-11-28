@@ -49,6 +49,30 @@ export const fetchBannerById = createAsyncThunk<
     }
 });
 
+export const fetchAllBanners = createAsyncThunk<
+    Banner[],
+    void,
+    { rejectValue: IGlobalError; state: RootState }
+>("banners/fetchAllBanners", async (_, { rejectWithValue, getState }) => {
+    try {
+        const token = getState().users.user?.token;
+
+        if (!token) {
+            return rejectWithValue({ error: "Unauthorized" });
+        }
+
+        const response = await axiosApi.get<Banner[]>("/banners/all", {
+            headers: { Authorization: token },
+        });
+        return response.data;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            return rejectWithValue(error.response.data);
+        }
+        throw error;
+    }
+});
+
 export const updateBanner = createAsyncThunk<
     Banner,
     { id: string; data: BannerFormData },

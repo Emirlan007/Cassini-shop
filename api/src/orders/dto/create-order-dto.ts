@@ -1,30 +1,48 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+  IsMongoId,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class OrderItemDto {
+  @IsNotEmpty()
+  @IsMongoId()
+  product: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  quantity: number;
+}
 
 export class CreateOrderDto {
-  @IsNotEmpty()
-  @IsString()
-  productId: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OrderItemDto)
+  items: OrderItemDto[];
 
   @IsNotEmpty()
   @IsString()
-  title: string;
-
-  @IsNotEmpty()
-  price: number;
-
-  @IsNotEmpty()
-  quantity: number;
-
-  @IsNotEmpty()
-  @IsString()
-  selectedColor: string;
-
-  @IsNotEmpty()
-  @IsString()
-  selectedSize: string;
+  @IsIn(['cash', 'qrCode'])
+  paymentMethod: 'cash' | 'qrCode';
 
   @IsOptional()
-  @IsNotEmpty()
   @IsString()
-  image: string;
+  @IsIn(['pending', 'processing', 'completed'])
+  status?: 'pending' | 'processing' | 'completed';
+
+  @IsOptional()
+  @IsString()
+  userComment?: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  totalPrice: number;
 }

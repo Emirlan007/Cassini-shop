@@ -1,15 +1,15 @@
 import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {fetchCategories} from "../categoryThunk.ts";
 import {
     Box,
     Button,
     CircularProgress,
-    Divider,
+    Divider, TextField,
     Typography
 } from "@mui/material";
-import {selectCategoryDeleteLoading} from "./categorySlice.ts";
-import {deleteCategory} from "./categoryThunk.ts";
+import {selectCategoryDeleteLoading, selectCategoryUpdateLoading} from "./categorySlice.ts";
+import {deleteCategory, updateCategory} from "./categoryThunk.ts";
 
 
 const AdminCategories = () => {
@@ -17,7 +17,11 @@ const AdminCategories = () => {
 
     const categories = useAppSelector((state) => state.categories.categoriesAll);
     const loading = useAppSelector((state) => state.categories.fetchingCategories);
-    const deleteLoading = useAppSelector(selectCategoryDeleteLoading)
+    const deleteLoading = useAppSelector(selectCategoryDeleteLoading);
+    const updateLoading = useAppSelector(selectCategoryUpdateLoading);
+
+    const [editId, setEditId] = useState<string | null>(null);
+    const [editTitle, setEditTitle] = useState("");
 
     useEffect(() => {
         dispatch(fetchCategories());
@@ -33,6 +37,29 @@ const AdminCategories = () => {
         } catch (err) {
             console.error("Ошибка при удалении категории:", err);
         }
+    };
+
+    const handleEdit = (id: string, title: string) => {
+        setEditId(id);
+        setEditTitle(title);
+    };
+
+    const handleSave = async () => {
+        if (!editId) return;
+
+        try {
+            await dispatch(updateCategory({ _id: editId, title: editTitle })).unwrap();
+            setEditId(null);
+            setEditTitle("");
+            dispatch(fetchCategories());
+        } catch (err) {
+            console.error("Ошибка при обновлении категории:", err);
+        }
+    };
+
+    const handleCancel = () => {
+        setEditId(null);
+        setEditTitle("");
     };
 
     if (loading) {
@@ -67,20 +94,60 @@ const AdminCategories = () => {
                             mb: 1,
                         }}
                     >
-                        <Typography sx={{color: '#660033'}}>{category.title}</Typography>
-                        <Button
-                            sx={{
-                                ml: "auto",
-                                backgroundColor: "#F0544F",
-                                "&:hover": {
-                                    backgroundColor: "#d33636",
-                                },
-                        }}
-                            loading={Boolean(deleteLoading)}
-                            onClick={() => handleDelete(category._id)}
-                        >
-                            Удалить
-                        </Button>
+                        {editId === category._id ? (
+                            <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%"  }}>
+                                <TextField
+                                    value={editTitle}
+                                    onChange={(e) => setEditTitle(e.target.value)}
+                                    disabled={updateLoading === category._id}
+                                    fullWidth
+                                />
+
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleSave}
+                                        disabled={updateLoading === category._id}
+                                    >
+                                        {updateLoading === category._id ? (
+                                            <CircularProgress size={20} color="inherit" />
+                                        ) : (
+                                            "Сохранить"
+                                        )}
+                                    </Button>
+                                    <Button variant="contained" color="secondary" onClick={handleCancel}>
+                                        Отмена
+                                    </Button>
+                                </Box>
+                            </Box>
+                        ) : (
+                            <>
+                                <Typography sx={{ color: "#660033" }}>{category.title}</Typography>
+                                <Box sx={{ display: "flex", gap: 2 }} >
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        sx={{
+                                            backgroundColor: "#F0544F",
+                                            "&:hover": { backgroundColor: "#d33636" },
+                                        }}
+                                        onClick={() => handleEdit(category._id, category.title)}
+                                    >
+                                        Редактировать
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            backgroundColor: "#F0544F",
+                                            "&:hover": { backgroundColor: "#d33636" },
+                                        }}
+                                        onClick={() => handleDelete(category._id)}
+                                        disabled={deleteLoading === category._id}
+                                    >
+                                        {deleteLoading === category._id ? <CircularProgress size={20} color="inherit" /> : "Удалить"}
+                                    </Button>
+                                </Box>
+                            </>
+                        )}
                     </Box>
                     <Divider sx={{my: 1}}/>
                 </>

@@ -158,6 +158,28 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                     />
                   </ListItemButton>
                   <Divider sx={{ my: 1 }} />
+                  <ListItemButton
+                      onClick={() => {
+                        navigate("/admin/categoriesList");
+                        toggleDrawer(false)();
+                      }}
+                      sx={{
+                        mx: 1,
+                        borderRadius: 1,
+                        "&:hover": {
+                          backgroundColor: "action.hover",
+                        },
+                      }}
+                  >
+                    <ListItemText
+                        primary="Категорий"
+                        primaryTypographyProps={{
+                          fontSize: "0.95rem",
+                          fontWeight: 500,
+                        }}
+                    />
+                  </ListItemButton>
+                  <Divider sx={{ my: 1 }} />
                 </>
               )}
 

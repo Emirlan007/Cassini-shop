@@ -23,7 +23,7 @@ import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 import UsersList from "./features/users/admin/UsersList.tsx";
 import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import OrderDetails from "./features/orders/OrderDetails.tsx";
-
+import AdminCategoriesList from "./features/categories/admin/AdminCategoriesList.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -55,7 +55,7 @@ const App = () => {
             element={<CategoryProductsPage />}
           />
           <Route path="/product/:productId" element={<ProductDetails />} />
-            <Route path="/orders/:orderId" element={<OrderDetails />} />
+          <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route
             path="/products/new"
             element={
@@ -68,12 +68,12 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<AccountPage />} />
           <Route
-              path="/admin/users"
-              element={
-                <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                  <UsersList />
-                </ProtectedRoute>
-              }
+            path="/admin/users"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <UsersList />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/admin/products"
@@ -84,18 +84,29 @@ const App = () => {
             }
           />
           <Route
-              path="/admin/categories"
-              element={
-                <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                  <AdminCategories/>
-                </ProtectedRoute>
-              }
+            path="/admin/categories"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <AdminCategories />
+              </ProtectedRoute>
+            }
           />
-          <Route path={'/admin/banners/new'} element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
-              <CreateBanner/>
-            </ProtectedRoute>
-          }></Route>
+          <Route
+            path="/admin/categoriesList"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <AdminCategoriesList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={"/admin/banners/new"}
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <CreateBanner />
+              </ProtectedRoute>
+            }
+          ></Route>
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

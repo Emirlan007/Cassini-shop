@@ -44,23 +44,24 @@ const BottomTouchBar = () => {
         onClick={() => navigate("/")}
         icon={<HomeIcon />}
       />
-      <BottomNavigationAction
-        sx={{ "&.Mui-selected": { color: theme.palette.secondary.light } }}
-        label={t("touchBar.search")}
-        value="search"
-        onClick={() => dispatch(toggleSearch(true))}
-        icon={
-          isSearchOpen ? (
-            <IconButton onClick={() => dispatch(toggleSearch(false))}>
-              <CloseIcon sx={{ color: "#808080" }} />
-            </IconButton>
-          ) : (
-            <IconButton onClick={() => dispatch(toggleSearch(true))}>
-              <SearchIcon sx={{ color: "#808080" }} />
-            </IconButton>
-          )
-        }
-      />
+
+      {isSearchOpen ? (
+        <BottomNavigationAction
+          sx={{ "&.Mui-selected": { color: theme.palette.secondary.light } }}
+          label={t("touchBar.search")}
+          value="search"
+          onClick={() => dispatch(toggleSearch(false))}
+          icon={<CloseIcon sx={{ color: "#808080" }} />}
+        />
+      ) : (
+        <BottomNavigationAction
+          sx={{ "&.Mui-selected": { color: theme.palette.secondary.light } }}
+          label={t("touchBar.search")}
+          value="search"
+          onClick={() => dispatch(toggleSearch(true))}
+          icon={<SearchIcon sx={{ color: "#808080" }} />}
+        />
+      )}
 
       <BottomNavigationAction
         sx={{ "&.Mui-selected": { color: theme.palette.secondary.light } }}

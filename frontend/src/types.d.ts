@@ -135,3 +135,11 @@ export interface Order {
     totalPrice: number;
     createdAt: string;
 }
+
+export interface OrderItemAdmin {
+  _id: string;
+  user: User;
+  createdAt: string;
+  items: CartItem[];
+  totalPrice: number;
+}

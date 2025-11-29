@@ -147,9 +147,10 @@ export const updateProduct = createAsyncThunk<
   return data;
 });
 
-export const deleteProduct = createAsyncThunk<void, string>(
+export const deleteProduct = createAsyncThunk<void, string, { getState }>(
     "products/delete",
-    async (id) => {
+    async (id, {dispatch}) => {
       await axiosApi.delete("/products/" + id);
+      await dispatch(fetchProducts())
     }
 );

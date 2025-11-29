@@ -52,8 +52,9 @@ const ProductDetails = () => {
     const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
 
     const recommended = categoryProducts
-        .filter(p => p.category._id === product?.category._id)
-        .filter(p => p._id !== product?._id);
+        .filter(p => p.category?._id === product?.category?._id)
+        .filter(p => p._id !== product?._id)
+        .slice(0, 4);
 
     const handleAddToCart = () => {
         if (!product || !selectedSize || !selectedColor) return;
@@ -61,7 +62,7 @@ const ProductDetails = () => {
         dispatch(addToCart({
             productId: product._id,
             title: product.name,
-            price: product.price,
+            price: product.finalPrice!,
             quantity: 1,
             selectedColor: selectedColor,
             selectedSize: selectedSize,
@@ -72,19 +73,22 @@ const ProductDetails = () => {
     };
 
     useEffect(() => {
-        dispatch(fetchProductById(productId));
+        void dispatch(fetchProductById(productId));
     }, [dispatch, productId]);
 
     useEffect(() => {
+        if (product?.category?._id) {
+            void dispatch(fetchProducts(product.category._id));
+        }
+
         if (product) {
-            dispatch(fetchProducts(product.category._id));
             const discount = typeof product.discount === "number" ? product.discount : 0;
             setDiscountValue(discount.toString());
             setDiscountUntilValue(
                 product.discountUntil ? product.discountUntil.slice(0, 10) : ""
             );
         }
-    }, [product?._id, product?.discount, product?.discountUntil]);
+    }, [product?._id, dispatch]);
 
     useEffect(() => {
         const checkDiscount = () => {

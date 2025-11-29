@@ -88,9 +88,11 @@ export class ProductsService {
       .findById(id)
       .populate('category', 'title slug')
       .exec();
+
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
+
     return product;
   }
 

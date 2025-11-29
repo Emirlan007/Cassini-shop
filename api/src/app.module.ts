@@ -18,9 +18,10 @@ import { Category, CategorySchema } from './schemas/category.schema';
 import { CategoriesController } from './categories/categories.controller';
 import { CategoriesService } from './categories/categories.service';
 import { Order, OrderSchema } from './schemas/order.schema';
-import { OrdersController } from './orders/orders.contorller';
-import { OrderService } from './orders/orders.server';
+import { OrdersController } from './orders/orders.controller';
+import { OrderService } from './orders/orders.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
+    OrdersModule,
   ],
   controllers: [
     UsersController,

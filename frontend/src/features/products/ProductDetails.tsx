@@ -3,10 +3,10 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
     selectProduct,
     selectProductFetchError,
-    selectProductFetchLoading,
+    selectProductFetchLoading, selectProducts,
 } from "./productsSlice";
 import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
-import {fetchProductById} from "./productsThunks";
+import {fetchProductById, fetchProducts} from "./productsThunks";
 import {
     Box,
     Button,
@@ -30,9 +30,8 @@ import {
     selectAdminUpdateDiscountLoading
 } from "./admin/adminProductsSlice.ts";
 import {updateProductDiscount} from "./admin/adminProductsThunks.ts";
-import ProductList from "../features/products/ProductsList.tsx";
-import {fetchProducts} from "../features/products/productsThunks.ts";
-import {selectProducts} from "../features/products/productsSlice.ts";
+import ProductList from "./ProductsList.tsx";
+
 
 const ProductDetails = () => {
     const dispatch = useAppDispatch();

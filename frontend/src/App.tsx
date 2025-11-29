@@ -25,6 +25,8 @@ import UpdateBanner from "./features/banners/admin/UpdateBanner.tsx";
 import OrderDetails from "./features/orders/OrderDetails.tsx";
 import UsersList from "./features/users/admin/UsersList.tsx";
 import AdminBannersList from "./features/banners/admin/AdminBannersList.tsx";
+import User from "./features/users/admin/User.tsx";
+
 import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 
@@ -78,6 +80,14 @@ const App = () => {
                 </ProtectedRoute>
               }
           />
+            <Route
+                path="/admin/users/:userId"
+                element={
+                    <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                        <User />
+                    </ProtectedRoute>
+                }
+            />
           <Route
             path="/admin/products"
             element={

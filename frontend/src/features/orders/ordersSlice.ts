@@ -1,6 +1,6 @@
 import type {Order} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
-import {createOrder, fetchOrderById, fetchOrders} from "./ordersThunk.ts";
+import {createOrder, fetchOrderById, fetchOrders, fetchOrdersByUserId} from "./ordersThunk.ts";
 
 interface OrdersSlice {
     orders: Order[];
@@ -8,7 +8,9 @@ interface OrdersSlice {
     isLoading: boolean;
     orderDetails: Order | null;
     orderDetailsLoading: boolean;
-
+    userOrders: Order[];
+    userOrdersLoading: boolean;
+    userOrdersError: string | null;
 }
 
 const initialState: OrdersSlice = {
@@ -17,6 +19,9 @@ const initialState: OrdersSlice = {
     isLoading: false,
     orderDetails: null,
     orderDetailsLoading: false,
+    userOrders: [],
+    userOrdersLoading: false,
+    userOrdersError: null,
 }
 
 const ordersSlice = createSlice({
@@ -25,6 +30,10 @@ const ordersSlice = createSlice({
     reducers: {
         clearOrderDetails: (state) => {
             state.orderDetails = null;
+        },
+        clearUserOrders: (state) => {
+            state.userOrders = [];
+            state.userOrdersError = null;
         }
     },
     extraReducers: (builder) => {
@@ -60,6 +69,19 @@ const ordersSlice = createSlice({
             .addCase(fetchOrderById.rejected, (state) => {
                 state.orderDetailsLoading = false;
             });
+        builder
+            .addCase(fetchOrdersByUserId.pending, (state) => {
+                state.userOrdersLoading = true;
+                state.userOrdersError = null;
+            })
+            .addCase(fetchOrdersByUserId.fulfilled, (state, action) => {
+                state.userOrdersLoading = false;
+                state.userOrders = action.payload;
+            })
+            .addCase(fetchOrdersByUserId.rejected, (state, action) => {
+                state.userOrdersLoading = false;
+                state.userOrdersError = action.payload as string || "Ошибка при загрузке заказов пользователя";
+            });
     },
     selectors: {
         selectOrders: (state) => state.orders,
@@ -67,6 +89,9 @@ const ordersSlice = createSlice({
         selectIsLoading: (state) => state.isLoading,
         selectOrderDetails: (state) => state.orderDetails,
         selectOrderDetailsLoading: (state) => state.orderDetailsLoading,
+        selectUserOrders: (state) => state.userOrders,
+        selectUserOrdersLoading: (state) => state.userOrdersLoading,
+        selectUserOrdersError: (state) => state.userOrdersError,
     }
 });
 
@@ -77,5 +102,8 @@ export const {
     selectIsLoading,
     selectOrderDetails,
     selectOrderDetailsLoading,
+    selectUserOrders,
+    selectUserOrdersLoading,
+    selectUserOrdersError,
 } = ordersSlice.selectors;
-export const { clearOrderDetails } = ordersSlice.actions;
+export const { clearOrderDetails, clearUserOrders } = ordersSlice.actions;

@@ -16,6 +16,7 @@ import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import { selectUser } from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
+import {clearCart} from "../../../features/cart/cartSlice.ts";
 
 interface Props {
   isOpen: boolean;
@@ -31,6 +32,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
+    dispatch(clearCart());
     navigate("/login");
   };
 

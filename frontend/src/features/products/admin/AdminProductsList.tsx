@@ -18,7 +18,7 @@ import {
   selectProductsFetchError,
   selectProductsFetchLoading,
 } from "../productsSlice";
-import { fetchProducts } from "../productsThunks";
+import {deleteProduct, fetchProducts} from "../productsThunks";
 import AdminProductCard from "./components/AdminProductCard";
 import {useNavigate} from "react-router-dom";
 import { Add as AddIcon } from "@mui/icons-material";
@@ -50,6 +50,9 @@ const AdminProductsList = () => {
     );
   }
 
+  const removeProduct = async (id: string) => {
+      await dispatch(deleteProduct(id));
+  }
   return (
     <Box width="100%">
         <Box
@@ -93,7 +96,11 @@ const AdminProductsList = () => {
           </TableHead>
           <TableBody>
             {products.map((product) => (
-              <AdminProductCard key={product._id} product={product} />
+              <AdminProductCard
+                  removeProduct={removeProduct}
+                  key={product._id}
+                  product={product}
+              />
             ))}
           </TableBody>
         </Table>

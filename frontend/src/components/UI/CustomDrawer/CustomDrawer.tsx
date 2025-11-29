@@ -16,7 +16,6 @@ import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import { selectUser } from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
-import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
 
 interface Props {
   isOpen: boolean;
@@ -313,7 +312,6 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                 </ListItemButton>
               )}
 
-              <LanguageSelect />
               <Divider sx={{ my: 2 }} />
 
               <Box sx={{ px: 2, py: 1 }}>

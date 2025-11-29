@@ -15,7 +15,6 @@ import {
   selectCategoryCreateLoading
 } from "./categorySlice.ts";
 import {createCategory, deleteCategory, updateCategory} from "./categoryThunk.ts";
-import {Add as AddIcon} from "@mui/icons-material";
 
 const AdminCategories = () => {
   const dispatch = useAppDispatch();
@@ -116,8 +115,8 @@ const AdminCategories = () => {
                             onClick={handleSave}
                             disabled={updateLoading === category._id}
                             sx={{
-                              backgroundColor: "#F0544F",
-                              "&:hover": { backgroundColor: "#d33636" },
+                              backgroundColor: "#660033",
+                              "&:hover": { backgroundColor: "#F0544F" },
                             }}
                         >
                           {updateLoading === category._id ? (
@@ -134,8 +133,8 @@ const AdminCategories = () => {
                               setEditTitle("");
                             }}
                             sx={{
-                              backgroundColor: "#F0544F",
-                              "&:hover": { backgroundColor: "#d33636" },
+                              backgroundColor: "#660033",
+                              "&:hover": { backgroundColor: "#F0544F" },
                             }}
                         >
                           Отмена
@@ -227,8 +226,8 @@ const AdminCategories = () => {
                     disabled={createLoading}
                     onClick={handleCreate}
                     sx={{
-                      backgroundColor: "#F0544F",
-                      "&:hover": { backgroundColor: "#d33636" },
+                      backgroundColor: "#660033",
+                      "&:hover": { backgroundColor: "#F0544F" },
                       width: "100%",
                     }}
                 >

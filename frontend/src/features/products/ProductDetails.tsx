@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
     selectProduct,
@@ -30,6 +30,9 @@ import {
     selectAdminUpdateDiscountLoading
 } from "./admin/adminProductsSlice.ts";
 import {updateProductDiscount} from "./admin/adminProductsThunks.ts";
+import ProductList from "../features/products/ProductsList.tsx";
+import {fetchProducts} from "../features/products/productsThunks.ts";
+import {selectProducts} from "../features/products/productsSlice.ts";
 
 const ProductDetails = () => {
     const dispatch = useAppDispatch();
@@ -39,7 +42,7 @@ const ProductDetails = () => {
     const user = useAppSelector(selectUser);
     const updateDiscountLoading = useAppSelector(selectAdminUpdateDiscountLoading);
     const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
-    const navigate = useNavigate();
+    const categoryProducts = useAppSelector(selectProducts);
 
     const {productId} = useParams() as { productId: string };
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -48,6 +51,10 @@ const ProductDetails = () => {
     const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
     const [discountValue, setDiscountValue] = useState<string>("0");
     const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
+
+    const recommended = categoryProducts
+        .filter(p => p.category._id === product?.category._id)
+        .filter(p => p._id !== product?._id);
 
     const handleAddToCart = () => {
         if (!product || !selectedSize || !selectedColor) return;
@@ -71,6 +78,7 @@ const ProductDetails = () => {
 
     useEffect(() => {
         if (product) {
+            dispatch(fetchProducts(product.category._id));
             const discount = typeof product.discount === "number" ? product.discount : 0;
             setDiscountValue(discount.toString());
             setDiscountUntilValue(
@@ -184,342 +192,350 @@ const ProductDetails = () => {
     }
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                gap: 3,
-            }}
-        >
+        <>
             <Box
                 sx={{
-                    width: { xs: "100%", md: "50%" },
-                }}
-            >
-                <Swiper
-                    modules={[Pagination, Navigation]}
-                    navigation={true}
-                    pagination={{clickable: true}}
-                    className="mySwiper"
-                >
-                    {product?.video && (
-                        <SwiperSlide key="video">
-                            <Box sx={{height: {xs: 320, sm: 400}}}>
-                                <video width="100%" height="100%" controls>
-                                    <source src={API_URL + product.video} type="video/mp4"/>
-                                    Ваш браузер не поддерживает видео.
-                                </video>
-                            </Box>
-                        </SwiperSlide>
-                    )}
-                    {product?.images.map((image) => (
-                        <SwiperSlide key={image}>
-                            <Box
-                                sx={{
-                                    height: {xs: 320, sm: 400},
-                                }}
-                            >
-                                <img src={`${API_URL}${image.startsWith('/') ? image.slice(1) : image}`}
-                                     alt={product.name}/>
-                            </Box>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-            </Box>
-
-            <Box
-                sx={{
-                width: { xs: "100%", md: "50%" },
-                }}
-            >
-                <Typography variant="h6" sx={{marginBottom: 1}}>
-                    <b>{product?.name}</b>
-                </Typography>
-                <Box sx={{
                     display: "flex",
-                    flexDirection: { xs: "column", sm: "row" },
-                    alignItems: { xs: "flex-start", sm: "center" },
-                    gap: 1,
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: 3,
                 }}
+            >
+                <Box
+                    sx={{
+                        width: { xs: "100%", md: "50%" },
+                    }}
                 >
+                    <Swiper
+                        modules={[Pagination, Navigation]}
+                        navigation={true}
+                        pagination={{clickable: true}}
+                        className="mySwiper"
+                    >
+                        {product?.video && (
+                            <SwiperSlide key="video">
+                                <Box sx={{height: {xs: 320, sm: 400}}}>
+                                    <video width="100%" height="100%" controls>
+                                        <source src={API_URL + product.video} type="video/mp4"/>
+                                        Ваш браузер не поддерживает видео.
+                                    </video>
+                                </Box>
+                            </SwiperSlide>
+                        )}
+                        {product?.images.map((image) => (
+                            <SwiperSlide key={image}>
+                                <Box
+                                    sx={{
+                                        height: {xs: 320, sm: 400},
+                                    }}
+                                >
+                                    <img src={`${API_URL}${image.startsWith('/') ? image.slice(1) : image}`}
+                                         alt={product.name}/>
+                                </Box>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                </Box>
+
+                <Box
+                    sx={{
+                        width: { xs: "100%", md: "50%" },
+                    }}
+                >
+                    <Typography variant="h6" sx={{marginBottom: 1}}>
+                        <b>{product?.name}</b>
+                    </Typography>
                     <Box sx={{
                         display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
+                        flexDirection: { xs: "column", sm: "row" },
+                        alignItems: { xs: "flex-start", sm: "center" },
                         gap: 1,
                     }}
                     >
-                        {showDiscount ? (
-                            <>
-                                <Typography
-                                    sx={{
-                                        fontWeight: 500,
-                                        fontSize: "14px",
-                                        color: "#4B5563",
-                                        textDecoration: "line-through",
-                                    }}
-                                >
-                                    {product.price} $
-                                </Typography>
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 1,
+                        }}
+                        >
+                            {showDiscount ? (
+                                <>
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 500,
+                                            fontSize: "14px",
+                                            color: "#4B5563",
+                                            textDecoration: "line-through",
+                                        }}
+                                    >
+                                        {product.price} $
+                                    </Typography>
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 600,
+                                            fontSize: "14px",
+                                            color: "#ff4444",
+                                        }}
+                                    >
+                                        {finalPrice} $
+                                    </Typography>
+                                </>
+                            ) : (
                                 <Typography
                                     sx={{
                                         fontWeight: 600,
+                                        fontSize: "18px",
+                                        color: "#660033",
+                                    }}
+                                >${product.price}
+                                </Typography>
+                            )}
+
+                            {showDiscount && (
+                                <Typography
+                                    sx={{
+                                        backgroundColor: "#ff4444",
+                                        color: "white",
+                                        borderRadius: "4px",
+                                        padding: "4px 8px",
                                         fontSize: "14px",
-                                        color: "#ff4444",
+                                        fontWeight: "bold",
                                     }}
                                 >
-                                    {finalPrice} $
+                                    -{product.discount}%
                                 </Typography>
-                            </>
-                        ) : (
+                            )}
+                        </Box>
+
+                        <Box sx={{
+                            display: "block",
+                            marginLeft: { xs: 0, sm: "auto" }
+                        }}
+                        >
+                            {showDiscount && timeLeft && (
+                                <Typography
+                                    sx={{
+                                        color: "red",
+                                        padding: "4px 8px",
+                                        fontSize: "15px",
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    Осталось: {timeLeft}
+                                </Typography>
+                            )}
+                        </Box>
+                    </Box>
+
+                    {product.size?.length > 0 && (
+                        <Box mt={3}>
+                            <Typography
+                                mb={1}
+                                sx={{color: '#525252', fontSize: '14px', fontWeight: '400'}}
+                            >
+                                Размер:
+                            </Typography>
+                            <ToggleButtonGroup
+                                value={selectedSize}
+                                exclusive
+                                onChange={(_, value) => {
+                                    if (value !== null) {
+                                        setSelectedSize(value);
+                                    }
+                                }}
+                                sx={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 1,
+                                    '& .MuiToggleButtonGroup-grouped': {
+                                        border: '1px solid #D9D9D9',
+                                        borderRadius: '8px !important',
+                                        margin: 0,
+                                        px: 3,
+                                        py: 1,
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        fontSize: '14px',
+                                        color: '#000',
+                                        '&:not(:first-of-type)': {
+                                            marginLeft: 0,
+                                            borderLeft: '1px solid #D9D9D9',
+                                        },
+                                        '&.Mui-selected': {
+                                            border: '1px solid #000 !important',
+                                            backgroundColor: '#F2F2F2',
+                                            color: '#000',
+                                            '&:hover': {
+                                                backgroundColor: '#F2F2F2',
+                                            }
+                                        }
+                                    }
+                                }}
+                            >
+                                {product.size.map((s) => (
+                                    <ToggleButton
+                                        key={s}
+                                        value={s}
+                                    >
+                                        {s}
+                                    </ToggleButton>
+                                ))}
+                            </ToggleButtonGroup>
+                        </Box>
+                    )}
+
+                    {product.colors?.length > 0 && (
+                        <Box mt={3}>
+                            <Typography
+                                mb={1}
+                                sx={{color: '#525252', fontSize: '14px', fontWeight: '400'}}
+                            >
+                                Цвет:
+                            </Typography>
+
+                            <Tabs
+                                value={selectedColor ?? false}
+                                onChange={(_, v) => setSelectedColor(v)}
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                sx={{
+                                    minHeight: 0,
+                                    "& .MuiTabs-flexContainer": { gap: "10px" },
+                                    "& .MuiTabs-indicator": { display: "none" }
+                                }}
+                            >
+                                {product.colors.map((c) => (
+                                    <Tab
+                                        key={c}
+                                        value={c}
+                                        label={
+                                            <Box
+                                                sx={{
+                                                    width: 35,
+                                                    height: 35,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: c,
+                                                    border: selectedColor === c ? "2px solid #000" : "1px solid #ccc",
+                                                    padding: "3px",
+                                                    backgroundClip: "content-box",
+                                                }}
+                                            />
+                                        }
+                                        sx={{
+                                            minHeight: 0,
+                                            minWidth: 0,
+                                            padding: 0,
+                                        }}
+                                    />
+                                ))}
+                            </Tabs>
+                        </Box>
+                    )}
+
+                    <Box>
+                        <Typography variant={'h6'} sx={{marginY: 1, fontSize: '16px', fontWeight: '500'}}>Product Details</Typography>
+                        <Typography variant="body1" sx={{color: '#525252', fontSize: '14px'}}>{product?.description}</Typography>
+                    </Box>
+
+                    <Box mt={4}>
+                        <Box display="flex" gap={2} flexWrap="wrap" alignItems="center" mb={user?.role === 'admin' ? 2 : 0}>
                             <Typography
                                 sx={{
                                     fontWeight: 600,
                                     fontSize: "18px",
                                     color: "#660033",
-                                }}
-                            >${product.price}
-                            </Typography>
-                        )}
-
-                        {showDiscount && (
-                            <Typography
-                                sx={{
-                                    backgroundColor: "#ff4444",
-                                    color: "white",
-                                    borderRadius: "4px",
-                                    padding: "4px 8px",
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
+                                    display: { xs: "block", sm: "none" },
+                                    alignSelf: "center",
                                 }}
                             >
-                                -{product.discount}%
+                                ${finalPrice}
                             </Typography>
-                        )}
-                    </Box>
-
-                    <Box sx={{
-                        display: "block",
-                        marginLeft: { xs: 0, sm: "auto" }
-                    }}
-                    >
-                        {showDiscount && timeLeft && (
-                            <Typography
-                                sx={{
-                                    color: "red",
-                                    padding: "4px 8px",
-                                    fontSize: "15px",
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                Осталось: {timeLeft}
-                            </Typography>
-                        )}
-                    </Box>
-                </Box>
-
-                {product.size?.length > 0 && (
-                    <Box mt={3}>
-                        <Typography
-                            mb={1}
-                            sx={{color: '#525252', fontSize: '14px', fontWeight: '400'}}
-                        >
-                            Размер:
-                        </Typography>
-                        <ToggleButtonGroup
-                            value={selectedSize}
-                            exclusive
-                            onChange={(_, value) => {
-                                if (value !== null) {
-                                    setSelectedSize(value);
-                                }
-                            }}
-                            sx={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                gap: 1,
-                                '& .MuiToggleButtonGroup-grouped': {
-                                    border: '1px solid #D9D9D9',
-                                    borderRadius: '8px !important',
-                                    margin: 0,
-                                    px: 3,
-                                    py: 1,
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    fontSize: '14px',
-                                    color: '#000',
-                                    '&:not(:first-of-type)': {
-                                        marginLeft: 0,
-                                        borderLeft: '1px solid #D9D9D9',
-                                    },
-                                    '&.Mui-selected': {
-                                        border: '1px solid #000 !important',
-                                        backgroundColor: '#F2F2F2',
-                                        color: '#000',
-                                        '&:hover': {
-                                            backgroundColor: '#F2F2F2',
-                                        }
-                                    }
-                                }
-                            }}
-                        >
-                            {product.size.map((s) => (
-                                <ToggleButton
-                                    key={s}
-                                    value={s}
-                                >
-                                    {s}
-                                </ToggleButton>
-                            ))}
-                        </ToggleButtonGroup>
-                    </Box>
-                )}
-
-                {product.colors?.length > 0 && (
-                    <Box mt={3}>
-                        <Typography
-                            mb={1}
-                            sx={{color: '#525252', fontSize: '14px', fontWeight: '400'}}
-                        >
-                            Цвет:
-                        </Typography>
-
-                        <Tabs
-                            value={selectedColor ?? false}
-                            onChange={(_, v) => setSelectedColor(v)}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            sx={{
-                                minHeight: 0,
-                                "& .MuiTabs-flexContainer": { gap: "10px" },
-                                "& .MuiTabs-indicator": { display: "none" }
-                            }}
-                        >
-                            {product.colors.map((c) => (
-                                <Tab
-                                    key={c}
-                                    value={c}
-                                    label={
-                                        <Box
-                                            sx={{
-                                                width: 35,
-                                                height: 35,
-                                                borderRadius: "50%",
-                                                backgroundColor: c,
-                                                border: selectedColor === c ? "2px solid #000" : "1px solid #ccc",
-                                                padding: "3px",
-                                                backgroundClip: "content-box",
-                                            }}
-                                        />
-                                    }
-                                    sx={{
-                                        minHeight: 0,
-                                        minWidth: 0,
-                                        padding: 0,
-                                    }}
-                                />
-                            ))}
-                        </Tabs>
-                    </Box>
-                )}
-
-                <Box>
-                    <Typography variant={'h6'} sx={{marginY: 1, fontSize: '16px', fontWeight: '500'}}>Product Details</Typography>
-                    <Typography variant="body1" sx={{color: '#525252', fontSize: '14px'}}>{product?.description}</Typography>
-                </Box>
-
-                <Box mt={4}>
-                    <Box display="flex" gap={2} flexWrap="wrap" alignItems="center" mb={user?.role === 'admin' ? 2 : 0}>
-                        <Typography
-                            sx={{
-                                fontWeight: 600,
-                                fontSize: "18px",
-                                color: "#660033",
-                                display: { xs: "block", sm: "none" },
-                                alignSelf: "center",
-                            }}
-                        >
-                            ${finalPrice}
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            disabled={!selectedColor || !selectedSize}
-                            onClick={handleAddToCart}
-                        >
-                            Add to Cart
-                        </Button>
-                        {user?.role === 'admin' && (
                             <Button
                                 variant="contained"
-                                sx={{marginLeft: { xs: 0, sm: 'auto' }}}
-                                onClick={() => navigate(`/products/${product._id}/update`)}
+                                disabled={!selectedColor || !selectedSize}
+                                onClick={handleAddToCart}
                             >
-                                Edit
-                            </Button>
-                        )}
-                    </Box>
-                    {user?.role === 'admin' && (
-                        <Box
-                            component="form"
-                            onSubmit={handleDiscountSubmit}
-                            sx={{
-                                display: "flex",
-                                flexDirection: { xs: "column", sm: "row" },
-                                gap: 2,
-                                alignItems: { xs: "stretch", sm: "center" },
-                                mt: 2,
-                                p: 2,
-                                border: "1px solid #e0e0e0",
-                                borderRadius: 2,
-                                backgroundColor: "#f9f9f9",
-                            }}
-                        >
-                            <TextField
-                                label="Размер скидки (%)"
-                                type="number"
-                                value={discountValue}
-                                onChange={handleDiscountChange}
-                                required
-                                inputProps={{ min: 0, max: 100 }}
-                                sx={{ flex: { xs: "1 1 auto", sm: "0 0 150px" } }}
-                            />
-                            <TextField
-                                label="Действует до"
-                                type="date"
-                                value={discountUntilValue}
-                                onChange={(event) =>
-                                    setDiscountUntilValue(event.target.value)
-                                }
-                                InputLabelProps={{ shrink: true }}
-                                inputProps={{ min: todayDate }}
-                                required
-                                sx={{ flex: { xs: "1 1 auto", sm: "0 0 180px" } }}
-                            />
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                disabled={!isDiscountValid || updateDiscountLoading}
-                                sx={{ 
-                                    flex: { xs: "1 1 auto", sm: "0 0 200px" },
-                                    minHeight: "56px"
-                                }}
-                            >
-                                {updateDiscountLoading ? (
-                                    <CircularProgress size={20} />
-                                ) : (
-                                    "Подтвердить скидку"
-                                )}
+                                Add to Cart
                             </Button>
                         </Box>
+                        {user?.role === 'admin' && (
+                            <Box
+                                component="form"
+                                onSubmit={handleDiscountSubmit}
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: { xs: "column", sm: "row" },
+                                    gap: 2,
+                                    alignItems: { xs: "stretch", sm: "center" },
+                                    mt: 2,
+                                    p: 2,
+                                    border: "1px solid #e0e0e0",
+                                    borderRadius: 2,
+                                    backgroundColor: "#f9f9f9",
+                                }}
+                            >
+                                <TextField
+                                    label="Размер скидки (%)"
+                                    type="number"
+                                    value={discountValue}
+                                    onChange={handleDiscountChange}
+                                    required
+                                    inputProps={{ min: 0, max: 100 }}
+                                    sx={{ flex: { xs: "1 1 auto", sm: "0 0 150px" } }}
+                                />
+                                <TextField
+                                    label="Действует до"
+                                    type="date"
+                                    value={discountUntilValue}
+                                    onChange={(event) =>
+                                        setDiscountUntilValue(event.target.value)
+                                    }
+                                    InputLabelProps={{ shrink: true }}
+                                    inputProps={{ min: todayDate }}
+                                    required
+                                    sx={{ flex: { xs: "1 1 auto", sm: "0 0 180px" } }}
+                                />
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    disabled={!isDiscountValid || updateDiscountLoading}
+                                    sx={{
+                                        flex: { xs: "1 1 auto", sm: "0 0 200px" },
+                                        minHeight: "56px"
+                                    }}
+                                >
+                                    {updateDiscountLoading ? (
+                                        <CircularProgress size={20} />
+                                    ) : (
+                                        "Подтвердить скидку"
+                                    )}
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+                    {user?.role === 'admin' && updateDiscountError && (
+                        <Typography color="#F0544F" mt={1}>
+                            {updateDiscountError}
+                        </Typography>
                     )}
                 </Box>
-                {user?.role === 'admin' && updateDiscountError && (
-                    <Typography color="#F0544F" mt={1}>
-                        {updateDiscountError}
-                    </Typography>
-                )}
             </Box>
-        </Box>
+            <Box marginTop={9}>
+                <Typography variant="h6" sx={{
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '133%',
+                    textAlign: 'center',
+                    color: '#111827',
+                    marginBottom: 3,
+                    marginTop: 5
+                }}>
+                    <b>You Might Also Like</b>
+                </Typography>
+
+                <ProductList products={recommended} />
+            </Box>
+        </>
     );
 };
 

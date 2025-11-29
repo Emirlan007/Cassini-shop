@@ -15,6 +15,7 @@ import {
   selectCategoryCreateLoading
 } from "./categorySlice.ts";
 import {createCategory, deleteCategory, updateCategory} from "./categoryThunk.ts";
+import {Add as AddIcon} from "@mui/icons-material";
 
 const AdminCategories = () => {
   const dispatch = useAppDispatch();
@@ -163,8 +164,8 @@ const AdminCategories = () => {
                             variant="contained"
                             size="small"
                             sx={{
-                              backgroundColor: "#F0544F",
-                              "&:hover": { backgroundColor: "#d33636" },
+                              backgroundColor: "#660033",
+                              "&:hover": { backgroundColor: "#F0544F" },
                             }}
                             onClick={() => handleEdit(category._id, category.title)}
                         >
@@ -173,8 +174,8 @@ const AdminCategories = () => {
 
                         <Button
                             sx={{
-                              backgroundColor: "#F0544F",
-                              "&:hover": { backgroundColor: "#d33636" },
+                              backgroundColor: "#660033",
+                              "&:hover": { backgroundColor: "#F0544F" },
                             }}
                             onClick={() => handleDelete(category._id)}
                             disabled={deleteLoading === category._id}
@@ -197,8 +198,8 @@ const AdminCategories = () => {
                 variant="contained"
                 sx={{
                   mt: 2,
-                  backgroundColor: "#F0544F",
-                  "&:hover": { backgroundColor: "#d33636" },
+                  backgroundColor: "#660033",
+                  "&:hover": { backgroundColor: "#F0544F" },
                 }}
                 onClick={() => setCreateMode(true)}
             >

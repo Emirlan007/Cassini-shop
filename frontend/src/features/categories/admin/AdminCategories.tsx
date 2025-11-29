@@ -15,7 +15,6 @@ import {
   selectCategoryCreateLoading
 } from "./categorySlice.ts";
 import {createCategory, deleteCategory, updateCategory} from "./categoryThunk.ts";
-import {Add as AddIcon} from "@mui/icons-material";
 
 const AdminCategories = () => {
   const dispatch = useAppDispatch();

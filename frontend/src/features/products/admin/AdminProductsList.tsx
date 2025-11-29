@@ -73,7 +73,7 @@ const AdminProductsList = () => {
                     color: "white",
                     backgroundColor: "#660033",
                     '&:hover': {
-                        backgroundColor: 'primary.dark',
+                        backgroundColor: '#F0544F',
                     },
                 }}
             >

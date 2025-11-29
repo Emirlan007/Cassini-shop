@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { selectBanners, selectBannersError } from "./bannersSlice";
 import { useEffect } from "react";
 import { fetchBanners } from "./bannersThunks";
@@ -11,15 +11,12 @@ import { API_URL } from "../../constants";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";
 import "./styles.css";
-import {selectUser} from "../users/usersSlice.ts";
 
 const BannersCarousel = () => {
   const dispatch = useAppDispatch();
   const banners = useAppSelector(selectBanners);
   const bannersError = useAppSelector(selectBannersError);
   const { t } = useTranslation();
-  const user = useAppSelector(selectUser);
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchBanners());
@@ -108,23 +105,6 @@ const BannersCarousel = () => {
                         {t("moreInfo")}
                       </Button>
                     </Link>
-                      {user?.role === 'admin' ? (
-                        <Button
-                          variant="contained"
-                          onClick={() => navigate(`/admin/banners/${banner._id}/update`)}
-                          sx={{
-                              display: {xs: 'block', sm: 'block'},
-                              textAlign: {xs: "center", sm: "center"},
-                              bgcolor: "#660033",
-                              color: "white",
-                              textDecoration: "none",
-                              mt: 1,
-                              mx: {xs: 0, sm: "auto"},
-                          }}
-                        >
-                          {t("edit")}
-                        </Button>
-                      ):null}
                   </Box>
                 </Box>
               </SwiperSlide>

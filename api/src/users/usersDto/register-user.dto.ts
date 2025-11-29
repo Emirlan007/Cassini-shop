@@ -2,7 +2,7 @@ import { IsNotEmpty, IsPhoneNumber } from 'class-validator';
 
 export class RegisterUserDto {
   @IsNotEmpty()
-  @IsPhoneNumber()
+  // @IsPhoneNumber()
   phoneNumber: string;
 
   @IsNotEmpty()

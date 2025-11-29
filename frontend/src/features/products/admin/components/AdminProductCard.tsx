@@ -1,12 +1,13 @@
-import { TableRow, TableCell } from "@mui/material";
+import {TableRow, TableCell, Button} from "@mui/material";
 import type { Product } from "../../../../types";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
   product: Product;
+  removeProduct: (id: string) => void;
 }
 
-const AdminProductCard = ({ product }: Props) => {
+const AdminProductCard = ({ product , removeProduct}: Props) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -27,6 +28,35 @@ const AdminProductCard = ({ product }: Props) => {
       <TableCell>
         {product.discount ? `${product.discount}%` : "-"}
       </TableCell>
+      <Button
+          onClick={(event) => {
+            event.stopPropagation();
+            navigate(`/products/${product._id}/update`);
+          }}
+          color='secondary'
+          variant='contained'
+          sx={{
+            mr: 2,
+            backgroundColor: "#660033",
+            "&:hover": { backgroundColor: "#F0544F" },
+          }}
+      >
+        edit
+      </Button>
+      <Button
+          onClick={(event) => {
+            event.stopPropagation();
+            removeProduct(product._id)
+          }}
+          color='secondary'
+          variant='contained'
+          sx={{
+            backgroundColor: "#660033",
+            "&:hover": { backgroundColor: "#F0544F" },
+          }}
+      >
+        delete
+      </Button>
     </TableRow>
   );
 };

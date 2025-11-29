@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import { useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
     selectProduct,
@@ -31,7 +31,6 @@ const ProductDetails = () => {
     const updateDiscountLoading = useAppSelector(selectAdminUpdateDiscountLoading);
     const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
     const categoryProducts = useAppSelector(selectProducts);
-    const navigate = useNavigate();
 
     const {productId} = useParams() as { productId: string };
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -483,13 +482,6 @@ const ProductDetails = () => {
                                             )}
                                         </Button>
                                     </Box>
-                                    <Button
-                                        variant="contained"
-                                        sx={{marginLeft: 'auto'}}
-                                        onClick={() => navigate(`/products/${product._id}/update`)}
-                                    >
-                                        Edit
-                                    </Button>
                                 </>
                             ) : null
                         }

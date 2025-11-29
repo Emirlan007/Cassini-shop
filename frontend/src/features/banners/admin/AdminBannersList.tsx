@@ -29,7 +29,7 @@ import {
 import {fetchAllBanners} from "./BannersThunks.ts";
 import {API_URL} from "../../../constants.ts";
 import {useNavigate} from "react-router-dom";
-import {toggleBannerActive} from "../bannersThunks.ts";
+import {deleteBanner, toggleBannerActive} from "../bannersThunks.ts";
 
 const AdminBannersList = () => {
     const dispatch = useAppDispatch();
@@ -47,6 +47,10 @@ const AdminBannersList = () => {
     const handleToggleActive = (id: string) => {
         dispatch(toggleBannerActive(id));
     };
+
+    const removeBanner = async (id: string) => {
+        await dispatch(deleteBanner(id));
+    }
 
     if (loading) {
         return (
@@ -384,7 +388,7 @@ const AdminBannersList = () => {
                                         "—"
                                     )}
                                 </TableCell>
-                                <TableCell sx={{ width: '140px' }}>
+                                <TableCell sx={{ minWidth: '140px' , display: 'flex', gap: 1, flexDirection: 'column'}}>
                                     <Button
                                         variant="outlined"
                                         onClick={() => navigate(`/admin/banners/${banner._id}/update`)}
@@ -399,7 +403,23 @@ const AdminBannersList = () => {
                                             },
                                         }}
                                     >
-                                        {isSmallScreen ? "Ред." : "Редактировать"}
+                                        {isSmallScreen ? "Edit" : "Edit"}
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => removeBanner(banner._id)}
+                                        size="small"
+                                        sx={{
+                                            color: "#660033",
+                                            borderColor: "#660033",
+                                            fontSize: isSmallScreen ? '0.75rem' : '0.875rem',
+                                            '&:hover': {
+                                                backgroundColor: "rgba(102, 0, 51, 0.04)",
+                                                borderColor: "#660033",
+                                            },
+                                        }}
+                                    >
+                                        {isSmallScreen ? "Del." : "Delete"}
                                     </Button>
                                 </TableCell>
                                 <TableCell>

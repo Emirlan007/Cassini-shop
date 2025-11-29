@@ -1,5 +1,5 @@
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
-import {Route, Routes, useLocation } from "react-router-dom";
+import {Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
@@ -29,6 +29,7 @@ import User from "./features/users/admin/User.tsx";
 
 import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
+import AdminPage from "./pages/AdminPage.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -72,6 +73,14 @@ const App = () => {
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
           <Route path="/account" element={<AccountPage />} />
+            <Route
+                path="/admin"
+                element={
+                    <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                        <AdminPage />
+                    </ProtectedRoute>
+                }
+            />
           <Route
               path="/admin/users"
               element={

@@ -67,7 +67,6 @@ const ProductCard = ({ product }: Props) => {
         return () => clearInterval(interval);
     }, [product.discount, product.discountUntil]);
 
-    // Расчет финальной цены (дублируем логику с бэка)
     const calculateFinalPrice = () => {
         if (product.discount && hasActiveDiscount) {
             return Math.round(product.price * (1 - product.discount / 100));

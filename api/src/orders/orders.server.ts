@@ -65,7 +65,12 @@ export class OrderService {
     const createdOrder = new this.orderModel({
       user: userId,
       items: items.map((item) => ({
-        product: item.product,
+        productId: item.product,
+        title: item.title,
+        image: item.image,
+        selectedColor: item.selectedColor,
+        selectedSize: item.selectedSize,
+        price: item.price,
         quantity: item.quantity,
       })),
       paymentMethod,

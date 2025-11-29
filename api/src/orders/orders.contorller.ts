@@ -6,12 +6,10 @@ import {
   Post,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order-dto';
 import { type RequestWithUser, TokenAuthGuard } from '../auth/token-auth.guard';
 import { OrderService } from './orders.server';
-import { FileUploadInterceptorOrder } from '../shared/file-upload/file-upload.interceptor';
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
@@ -48,7 +46,6 @@ export class OrdersController {
   }
 
   @UseGuards(TokenAuthGuard)
-  @UseInterceptors(FileUploadInterceptorOrder)
   @Post()
   async createOrder(
     @Body() orderData: CreateOrderDto,

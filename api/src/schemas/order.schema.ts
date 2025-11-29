@@ -11,14 +11,24 @@ export class Order {
   @Prop({
     type: [
       {
-        product: { type: Types.ObjectId, ref: 'Product', required: true },
+        productId: { type: Types.ObjectId, ref: 'Product', required: true },
+        title: { type: String, required: true },
+        image: { type: String, required: true },
+        selectedColor: { type: String, required: true },
+        selectedSize: { type: String, required: true },
+        price: { type: Number, required: true },
         quantity: { type: Number, required: true },
       },
     ],
     required: true,
   })
   items: {
-    product: Types.ObjectId;
+    productId: Types.ObjectId;
+    title: string;
+    image: string;
+    selectedColor: string;
+    selectedSize: string;
+    price: number;
     quantity: number;
   }[];
 

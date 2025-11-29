@@ -138,11 +138,22 @@ export interface Order {
     paymentMethod: 'cash' | 'qrCode';
 }
 
+export interface OrderItemDto {
+    product: string;
+    title: string;
+    image: string;
+    selectedColor: string;
+    selectedSize: string;
+    price: number;
+    quantity: number;
+}
+
 export interface OrderMutation {
-  items: OrderItem[];
-  totalPrice: number;
-  status: 'pending';
-  paymentMethod: 'cash' | 'qrCode';
+    items: OrderItemDto[];
+    totalPrice: number;
+    status?: 'pending' | 'processing' | 'completed';
+    paymentMethod: 'cash' | 'qrCode';
+    userComment?: string;
 }
 
 export interface OrderItemAdmin {

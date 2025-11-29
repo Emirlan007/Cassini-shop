@@ -1,13 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {isAxiosError} from "axios";
-import type { CartItem } from "../../types";
+import type {OrderMutation} from "../../types";
 import {axiosApi} from "../../axiosApi.ts";
 
 export const createOrder = createAsyncThunk(
     "cart/createOrder",
-    async (items: CartItem[], { rejectWithValue }) => {
+    async (order: OrderMutation, { rejectWithValue }) => {
         try {
-            const response = await axiosApi.post("/orders", items);
+            const response = await axiosApi.post("/orders", order);
             return response.data;
         }  catch (error) {
             if (isAxiosError(error) && error.response) {

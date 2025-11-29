@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import {selectUser} from "../users/usersSlice.ts";
 import {createOrder} from "../orders/ordersThunk.ts";
 import {useTranslation} from "react-i18next";
+import type {OrderMutation} from "../../types";
 
 
 const Cart = () => {
@@ -18,18 +19,27 @@ const Cart = () => {
     const user = useAppSelector(selectUser);
     const { t } = useTranslation();
 
-    const handleCheckout = async () => {
-        try {
-            await dispatch(createOrder(items)).unwrap();
-            dispatch(clearCart());
-            navigate("/account");
-            toast.success("Заказ успешно оформлен!");
-        } catch {
-            toast.error("Ошибка при создании заказа");
-        }
+  const handleCheckout = async (paymentMethod: 'cash' | 'qrCode') => {
+    const orderData: OrderMutation = {
+      items,
+      totalPrice,
+      paymentMethod,
+      status: "pending",
     };
 
-    if (!items.length) {
+    try {
+      await dispatch(createOrder(orderData)).unwrap();
+      dispatch(clearCart());
+      navigate("/account");
+      toast.success("Заказ успешно оформлен!");
+    } catch {
+      toast.error("Ошибка при создании заказа");
+    }
+  };
+
+
+
+  if (!items.length) {
         return (
             <Box
                 display="flex"
@@ -136,7 +146,7 @@ const Cart = () => {
                             if (!user) {
                                 navigate("/register");
                             } else {
-                                void handleCheckout();
+                                void handleCheckout('cash');
                             }
                         }}
                     >

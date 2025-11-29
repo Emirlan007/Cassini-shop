@@ -134,6 +134,15 @@ export interface Order {
     items: OrderItem[];
     totalPrice: number;
     createdAt: string;
+    status: 'pending' | 'processing' | 'completed';
+    paymentMethod: 'cash' | 'qrCode';
+}
+
+export interface OrderMutation {
+  items: OrderItem[];
+  totalPrice: number;
+  status: 'pending';
+  paymentMethod: 'cash' | 'qrCode';
 }
 
 export interface OrderItemAdmin {

@@ -3,6 +3,29 @@ import {isAxiosError} from "axios";
 import {axiosApi} from "../../../axiosApi.ts";
 import type {ICategory, UpdateCategoryPayload} from "../../../types";
 
+export interface CategoryMutation {
+  title: string;
+}
+
+export const createCategory = createAsyncThunk<
+    ICategory,
+    CategoryMutation,
+    { rejectValue: string }
+>(
+    "admin/categories/create",
+    async ({ title }, { rejectWithValue }) => {
+      try {
+        const response = await axiosApi.post("/categories", { title });
+        return response.data;
+      } catch (error) {
+        if (isAxiosError(error) && error.response) {
+          return rejectWithValue(error.response.data?.error || "Ошибка при создании категории");
+        }
+        throw error;
+      }
+    }
+);
+
 export const deleteCategory = createAsyncThunk(
     "admin/categories/delete",
     async (id: string, {rejectWithValue}) => {

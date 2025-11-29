@@ -8,12 +8,15 @@ import { Model, Types } from 'mongoose';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { Order, OrderDocument } from '../schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order-dto';
+import { Product, ProductDocument } from 'src/schemas/product.schema';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order.name)
     private orderModel: Model<OrderDocument>,
+    @InjectModel(Product.name)
+    private productModel: Model<ProductDocument>,
     private fileUploadService: FileUploadService,
   ) {}
 
@@ -59,26 +62,46 @@ export class OrderService {
   }
 
   async create(createOrderDto: CreateOrderDto, userId: string) {
-    const { items, paymentMethod, status, userComment, totalPrice } =
-      createOrderDto;
+    const { items, paymentMethod, status, userComment } = createOrderDto;
+
+    const processedItems = await Promise.all(
+      items.map(async (item) => {
+        const product = await this.productModel.findById(item.product).lean();
+
+        if (!product) {
+          throw new NotFoundException(
+            `Product with ID ${item.product} not found`,
+          );
+        }
+
+        const finalPrice = this.calculateFinalPrice(product);
+
+        return {
+          productId: item.product,
+          title: item.title,
+          image: item.image,
+          selectedColor: item.selectedColor,
+          selectedSize: item.selectedSize,
+          price: finalPrice,
+          quantity: item.quantity,
+        };
+      }),
+    );
+
+    const calculatedTotalPrice = processedItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
 
     const createdOrder = new this.orderModel({
       user: userId,
-      items: items.map((item) => ({
-        productId: item.product,
-        title: item.title,
-        image: item.image,
-        selectedColor: item.selectedColor,
-        selectedSize: item.selectedSize,
-        price: item.price,
-        quantity: item.quantity,
-      })),
+      items: processedItems,
       paymentMethod,
       status: status ?? 'pending',
       userComment: userComment ?? null,
       adminComments: [],
       createdAt: new Date(),
-      totalPrice,
+      totalPrice: calculatedTotalPrice,
     });
 
     await createdOrder.save();
@@ -89,6 +112,24 @@ export class OrderService {
     };
   }
 
+  private calculateFinalPrice(product: Product): number {
+    const now = new Date();
+
+    if (
+      product.discount &&
+      product.discountUntil &&
+      product.discountUntil < now
+    ) {
+      return product.price;
+    }
+
+    if (product.discount) {
+      return Math.round(product.price * (1 - product.discount / 100));
+    }
+
+    return product.price;
+  }
+
   async addUserComment(orderId: string, userId: string, comment: string) {
     const order = await this.orderModel.findById(orderId);
 
@@ -97,9 +138,7 @@ export class OrderService {
     }
 
     const orderUserId =
-      typeof order.user === 'string'
-        ? order.user
-        : (order.user as Types.ObjectId).toString();
+      typeof order.user === 'string' ? order.user : order.user.toString();
 
     if (orderUserId !== userId) {
       throw new ForbiddenException('You can comment only your own orders');

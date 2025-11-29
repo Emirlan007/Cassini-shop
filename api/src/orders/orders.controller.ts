@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order-dto';
 import { type RequestWithUser, TokenAuthGuard } from '../auth/token-auth.guard';
-import { OrderService } from './orders.server';
+import { OrderService } from './orders.service';
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';

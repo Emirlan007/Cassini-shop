@@ -70,7 +70,8 @@ const AdminProductsList = () => {
                 startIcon={<AddIcon />}
                 onClick={() => navigate('/products/new')}
                 sx={{
-                    backgroundColor: 'primary.main',
+                    color: "white",
+                    backgroundColor: "#660033",
                     '&:hover': {
                         backgroundColor: 'primary.dark',
                     },

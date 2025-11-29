@@ -29,6 +29,7 @@ import {
 import {fetchAllBanners} from "./BannersThunks.ts";
 import {API_URL} from "../../../constants.ts";
 import {useNavigate} from "react-router-dom";
+import {toggleBannerActive} from "../bannersThunks.ts";
 
 const AdminBannersList = () => {
     const dispatch = useAppDispatch();
@@ -42,6 +43,10 @@ const AdminBannersList = () => {
     useEffect(() => {
         void dispatch(fetchAllBanners());
     }, [dispatch]);
+
+    const handleToggleActive = (id: string) => {
+        dispatch(toggleBannerActive(id));
+    };
 
     if (loading) {
         return (
@@ -201,6 +206,23 @@ const AdminBannersList = () => {
                                     >
                                         Редактировать
                                     </Button>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        fullWidth
+                                        onClick={() => handleToggleActive(banner._id)}
+                                        sx={{
+                                            color: "#660033",
+                                            borderColor: "#660033",
+                                            mt: 1,
+                                            '&:hover': {
+                                                backgroundColor: "rgba(102, 0, 51, 0.04)",
+                                                borderColor: "#660033",
+                                            },
+                                        }}
+                                    >
+                                        {banner.isActive ? "Deactivate" : "Activate"}
+                                    </Button>
                                 </Stack>
                             </CardContent>
                         </Card>
@@ -261,6 +283,7 @@ const AdminBannersList = () => {
                             <TableCell sx={{ width: '100px' }}>Статус</TableCell>
                             <TableCell sx={{ width: '160px' }}>Изображение</TableCell>
                             <TableCell sx={{ width: '160px' }}>Действия</TableCell>
+                            <TableCell sx={{ width: '160px' }}>Статус</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -377,6 +400,27 @@ const AdminBannersList = () => {
                                         }}
                                     >
                                         {isSmallScreen ? "Ред." : "Редактировать"}
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        sx={{
+                                            color: "#660033",
+                                            borderColor: "#660033",
+                                            fontSize: isSmallScreen ? '0.75rem' : '0.875rem',
+                                            '&:hover': {
+                                                backgroundColor: "rgba(102, 0, 51, 0.04)",
+                                                borderColor: "#660033",
+                                            },
+                                        }}
+                                        onClick={() => handleToggleActive(banner._id)}
+                                    >
+                                        {isSmallScreen
+                                            ? banner.isActive ? "Deact." : "Act."
+                                            : banner.isActive ? "Deactivate" : "Activate"
+                                        }
                                     </Button>
                                 </TableCell>
                             </TableRow>

@@ -58,6 +58,9 @@ export const fetchOrdersByUserId = createAsyncThunk(
             return response.data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {
+                if (error.response.status === 404) {
+                    return [];
+                }
                 return rejectWithValue(error.response.data);
             }
             throw error;

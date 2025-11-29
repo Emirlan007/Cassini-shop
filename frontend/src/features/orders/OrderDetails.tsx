@@ -106,6 +106,8 @@ const OrderDetails = () => {
                         gap={3}
                         mb={3}
                         p={2}
+                        border="1px solid #ccc"
+                        borderRadius={2}
                     >
                         <Box
                             display="flex"

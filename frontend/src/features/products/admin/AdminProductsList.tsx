@@ -1,5 +1,6 @@
 import {
   Box,
+    Button,
   CircularProgress,
   Paper,
   Table,
@@ -19,12 +20,15 @@ import {
 } from "../productsSlice";
 import { fetchProducts } from "../productsThunks";
 import AdminProductCard from "./components/AdminProductCard";
+import {useNavigate} from "react-router-dom";
+import { Add as AddIcon } from "@mui/icons-material";
 
 const AdminProductsList = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
   const loading = useAppSelector(selectProductsFetchLoading);
   const error = useAppSelector(selectProductsFetchError);
+  const navigate = useNavigate();
 
   useEffect(() => {
     void dispatch(fetchProducts(undefined));
@@ -48,9 +52,34 @@ const AdminProductsList = () => {
 
   return (
     <Box width="100%">
-      <Typography variant="h5" mb={2}>
-        Все товары
-      </Typography>
+        <Box
+            sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 3,
+                width: '100%'
+            }}
+        >
+            <Typography variant="h5">
+                Все товары
+            </Typography>
+
+            <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={() => navigate('/products/new')}
+                sx={{
+                    color: "white",
+                    backgroundColor: "#660033",
+                    '&:hover': {
+                        backgroundColor: 'primary.dark',
+                    },
+                }}
+            >
+                Добавить товар
+            </Button>
+        </Box>
       <TableContainer component={Paper} sx={{ width: "100%" }}>
         <Table sx={{ minWidth: 650 }} aria-label="admin products table">
           <TableHead>

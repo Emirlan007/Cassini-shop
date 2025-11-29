@@ -114,72 +114,95 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
 
               {user.role === "admin" && (
                 <>
-                  <ListItemButton
-                    onClick={() => {
-                      navigate("/products/new");
-                      toggleDrawer(false)();
-                    }}
-                    sx={{
-                      mx: 1,
-                      borderRadius: 1,
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                  >
-                    <ListItemText
-                      primary="Добавить товар"
-                      primaryTypographyProps={{
-                        fontSize: "0.95rem",
-                        fontWeight: 500,
-                      }}
-                    />
-                  </ListItemButton>
-                  <Divider sx={{ my: 1 }} />
-                  <ListItemButton
-                      onClick={() => {
-                        navigate("/admin/banners/new");
-                        toggleDrawer(false)();
-                      }}
-                      sx={{
-                        mx: 1,
-                        borderRadius: 1,
-                        "&:hover": {
-                          backgroundColor: "action.hover",
-                        },
-                      }}
-                  >
-                    <ListItemText
-                        primary="Добавить баннер"
-                        primaryTypographyProps={{
-                          fontSize: "0.95rem",
-                          fontWeight: 500,
+                  {/*<ListItemButton*/}
+                  {/*  onClick={() => {*/}
+                  {/*    navigate("/products/new");*/}
+                  {/*    toggleDrawer(false)();*/}
+                  {/*  }}*/}
+                  {/*  sx={{*/}
+                  {/*    mx: 1,*/}
+                  {/*    borderRadius: 1,*/}
+                  {/*    "&:hover": {*/}
+                  {/*      backgroundColor: "action.hover",*/}
+                  {/*    },*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  <ListItemText*/}
+                  {/*    primary="Добавить товар"*/}
+                  {/*    primaryTypographyProps={{*/}
+                  {/*      fontSize: "0.95rem",*/}
+                  {/*      fontWeight: 500,*/}
+                  {/*    }}*/}
+                  {/*  />*/}
+                  {/*</ListItemButton>*/}
+                  {/*<Divider sx={{ my: 1 }} />*/}
+
+                    <ListItemButton
+                        onClick={() => {
+                            navigate("/admin");
+                            toggleDrawer(false)();
                         }}
-                    />
-                  </ListItemButton>
-                  <Divider sx={{ my: 1 }} />
-                  <ListItemButton
-                    onClick={() => {
-                      navigate("/admin/orders");
-                      toggleDrawer(false)();
-                    }}
-                    sx={{
-                      mx: 1,
-                      borderRadius: 1,
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                  >
-                    <ListItemText
-                      primary="Заказы"
-                      primaryTypographyProps={{
-                        fontSize: "0.95rem",
-                        fontWeight: 500,
-                      }}
-                    />
-                  </ListItemButton>
-                  <Divider sx={{ my: 1 }} />
+                        sx={{
+                            mx: 1,
+                            borderRadius: 1,
+                            "&:hover": {
+                                backgroundColor: "action.hover",
+                            },
+                        }}
+                    >
+                        <ListItemText
+                            primary="Админ панель"
+                            primaryTypographyProps={{
+                                fontSize: "0.95rem",
+                                fontWeight: 500,
+                            }}
+                        />
+                    </ListItemButton>
+                    <Divider sx={{ my: 1 }} />
+                  {/*<ListItemButton*/}
+                  {/*    onClick={() => {*/}
+                  {/*      navigate("/admin/banners/new");*/}
+                  {/*      toggleDrawer(false)();*/}
+                  {/*    }}*/}
+                  {/*    sx={{*/}
+                  {/*      mx: 1,*/}
+                  {/*      borderRadius: 1,*/}
+                  {/*      "&:hover": {*/}
+                  {/*        backgroundColor: "action.hover",*/}
+                  {/*      },*/}
+                  {/*    }}*/}
+                  {/*>*/}
+                  {/*  <ListItemText*/}
+                  {/*      primary="Добавить баннер"*/}
+                  {/*      primaryTypographyProps={{*/}
+                  {/*        fontSize: "0.95rem",*/}
+                  {/*        fontWeight: 500,*/}
+                  {/*      }}*/}
+                  {/*  />*/}
+                  {/*</ListItemButton>*/}
+                  {/*<Divider sx={{ my: 1 }} />*/}
+                  {/*<ListItemButton*/}
+                  {/*  onClick={() => {*/}
+                  {/*    navigate("/admin/orders");*/}
+                  {/*    toggleDrawer(false)();*/}
+                  {/*  }}*/}
+                  {/*  sx={{*/}
+                  {/*    mx: 1,*/}
+                  {/*    borderRadius: 1,*/}
+                  {/*    "&:hover": {*/}
+                  {/*      backgroundColor: "action.hover",*/}
+                  {/*    },*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  <ListItemText*/}
+                  {/*    primary="Заказы"*/}
+                  {/*    primaryTypographyProps={{*/}
+                  {/*      fontSize: "0.95rem",*/}
+                  {/*      fontWeight: 500,*/}
+                  {/*    }}*/}
+                  {/*  />*/}
+                  {/*</ListItemButton>*/}
+                  {/*<Divider sx={{ my: 1 }} />*/}
                 </>
               )}
 

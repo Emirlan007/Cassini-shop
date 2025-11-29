@@ -1,14 +1,16 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {deleteCategory, updateCategory} from "./categoryThunk.ts";
+import {createCategory, deleteCategory, updateCategory} from "./categoryThunk.ts";
 
 interface CategoryState {
     deleteLoading: boolean | string;
     updateLoading: boolean | string;
+    createLoading: boolean;
 }
 
 const initialState: CategoryState = {
     deleteLoading: false,
     updateLoading: false,
+    createLoading: false,
 }
 
 const adminCategoriesSlice = createSlice({
@@ -36,12 +38,23 @@ const adminCategoriesSlice = createSlice({
             .addCase(updateCategory.rejected, (state) => {
                 state.updateLoading = false
             })
+        builder
+            .addCase(createCategory.pending, (state) => {
+              state.createLoading = true;
+            })
+            .addCase(createCategory.fulfilled, (state) => {
+              state.createLoading = false;
+            })
+            .addCase(createCategory.rejected, (state) => {
+              state.createLoading = false;
+            });
     },
     selectors: {
         selectCategoryDeleteLoading: (state) => state.deleteLoading,
         selectCategoryUpdateLoading: (state) => state.updateLoading,
+        selectCategoryCreateLoading: (state) => state.createLoading,
     }
 });
 
 export const adminCategoriesReducer = adminCategoriesSlice.reducer;
-export const { selectCategoryDeleteLoading, selectCategoryUpdateLoading } = adminCategoriesSlice.selectors;
+export const { selectCategoryDeleteLoading, selectCategoryUpdateLoading, selectCategoryCreateLoading } = adminCategoriesSlice.selectors;

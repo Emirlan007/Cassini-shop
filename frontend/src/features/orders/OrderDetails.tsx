@@ -98,9 +98,9 @@ const OrderDetails = () => {
                     </Box>
                 )}
 
-                {order.items.map((item) => (
+                {order.items.map((item, index) => (
                     <Box
-                        key={`${item.productId}-${item.selectedColor}-${item.selectedSize}`}
+                        key={`${item.productId}-${item.selectedColor}-${item.selectedSize}-${index}`}
                         display="flex"
                         flexDirection="column"
                         gap={3}
@@ -109,33 +109,35 @@ const OrderDetails = () => {
                         border="1px solid #ccc"
                         borderRadius={2}
                     >
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            flexDirection="column"
-                            sx={{
-                                height: {xs: 320, sm: 400},
-                                width: '100%',
-                                overflow: 'hidden',
-                                borderRadius: 2,
-                            }}
-                        >
-                            <img
-                                src={`${API_URL}/${item.image.replace(/^\/+/, "")}`}
-                                alt={item.title}
-                                style={{
-                                    objectFit: "contain",
-                                    borderRadius: 8,
-                                    maxWidth: '100%',
-                                    maxHeight: '100%',
-                                    width: 'auto',
-                                    height: 'auto'
+                        {item.image && (
+                            <Box
+                                display="flex"
+                                alignItems="center"
+                                flexDirection="column"
+                                sx={{
+                                    height: { xs: 320, sm: 400 },
+                                    width: '100%',
+                                    overflow: 'hidden',
+                                    borderRadius: 2,
                                 }}
-                            />
-                        </Box>
+                            >
+                                <img
+                                    src={`${API_URL}/${item.image.replace(/^\/+/, "")}`}
+                                    alt={item.title || "Product"}
+                                    style={{
+                                        objectFit: "contain",
+                                        borderRadius: 8,
+                                        maxWidth: '100%',
+                                        maxHeight: '100%',
+                                        width: 'auto',
+                                        height: 'auto'
+                                    }}
+                                />
+                            </Box>
+                        )}
 
                         <Box>
-                            <Typography variant="h6" sx={{ mb: 1, mt: 2}}>
+                            <Typography variant="h6" sx={{ mb: 1, mt: 2 }}>
                                 <b>{item.title}</b>
                             </Typography>
 

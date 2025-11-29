@@ -1,13 +1,23 @@
-import { useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
     selectProduct,
     selectProductFetchError,
-    selectProductFetchLoading, selectProducts,
+    selectProductFetchLoading,
 } from "./productsSlice";
 import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
-import {fetchProductById, fetchProducts} from "./productsThunks";
-import {Box, Button, CircularProgress, Tab, Tabs, TextField, Typography} from "@mui/material";
+import {fetchProductById} from "./productsThunks";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Tab,
+    Tabs,
+    TextField,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography
+} from "@mui/material";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Navigation, Pagination} from "swiper/modules";
 import "swiper/swiper.css";
@@ -20,7 +30,9 @@ import {
     selectAdminUpdateDiscountLoading
 } from "./admin/adminProductsSlice.ts";
 import {updateProductDiscount} from "./admin/adminProductsThunks.ts";
-import ProductList from "./ProductsList.tsx";
+import ProductList from "../features/products/ProductsList.tsx";
+import {fetchProducts} from "../features/products/productsThunks.ts";
+import {selectProducts} from "../features/products/productsSlice.ts";
 
 const ProductDetails = () => {
     const dispatch = useAppDispatch();
@@ -138,7 +150,7 @@ const ProductDetails = () => {
 
     const handleDiscountSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!product || discountValue === "") return;
+        if (!product || discountValue === "" || discountUntilValue === "") return;
 
         try {
             await dispatch(
@@ -146,7 +158,7 @@ const ProductDetails = () => {
                     productId: product._id,
                     discountData: {
                         discount: Number(discountValue),
-                        discountUntil: discountUntilValue || null,
+                        discountUntil: discountUntilValue,
                     },
                 })
             ).unwrap();
@@ -160,7 +172,8 @@ const ProductDetails = () => {
     const isDiscountValid =
         discountValue !== "" &&
         Number(discountValue) >= 0 &&
-        Number(discountValue) <= 100;
+        Number(discountValue) <= 100 &&
+        discountUntilValue !== "";
 
     if (loading) {
         return (
@@ -322,44 +335,52 @@ const ProductDetails = () => {
                             >
                                 Размер:
                             </Typography>
-                            <Tabs
-                                value={selectedSize ?? false}
-                                onChange={(_, v) => setSelectedSize(v)}
-                                variant="scrollable"
-                                scrollButtons="auto"
+                            <ToggleButtonGroup
+                                value={selectedSize}
+                                exclusive
+                                onChange={(_, value) => {
+                                    if (value !== null) {
+                                        setSelectedSize(value);
+                                    }
+                                }}
                                 sx={{
-                                    minHeight: 0,
-                                    "& .MuiTabs-flexContainer": {
-                                        gap: "8px",
-                                    },
-                                    "& .MuiTabs-indicator": { display: "none" }
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: 1,
+                                    '& .MuiToggleButtonGroup-grouped': {
+                                        border: '1px solid #D9D9D9',
+                                        borderRadius: '8px !important',
+                                        margin: 0,
+                                        px: 3,
+                                        py: 1,
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        fontSize: '14px',
+                                        color: '#000',
+                                        '&:not(:first-of-type)': {
+                                            marginLeft: 0,
+                                            borderLeft: '1px solid #D9D9D9',
+                                        },
+                                        '&.Mui-selected': {
+                                            border: '1px solid #000 !important',
+                                            backgroundColor: '#F2F2F2',
+                                            color: '#000',
+                                            '&:hover': {
+                                                backgroundColor: '#F2F2F2',
+                                            }
+                                        }
+                                    }
                                 }}
                             >
                                 {product.size.map((s) => (
-                                    <Tab
+                                    <ToggleButton
                                         key={s}
                                         value={s}
-                                        label={s}
-                                        sx={{
-                                            minHeight: 0,
-                                            minWidth: 0,
-                                            px: 3,
-                                            py: 1,
-                                            borderRadius: "8px",
-                                            textTransform: "none",
-                                            fontWeight: 600,
-                                            fontSize: "14px",
-                                            border: selectedSize === s ? "1px solid #000" : "1px solid #D9D9D9",
-                                            backgroundColor: selectedSize === s ? "#F2F2F2" : "#fff",
-                                            color: "#000 !important",
-
-                                            "&.Mui-selected": {
-                                                color: "#000"
-                                            }
-                                        }}
-                                    />
+                                    >
+                                        {s}
+                                    </ToggleButton>
                                 ))}
-                            </Tabs>
+                            </ToggleButtonGroup>
                         </Box>
                     )}
 
@@ -416,75 +437,81 @@ const ProductDetails = () => {
                         <Typography variant="body1" sx={{color: '#525252', fontSize: '14px'}}>{product?.description}</Typography>
                     </Box>
 
-                    <Box mt={4} display="flex" gap={2}>
-                        <Typography
-                            sx={{
-                                fontWeight: 600,
-                                fontSize: "18px",
-                                color: "#660033",
-                                display: { xs: "block", sm: "none" },
-                                alignSelf: "center",
-                            }}
-                        >
-                            ${finalPrice}
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            disabled={!selectedColor || !selectedSize}
-                            onClick={handleAddToCart}
-                        >
-                            Add to Cart
-                        </Button>
-                        {
-                            user?.role === 'admin' ? (
-                                <>
-                                    <Box
-                                        component="form"
-                                        onSubmit={handleDiscountSubmit}
-                                        sx={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            gap: 1,
-                                            alignItems: "center",
-                                            flex: 1,
-                                        }}
-                                    >
-                                        <TextField
-                                            label="Discount (%)"
-                                            type="number"
-                                            value={discountValue}
-                                            onChange={handleDiscountChange}
-                                            required
-                                            inputProps={{ min: 0, max: 100 }}
-                                            sx={{ minWidth: 120 }}
-                                        />
-                                        <TextField
-                                            label="Действует до"
-                                            type="date"
-                                            value={discountUntilValue}
-                                            onChange={(event) =>
-                                                setDiscountUntilValue(event.target.value)
-                                            }
-                                            InputLabelProps={{ shrink: true }}
-                                            inputProps={{ min: todayDate }}
-                                            sx={{ minWidth: 160 }}
-                                        />
-                                        <Button
-                                            type="submit"
-                                            variant="outlined"
-                                            disabled={!isDiscountValid || updateDiscountLoading}
-                                            sx={{ minWidth: 180 }}
-                                        >
-                                            {updateDiscountLoading ? (
-                                                <CircularProgress size={20} />
-                                            ) : (
-                                                "Обновить скидку"
-                                            )}
-                                        </Button>
-                                    </Box>
-                                </>
-                            ) : null
-                        }
+                    <Box mt={4}>
+                        <Box display="flex" gap={2} flexWrap="wrap" alignItems="center" mb={user?.role === 'admin' ? 2 : 0}>
+                            <Typography
+                                sx={{
+                                    fontWeight: 600,
+                                    fontSize: "18px",
+                                    color: "#660033",
+                                    display: { xs: "block", sm: "none" },
+                                    alignSelf: "center",
+                                }}
+                            >
+                                ${finalPrice}
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                disabled={!selectedColor || !selectedSize}
+                                onClick={handleAddToCart}
+                            >
+                                Add to Cart
+                            </Button>
+                        </Box>
+                        {user?.role === 'admin' && (
+                            <Box
+                                component="form"
+                                onSubmit={handleDiscountSubmit}
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: { xs: "column", sm: "row" },
+                                    gap: 2,
+                                    alignItems: { xs: "stretch", sm: "center" },
+                                    mt: 2,
+                                    p: 2,
+                                    border: "1px solid #e0e0e0",
+                                    borderRadius: 2,
+                                    backgroundColor: "#f9f9f9",
+                                }}
+                            >
+                                <TextField
+                                    label="Размер скидки (%)"
+                                    type="number"
+                                    value={discountValue}
+                                    onChange={handleDiscountChange}
+                                    required
+                                    inputProps={{ min: 0, max: 100 }}
+                                    sx={{ flex: { xs: "1 1 auto", sm: "0 0 150px" } }}
+                                />
+                                <TextField
+                                    label="Действует до"
+                                    type="date"
+                                    value={discountUntilValue}
+                                    onChange={(event) =>
+                                        setDiscountUntilValue(event.target.value)
+                                    }
+                                    InputLabelProps={{ shrink: true }}
+                                    inputProps={{ min: todayDate }}
+                                    required
+                                    sx={{ flex: { xs: "1 1 auto", sm: "0 0 180px" } }}
+                                />
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    disabled={!isDiscountValid || updateDiscountLoading}
+                                    sx={{
+                                        flex: { xs: "1 1 auto", sm: "0 0 200px" },
+                                        minHeight: "56px"
+                                    }}
+                                >
+                                    {updateDiscountLoading ? (
+                                        <CircularProgress size={20} />
+                                    ) : (
+                                        "Подтвердить скидку"
+                                    )}
+                                </Button>
+                            </Box>
+                        )}
                     </Box>
                     {user?.role === 'admin' && updateDiscountError && (
                         <Typography color="#F0544F" mt={1}>

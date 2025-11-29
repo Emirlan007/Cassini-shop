@@ -17,6 +17,27 @@ export class OrderItemDto {
   product: string;
 
   @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @IsNotEmpty()
+  @IsString()
+  image: string;
+
+  @IsNotEmpty()
+  @IsString()
+  selectedColor: string;
+
+  @IsNotEmpty()
+  @IsString()
+  selectedSize: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
+  price: number;
+
+  @IsNotEmpty()
   @IsNumber()
   @Min(1)
   quantity: number;

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { OrderItem, OrderItemAdmin } from "../../../types";
+import type { OrderItemAdmin } from "../../../types";
 import { fetchAdminOrders } from "./ordersThunks";
 
 interface IInitialState {

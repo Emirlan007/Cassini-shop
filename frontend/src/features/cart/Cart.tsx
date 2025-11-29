@@ -1,14 +1,15 @@
 import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
 import {clearCart, removeFromCart, selectItems, selectTotalPrice, updateQuantity} from "./cartSlice.ts";
-import {Box, Button, IconButton, Stack, Typography} from "@mui/material";
+import {Box, Button, IconButton, Stack, Typography, TextField, ToggleButton, ToggleButtonGroup, Paper} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {API_URL} from "../../constants.ts";
 import toast from "react-hot-toast";
 import {selectUser} from "../users/usersSlice.ts";
-import {createOrder} from "../orders/ordersThunk.ts";
+import {createOrder, fetchOrders} from "../orders/ordersThunk.ts";
 import {useTranslation} from "react-i18next";
 import type {OrderMutation} from "../../types";
+import {useState} from "react";
 
 
 const Cart = () => {
@@ -18,25 +19,39 @@ const Cart = () => {
     const totalPrice = useAppSelector(selectTotalPrice);
     const user = useAppSelector(selectUser);
     const { t } = useTranslation();
+    const [paymentMethod, setPaymentMethod] = useState<'cash' | 'qrCode'>('cash');
+    const [comment, setComment] = useState<string>('');
 
-  const handleCheckout = async (paymentMethod: 'cash' | 'qrCode') => {
+  const handleCheckout = async () => {
+      const orderItems = items.map(item => ({
+          product: item.productId,
+          title: item.title,
+          image: item.image,
+          selectedColor: item.selectedColor,
+          selectedSize: item.selectedSize,
+          price: item.price,
+          quantity: item.quantity,
+      }));
+
     const orderData: OrderMutation = {
-      items,
+      items: orderItems,
       totalPrice,
       paymentMethod,
       status: "pending",
+      userComment: comment.trim() || undefined,
     };
 
     try {
-      await dispatch(createOrder(orderData)).unwrap();
-      dispatch(clearCart());
-      navigate("/account");
-      toast.success("Заказ успешно оформлен!");
-    } catch {
+        await dispatch(createOrder(orderData)).unwrap();
+        dispatch(clearCart());
+        toast.success("Заказ успешно оформлен!");
+        await dispatch(fetchOrders()).unwrap();
+        navigate("/account");
+    } catch (error) {
+      console.error("Order creation error:", error);
       toast.error("Ошибка при создании заказа");
     }
   };
-
 
 
   if (!items.length) {
@@ -122,39 +137,83 @@ const Cart = () => {
                 </Box>
             ))}
 
-            <Box display="flex"
-                 flexDirection={{xs: "column", sm: "row"}}
-                 justifyContent="space-between"
-                 alignItems={{xs: "center", sm: "center"}}
-                 gap={{xs: 2, sm: 0}}
-                 mt={2}
+            <Paper sx={{ p: 3, mt: 3 }}>
+                <Stack spacing={3}>
+                    <Box>
+                        <Typography variant="h6" mb={2}>
+                            Способ оплаты
+                        </Typography>
+                        <ToggleButtonGroup
+                            value={paymentMethod}
+                            exclusive
+                            onChange={(_, value) => {
+                                if (value !== null) {
+                                    setPaymentMethod(value);
+                                }
+                            }}
+                            aria-label="payment method"
+                            fullWidth
+                        >
+                            <ToggleButton value="cash" aria-label="cash">
+                                Наличные
+                            </ToggleButton>
+                            <ToggleButton value="qrCode" aria-label="qr code">
+                                QR-код
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
 
-            >
-                <Typography variant="h6" textAlign={{xs: "center", sm: "left"}}>
-                    {t("total")}: {totalPrice}₸
-                </Typography>
-                <Box
-                    display="flex"
-                    flexDirection={{xs: "column", sm: "row"}}
-                    gap={2}
-                    width={{xs: "100%", sm: "auto"}}
-                    mt={{xs: 2, sm: 0}}
-                >
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            if (!user) {
-                                navigate("/register");
-                            } else {
-                                void handleCheckout('cash');
-                            }
-                        }}
+                    <Box>
+                        <TextField
+                            label="Комментарий к заказу (необязательно)"
+                            multiline
+                            rows={4}
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            fullWidth
+                            placeholder="Добавьте комментарий к вашему заказу..."
+                        />
+                    </Box>
+
+                    <Box display="flex"
+                         flexDirection={{xs: "column", sm: "row"}}
+                         justifyContent="space-between"
+                         alignItems={{xs: "center", sm: "center"}}
+                         gap={2}
                     >
-                        {t("checkout")}
-                    </Button>
-                    <Button variant="contained" onClick={() => navigate("/")}>{t("continueShopping")}</Button>
-                </Box>
-            </Box>
+                        <Typography variant="h6" textAlign={{xs: "center", sm: "left"}}>
+                            {t("total")}: {totalPrice}₸
+                        </Typography>
+                        <Box
+                            display="flex"
+                            flexDirection={{xs: "column", sm: "row"}}
+                            gap={2}
+                            width={{xs: "100%", sm: "auto"}}
+                        >
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    if (!user) {
+                                        navigate("/register");
+                                    } else {
+                                        void handleCheckout();
+                                    }
+                                }}
+                                fullWidth={{xs: true, sm: false}}
+                            >
+                                {t("checkout")}
+                            </Button>
+                            <Button 
+                                variant="outlined" 
+                                onClick={() => navigate("/")}
+                                fullWidth={{xs: true, sm: false}}
+                            >
+                                {t("continueShopping")}
+                            </Button>
+                        </Box>
+                    </Box>
+                </Stack>
+            </Paper>
         </Stack>
     );
 };

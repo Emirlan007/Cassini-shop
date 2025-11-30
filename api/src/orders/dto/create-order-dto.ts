@@ -14,7 +14,7 @@ import { Type } from 'class-transformer';
 export class OrderItemDto {
   @IsNotEmpty()
   @IsMongoId()
-  product: string;
+  productId: string;
 
   @IsNotEmpty()
   @IsString()

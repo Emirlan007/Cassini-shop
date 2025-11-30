@@ -9,11 +9,11 @@ export class AuthService {
 
   async validateUser(
     phoneNumber: string,
-    displayName: string,
+    name: string,
   ): Promise<UserDocument | null> {
     const user = await this.userModel.findOne({
       phoneNumber: phoneNumber,
-      displayName: displayName,
+      name: name,
     });
 
     if (!user) {

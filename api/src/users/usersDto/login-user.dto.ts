@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 
 export class LoginUserDto {
   @IsNotEmpty()
-  displayName: string;
+  name: string;
 
   @IsNotEmpty()
   phoneNumber: string;

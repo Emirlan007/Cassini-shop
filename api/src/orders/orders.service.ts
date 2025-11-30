@@ -27,7 +27,7 @@ export class OrderService {
   async findOne(id: string): Promise<Order> {
     const order = await this.orderModel
       .findById(id)
-      .populate('user', 'displayName phoneNumber')
+      .populate('user', 'name phoneNumber')
       .exec();
 
     if (!order) {
@@ -40,7 +40,7 @@ export class OrderService {
   async getAdminOrders() {
     return this.orderModel
       .find()
-      .populate('user', 'displayName phoneNumber')
+      .populate('user', 'name phoneNumber')
       .sort({ createdAt: -1 })
       .exec();
   }
@@ -52,7 +52,7 @@ export class OrderService {
       .sort({ createdAt: -1 })
       .exec();
 
-    if (!orders || orders.length === 0) {
+    if (!orders) {
       throw new NotFoundException(
         `Orders for user with ID ${userId} not found`,
       );
@@ -66,18 +66,18 @@ export class OrderService {
 
     const processedItems = await Promise.all(
       items.map(async (item) => {
-        const product = await this.productModel.findById(item.product).lean();
+        const product = await this.productModel.findById(item.productId).lean();
 
         if (!product) {
           throw new NotFoundException(
-            `Product with ID ${item.product} not found`,
+            `Product with ID ${item.productId} not found`,
           );
         }
 
         const finalPrice = this.calculateFinalPrice(product);
 
         return {
-          productId: item.product,
+          productId: item.productId,
           title: item.title,
           image: item.image,
           selectedColor: item.selectedColor,

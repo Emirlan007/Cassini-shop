@@ -48,10 +48,10 @@ export class UsersController {
     @Body() userData: RegisterUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const { phoneNumber, displayName } = userData;
+    const { phoneNumber, name } = userData;
     const user = new this.userModel({
       phoneNumber,
-      displayName,
+      name,
       avatar: file ? `/public/files/${file.filename}` : null,
     });
 
@@ -62,8 +62,8 @@ export class UsersController {
 
   @Post('login')
   async login(@Body() userData: LoginUserDto) {
-    const { phoneNumber, displayName } = userData;
-    const user = await this.authService.validateUser(phoneNumber, displayName);
+    const { phoneNumber, name } = userData;
+    const user = await this.authService.validateUser(phoneNumber, name);
     if (!user) {
       throw new UnauthorizedException();
     }

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsPhoneNumber } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class RegisterUserDto {
   @IsNotEmpty()
@@ -8,9 +8,9 @@ export class RegisterUserDto {
   // @IsPhoneNumber()
   phoneNumber: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   city: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   address: string;
 }

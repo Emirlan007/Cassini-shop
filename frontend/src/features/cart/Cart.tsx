@@ -8,7 +8,7 @@ import {useTranslation} from "react-i18next";
 import {useState} from "react";
 import CheckoutForm from "./components/CheckoutForm.tsx";
 import PaymentStep from "./components/PaymentStep.tsx";
-
+import Stepper from "./components/Stepper.tsx";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -47,6 +47,9 @@ const Cart = () => {
 
     return (
         <Stack spacing={2} p={2}>
+
+            <Stepper step={step} />
+
             {step === 1 && (
                 <>
                     {items.map(item => (
@@ -114,10 +117,12 @@ const Cart = () => {
                 </>
             )}
 
-            {step === 2 && <CheckoutForm onSubmit={(data) => {
-                setFormData(data);
-                setStep(3);
-            }} />}
+            {step === 2 && (
+                <CheckoutForm onSubmit={(data) => {
+                    setFormData(data);
+                    setStep(3);
+                }} />
+            )}
 
             {step === 3 && formData && (
                 <PaymentStep />

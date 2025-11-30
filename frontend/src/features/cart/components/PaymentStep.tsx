@@ -1,6 +1,5 @@
 import {Box, Button, Paper, Stack, Typography, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
-import {selectUser} from "../../users/usersSlice.ts";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {clearCart, selectItems, selectTotalPrice} from "../cartSlice.ts";
@@ -13,15 +12,10 @@ const PaymentStep = () => {
 
     const navigate = useNavigate();
     const dispatch = useAppDispatch()
-    const user = useAppSelector(selectUser);
     const items = useAppSelector(selectItems)
     const totalPrice = useAppSelector(selectTotalPrice);
 
     const handleCheckout = async () => {
-        if (!user) {
-            navigate("/register");
-            return;
-        }
 
         const orderItems = items.map(item => ({
             product: item.productId,

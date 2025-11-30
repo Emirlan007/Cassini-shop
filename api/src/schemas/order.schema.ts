@@ -45,7 +45,7 @@ export class Order {
   @Prop({
     type: String,
     enum: ['cash', 'qrCode'],
-    required: true,
+    default: 'cash',
   })
   paymentMethod: 'cash' | 'qrCode';
 

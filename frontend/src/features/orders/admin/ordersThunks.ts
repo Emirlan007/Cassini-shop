@@ -20,3 +20,25 @@ export const fetchAdminOrders = createAsyncThunk<OrderItemAdmin[], void>(
     }
   }
 );
+
+export const addAdminCommentToOrder = createAsyncThunk(
+  "cart/addAdminCommentToOrder",
+  async (
+    commentData: { comment: string; orderId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosApi.post(
+        `/orders/${commentData.orderId}/admin-comment`,
+        { comment: commentData.comment }
+      );
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+
+      throw error;
+    }
+  }
+);

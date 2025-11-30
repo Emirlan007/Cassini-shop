@@ -6,13 +6,13 @@ export async function createUserFixtures(userService: UserService) {
 
   return await userService.createMany([
     {
-      displayName: 'Test User',
+      name: 'Test User',
       phoneNumber: '+12312123123',
       token: randomUUID(),
       role: 'user',
     },
     {
-      displayName: 'Admin User',
+      name: 'Admin User',
       phoneNumber: '+99999999999',
       token: randomUUID(),
       role: 'admin',

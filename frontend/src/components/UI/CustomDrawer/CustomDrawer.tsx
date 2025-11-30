@@ -16,7 +16,7 @@ import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import { selectUser } from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
-import {clearCart} from "../../../features/cart/cartSlice.ts";
+import { clearCart } from "../../../features/cart/cartSlice.ts";
 
 interface Props {
   isOpen: boolean;
@@ -85,7 +85,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                   variant="subtitle1"
                   sx={{ fontWeight: 600, color: "text.primary", mt: 0.5 }}
                 >
-                  {user.displayName}
+                  {user.name}
                 </Typography>
               </Box>
               <Divider sx={{ my: 1 }} />
@@ -138,28 +138,28 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                   {/*</ListItemButton>*/}
                   {/*<Divider sx={{ my: 1 }} />*/}
 
-                    <ListItemButton
-                        onClick={() => {
-                            navigate("/admin");
-                            toggleDrawer(false)();
-                        }}
-                        sx={{
-                            mx: 1,
-                            borderRadius: 1,
-                            "&:hover": {
-                                backgroundColor: "action.hover",
-                            },
-                        }}
-                    >
-                        <ListItemText
-                            primary="Админ панель"
-                            primaryTypographyProps={{
-                                fontSize: "0.95rem",
-                                fontWeight: 500,
-                            }}
-                        />
-                    </ListItemButton>
-                    <Divider sx={{ my: 1 }} />
+                  <ListItemButton
+                    onClick={() => {
+                      navigate("/admin");
+                      toggleDrawer(false)();
+                    }}
+                    sx={{
+                      mx: 1,
+                      borderRadius: 1,
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
+                  >
+                    <ListItemText
+                      primary="Админ панель"
+                      primaryTypographyProps={{
+                        fontSize: "0.95rem",
+                        fontWeight: 500,
+                      }}
+                    />
+                  </ListItemButton>
+                  <Divider sx={{ my: 1 }} />
                   {/*<ListItemButton*/}
                   {/*    onClick={() => {*/}
                   {/*      navigate("/admin/banners/new");*/}

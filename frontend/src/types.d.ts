@@ -1,7 +1,7 @@
 export interface User {
-  id: string;
+  _id: string;
   email: string;
-  displayName: string;
+  name: string;
   token: string;
   role: string;
   avatar?: string;
@@ -9,19 +9,21 @@ export interface User {
 
 export interface AdminUser {
   _id: string;
-  displayName: string;
+  name: string;
   phoneNumber: string;
   role: string;
   avatar?: string;
 }
 
 export interface RegisterMutation {
-  displayName: string;
+  name: string;
   phoneNumber: string;
+  city?: string;
+  address?: string;
 }
 
 export interface LoginMutation {
-  displayName: string;
+  name: string;
   phoneNumber: string;
 }
 
@@ -46,7 +48,6 @@ export interface ICategory {
   title: string;
   slug: string;
 }
-
 
 interface UpdateCategoryPayload {
   _id: string;
@@ -95,17 +96,17 @@ export interface Banner {
 }
 
 export interface BannerInput {
-    title: string;
-    description: string;
-    link: string;
-    image: File | null;
+  title: string;
+  description: string;
+  link: string;
+  image: File | null;
 }
 
 export interface BannerFormData {
-    title: string;
-    description?: string;
-    link?: string;
-    image: File | null;
+  title: string;
+  description?: string;
+  link?: string;
+  image: File | null;
 }
 
 export interface CartItem {
@@ -118,42 +119,50 @@ export interface CartItem {
   image: string;
 }
 
-export interface OrderItem extends  CartItem{
-    productId: string;
-    title: string;
-    price: number;
-    quantity: number;
-    selectedColor: string;
-    selectedSize: string;
-    image: string;
+export interface OrderItem extends CartItem {
+  productId: string;
+  title: string;
+  price: number;
+  quantity: number;
+  selectedColor: string;
+  selectedSize: string;
+  image: string;
 }
 
 export interface Order {
-    _id: string;
-    user: AdminUser | null;
-    items: OrderItem[];
-    totalPrice: number;
-    createdAt: string;
-    status: 'pending' | 'processing' | 'completed';
-    paymentMethod: 'cash' | 'qrCode';
+  _id: string;
+  user: AdminUser | null;
+  items: OrderItem[];
+  totalPrice: number;
+  createdAt: string;
+  status: "pending" | "processing" | "completed";
+  paymentMethod: "cash" | "qrCode";
+  userComment: string;
+  adminComments: string[];
 }
 
 export interface OrderItemDto {
-    product: string;
-    title: string;
-    image: string;
-    selectedColor: string;
-    selectedSize: string;
-    price: number;
-    quantity: number;
+  productId: string;
+  title: string;
+  image: string;
+  selectedColor: string;
+  selectedSize: string;
+  price: number;
+  quantity: number;
 }
 
 export interface OrderMutation {
-    items: OrderItemDto[];
-    totalPrice: number;
-    status?: 'pending' | 'processing' | 'completed';
-    paymentMethod: 'cash' | 'qrCode';
-    userComment?: string;
+  items: OrderItemDto[];
+  totalPrice: number;
+  status?: "pending" | "processing" | "completed";
+  paymentMethod: "cash" | "qrCode";
+  userComment?: string;
+  user?: {
+    name: string;
+    number: string;
+    city: string;
+    address: string;
+  };
 }
 
 export interface OrderItemAdmin {
@@ -162,4 +171,6 @@ export interface OrderItemAdmin {
   createdAt: string;
   items: CartItem[];
   totalPrice: number;
+  userComment: string;
+  adminComments: string[];
 }

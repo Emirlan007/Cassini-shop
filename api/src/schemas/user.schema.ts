@@ -18,7 +18,7 @@ export class User {
   phoneNumber: string;
 
   @Prop({ required: true })
-  displayName: string;
+  name: string;
 
   @Prop()
   avatar: string;

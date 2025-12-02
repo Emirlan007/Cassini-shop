@@ -98,11 +98,12 @@ export class ProductsService {
 
   async searchProducts(params: {
     query: string;
+    limit: number;
+    page: number;
     category?: string;
     colors?: string[];
-    limit?: number;
   }) {
-    const { query, category, colors, limit = 20 } = params;
+    const { query, category, colors, limit, page } = params;
 
     const filter: FilterQuery<ProductDocument> = {};
 
@@ -120,13 +121,9 @@ export class ProductsService {
     };
 
     const textResults = await this.productModel
-      .find(textFilter, {
-        score: { $meta: 'textScore' },
-      })
-      .sort({
-        score: { $meta: 'textScore' },
-      })
-      .limit(limit)
+      .find(textFilter, { score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' } })
+      .select('_id')
       .lean();
 
     const regexFilter = {
@@ -136,20 +133,43 @@ export class ProductsService {
 
     const regexResults = await this.productModel
       .find(regexFilter)
-      .limit(limit)
+      .select('_id')
       .lean();
 
-    const map = new Map<string, any>();
+    const idMap = new Map<string, boolean>();
 
-    for (const item of [...textResults, ...regexResults]) {
-      map.set((item._id as Types.ObjectId).toString(), item);
-    }
+    [...textResults, ...regexResults].forEach((item) => {
+      idMap.set(String(item._id as Types.ObjectId), true);
+    });
 
-    const products = [...map.values()].slice(0, limit) as Product[];
+    const productsIds = [...idMap.keys()];
+
+    const totalCount = productsIds.length;
+
+    const skip = (page - 1) * limit;
+
+    const paginatedIds = productsIds.slice(skip, skip + limit);
+
+    const products = await this.productModel
+      .find({ _id: { $in: paginatedIds } })
+      .lean();
+
+    const productMap = new Map(
+      products.map((p) => [String(p._id as Types.ObjectId), p]),
+    );
+
+    const orderedProducts = paginatedIds.map((id) => productMap.get(id));
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const hasMore = page * limit < totalCount;
 
     return {
-      products,
-      totalCount: products.length,
+      products: orderedProducts,
+      totalCount,
+      currentPage: page,
+      totalPages,
+      hasMore,
       searchQuery: query,
     };
   }

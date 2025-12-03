@@ -101,8 +101,9 @@ export class ProductsService {
     category?: string;
     colors?: string[];
     limit?: number;
+    page?: number;
   }) {
-    const { query, category, colors, limit = 20 } = params;
+    const { query, category, colors, limit = 16, page = 1 } = params;
 
     const filter: FilterQuery<ProductDocument> = {};
 
@@ -119,37 +120,40 @@ export class ProductsService {
       $text: { $search: query },
     };
 
-    const textResults = await this.productModel
-      .find(textFilter, {
-        score: { $meta: 'textScore' },
-      })
-      .sort({
-        score: { $meta: 'textScore' },
-      })
-      .limit(limit)
-      .lean();
-
     const regexFilter = {
       ...filter,
       name: { $regex: query, $options: 'i' },
     };
 
-    const regexResults = await this.productModel
-      .find(regexFilter)
+    const textCount = await this.productModel.countDocuments(textFilter);
+
+    let finalFilter: FilterQuery<ProductDocument>;
+    let totalCount: number;
+
+    if (textCount > 0) {
+      finalFilter = textFilter;
+      totalCount = textCount;
+    } else {
+      totalCount = await this.productModel.countDocuments(regexFilter);
+      finalFilter = regexFilter;
+    }
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const skip = (page - 1) * limit;
+
+    const products = await this.productModel
+      .find(finalFilter, textCount > 0 ? { score: { $meta: 'textScore' } } : {})
+      .sort(textCount > 0 ? { score: { $meta: 'textScore' } } : {})
+      .skip(skip)
       .limit(limit)
       .lean();
 
-    const map = new Map<string, any>();
-
-    for (const item of [...textResults, ...regexResults]) {
-      map.set((item._id as Types.ObjectId).toString(), item);
-    }
-
-    const products = [...map.values()].slice(0, limit) as Product[];
-
     return {
       products,
-      totalCount: products.length,
+      totalCount,
+      currentPage: page,
+      totalPages,
+      hasMore: page < totalPages,
       searchQuery: query,
     };
   }

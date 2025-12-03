@@ -19,7 +19,7 @@ import { TokenAuthGuard } from '../auth/token-auth.guard';
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { FileUploadInterceptorProduct } from '../shared/file-upload/file-upload.interceptor';
 import { UpdateProductDto } from './dto/update-product.dto';
-import {UpdateDiscountDto} from "./dto/update-discount.dto";
+import { UpdateDiscountDto } from './dto/update-discount.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -97,6 +97,16 @@ export class ProductsController {
     @Body() discountData: UpdateDiscountDto,
   ) {
     return this.productsService.updateDiscount(id, discountData);
+  }
+
+  @Patch(':id/new-status')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async updateNewStatus(
+    @Param('id') id: string,
+    @Body('isNew') isNew: boolean,
+  ) {
+    return this.productsService.updateNewStatus(id, isNew);
   }
 
   @Delete(':id')

@@ -37,6 +37,9 @@ export class ProductsService {
       productData.category = this.validateAndConvertCategory(category);
     }
 
+    productData.isNew = createProductDto.isNew ?? true;
+    productData.createdAt = new Date();
+
     if (files?.images && files.images.length > 0) {
       productData.images = files.images.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
@@ -242,6 +245,18 @@ export class ProductsService {
     return product.save();
   }
 
+  async updateNewStatus(productId: string, isNew: boolean) {
+    const product = await this.productModel.findByIdAndUpdate(
+      productId,
+      { isNew },
+      { new: true },
+    );
+    if (!product) {
+      throw new NotFoundException(`Product with id ${productId} not found`);
+    }
+    return product;
+  }
+
   async remove(id: string): Promise<void> {
     const product = await this.productModel.findById(id).exec();
 
@@ -308,6 +323,17 @@ export class ProductsService {
           discountUntil: null,
         },
       },
+    );
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async removeOldNewFlags() {
+    const threeWeeksAgo = new Date();
+    threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+    await this.productModel.updateMany(
+      { isNew: true, createdAt: { $lte: threeWeeksAgo } },
+      { $set: { isNew: false } },
     );
   }
 }

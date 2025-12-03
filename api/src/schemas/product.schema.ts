@@ -37,6 +37,15 @@ export class Product {
 
   @Prop()
   discountUntil?: Date;
+
+  @Prop({ default: false })
+  isPopular: boolean;
+
+  @Prop({ default: true })
+  isNew: boolean;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

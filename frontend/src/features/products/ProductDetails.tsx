@@ -12,6 +12,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Stack,
   Tab,
   Tabs,
   TextField,
@@ -260,15 +261,26 @@ const ProductDetails = () => {
             width: { xs: "100%", md: "50%" },
           }}
         >
-          <Typography
-              sx={{
-                color: '#1D0C14',
-                fontSize: { xs: '18px', sm: '28px'},
-                fontWeight: '700',
-              }}
-          >
-            {product?.name}
-          </Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+              <b>{product?.name}</b>
+            </Typography>
+
+            {product?.isNew && (
+              <Box
+                sx={{
+                  backgroundColor: "secondary.main",
+                  color: "white",
+                  borderRadius: "4px",
+                  padding: "4px 8px",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                }}
+              >
+                New
+              </Box>
+            )}
+          </Stack>
           <Box
             sx={{
               display: "flex",

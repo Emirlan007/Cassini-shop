@@ -41,8 +41,8 @@ export class ProductsController {
     @Query('q') query: string,
     @Query('category') category: string,
     @Query('colors') colors: string,
-    @Query('limit') limit = '16',
-    @Query('page') page = '1',
+    @Query('limit') limit = 16,
+    @Query('page') page = 1,
   ) {
     const colorsArray = colors ? colors.split(',') : undefined;
 

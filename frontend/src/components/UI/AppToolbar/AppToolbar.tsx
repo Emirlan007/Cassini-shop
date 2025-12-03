@@ -23,6 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useDebouncedCallback } from "use-debounce";
 import { fetchSearchedProducts } from "../../../features/products/productsThunks.ts";
 import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
+import BackButton from "../BackButton.tsx";
 
 const AppToolbar = () => {
   // const user = useAppSelector(selectUser);
@@ -96,6 +97,7 @@ const AppToolbar = () => {
           }}
         >
           <Box display="flex" alignItems="center" gap={1}>
+              <BackButton />
             <IconButton sx={{ color: "#d9d9d9" }} onClick={toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>

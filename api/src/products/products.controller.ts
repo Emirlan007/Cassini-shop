@@ -19,7 +19,7 @@ import { TokenAuthGuard } from '../auth/token-auth.guard';
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { FileUploadInterceptorProduct } from '../shared/file-upload/file-upload.interceptor';
 import { UpdateProductDto } from './dto/update-product.dto';
-import {UpdateDiscountDto} from "./dto/update-discount.dto";
+import { UpdateDiscountDto } from './dto/update-discount.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -41,7 +41,8 @@ export class ProductsController {
     @Query('q') query: string,
     @Query('category') category: string,
     @Query('colors') colors: string,
-    @Query('limit') limit = '20',
+    @Query('limit') limit = '16',
+    @Query('page') page = '1',
   ) {
     const colorsArray = colors ? colors.split(',') : undefined;
 
@@ -50,6 +51,7 @@ export class ProductsController {
       category,
       colors: colorsArray,
       limit: Number(limit),
+      page: Number(page),
     });
   }
 

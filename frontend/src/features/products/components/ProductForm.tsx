@@ -195,7 +195,7 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                 <TextField
                     sx={{width: "100%"}}
                     label={t("productForm.selectedSizes")}
-                    value={state.size.join(", ")}
+                    value={state.size.length > 0 ? state.size.join(", ") : "No sizes selected"}
                     InputProps={{readOnly: true}}
                 />
                 <Button

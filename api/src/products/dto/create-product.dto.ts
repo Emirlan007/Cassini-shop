@@ -1,6 +1,7 @@
 import {
   ArrayUnique,
   IsArray,
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -68,4 +69,14 @@ export class CreateProductDto {
   @IsObject()
   @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
   imagesByColor?: Record<string, string[]>;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isPopular?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isNew?: boolean;
 }

@@ -173,7 +173,7 @@ const ProductDetails = () => {
       ).unwrap();
       toast.success("Скидка обновлена");
       await dispatch(fetchProductById(product._id));
-    } catch (err) {
+    } catch {
       toast.error("Не удалось обновить скидку");
     }
   };
@@ -223,7 +223,14 @@ const ProductDetails = () => {
             {product?.video && (
               <SwiperSlide key="video">
                 <Box sx={{ height: { xs: 320, sm: 400 } }}>
-                  <video width="100%" height="100%" controls>
+                  <video
+                      width="100%"
+                      height="100%"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                  >
                     <source src={API_URL + product.video} type="video/mp4" />
                     Ваш браузер не поддерживает видео.
                   </video>
@@ -315,8 +322,8 @@ const ProductDetails = () => {
               ) : (
                 <Typography
                   sx={{
-                    fontWeight: 600,
-                    fontSize: "18px",
+                    fontWeight: 700,
+                    fontSize: { xs: '18px', sm: '24px'},
                     color: "#660033",
                   }}
                 >
@@ -360,6 +367,57 @@ const ProductDetails = () => {
               )}
             </Box>
           </Box>
+
+          {product.colors?.length > 0 && (
+              <Box mt={3}>
+                <Typography
+                    mb={1}
+                    sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
+                >
+                  Цвет:
+                </Typography>
+
+                <Tabs
+                    value={selectedColor ?? false}
+                    onChange={(_, v) => setSelectedColor(v)}
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    sx={{
+                      minHeight: 0,
+                      "& .MuiTabs-flexContainer": { gap: "10px" },
+                      "& .MuiTabs-indicator": { display: "none" },
+                    }}
+                >
+                  {product.colors.map((c) => (
+                      <Tab
+                          key={c}
+                          value={c}
+                          label={
+                            <Box
+                                sx={{
+                                  width: 35,
+                                  height: 35,
+                                  borderRadius: "50%",
+                                  backgroundColor: c,
+                                  border:
+                                      selectedColor === c
+                                          ? "2px solid #000"
+                                          : "1px solid #ccc",
+                                  padding: "3px",
+                                  backgroundClip: "content-box",
+                                }}
+                            />
+                          }
+                          sx={{
+                            minHeight: 0,
+                            minWidth: 0,
+                            padding: 0,
+                          }}
+                      />
+                  ))}
+                </Tabs>
+              </Box>
+          )}
 
           {product.size?.length > 0 && (
             <Box mt={3}>
@@ -415,61 +473,10 @@ const ProductDetails = () => {
             </Box>
           )}
 
-          {product.colors?.length > 0 && (
-            <Box mt={3}>
-              <Typography
-                mb={1}
-                sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
-              >
-                Цвет:
-              </Typography>
-
-              <Tabs
-                value={selectedColor ?? false}
-                onChange={(_, v) => setSelectedColor(v)}
-                variant="scrollable"
-                scrollButtons="auto"
-                sx={{
-                  minHeight: 0,
-                  "& .MuiTabs-flexContainer": { gap: "10px" },
-                  "& .MuiTabs-indicator": { display: "none" },
-                }}
-              >
-                {product.colors.map((c) => (
-                  <Tab
-                    key={c}
-                    value={c}
-                    label={
-                      <Box
-                        sx={{
-                          width: 35,
-                          height: 35,
-                          borderRadius: "50%",
-                          backgroundColor: c,
-                          border:
-                            selectedColor === c
-                              ? "2px solid #000"
-                              : "1px solid #ccc",
-                          padding: "3px",
-                          backgroundClip: "content-box",
-                        }}
-                      />
-                    }
-                    sx={{
-                      minHeight: 0,
-                      minWidth: 0,
-                      padding: 0,
-                    }}
-                  />
-                ))}
-              </Tabs>
-            </Box>
-          )}
-
           <Box>
             <Typography
               variant={"h6"}
-              sx={{ marginY: 1, fontSize: "16px", fontWeight: "500" }}
+              sx={{ marginY: 1, fontSize: "16px", fontWeight: "700" }}
             >
               Product Details
             </Typography>

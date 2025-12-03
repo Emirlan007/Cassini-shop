@@ -23,6 +23,7 @@ import {
   toggleSearch,
   setSearchQuery,
 } from "../../../features/ui/uiSlice.ts";
+import BackButton from "../BackButton.tsx";
 
 const MobileLogo = () => {
   const searchRef = useRef<HTMLDivElement>(null);
@@ -78,6 +79,7 @@ const MobileLogo = () => {
           }}
         >
           <Box display="flex" alignItems="center" gap={1}>
+              <BackButton />
             <IconButton sx={{ color: "#d9d9d9" }} onClick={toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>

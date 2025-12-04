@@ -33,6 +33,7 @@ import {
 } from "./admin/adminProductsSlice.ts";
 import { updateProductDiscount } from "./admin/adminProductsThunks.ts";
 import ProductList from "./ProductsList.tsx";
+import {AVAILABLE_SIZES} from "../../constants/sizes.ts";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -199,6 +200,8 @@ const ProductDetails = () => {
       </Typography>
     );
   }
+
+  const productAvailableSizes = product?.size || [];
 
   return (
     <>
@@ -419,59 +422,123 @@ const ProductDetails = () => {
               </Box>
           )}
 
-          {product.size?.length > 0 && (
             <Box mt={3}>
-              <Typography
-                mb={1}
-                sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
-              >
-                Размер:
-              </Typography>
-              <ToggleButtonGroup
-                value={selectedSize}
-                exclusive
-                onChange={(_, value) => {
-                  if (value !== null) {
-                    setSelectedSize(value);
-                  }
-                }}
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 1,
-                  "& .MuiToggleButtonGroup-grouped": {
-                    border: "1px solid #D9D9D9",
-                    borderRadius: "8px !important",
-                    margin: 0,
-                    px: 3,
-                    py: 1,
-                    textTransform: "none",
-                    fontWeight: 600,
-                    fontSize: "14px",
-                    color: "#000",
-                    "&:not(:first-of-type)": {
-                      marginLeft: 0,
-                      borderLeft: "1px solid #D9D9D9",
-                    },
-                    "&.Mui-selected": {
-                      border: "1px solid #000 !important",
-                      backgroundColor: "#F2F2F2",
-                      color: "#000",
-                      "&:hover": {
-                        backgroundColor: "#F2F2F2",
-                      },
-                    },
-                  },
-                }}
-              >
-                {product.size.map((s) => (
-                  <ToggleButton key={s} value={s}>
-                    {s}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
+                <Typography
+                    mb={1}
+                    sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
+                >
+                    Размер:
+                </Typography>
+                <ToggleButtonGroup
+                    value={selectedSize}
+                    exclusive
+                    onChange={(_, value) => {
+                        if (value !== null && productAvailableSizes.includes(value)) {
+                            setSelectedSize(value);
+                        }
+                    }}
+                    sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 1,
+                        "& .MuiToggleButtonGroup-grouped": {
+                            border: "1px solid #D9D9D9",
+                            borderRadius: "8px !important",
+                            margin: 0,
+                            px: 3,
+                            py: 1,
+                            textTransform: "none",
+                            fontWeight: 600,
+                            fontSize: "14px",
+                            "&:not(:first-of-type)": {
+                                marginLeft: 0,
+                                borderLeft: "1px solid #D9D9D9",
+                            },
+                            "&.Mui-selected": {
+                                border: "1px solid #000 !important",
+                                backgroundColor: "#F2F2F2",
+                                color: "#000",
+                                "&:hover": {
+                                    backgroundColor: "#F2F2F2",
+                                },
+                            },
+                        },
+                    }}
+                >
+                    {AVAILABLE_SIZES.map((size) => {
+                        const isAvailable = productAvailableSizes.includes(size);
+                        const isSelected = selectedSize === size;
+
+                        return (
+                            <ToggleButton
+                                key={size}
+                                value={size}
+                                disabled={!isAvailable}
+                                sx={{
+                                    color: isAvailable ? "#000" : "#999",
+                                    backgroundColor: isAvailable ? "#FFF" : "#F5F5F5",
+                                    cursor: isAvailable ? "pointer" : "default",
+                                    opacity: isAvailable ? 1 : 0.6,
+                                    "&:hover": {
+                                        backgroundColor: isAvailable
+                                            ? (isSelected ? "#F2F2F2" : "#F9F9F9")
+                                            : "#F5F5F5",
+                                    },
+                                    "&.Mui-selected": {
+                                        backgroundColor: "#F2F2F2",
+                                        color: "#000",
+                                        "&.Mui-disabled": {
+                                            backgroundColor: "#F5F5F5",
+                                            color: "#999",
+                                        }
+                                    },
+                                    "&.Mui-disabled": {
+                                        backgroundColor: "#F5F5F5",
+                                        borderColor: "#E0E0E0",
+                                        color: "#999",
+                                    }
+                                }}
+                            >
+                                {size}
+                            </ToggleButton>
+                        );
+                    })}
+                </ToggleButtonGroup>
+
+                {productAvailableSizes.length > 0 && (
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            display: "block",
+                            mt: 1,
+                            color: "#666",
+                            fontSize: "12px"
+                        }}
+                    >
+                        Доступные размеры: {productAvailableSizes.join(", ")}
+                    </Typography>
+                )}
+
+                {selectedSize && !productAvailableSizes.includes(selectedSize) && (
+                    <Typography
+                        color="error"
+                        variant="caption"
+                        sx={{ display: "block", mt: 1 }}
+                    >
+                        Этот размер недоступен для данного товара
+                    </Typography>
+                )}
+
+                {error && (
+                    <Typography
+                        color="error"
+                        variant="body2"
+                        sx={{ display: "block", mt: 1 }}
+                    >
+                        Ошибка: {error}. Доступные размеры: {productAvailableSizes.join(", ") || "нет"}
+                    </Typography>
+                )}
             </Box>
-          )}
 
           <Box>
             <Typography

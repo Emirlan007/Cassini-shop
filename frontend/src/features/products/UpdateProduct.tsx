@@ -263,7 +263,7 @@ const UpdateProduct: FC<Props> = ({product, onSubmit}) => {
                             <TextField
                                 sx={{ width: "100%" }}
                                 label="Selected Sizes"
-                                value={state.size.join(", ")}
+                                value={state.size.length > 0 ? state.size.join(", ") : "No sizes selected"}
                             />
                             <Button variant="contained" onClick={() => setSizesOpen(true)}>
                                 Sizes

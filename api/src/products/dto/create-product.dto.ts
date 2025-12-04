@@ -8,6 +8,7 @@ import {
   IsString,
   Min,
   ValidateIf,
+  IsBoolean,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -68,4 +69,14 @@ export class CreateProductDto {
   @IsObject()
   @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
   imagesByColor?: Record<string, string[]>;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isPopular?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isNew?: boolean;
 }

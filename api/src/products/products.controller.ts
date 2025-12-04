@@ -109,6 +109,16 @@ export class ProductsController {
     return this.productsService.updateDiscount(id, discountData);
   }
 
+  @Patch(':id/new-status')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async updateNewStatus(
+    @Param('id') id: string,
+    @Body('isNew') isNew: boolean,
+  ) {
+    return this.productsService.updateNewStatus(id, isNew);
+  }
+
   @Delete(':id')
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)

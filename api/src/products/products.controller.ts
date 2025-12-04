@@ -55,6 +55,14 @@ export class ProductsController {
     });
   }
 
+  @Get('popular')
+  async getPopularProducts(
+    @Query('page') page = '1',
+    @Query('limit') limit = '8',
+  ) {
+    return this.productsService.findPopular(Number(page), Number(limit));
+  }
+
   @Get(':id')
   async getProductById(@Param('id') id: string) {
     return this.productsService.findOne(id);

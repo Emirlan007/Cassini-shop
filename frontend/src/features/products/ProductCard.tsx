@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardMedia,
   Typography,
   Box,
   Stack,
@@ -10,17 +9,22 @@ import type { Product } from "../../types";
 import { API_URL } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-// import { useTranslation } from "react-i18next";
+import {AnimatePresence, motion} from "framer-motion";
 
 interface Props {
   product: Product;
 }
 
+const MotionCard = motion(Card);
+const MotionCardMedia = motion('img');
+
 const ProductCard = ({ product }: Props) => {
   const navigate = useNavigate();
-  // const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   const getImageUrl = (imagePath: string) => {
     if (!imagePath) return "";
@@ -40,7 +44,7 @@ const ProductCard = ({ product }: Props) => {
         const discountUntil = new Date(product.discountUntil);
 
         if (discountUntil > now) {
-          setHasActiveDiscount(true);
+          void setHasActiveDiscount(true);
 
           const diff = discountUntil.getTime() - now.getTime();
           const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -68,6 +72,17 @@ const ProductCard = ({ product }: Props) => {
     return () => clearInterval(interval);
   }, [product.discount, product.discountUntil]);
 
+
+    useEffect(() => {
+        if (!isHovered || !product.images || product.images.length <= 1) return;
+
+        const interval = setInterval(() => {
+          setCurrentImageIndex(prev => (prev + 1) % product.images!.length);
+        }, 2500);
+
+        return () => clearInterval(interval);
+    }, [isHovered, product.images]);
+
   const calculateFinalPrice = () => {
     if (product.discount && hasActiveDiscount) {
       return Math.round(product.price * (1 - product.discount / 100));
@@ -79,8 +94,15 @@ const ProductCard = ({ product }: Props) => {
   const showDiscount = product.discount && hasActiveDiscount;
 
   return (
-    <Card
+    <MotionCard
       onClick={() => navigate(`/product/${product._id}`)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+          setIsHovered(false);
+          setCurrentImageIndex(0);
+      }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ type: "spring", stiffness: 200, damping: 15 }}
       sx={{
         width: "100%",
         maxWidth: { xs: "180px", sm: "220px", md: "280px", lg: "336px" },
@@ -91,11 +113,14 @@ const ProductCard = ({ product }: Props) => {
           lg: "504.2px",
         },
         borderRadius: "5px",
+        border: "1px solid #f3f3f3",
         boxShadow: "none",
         backgroundColor: "#fff",
         cursor: "pointer",
+        overflow: "hidden",
         position: "relative",
         mx: "auto",
+        display: { xs: "block", md: "block" },
       }}
     >
       <Stack
@@ -158,43 +183,45 @@ const ProductCard = ({ product }: Props) => {
         </Box>
       )}
 
-      {product.images && product.images.length > 0 ? (
-        <CardMedia
-          component="img"
-          image={getImageUrl(product.images[0])}
-          alt={product.name}
-          sx={{
-            width: "100%",
-            height: {
-              xs: "180px",
-              sm: "240px",
-              md: "320px",
-              lg: "448px",
-            },
-            objectFit: "cover",
-            borderRadius: "5px",
-          }}
-        />
-      ) : (
-        <Box
-          sx={{
-            width: "100%",
-            height: {
-              xs: "180px",
-              sm: "240px",
-              md: "320px",
-              lg: "448px",
-            },
-            backgroundColor: "#f3f4f6",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#9ca3af",
-          }}
-        >
-          Нет изображения
-        </Box>
-      )}
+      <Box sx={{ position: "relative", width: "100%", height: { xs: "180px", sm: "240px", md: "320px", lg: "448px" } }}>
+        <AnimatePresence mode="wait">
+          {product.images && product.images.length > 0 ? (
+              <MotionCardMedia
+                  key={currentImageIndex}
+                  src={getImageUrl(product.images[currentImageIndex])}
+                  alt={product.name}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1 }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+              />
+          ) : (
+              <Box
+                  sx={{
+                    width: "100%",
+                    height: {
+                      xs: "180px",
+                      sm: "240px",
+                      md: "320px",
+                      lg: "448px",
+                    },
+                    backgroundColor: "#f3f4f6",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#9ca3af",
+                  }}
+              >
+                Нет изображения
+              </Box>
+          )}
+        </AnimatePresence>
+      </Box>
 
       <CardContent
         sx={{
@@ -251,7 +278,7 @@ const ProductCard = ({ product }: Props) => {
           )}
         </Box>
       </CardContent>
-    </Card>
+    </MotionCard>
   );
 };
 

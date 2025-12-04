@@ -96,6 +96,31 @@ export class ProductsService {
     return product;
   }
 
+  async findPopular(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const filter = { isPopular: true };
+
+    const [items, total] = await Promise.all([
+      this.productModel
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        .populate('category')
+        .sort({ createdAt: -1 }),
+
+      this.productModel.countDocuments(filter),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
   async searchProducts(params: {
     query: string;
     limit: number;
@@ -297,6 +322,7 @@ export class ProductsService {
 
     await this.productModel.findByIdAndDelete(id).exec();
   }
+
   private validateAndConvertCategories(categories: string[]): Types.ObjectId[] {
     return categories.map((id) => {
       if (!Types.ObjectId.isValid(id)) {

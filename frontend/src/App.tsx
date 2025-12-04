@@ -30,6 +30,7 @@ import User from "./features/users/admin/User.tsx";
 import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
+import SearchResultsPage from "./pages/SearchResultsPage.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path={'/search'} element={<SearchResultsPage />} />
           <Route
             path="/products/:productUpdate/update"
             element={<UpdateCreateWrap />}

@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { Product } from "../../types";
 import {
-  createProduct,
-  deleteProduct,
-  fetchProductById,
-  fetchProducts,
-  fetchSearchedProducts,
+    createProduct,
+    deleteProduct, fetchFilteredProducts,
+    fetchProductById,
+    fetchProducts,
+    fetchSearchedProducts,
 } from "./productsThunks";
 
 interface ProductsState {
@@ -18,6 +18,13 @@ interface ProductsState {
   createLoading: boolean;
   createError: string | null;
   deleteLoading: boolean | string;
+  filteredItems: Product[];
+  totalCount: number;
+  currentPage: number;
+  totalPages: number;
+  hasMore: boolean;
+  filterLoading: boolean;
+  filterError: string | null;
 }
 
 const initialState: ProductsState = {
@@ -30,6 +37,13 @@ const initialState: ProductsState = {
   createLoading: false,
   createError: null,
   deleteLoading: false,
+  filteredItems: [],
+  totalCount: 0,
+  currentPage: 1,
+  totalPages: 1,
+  hasMore: false,
+  filterLoading: false,
+  filterError: null,
 };
 
 const productsSlice = createSlice({
@@ -101,6 +115,24 @@ const productsSlice = createSlice({
           state.fetchItemsLoading = false;
           state.fetchItemsError = error?.error ?? null;
         });
+
+      builder
+          .addCase(fetchFilteredProducts.pending, (state) => {
+              state.filterLoading = true;
+              state.filterError = null;
+          })
+          .addCase(fetchFilteredProducts.fulfilled, (state, { payload }) => {
+              state.filterLoading = false;
+              state.filteredItems = payload.products;
+              state.totalCount = payload.totalCount;
+              state.currentPage = payload.currentPage;
+              state.totalPages = payload.totalPages;
+              state.hasMore = payload.hasMore;
+          })
+          .addCase(fetchFilteredProducts.rejected, (state, { payload: error }) => {
+              state.filterLoading = false;
+              state.filterError = error?.error ?? null;
+          });
   },
   selectors: {
     selectProducts: (state) => state.items,
@@ -112,6 +144,13 @@ const productsSlice = createSlice({
     selectProductCreateLoading: (state) => state.createLoading,
     selectProductCreateError: (state) => state.createError,
     selectProductDeleteLoading: (state) => state.deleteLoading,
+    selectFilteredProducts: (state) => state.filteredItems,
+    selectTotalCount: (state) => state.totalCount,
+    selectCurrentPage: (state) => state.currentPage,
+    selectTotalPages: (state) => state.totalPages,
+    selectHasMore: (state) => state.hasMore,
+    selectFilterLoading: (state) => state.filterLoading,
+    selectFilterError: (state) => state.filterError,
   },
 });
 
@@ -127,4 +166,11 @@ export const {
   selectProductCreateLoading,
   selectProductCreateError,
   selectProductDeleteLoading,
+  selectFilteredProducts,
+  selectTotalCount,
+  selectCurrentPage,
+  selectTotalPages,
+  selectHasMore,
+  selectFilterLoading,
+  selectFilterError,
 } = productsSlice.selectors;

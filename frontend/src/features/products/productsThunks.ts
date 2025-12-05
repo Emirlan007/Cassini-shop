@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { IGlobalError, Product, ProductInput } from "../../types";
+import type {FilteredProductsResponse, FilterParams, IGlobalError, Product, ProductInput} from "../../types";
 import { axiosApi } from "../../axiosApi";
 import { isAxiosError } from "axios";
 import type { RootState } from "../../app/store.ts";
@@ -154,3 +154,76 @@ export const deleteProduct = createAsyncThunk<void, string, { getState }>(
       await dispatch(fetchProducts())
     }
 );
+
+export const fetchFilteredProducts = createAsyncThunk<
+    FilteredProductsResponse,
+    FilterParams & { categoryId: string },
+    { rejectValue: IGlobalError }
+>("products/fetchFiltered", async (filterParams, { rejectWithValue }) => {
+    try {
+        const queryParams = new URLSearchParams();
+
+        if (filterParams.categoryId) {
+            queryParams.append('categoryId', filterParams.categoryId);
+        }
+
+        if (filterParams.colors?.length) {
+            queryParams.append('colors', filterParams.colors.join(','));
+        }
+
+        if (filterParams.sizes?.length) {
+            queryParams.append('sizes', filterParams.sizes.join(','));
+        }
+
+        if (filterParams.minPrice !== undefined) {
+            queryParams.append('minPrice', filterParams.minPrice.toString());
+        }
+
+        if (filterParams.maxPrice !== undefined) {
+            queryParams.append('maxPrice', filterParams.maxPrice.toString());
+        }
+
+        if (filterParams.material) {
+            queryParams.append('material', filterParams.material);
+        }
+
+        if (filterParams.inStock !== undefined) {
+            queryParams.append('inStock', filterParams.inStock.toString());
+        }
+
+        if (filterParams.isNew !== undefined) {
+            queryParams.append('isNew', filterParams.isNew.toString());
+        }
+
+        if (filterParams.isPopular !== undefined) {
+            queryParams.append('isPopular', filterParams.isPopular.toString());
+        }
+
+        if (filterParams.page) {
+            queryParams.append('page', filterParams.page.toString());
+        }
+
+        if (filterParams.limit) {
+            queryParams.append('limit', filterParams.limit.toString());
+        }
+
+        if (filterParams.sortBy) {
+            queryParams.append('sortBy', filterParams.sortBy);
+        }
+
+        if (filterParams.sortOrder) {
+            queryParams.append('sortOrder', filterParams.sortOrder);
+        }
+
+        const { data } = await axiosApi.get<FilteredProductsResponse>(
+            `/products/filter?${queryParams.toString()}`
+        );
+
+        return data;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            return rejectWithValue(error.response.data);
+        }
+        throw error;
+    }
+});

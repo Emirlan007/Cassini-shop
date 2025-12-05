@@ -21,6 +21,7 @@ import { FileUploadInterceptorProduct } from '../shared/file-upload/file-upload.
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
+import { FilterProductsDto } from './dto/filter-products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -62,6 +63,11 @@ export class ProductsController {
     @Query('limit') limit = '8',
   ) {
     return this.productsService.findPopular(Number(page), Number(limit));
+  }
+
+  @Get('filter')
+  filterProducts(@Query() filters: FilterProductsDto) {
+    return this.productsService.filterProducts(filters);
   }
 
   @Get(':id')

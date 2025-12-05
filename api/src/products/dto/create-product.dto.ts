@@ -80,4 +80,11 @@ export class CreateProductDto {
   @IsBoolean()
   @Transform(({ value }) => value === 'true' || value === true)
   isNew?: boolean;
+
+  @IsBoolean()
+  inStock: boolean;
+
+  @IsOptional()
+  @IsString()
+  material?: string;
 }

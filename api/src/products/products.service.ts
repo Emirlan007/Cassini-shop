@@ -13,6 +13,23 @@ import { promises as fs } from 'fs';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
+import { FilterProductsDto } from './dto/filter-products.dto';
+
+interface ProductFilter {
+  category?: Types.ObjectId;
+  colors?: { $in: string[] };
+  size?: { $in: string[] };
+  price?: { $gte?: number; $lte?: number };
+  material?: string;
+  inStock?: boolean;
+  isNew?: boolean;
+  isPopular?: boolean;
+}
+
+type SortOrder = 1 | -1;
+interface ProductSort {
+  [key: string]: SortOrder;
+}
 
 @Injectable()
 export class ProductsService {
@@ -395,5 +412,69 @@ export class ProductsService {
       { isNew: true, createdAt: { $lte: threeWeeksAgo } },
       { $set: { isNew: false } },
     );
+  }
+
+  async filterProducts(filters: FilterProductsDto) {
+    const filter: ProductFilter = {};
+
+    if (filters.categoryId) {
+      filter.category = new Types.ObjectId(filters.categoryId);
+    }
+
+    if (filters.colors?.length) {
+      filter.colors = { $in: filters.colors };
+    }
+
+    if (filters.sizes?.length) {
+      filter.size = { $in: filters.sizes };
+    }
+
+    if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+      filter.price = {};
+      if (filters.minPrice !== undefined) filter.price.$gte = filters.minPrice;
+      if (filters.maxPrice !== undefined) filter.price.$lte = filters.maxPrice;
+    }
+
+    if (filters.material) {
+      filter.material = filters.material;
+    }
+
+    if (filters.inStock !== undefined) {
+      filter.inStock = filters.inStock;
+    }
+
+    if (filters.isNew !== undefined) {
+      filter.isNew = filters.isNew;
+    }
+
+    if (filters.isPopular !== undefined) {
+      filter.isPopular = filters.isPopular;
+    }
+
+    const page = filters.page || 1;
+    const limit = filters.limit || 16;
+    const skip = (page - 1) * limit;
+
+    const sort: ProductSort = {};
+    if (filters.sortBy) {
+      sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
+    }
+
+    const [products, totalCount] = await Promise.all([
+      this.productModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
+      this.productModel.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasMore = page < totalPages;
+
+    return {
+      products,
+      totalCount,
+      currentPage: page,
+      totalPages,
+      hasMore,
+      appliedFilters: filters,
+    };
   }
 }

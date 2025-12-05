@@ -46,6 +46,12 @@ export class Product {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop()
+  material: string;
+
+  @Prop({ default: true })
+  inStock: boolean;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

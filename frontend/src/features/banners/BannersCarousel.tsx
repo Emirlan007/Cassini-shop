@@ -1,12 +1,11 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
-import { Alert, Box, Button, Typography } from "@mui/material";
+import { Alert, Box, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {Link} from "react-router-dom";
 import { selectBanners, selectBannersError } from "./bannersSlice";
 import { useEffect } from "react";
 import { fetchBanners } from "./bannersThunks";
-import { useTranslation } from "react-i18next";
 import { API_URL } from "../../constants";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";
@@ -16,8 +15,6 @@ const BannersCarousel = () => {
   const dispatch = useAppDispatch();
   const banners = useAppSelector(selectBanners);
   const bannersError = useAppSelector(selectBannersError);
-  const { t } = useTranslation();
-
   useEffect(() => {
     dispatch(fetchBanners());
   }, [dispatch]);
@@ -47,66 +44,64 @@ const BannersCarousel = () => {
           >
             {banners.map((banner) => (
               <SwiperSlide key={banner._id}>
-                <Box
-                  sx={{
-                    msxWidth: "100%",
-                    width: '1200px',
-                    pr: { xs: "0px", md: "12.8px" },
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: { xs: "center", sm: "flex-end" },
-                    justifyContent: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "left",
-                    backgroundSize: "contain",
-                    ml: {md: 3},
-                    backgroundImage: `url(${API_URL}${banner.image.replace('public/', '')})`,
-                  }}
-                >
                   <Box
-                    sx={{
-                      ml: "auto",
-                      borderRadius: 3,
-                      mt: {xs: "auto", md: "0px"},
-                      p: 2,
-                      maxWidth: 320,
-                      mx: 1,
-                    }}
-                  >
-                    <Typography sx={{
-                      fontWeight: {xs: 700, md: 800 },
-                      fontSize: "36px",
-                      lineHeight: "133%",
-                      letterSpacing: "-0.04em",
-                      textAlign: {xs: "left", md: "center"},
-                      color: {xs: "#fff", sm: "#111827"},
-                      mb: "6.4px",
-                    }} variant="h4">{banner.title}</Typography>
-
-                    <Typography sx={{
-                      fontWeight: 400,
-                      fontSize: "12px",
-                      lineHeight: "150%",
-                      mb: "25px",
-                      textAlign: {xs: "left", md: "center"},
-                      color: {xs: "#fff", sm: "#374151"},
-                    }} variant="h6">{banner.description}</Typography>
-
-                    <Link
+                      component={Link}
+                      to={banner.link ?? "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      to={banner.link ? banner.link : "#"}
+                      sx={{
+                        textDecoration: "none",
+                        msxWidth: "100%",
+                        width: '1200px',
+                        pr: { xs: "0px", md: "12.8px" },
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: { xs: "center", sm: "flex-end" },
+                        justifyContent: "center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "left",
+                        backgroundSize: "contain",
+                        ml: {md: 3},
+                        backgroundImage: `url(${API_URL}${banner.image.replace('public/', '')})`,
+                        transition: "transform 0.35s ease, box-shadow 0.35s ease",
+                        "&:hover": {
+                          transform: "scale(1.01)",
+                        }
+                      }}
+
+                  >
+                    <Box
+                        sx={{
+                          ml: "auto",
+                          borderRadius: 3,
+                          mt: {xs: "auto", md: "0px"},
+                          p: 2,
+                          maxWidth: 320,
+                          mx: 1,
+                        }}
                     >
-                      <Button
-                        variant="contained"
-                        sx={{display: {xs: 'none', sm: 'inline-block'}, textAlign: {xs: "left", sm: "center"}, bgcolor: "#660033", color: "white", textDecoration: "none",}}
-                      >
-                        {t("moreInfo")}
-                      </Button>
-                    </Link>
+                      <Typography sx={{
+                        fontWeight: {xs: 700, md: 800 },
+                        fontSize: "36px",
+                        lineHeight: "133%",
+                        letterSpacing: "-0.04em",
+                        textAlign: {xs: "left", md: "center"},
+                        color: {xs: "#fff", sm: "#111827"},
+                        mb: "6.4px",
+                      }} variant="h4">{banner.title}</Typography>
+
+                      <Typography sx={{
+                        fontWeight: 400,
+                        fontSize: "12px",
+                        lineHeight: "150%",
+                        mb: "25px",
+                        textAlign: {xs: "left", md: "center"},
+                        color: {xs: "#fff", sm: "#374151"},
+                      }} variant="h6">{banner.description}</Typography>
+                    </Box>
                   </Box>
-                </Box>
+
               </SwiperSlide>
             ))}
           </Swiper>

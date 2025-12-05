@@ -38,6 +38,9 @@ export class ProductsService {
       productData.category = this.validateAndConvertCategory(category);
     }
 
+    productData.isNew = createProductDto.isNew ?? true;
+    productData.createdAt = new Date();
+
     if (files?.images && files.images.length > 0) {
       productData.images = files.images.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
@@ -97,13 +100,39 @@ export class ProductsService {
     return product;
   }
 
+  async findPopular(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const filter = { isPopular: true };
+
+    const [items, total] = await Promise.all([
+      this.productModel
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        .populate('category')
+        .sort({ createdAt: -1 }),
+
+      this.productModel.countDocuments(filter),
+    ]);
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
   async searchProducts(params: {
     query: string;
+    limit: number;
+    page: number;
     category?: string;
     colors?: string[];
-    limit?: number;
   }) {
-    const { query, category, colors, limit = 20 } = params;
+    const { query, category, colors, limit, page } = params;
 
     const filter: FilterQuery<ProductDocument> = {};
 
@@ -121,13 +150,9 @@ export class ProductsService {
     };
 
     const textResults = await this.productModel
-      .find(textFilter, {
-        score: { $meta: 'textScore' },
-      })
-      .sort({
-        score: { $meta: 'textScore' },
-      })
-      .limit(limit)
+      .find(textFilter, { score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' } })
+      .select('_id')
       .lean();
 
     const regexFilter = {
@@ -137,20 +162,43 @@ export class ProductsService {
 
     const regexResults = await this.productModel
       .find(regexFilter)
-      .limit(limit)
+      .select('_id')
       .lean();
 
-    const map = new Map<string, any>();
+    const idMap = new Map<string, boolean>();
 
-    for (const item of [...textResults, ...regexResults]) {
-      map.set((item._id as Types.ObjectId).toString(), item);
-    }
+    [...textResults, ...regexResults].forEach((item) => {
+      idMap.set(String(item._id as Types.ObjectId), true);
+    });
 
-    const products = [...map.values()].slice(0, limit) as Product[];
+    const productsIds = [...idMap.keys()];
+
+    const totalCount = productsIds.length;
+
+    const skip = (page - 1) * limit;
+
+    const paginatedIds = productsIds.slice(skip, skip + limit);
+
+    const products = await this.productModel
+      .find({ _id: { $in: paginatedIds } })
+      .lean();
+
+    const productMap = new Map(
+      products.map((p) => [String(p._id as Types.ObjectId), p]),
+    );
+
+    const orderedProducts = paginatedIds.map((id) => productMap.get(id));
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const hasMore = page * limit < totalCount;
 
     return {
-      products,
-      totalCount: products.length,
+      products: orderedProducts,
+      totalCount,
+      currentPage: page,
+      totalPages,
+      hasMore,
       searchQuery: query,
     };
   }
@@ -243,6 +291,18 @@ export class ProductsService {
     return product.save();
   }
 
+  async updateNewStatus(productId: string, isNew: boolean) {
+    const product = await this.productModel.findByIdAndUpdate(
+      productId,
+      { isNew },
+      { new: true },
+    );
+    if (!product) {
+      throw new NotFoundException(`Product with id ${productId} not found`);
+    }
+    return product;
+  }
+
   async remove(id: string): Promise<void> {
     const product = await this.productModel.findById(id).exec();
 
@@ -278,6 +338,7 @@ export class ProductsService {
 
     await this.productModel.findByIdAndDelete(id).exec();
   }
+
   private validateAndConvertCategories(categories: string[]): Types.ObjectId[] {
     return categories.map((id) => {
       if (!Types.ObjectId.isValid(id)) {
@@ -323,5 +384,16 @@ export class ProductsService {
 
     product.isPopular = updatePopularStatus.isPopular;
     return product.save();
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async removeOldNewFlags() {
+    const threeWeeksAgo = new Date();
+    threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+    await this.productModel.updateMany(
+      { isNew: true, createdAt: { $lte: threeWeeksAgo } },
+      { $set: { isNew: false } },
+    );
   }
 }

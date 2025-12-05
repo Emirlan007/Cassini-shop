@@ -42,7 +42,8 @@ export class ProductsController {
     @Query('q') query: string,
     @Query('category') category: string,
     @Query('colors') colors: string,
-    @Query('limit') limit = '20',
+    @Query('limit') limit = 16,
+    @Query('page') page = 1,
   ) {
     const colorsArray = colors ? colors.split(',') : undefined;
 
@@ -51,7 +52,16 @@ export class ProductsController {
       category,
       colors: colorsArray,
       limit: Number(limit),
+      page: Number(page),
     });
+  }
+
+  @Get('popular')
+  async getPopularProducts(
+    @Query('page') page = '1',
+    @Query('limit') limit = '8',
+  ) {
+    return this.productsService.findPopular(Number(page), Number(limit));
   }
 
   @Get(':id')
@@ -108,6 +118,16 @@ export class ProductsController {
     @Body() updatePopularStatus: UpdatePopularStatusDto,
   ) {
     return this.productsService.updatePopularStatus(id, updatePopularStatus);
+  }
+
+  @Patch(':id/new-status')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async updateNewStatus(
+    @Param('id') id: string,
+    @Body('isNew') isNew: boolean,
+  ) {
+    return this.productsService.updateNewStatus(id, isNew);
   }
 
   @Delete(':id')

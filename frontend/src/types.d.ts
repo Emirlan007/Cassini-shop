@@ -69,6 +69,7 @@ export interface Product {
   discountUntil?: string;
   finalPrice?: number;
   isNew: boolean;
+  isPopular: boolean;
 }
 
 export interface ProductInput {

@@ -1,6 +1,7 @@
 import {
   ArrayUnique,
-  IsArray,
+  IsArray, IsBoolean,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -10,6 +11,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { AVAILABLE_SIZES } from '../../shared/constants/sizes.constant';
 
 const transformToArray = ({ value }: { value: unknown }): unknown[] => {
   if (Array.isArray(value)) return value;
@@ -39,10 +41,9 @@ export class CreateProductDto {
   @Transform((value) => transformToArray(value))
   colors: string[];
 
+  //Available sizes: XS, S, M, L, XL, XXL, XXXL
   @IsArray()
-  @IsString({ each: true })
-  @ArrayUnique()
-  @Transform(transformToArray)
+  @IsIn(AVAILABLE_SIZES, { each: true })
   size: string[];
 
   @IsString()
@@ -68,4 +69,5 @@ export class CreateProductDto {
   @IsObject()
   @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
   imagesByColor?: Record<string, string[]>;
+
 }

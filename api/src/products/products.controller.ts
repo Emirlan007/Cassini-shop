@@ -19,7 +19,8 @@ import { TokenAuthGuard } from '../auth/token-auth.guard';
 import { RolesGuard } from '../role-auth/role-auth.guard';
 import { FileUploadInterceptorProduct } from '../shared/file-upload/file-upload.interceptor';
 import { UpdateProductDto } from './dto/update-product.dto';
-import {UpdateDiscountDto} from "./dto/update-discount.dto";
+import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -97,6 +98,16 @@ export class ProductsController {
     @Body() discountData: UpdateDiscountDto,
   ) {
     return this.productsService.updateDiscount(id, discountData);
+  }
+
+  @Patch(':id/popular')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async findByIdAndUpdate(
+    @Param('id') id: string,
+    @Body() updatePopularStatus: UpdatePopularStatusDto,
+  ) {
+    return this.productsService.updatePopularStatus(id, updatePopularStatus);
   }
 
   @Delete(':id')

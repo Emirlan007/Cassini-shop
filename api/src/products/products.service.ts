@@ -12,6 +12,7 @@ import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { promises as fs } from 'fs';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 
 @Injectable()
 export class ProductsService {
@@ -309,5 +310,18 @@ export class ProductsService {
         },
       },
     );
+  }
+  async updatePopularStatus(
+    id: string,
+    updatePopularStatus: UpdatePopularStatusDto,
+  ) {
+    const product = await this.productModel.findById(id).exec();
+
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    product.isPopular = updatePopularStatus.isPopular;
+    return product.save();
   }
 }

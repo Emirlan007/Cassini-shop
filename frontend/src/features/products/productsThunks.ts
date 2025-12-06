@@ -1,13 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type {FilteredProductsResponse, FilterParams, IGlobalError, Product, ProductInput} from "../../types";
+import type {
+  FilteredProductsResponse,
+  FilterParams,
+  IGlobalError,
+  PopularProducts,
+  Product,
+  ProductInput,
+} from "../../types";
 import { axiosApi } from "../../axiosApi";
 import { isAxiosError } from "axios";
 import type { RootState } from "../../app/store.ts";
 
 export const fetchProducts = createAsyncThunk<
-    Product[],
-    string | undefined,
-    { rejectValue: IGlobalError }
+  Product[],
+  string | undefined,
+  { rejectValue: IGlobalError }
 >("products/fetchAll", async (categoryId, { rejectWithValue }) => {
   try {
     const url = categoryId ? `/products?categoryId=${categoryId}` : "/products";
@@ -21,33 +28,51 @@ export const fetchProducts = createAsyncThunk<
   }
 });
 
-export const fetchSearchedProducts = createAsyncThunk<
-    Product[],
-    string | undefined,
-    { rejectValue: IGlobalError }
->(
-    "products/fetchSearchedProducts",
-    async (searchValue, { rejectWithValue }) => {
-      try {
-        const url = searchValue
-            ? `/products?searchValue=${searchValue}`
-            : "/products";
-        const { data } = await axiosApi.get<Product[]>(url);
-
-        return data;
-      } catch (error) {
-        if (isAxiosError(error) && error.response) {
-          return rejectWithValue(error.response.data);
-        }
-        throw error;
-      }
+export const fetchPopularProducts = createAsyncThunk<
+  PopularProducts,
+  number | undefined,
+  { rejectValue: IGlobalError }
+>("products/fetchPopular", async (limit = 8, { rejectWithValue }) => {
+  try {
+    const { data } = await axiosApi.get<PopularProducts>("/products/popular", {
+      params: { limit },
+    });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      return rejectWithValue(error.response.data);
     }
+    throw error;
+  }
+});
+
+export const fetchSearchedProducts = createAsyncThunk<
+  Product[],
+  string | undefined,
+  { rejectValue: IGlobalError }
+>(
+  "products/fetchSearchedProducts",
+  async (searchValue, { rejectWithValue }) => {
+    try {
+      const url = searchValue
+        ? `/products?searchValue=${searchValue}`
+        : "/products";
+      const { data } = await axiosApi.get<Product[]>(url);
+
+      return data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
+    }
+  }
 );
 
 export const fetchProductById = createAsyncThunk<
-    Product,
-    string,
-    { rejectValue: IGlobalError }
+  Product,
+  string,
+  { rejectValue: IGlobalError }
 >("products/fetchOne", async (id, { rejectWithValue }) => {
   try {
     const { data: product } = await axiosApi.get<Product>("/products/" + id);
@@ -62,9 +87,9 @@ export const fetchProductById = createAsyncThunk<
 });
 
 export const createProduct = createAsyncThunk<
-    Product,
-    ProductInput,
-    { rejectValue: IGlobalError }
+  Product,
+  ProductInput,
+  { rejectValue: IGlobalError }
 >("products/create", async (productData, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -96,8 +121,8 @@ export const createProduct = createAsyncThunk<
     }
 
     const { data: product } = await axiosApi.post<Product>(
-        "/products",
-        formData
+      "/products",
+      formData
     );
 
     return product;
@@ -111,9 +136,9 @@ export const createProduct = createAsyncThunk<
 });
 
 export const updateProduct = createAsyncThunk<
-    Product,
-    { product: ProductInput; _productId: string },
-    { state: RootState }
+  Product,
+  { product: ProductInput; _productId: string },
+  { state: RootState }
 >("products/update", async ({ product, _productId }, { getState }) => {
   const token = getState().users.user?.token;
 
@@ -148,82 +173,82 @@ export const updateProduct = createAsyncThunk<
 });
 
 export const deleteProduct = createAsyncThunk<void, string, { getState }>(
-    "products/delete",
-    async (id, {dispatch}) => {
-      await axiosApi.delete("/products/" + id);
-      await dispatch(fetchProducts())
-    }
+  "products/delete",
+  async (id, { dispatch }) => {
+    await axiosApi.delete("/products/" + id);
+    await dispatch(fetchProducts());
+  }
 );
 
 export const fetchFilteredProducts = createAsyncThunk<
-    FilteredProductsResponse,
-    FilterParams & { categoryId: string },
-    { rejectValue: IGlobalError }
+  FilteredProductsResponse,
+  FilterParams & { categoryId: string },
+  { rejectValue: IGlobalError }
 >("products/fetchFiltered", async (filterParams, { rejectWithValue }) => {
-    try {
-        const queryParams = new URLSearchParams();
+  try {
+    const queryParams = new URLSearchParams();
 
-        if (filterParams.categoryId) {
-            queryParams.append('categoryId', filterParams.categoryId);
-        }
-
-        if (filterParams.colors?.length) {
-            queryParams.append('colors', filterParams.colors.join(','));
-        }
-
-        if (filterParams.sizes?.length) {
-            queryParams.append('sizes', filterParams.sizes.join(','));
-        }
-
-        if (filterParams.minPrice !== undefined) {
-            queryParams.append('minPrice', filterParams.minPrice.toString());
-        }
-
-        if (filterParams.maxPrice !== undefined) {
-            queryParams.append('maxPrice', filterParams.maxPrice.toString());
-        }
-
-        if (filterParams.material) {
-            queryParams.append('material', filterParams.material);
-        }
-
-        if (filterParams.inStock !== undefined) {
-            queryParams.append('inStock', filterParams.inStock.toString());
-        }
-
-        if (filterParams.isNew !== undefined) {
-            queryParams.append('isNew', filterParams.isNew.toString());
-        }
-
-        if (filterParams.isPopular !== undefined) {
-            queryParams.append('isPopular', filterParams.isPopular.toString());
-        }
-
-        if (filterParams.page) {
-            queryParams.append('page', filterParams.page.toString());
-        }
-
-        if (filterParams.limit) {
-            queryParams.append('limit', filterParams.limit.toString());
-        }
-
-        if (filterParams.sortBy) {
-            queryParams.append('sortBy', filterParams.sortBy);
-        }
-
-        if (filterParams.sortOrder) {
-            queryParams.append('sortOrder', filterParams.sortOrder);
-        }
-
-        const { data } = await axiosApi.get<FilteredProductsResponse>(
-            `/products/filter?${queryParams.toString()}`
-        );
-
-        return data;
-    } catch (error) {
-        if (isAxiosError(error) && error.response) {
-            return rejectWithValue(error.response.data);
-        }
-        throw error;
+    if (filterParams.categoryId) {
+      queryParams.append("categoryId", filterParams.categoryId);
     }
+
+    if (filterParams.colors?.length) {
+      queryParams.append("colors", filterParams.colors.join(","));
+    }
+
+    if (filterParams.sizes?.length) {
+      queryParams.append("sizes", filterParams.sizes.join(","));
+    }
+
+    if (filterParams.minPrice !== undefined) {
+      queryParams.append("minPrice", filterParams.minPrice.toString());
+    }
+
+    if (filterParams.maxPrice !== undefined) {
+      queryParams.append("maxPrice", filterParams.maxPrice.toString());
+    }
+
+    if (filterParams.material) {
+      queryParams.append("material", filterParams.material);
+    }
+
+    if (filterParams.inStock !== undefined) {
+      queryParams.append("inStock", filterParams.inStock.toString());
+    }
+
+    if (filterParams.isNew !== undefined) {
+      queryParams.append("isNew", filterParams.isNew.toString());
+    }
+
+    if (filterParams.isPopular !== undefined) {
+      queryParams.append("isPopular", filterParams.isPopular.toString());
+    }
+
+    if (filterParams.page) {
+      queryParams.append("page", filterParams.page.toString());
+    }
+
+    if (filterParams.limit) {
+      queryParams.append("limit", filterParams.limit.toString());
+    }
+
+    if (filterParams.sortBy) {
+      queryParams.append("sortBy", filterParams.sortBy);
+    }
+
+    if (filterParams.sortOrder) {
+      queryParams.append("sortOrder", filterParams.sortOrder);
+    }
+
+    const { data } = await axiosApi.get<FilteredProductsResponse>(
+      `/products/filter?${queryParams.toString()}`
+    );
+
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      return rejectWithValue(error.response.data);
+    }
+    throw error;
+  }
 });

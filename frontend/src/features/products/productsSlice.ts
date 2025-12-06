@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { Product } from "../../types";
 import {
-    createProduct,
-    deleteProduct, fetchFilteredProducts,
-    fetchProductById,
-    fetchProducts,
-    fetchSearchedProducts,
+  createProduct,
+  deleteProduct,
+  fetchFilteredProducts,
+  fetchPopularProducts,
+  fetchProductById,
+  fetchProducts,
+  fetchSearchedProducts,
 } from "./productsThunks";
 
 interface ProductsState {
   items: Product[];
+  popularItems: Product[];
   item: Product | null;
   fetchItemsLoading: boolean;
   fetchItemsError: string | null;
@@ -25,10 +28,13 @@ interface ProductsState {
   hasMore: boolean;
   filterLoading: boolean;
   filterError: string | null;
+  fetchPopularLoading: boolean;
+  fetchPopularError: string | null;
 }
 
 const initialState: ProductsState = {
   items: [],
+  popularItems: [],
   item: null,
   fetchItemsLoading: false,
   fetchItemsError: null,
@@ -44,6 +50,8 @@ const initialState: ProductsState = {
   hasMore: false,
   filterLoading: false,
   filterError: null,
+  fetchPopularLoading: false,
+  fetchPopularError: null,
 };
 
 const productsSlice = createSlice({
@@ -52,87 +60,103 @@ const productsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(fetchProducts.pending, (state) => {
-          state.fetchItemsLoading = true;
-        })
-        .addCase(fetchProducts.fulfilled, (state, { payload: products }) => {
+      .addCase(fetchProducts.pending, (state) => {
+        state.fetchItemsLoading = true;
+      })
+      .addCase(fetchProducts.fulfilled, (state, { payload: products }) => {
+        state.fetchItemsLoading = false;
+        state.items = products;
+      })
+      .addCase(fetchProducts.rejected, (state, { payload: error }) => {
+        state.fetchItemsLoading = false;
+        state.fetchItemsError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(fetchPopularProducts.pending, (state) => {
+        state.fetchPopularLoading = true;
+      })
+      .addCase(
+        fetchPopularProducts.fulfilled,
+        (state, { payload: { items: products } }) => {
+          state.fetchPopularLoading = false;
+          state.popularItems = products;
+        }
+      )
+      .addCase(fetchPopularProducts.rejected, (state, { payload: error }) => {
+        state.fetchPopularLoading = false;
+        state.fetchPopularError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(fetchProductById.pending, (state) => {
+        state.fetchItemLoading = true;
+      })
+      .addCase(fetchProductById.fulfilled, (state, { payload: product }) => {
+        state.fetchItemLoading = false;
+        state.item = product;
+      })
+      .addCase(fetchProductById.rejected, (state, { payload: error }) => {
+        state.fetchItemLoading = false;
+        state.fetchItemError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(createProduct.pending, (state) => {
+        state.createLoading = true;
+      })
+      .addCase(createProduct.fulfilled, (state) => {
+        state.createLoading = false;
+      })
+      .addCase(createProduct.rejected, (state, { payload: error }) => {
+        state.createLoading = false;
+        state.createError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(deleteProduct.pending, (state, { meta }) => {
+        state.deleteLoading = meta.arg;
+      })
+      .addCase(deleteProduct.fulfilled, (state) => {
+        state.deleteLoading = false;
+      })
+      .addCase(deleteProduct.rejected, (state) => {
+        state.deleteLoading = false;
+      });
+
+    builder
+      .addCase(fetchSearchedProducts.pending, (state) => {
+        state.fetchItemsLoading = true;
+      })
+      .addCase(
+        fetchSearchedProducts.fulfilled,
+        (state, { payload: products }) => {
           state.fetchItemsLoading = false;
           state.items = products;
-        })
-        .addCase(fetchProducts.rejected, (state, { payload: error }) => {
-          state.fetchItemsLoading = false;
-          state.fetchItemsError = error?.error ?? null;
-        });
+        }
+      )
+      .addCase(fetchSearchedProducts.rejected, (state, { payload: error }) => {
+        state.fetchItemsLoading = false;
+        state.fetchItemsError = error?.error ?? null;
+      });
 
     builder
-        .addCase(fetchProductById.pending, (state) => {
-          state.fetchItemLoading = true;
-        })
-        .addCase(fetchProductById.fulfilled, (state, { payload: product }) => {
-          state.fetchItemLoading = false;
-          state.item = product;
-        })
-        .addCase(fetchProductById.rejected, (state, { payload: error }) => {
-          state.fetchItemLoading = false;
-          state.fetchItemError = error?.error ?? null;
-        });
-
-    builder
-        .addCase(createProduct.pending, (state) => {
-          state.createLoading = true;
-        })
-        .addCase(createProduct.fulfilled, (state) => {
-          state.createLoading = false;
-        })
-        .addCase(createProduct.rejected, (state, { payload: error }) => {
-          state.createLoading = false;
-          state.createError = error?.error ?? null;
-        });
-
-    builder
-        .addCase(deleteProduct.pending, (state, { meta }) => {
-          state.deleteLoading = meta.arg;
-        })
-        .addCase(deleteProduct.fulfilled, (state) => {
-          state.deleteLoading = false;
-        })
-        .addCase(deleteProduct.rejected, (state) => {
-          state.deleteLoading = false;
-        });
-
-    builder
-        .addCase(fetchSearchedProducts.pending, (state) => {
-          state.fetchItemsLoading = true;
-        })
-        .addCase(
-            fetchSearchedProducts.fulfilled,
-            (state, { payload: products }) => {
-              state.fetchItemsLoading = false;
-              state.items = products;
-            }
-        )
-        .addCase(fetchSearchedProducts.rejected, (state, { payload: error }) => {
-          state.fetchItemsLoading = false;
-          state.fetchItemsError = error?.error ?? null;
-        });
-
-      builder
-          .addCase(fetchFilteredProducts.pending, (state) => {
-              state.filterLoading = true;
-              state.filterError = null;
-          })
-          .addCase(fetchFilteredProducts.fulfilled, (state, { payload }) => {
-              state.filterLoading = false;
-              state.filteredItems = payload.products;
-              state.totalCount = payload.totalCount;
-              state.currentPage = payload.currentPage;
-              state.totalPages = payload.totalPages;
-              state.hasMore = payload.hasMore;
-          })
-          .addCase(fetchFilteredProducts.rejected, (state, { payload: error }) => {
-              state.filterLoading = false;
-              state.filterError = error?.error ?? null;
-          });
+      .addCase(fetchFilteredProducts.pending, (state) => {
+        state.filterLoading = true;
+        state.filterError = null;
+      })
+      .addCase(fetchFilteredProducts.fulfilled, (state, { payload }) => {
+        state.filterLoading = false;
+        state.filteredItems = payload.products;
+        state.totalCount = payload.totalCount;
+        state.currentPage = payload.currentPage;
+        state.totalPages = payload.totalPages;
+        state.hasMore = payload.hasMore;
+      })
+      .addCase(fetchFilteredProducts.rejected, (state, { payload: error }) => {
+        state.filterLoading = false;
+        state.filterError = error?.error ?? null;
+      });
   },
   selectors: {
     selectProducts: (state) => state.items,
@@ -151,6 +175,9 @@ const productsSlice = createSlice({
     selectHasMore: (state) => state.hasMore,
     selectFilterLoading: (state) => state.filterLoading,
     selectFilterError: (state) => state.filterError,
+    selectPopularProducts: (state) => state.popularItems,
+    selectPopularProductsLoading: (state) => state.fetchPopularLoading,
+    selectPopularProductsError: (state) => state.fetchPopularError,
   },
 });
 
@@ -173,4 +200,7 @@ export const {
   selectHasMore,
   selectFilterLoading,
   selectFilterError,
+  selectPopularProducts,
+  selectPopularProductsLoading,
+  selectPopularProductsError,
 } = productsSlice.selectors;

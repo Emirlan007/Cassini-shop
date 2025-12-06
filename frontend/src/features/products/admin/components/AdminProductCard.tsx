@@ -4,11 +4,15 @@ import {
   Button,
   Box,
   Typography,
-  Tooltip,
+  Tooltip, Checkbox,
 } from "@mui/material";
 import type { Product } from "../../../../types";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../../constants";
+import {useAppDispatch} from "../../../../app/hooks.ts";
+import {fetchProducts, updateProductNewStatus, updateProductPopular} from "../../productsThunks.ts";
+import type {ChangeEvent} from "react";
+import toast from "react-hot-toast";
 
 interface Props {
   product: Product;
@@ -17,6 +21,37 @@ interface Props {
 
 const AdminProductCard = ({ product, removeProduct }: Props) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const handleChangePopularStatus = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      await dispatch(
+          updateProductPopular({
+            productId: product._id,
+            isPopular: e.target.checked,
+          })
+      ).unwrap();
+      dispatch(fetchProducts());
+    } catch (error) {
+      console.error(error);
+      toast.error("Не удалось обновить статус популярности");
+    }
+  };
+
+  const handleChangeNewStatus = async (e: ChangeEvent<HTMLInputElement>) => {
+    try {
+      await dispatch(
+          updateProductNewStatus({
+            productId: product._id,
+            isNew: e.target.checked,
+          })
+      ).unwrap();
+      dispatch(fetchProducts());
+    } catch (error) {
+      console.error(error);
+      toast.error("Не удалось обновить статус новизны");
+    }
+  };
 
   const getImageUrl = (imagePath: string | undefined) => {
     if (!imagePath) return "";
@@ -91,7 +126,18 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
       <TableCell align="center">
         {product.discount ? `${product.discount}%` : "-"}
       </TableCell>
-      <TableCell align="center">{product.isPopular ? "✔" : "-"}</TableCell>
+      <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+        <Checkbox
+            checked={product.isPopular || false}
+            onChange={handleChangePopularStatus}
+        />
+      </TableCell>
+      <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+        <Checkbox
+            checked={product.isNew || false}
+            onChange={handleChangeNewStatus}
+        />
+      </TableCell>
       <TableCell align="center">
         <Button
           onClick={(event) => {

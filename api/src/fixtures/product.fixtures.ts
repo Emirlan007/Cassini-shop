@@ -11,7 +11,7 @@ export async function createProductFixtures(
   const products = [
     {
       name: 'Classic Black Shawl Lapel Dress',
-      colors: ['red', 'blue', 'black'],
+      colors: ['red', 'blue'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],

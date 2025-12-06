@@ -87,6 +87,48 @@ export interface ProductDiscountInput {
   discountUntil?: string | null;
 }
 
+export interface FilterParams {
+    categoryId?: string;
+    colors?: string[];
+    sizes?: string[];
+    minPrice?: number;
+    maxPrice?: number;
+    material?: string;
+    inStock?: boolean;
+    isNew?: boolean;
+    isPopular?: boolean;
+    page?: number;
+    limit?: number;
+    sortBy?: 'price' | 'name' | 'createdAt';
+    sortOrder?: 'asc' | 'desc';
+}
+
+export interface FilteredProductsResponse {
+    products: Product[];
+    totalCount: number;
+    currentPage: number;
+    totalPages: number;
+    hasMore: boolean;
+    appliedFilters: FilterParams;
+}
+
+export interface FilterState {
+    colors: string[];
+    sizes: string[];
+    priceRange: [number, number];
+    material?: string;
+    inStock?: boolean;
+    isNew?: boolean;
+    isPopular?: boolean;
+}
+
+export interface AvailableOptions {
+    colors: string[];
+    sizes: string[];
+    priceRange: [number, number];
+    materials: string[];
+}
+
 export interface Banner {
   _id: string;
   title: string;

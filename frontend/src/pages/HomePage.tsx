@@ -10,9 +10,9 @@ const HomePage = () => {
     const dispatch = useAppDispatch();
     // const {t} = useTranslation()
 
-    useEffect(() => {
-        dispatch(fetchProducts(undefined));
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchPopularProducts());
+  }, [dispatch]);
 
     return (
         <Box sx={{ backgroundColor: "#FFFFFF", minHeight: "100vh", py: { xs: 3, sm: 4 }, overflow: "hidden" }}>
@@ -43,7 +43,18 @@ const HomePage = () => {
             </Stack>
             <PopularProducts />
         </Box>
-    );
+
+        <Stack width="100%" spacing={8}>
+          <PopularProducts
+            products={popularProducts}
+            loading={popularProductsLoading}
+          />
+
+          <ProductList products={products} />
+        </Stack>
+      </Stack>
+    </Box>
+  );
 };
 
 export default HomePage;

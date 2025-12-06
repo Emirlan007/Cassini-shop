@@ -20,6 +20,8 @@ import { RolesGuard } from '../role-auth/role-auth.guard';
 import { FileUploadInterceptorProduct } from '../shared/file-upload/file-upload.interceptor';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
+import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
+import { FilterProductsDto } from './dto/filter-products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -61,6 +63,11 @@ export class ProductsController {
     @Query('limit') limit = '8',
   ) {
     return this.productsService.findPopular(Number(page), Number(limit));
+  }
+
+  @Get('filter')
+  filterProducts(@Query() filters: FilterProductsDto) {
+    return this.productsService.filterProducts(filters);
   }
 
   @Get(':id')
@@ -107,6 +114,16 @@ export class ProductsController {
     @Body() discountData: UpdateDiscountDto,
   ) {
     return this.productsService.updateDiscount(id, discountData);
+  }
+
+  @Patch(':id/popular')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async findByIdAndUpdate(
+    @Param('id') id: string,
+    @Body() updatePopularStatus: UpdatePopularStatusDto,
+  ) {
+    return this.productsService.updatePopularStatus(id, updatePopularStatus);
   }
 
   @Patch(':id/new-status')

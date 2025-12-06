@@ -16,7 +16,7 @@ export async function createProductFixtures(
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
-      price: 999,
+      price: 800,
       discount: 20,
       discountUntil: null,
       video: 'fixtures/dressVideo11.mp4',
@@ -36,6 +36,9 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      isPopular: true,
+      material: 'silk',
+      inStock: true,
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
@@ -44,7 +47,7 @@ export async function createProductFixtures(
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
-      price: 999,
+      price: 1999,
       discount: 20,
       discountUntil: null,
       video: 'fixtures/dressVideo11.mp4',
@@ -64,6 +67,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'silk',
+      inStock: false,
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
@@ -92,6 +97,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'silk',
+      inStock: false,
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
@@ -120,6 +127,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'silk',
+      inStock: true,
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
@@ -148,6 +157,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'silk',
+      inStock: true,
     },
     {
       name: 'Midnight Blue Peak Lapel Dress',
@@ -175,6 +186,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'silk',
+      inStock: false,
     },
     {
       name: 'White Dinner Jacket Dress',
@@ -202,6 +215,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'cotton',
+      inStock: false,
     },
     {
       name: 'Velvet Burgundy Dress',
@@ -229,6 +244,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'cotton',
+      inStock: true,
     },
     {
       name: 'Modern Slim-Fit Charcoal Dress',
@@ -254,6 +271,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'cotton',
+      inStock: true,
     },
     {
       name: 'Patterned Jacquard Dress',
@@ -279,6 +298,8 @@ export async function createProductFixtures(
         blue: ['fixtures/dress_blue_1.png', 'fixtures/dress_blue_2.png'],
         black: ['fixtures/dress_black_1.png', 'fixtures/dress_black_2.png'],
       },
+      material: 'cotton',
+      inStock: true,
     },
   ];
 

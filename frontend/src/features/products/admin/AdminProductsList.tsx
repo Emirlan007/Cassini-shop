@@ -1,6 +1,6 @@
 import {
   Box,
-    Button,
+  Button,
   CircularProgress,
   Paper,
   Table,
@@ -18,9 +18,9 @@ import {
   selectProductsFetchError,
   selectProductsFetchLoading,
 } from "../productsSlice";
-import {deleteProduct, fetchProducts} from "../productsThunks";
+import { deleteProduct, fetchProducts } from "../productsThunks";
 import AdminProductCard from "./components/AdminProductCard";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Add as AddIcon } from "@mui/icons-material";
 
 const AdminProductsList = () => {
@@ -51,55 +51,56 @@ const AdminProductsList = () => {
   }
 
   const removeProduct = async (id: string) => {
-      await dispatch(deleteProduct(id));
-  }
+    await dispatch(deleteProduct(id));
+  };
   return (
     <Box width="100%">
-        <Box
-            sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                mb: 3,
-                width: '100%'
-            }}
-        >
-            <Typography variant="h5">
-                Все товары
-            </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+          width: "100%",
+        }}
+      >
+        <Typography variant="h5">Все товары</Typography>
 
-            <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => navigate('/products/new')}
-                sx={{
-                    color: "white",
-                    backgroundColor: "#660033",
-                    '&:hover': {
-                        backgroundColor: '#F0544F',
-                    },
-                }}
-            >
-                Добавить товар
-            </Button>
-        </Box>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => navigate("/products/new")}
+          sx={{
+            color: "white",
+            backgroundColor: "#660033",
+            "&:hover": {
+              backgroundColor: "#F0544F",
+            },
+          }}
+        >
+          Добавить товар
+        </Button>
+      </Box>
       <TableContainer component={Paper} sx={{ width: "100%" }}>
         <Table sx={{ minWidth: 650 }} aria-label="admin products table">
           <TableHead>
             <TableRow>
+              <TableCell>Фото</TableCell>
               <TableCell>ID</TableCell>
               <TableCell>Название</TableCell>
               <TableCell>Категория</TableCell>
               <TableCell>Цена</TableCell>
-              <TableCell>Скидка</TableCell>
+              <TableCell align="center">Скидка</TableCell>
+              <TableCell align="center">Популярный</TableCell>
+              <TableCell align="center">Действия</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {products.map((product) => (
               <AdminProductCard
-                  removeProduct={removeProduct}
-                  key={product._id}
-                  product={product}
+                removeProduct={removeProduct}
+                key={product._id}
+                product={product}
               />
             ))}
           </TableBody>
@@ -115,5 +116,3 @@ const AdminProductsList = () => {
 };
 
 export default AdminProductsList;
-
-

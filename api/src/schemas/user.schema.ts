@@ -33,6 +33,12 @@ export class User {
     enum: ['user', 'admin'],
   })
   role: string;
+
+  @Prop()
+  city: string;
+
+  @Prop()
+  address: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

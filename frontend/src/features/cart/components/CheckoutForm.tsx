@@ -1,5 +1,5 @@
 import { type FC, useState } from "react";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import {Box, Button, Stack, TextField, Typography} from "@mui/material";
 import toast from "react-hot-toast";
 
 interface CheckoutFormProps {
@@ -44,12 +44,17 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
   };
 
   return (
-    <Box
-      p={2}
-      border="1px solid #ccc"
-      borderRadius={2}
-      bgcolor="background.paper"
-    >
+    <Box>
+      <Typography
+         sx={{
+           fontWeight: '700',
+           fontSize: '28px',
+           marginBottom: '20px',
+           color: '#660033'
+         }}
+      >
+        Личные данные
+      </Typography>
       <Stack spacing={2}>
         <TextField
           label="Имя"
@@ -57,6 +62,25 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           value={userData.name}
           onChange={handleChange}
           fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: "#F5F5F5",
+              height: "56px",
+              padding: "0 17px",
+              "& fieldset": {
+                border: "2px solid #F5F5F5",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#d8d7d7",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#b3b0b0 !important",
+              }
+            },
+          }}
         />
         <TextField
           label="Номер"
@@ -64,6 +88,25 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           value={userData.phoneNumber}
           onChange={handleChange}
           fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: "#F5F5F5",
+              height: "56px",
+              padding: "0 17px",
+              "& fieldset": {
+                border: "2px solid #F5F5F5",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#d8d7d7",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#b3b0b0 !important",
+              }
+            },
+          }}
         />
         <TextField
           label="Город"
@@ -71,6 +114,25 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           value={userData.city}
           onChange={handleChange}
           fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: "#F5F5F5",
+              height: "56px",
+              padding: "0 17px",
+              "& fieldset": {
+                border: "2px solid #F5F5F5",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#d8d7d7",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#b3b0b0 !important",
+              }
+            },
+          }}
         />
         <TextField
           label="Адрес"
@@ -78,9 +140,38 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           value={userData.address}
           onChange={handleChange}
           fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: "#F5F5F5",
+              height: "56px",
+              padding: "0 17px",
+              "& fieldset": {
+                border: "2px solid #F5F5F5",
+              },
+
+              "&:hover fieldset": {
+                borderColor: "#d8d7d7",
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "#b3b0b0 !important",
+              }
+            },
+          }}
         />
 
-        <Button variant="contained" onClick={handleSubmit} loading={loading}>
+        <Button
+            variant="contained"
+            onClick={handleSubmit}
+            loading={loading}
+            sx={{
+              borderRadius: '14px',
+              fontSize: '16px',
+              fontWeight: '700',
+              padding: '10px 0'
+            }}
+        >
           Далее
         </Button>
       </Stack>

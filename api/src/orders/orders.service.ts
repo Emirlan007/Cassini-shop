@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { Order, OrderDocument } from '../schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order-dto';

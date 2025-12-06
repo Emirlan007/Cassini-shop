@@ -123,6 +123,13 @@ export interface FilterState {
     isPopular?: boolean;
 }
 
+export interface PopularProductsResponse {
+    items: Product[];
+    total: number;
+    page: number;
+    totalPages: number;
+}
+
 export interface AvailableOptions {
     colors: string[];
     sizes: string[];

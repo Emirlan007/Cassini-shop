@@ -1,16 +1,14 @@
 import { useEffect } from "react";
-import {Box, Stack, Typography} from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {Box, Stack} from "@mui/material";
+import { useAppDispatch } from "../app/hooks";
 import { fetchProducts } from "../features/products/productsThunks";
-import { selectProducts } from "../features/products/productsSlice";
-import ProductList from "../features/products/ProductsList.tsx";
 import BannersCarousel from "../features/banners/BannersCarousel.tsx";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
+import PopularProducts from "../features/products/components/PopularProducts.tsx";
 
 const HomePage = () => {
     const dispatch = useAppDispatch();
-    const products = useAppSelector(selectProducts);
-    const {t} = useTranslation()
+    // const {t} = useTranslation()
 
     useEffect(() => {
         dispatch(fetchProducts(undefined));
@@ -41,21 +39,9 @@ const HomePage = () => {
                         }
                     }}
                 >
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            fontWeight: 700,
-                            fontSize: '17.6px',
-                            lineHeight: '125%',
-                            letterSpacing: '-0.02em',
-                            color: '#111827',
-                        }}
-                    >
-                        {t("popularProducts")}
-                    </Typography>
                 </Box>
-                <ProductList products={products} />
             </Stack>
+            <PopularProducts />
         </Box>
     );
 };

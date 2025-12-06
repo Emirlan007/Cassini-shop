@@ -1,5 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type {FilteredProductsResponse, FilterParams, IGlobalError, Product, ProductInput} from "../../types";
+import type {
+    FilteredProductsResponse,
+    FilterParams,
+    IGlobalError,
+    PopularProductsResponse,
+    Product,
+    ProductInput
+} from "../../types";
 import { axiosApi } from "../../axiosApi";
 import { isAxiosError } from "axios";
 import type { RootState } from "../../app/store.ts";
@@ -227,3 +234,22 @@ export const fetchFilteredProducts = createAsyncThunk<
         throw error;
     }
 });
+
+export const fetchPopularProducts = createAsyncThunk<
+    PopularProductsResponse,
+    {page: number, limit: number},
+    { rejectValue: IGlobalError }
+>(
+    'products/fetchPopularProducts',
+    async ({page, limit}, { rejectWithValue }) => {
+        try {
+            const {data} = await axiosApi(`/products/popular?page=${page}&limit=${limit}`);
+            return data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            }
+            throw error;
+        }
+    }
+)

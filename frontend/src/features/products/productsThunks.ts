@@ -3,7 +3,7 @@ import type {
   FilteredProductsResponse,
   FilterParams,
   IGlobalError,
-  PopularProducts,
+  PopularProductsResponse,
   Product,
   ProductInput,
 } from "../../types";
@@ -19,24 +19,6 @@ export const fetchProducts = createAsyncThunk<
   try {
     const url = categoryId ? `/products?categoryId=${categoryId}` : "/products";
     const { data } = await axiosApi.get<Product[]>(url);
-    return data;
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      return rejectWithValue(error.response.data);
-    }
-    throw error;
-  }
-});
-
-export const fetchPopularProducts = createAsyncThunk<
-  PopularProducts,
-  number | undefined,
-  { rejectValue: IGlobalError }
->("products/fetchPopular", async (limit = 8, { rejectWithValue }) => {
-  try {
-    const { data } = await axiosApi.get<PopularProducts>("/products/popular", {
-      params: { limit },
-    });
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -252,3 +234,22 @@ export const fetchFilteredProducts = createAsyncThunk<
     throw error;
   }
 });
+
+export const fetchPopularProducts = createAsyncThunk<
+    PopularProductsResponse,
+    {page: number, limit: number},
+    { rejectValue: IGlobalError }
+>(
+    'products/fetchPopularProducts',
+    async ({page, limit}, { rejectWithValue }) => {
+      try {
+        const {data} = await axiosApi(`/products/popular?page=${page}&limit=${limit}`);
+        return data;
+      } catch (error) {
+        if (isAxiosError(error) && error.response) {
+          return rejectWithValue(error.response.data);
+        }
+        throw error;
+      }
+    }
+)

@@ -12,7 +12,6 @@ import {
 
 interface ProductsState {
   items: Product[];
-  popularItems: Product[];
   item: Product | null;
   fetchItemsLoading: boolean;
   fetchItemsError: string | null;
@@ -28,13 +27,17 @@ interface ProductsState {
   hasMore: boolean;
   filterLoading: boolean;
   filterError: string | null;
-  fetchPopularLoading: boolean;
-  fetchPopularError: string | null;
+  popularProducts: Product[]
+  popularProductsLoading: boolean
+  popularProductsError: string | null
+  popularProductsPage: number
+  popularProductsHasMore: boolean
+  popularProductsTotal: number
+  popularProductTotalPages: number
 }
 
 const initialState: ProductsState = {
   items: [],
-  popularItems: [],
   item: null,
   fetchItemsLoading: false,
   fetchItemsError: null,
@@ -50,8 +53,13 @@ const initialState: ProductsState = {
   hasMore: false,
   filterLoading: false,
   filterError: null,
-  fetchPopularLoading: false,
-  fetchPopularError: null,
+  popularProducts: [],
+  popularProductsLoading: false,
+  popularProductsError: null,
+  popularProductsPage: 0,
+  popularProductsHasMore: false,
+  popularProductsTotal: 0,
+  popularProductTotalPages: 0,
 };
 
 const productsSlice = createSlice({
@@ -70,22 +78,6 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, { payload: error }) => {
         state.fetchItemsLoading = false;
         state.fetchItemsError = error?.error ?? null;
-      });
-
-    builder
-      .addCase(fetchPopularProducts.pending, (state) => {
-        state.fetchPopularLoading = true;
-      })
-      .addCase(
-        fetchPopularProducts.fulfilled,
-        (state, { payload: { items: products } }) => {
-          state.fetchPopularLoading = false;
-          state.popularItems = products;
-        }
-      )
-      .addCase(fetchPopularProducts.rejected, (state, { payload: error }) => {
-        state.fetchPopularLoading = false;
-        state.fetchPopularError = error?.error ?? null;
       });
 
     builder
@@ -157,6 +149,31 @@ const productsSlice = createSlice({
         state.filterLoading = false;
         state.filterError = error?.error ?? null;
       });
+
+    builder
+        .addCase(fetchPopularProducts.pending, (state) => {
+          state.popularProductsLoading = true;
+          state.popularProductsError = null;
+        })
+        .addCase(fetchPopularProducts.fulfilled, (state, {payload: products}) => {
+          state.popularProductsLoading = false;
+          if (products.page === 1) {
+            state.popularProducts = products.items;
+          } else {
+            state.popularProducts = [
+              ...state.popularProducts,
+              ...products.items
+            ];
+          }
+
+          state.popularProductsPage = products.page;
+          state.popularProductsTotal = products.total;
+          state.popularProductTotalPages = products.totalPages;
+        })
+        .addCase(fetchPopularProducts.rejected, (state, {payload: error}) => {
+          state.popularProductsLoading = false;
+          state.popularProductsError = error?.error ?? null;
+        });
   },
   selectors: {
     selectProducts: (state) => state.items,
@@ -175,9 +192,12 @@ const productsSlice = createSlice({
     selectHasMore: (state) => state.hasMore,
     selectFilterLoading: (state) => state.filterLoading,
     selectFilterError: (state) => state.filterError,
-    selectPopularProducts: (state) => state.popularItems,
-    selectPopularProductsLoading: (state) => state.fetchPopularLoading,
-    selectPopularProductsError: (state) => state.fetchPopularError,
+    selectPopularProducts: (state) => state.popularProducts,
+    selectPopularLoading: (state) => state.popularProductsLoading,
+    selectPopularError: (state) => state.popularProductsError,
+    selectPopularPage: (state) => state.popularProductsPage,
+    selectPopularTotalPages: (state) => state.popularProductTotalPages,
+    selectPopularTotal: (state) => state.popularProductsTotal,
   },
 });
 
@@ -201,6 +221,9 @@ export const {
   selectFilterLoading,
   selectFilterError,
   selectPopularProducts,
-  selectPopularProductsLoading,
-  selectPopularProductsError,
+  selectPopularLoading,
+  selectPopularError,
+  selectPopularPage,
+  selectPopularTotal,
+  selectPopularTotalPages,
 } = productsSlice.selectors;

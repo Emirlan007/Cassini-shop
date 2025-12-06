@@ -229,3 +229,10 @@ export interface PopularProducts {
   total: number;
   totalPages: number;
 }
+
+export interface PopularProductsResponse {
+  items: Product[];
+  total: number;
+  page: number;
+  totalPages: number;
+}

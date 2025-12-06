@@ -7,7 +7,7 @@ import {
   fetchPopularProducts,
   fetchProductById,
   fetchProducts,
-  fetchSearchedProducts,
+  fetchSearchedProducts, updateProductNewStatus, updateProductPopular,
 } from "./productsThunks";
 
 interface ProductsState {
@@ -30,6 +30,10 @@ interface ProductsState {
   filterError: string | null;
   fetchPopularLoading: boolean;
   fetchPopularError: string | null;
+  updatePopularLoading: boolean;
+  updatePopularError: string | null;
+  updateIsNewLoading: boolean;
+  updateIsNewError: string | null;
 }
 
 const initialState: ProductsState = {
@@ -52,6 +56,10 @@ const initialState: ProductsState = {
   filterError: null,
   fetchPopularLoading: false,
   fetchPopularError: null,
+  updatePopularLoading: false,
+  updatePopularError: null,
+  updateIsNewLoading: false,
+  updateIsNewError: null,
 };
 
 const productsSlice = createSlice({
@@ -157,6 +165,30 @@ const productsSlice = createSlice({
         state.filterLoading = false;
         state.filterError = error?.error ?? null;
       });
+    builder
+        .addCase(updateProductPopular.pending, (state) => {
+          state.updatePopularLoading = true;
+          state.updatePopularError = null;
+        })
+        .addCase(updateProductPopular.fulfilled, (state) => {
+          state.updatePopularLoading = false;
+        })
+        .addCase(updateProductPopular.rejected, (state) => {
+          state.updatePopularLoading = false;
+          state.updatePopularError = "Ошибка обновления статуса";
+        });
+    builder
+        .addCase(updateProductNewStatus.pending, (state) => {
+          state.updateIsNewLoading = true;
+          state.updateIsNewError = null;
+        })
+        .addCase(updateProductNewStatus.fulfilled, (state) => {
+          state.updateIsNewLoading = false;
+        })
+        .addCase(updateProductNewStatus.rejected, (state) => {
+          state.updateIsNewLoading = false;
+          state.updateIsNewError = "Ошибка обновления статуса";
+        });
   },
   selectors: {
     selectProducts: (state) => state.items,

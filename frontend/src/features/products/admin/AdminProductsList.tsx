@@ -92,6 +92,7 @@ const AdminProductsList = () => {
               <TableCell>Цена</TableCell>
               <TableCell align="center">Скидка</TableCell>
               <TableCell align="center">Популярный</TableCell>
+                <TableCell align="center">Новый</TableCell>
               <TableCell align="center">Действия</TableCell>
             </TableRow>
           </TableHead>

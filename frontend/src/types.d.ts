@@ -5,6 +5,8 @@ export interface User {
   token: string;
   role: string;
   avatar?: string;
+  city?: string;
+  address?: string;
 }
 
 export interface AdminUser {
@@ -202,10 +204,11 @@ export interface OrderMutation {
   paymentMethod: "cash" | "qrCode";
   userComment?: string;
   user?: {
-    name: string;
-    number: string;
-    city: string;
-    address: string;
+    id: string;
+    name: string | undefined;
+    number: string | undefined;
+    city: string | undefined;
+    address: string | undefined;
   };
 }
 

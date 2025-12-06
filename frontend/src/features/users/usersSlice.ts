@@ -3,7 +3,7 @@ import type {IGlobalError, IValidationError, User} from "../../types";
 import {
     loginThunk,
     logoutThunk,
-    registerThunk,
+    registerThunk, updateUserAddress,
 } from "./usersThunks";
 
 interface IUserReducerState {
@@ -13,6 +13,8 @@ interface IUserReducerState {
     loginLoading: boolean;
     loginError: IGlobalError | null;
     logoutLoading: boolean;
+    updateAddressLoading: boolean;
+    updateAddressError: IGlobalError | null;
 }
 
 const initialState: IUserReducerState = {
@@ -22,6 +24,8 @@ const initialState: IUserReducerState = {
     loginLoading: false,
     loginError: null,
     logoutLoading: false,
+    updateAddressLoading: false,
+    updateAddressError: null,
 };
 
 const usersSlice = createSlice({
@@ -69,6 +73,19 @@ const usersSlice = createSlice({
             .addCase(logoutThunk.rejected, (state) => {
                 state.logoutLoading = false;
             });
+        builder
+            .addCase(updateUserAddress.pending, (state) => {
+                state.updateAddressLoading = true;
+                state.updateAddressError = null;
+            })
+            .addCase(updateUserAddress.fulfilled, (state, { payload }) => {
+                state.updateAddressLoading = false;
+                state.user = payload;
+            })
+            .addCase(updateUserAddress.rejected, (state, { payload }) => {
+                state.updateAddressLoading = false;
+                state.updateAddressError = payload || null;
+            });
 
     },
     selectors: {
@@ -78,6 +95,8 @@ const usersSlice = createSlice({
         selectLoginLoading: (state) => state.loginLoading,
         selectLoginError: (state) => state.loginError,
         selectLogoutLoading: (state) => state.logoutLoading,
+        selectUpdateAddressLoading: (state) => state.updateAddressLoading,
+        selectUpdateAddressError: (state) => state.updateAddressError,
     },
 });
 
@@ -90,4 +109,6 @@ export const {
     selectLoginLoading,
     selectLoginError,
     selectLogoutLoading,
+    selectUpdateAddressLoading,
+    selectUpdateAddressError,
 } = usersSlice.selectors;

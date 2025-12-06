@@ -5,6 +5,9 @@ import {
   Get,
   Headers,
   HttpCode,
+  NotFoundException,
+  Param,
+  Patch,
   Post,
   UnauthorizedException,
   UploadedFile,
@@ -77,5 +80,20 @@ export class UsersController {
     const user = await this.userModel.findOne({ token });
     if (!user) return;
     user.generateToken();
+  }
+
+  @UseGuards(TokenAuthGuard)
+  @Patch(':id/address')
+  async updateAddress(
+    @Param('id') userId: string,
+    @Body() body: { city: string; address: string },
+  ) {
+    const { city, address } = body;
+
+    const updated = await this.userService.updateAddress(userId, city, address);
+    if (!updated) {
+      throw new NotFoundException('User not found');
+    }
+    return updated;
   }
 }

@@ -14,10 +14,12 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import CheckoutForm from "./components/CheckoutForm.tsx";
 import PaymentStep from "./components/PaymentStep.tsx";
-import { selectRegisterLoading, selectUser } from "../users/usersSlice.ts";
+import {selectRegisterLoading, selectUpdateAddressLoading, selectUser} from "../users/usersSlice.ts";
 import { createOrder } from "../orders/ordersThunk.ts";
 import toast from "react-hot-toast";
-import { registerThunk } from "../users/usersThunks.ts";
+import {registerThunk, updateUserAddress} from "../users/usersThunks.ts";
+import CheckoutAddressForm from "./components/CheckoutAddressForm.tsx";
+import Stepper from "./components/Stepper.tsx";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -26,6 +28,7 @@ const Cart = () => {
   const user = useAppSelector(selectUser);
   const totalPrice = useAppSelector(selectTotalPrice);
   const registerLoading = useAppSelector(selectRegisterLoading);
+  const updateLoading = useAppSelector(selectUpdateAddressLoading)
   const { t } = useTranslation();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -39,6 +42,31 @@ const Cart = () => {
     await dispatch(registerThunk(userData));
     setStep(3);
   };
+
+  const handleAddressSubmit = async (userData: {
+    city: string;
+    address: string;
+  }) => {
+    if (!user?._id) {
+      toast.error("Ошибка: пользователь не найден");
+      return;
+    }
+
+    try {
+      await dispatch(
+          updateUserAddress({
+            userId: user._id,
+            city: userData.city,
+            address: userData.address,
+          })
+      ).unwrap();
+
+      setStep(3);
+    } catch {
+      toast.error("Ошибка при обновлении адреса");
+    }
+  };
+
 
   const handleCheckout = async (paymentData: {
     paymentMethod: "cash" | "qrCode";
@@ -88,8 +116,21 @@ const Cart = () => {
 
   return (
     <Stack spacing={2} p={2}>
+
+      <Stepper step={step} />
+
       {step === 1 && (
         <>
+          <Typography
+              sx={{
+                fontWeight: '700',
+                fontSize: '28px',
+                marginBottom: '20px',
+                color: '#660033'
+              }}
+          >
+            Детали заказа
+          </Typography>
           {items.map((item) => (
             <Box
               key={`${item.productId}-${item.selectedColor}-${item.selectedSize}`}
@@ -169,23 +210,40 @@ const Cart = () => {
             </Box>
           ))}
           <Button
-            variant="contained"
-            onClick={() => {
-              if (!user) {
-                setStep(2);
-              } else setStep(3);
-            }}
+              variant="contained"
+              sx={{
+                borderRadius: '14px',
+                fontSize: '16px',
+                fontWeight: '700',
+                padding: '10px 0'
+              }}
+              onClick={() => {
+                if (!user) {
+                  setStep(2);
+                } else if (!user.city || !user.address) {
+                  setStep(2);
+                } else {
+                  setStep(3);
+                }
+              }}
           >
             Далее
           </Button>
         </>
       )}
 
-      {step === 2 && !user && (
-        <CheckoutForm
-          onSubmit={(data) => handleRegister(data)}
-          loading={registerLoading}
-        />
+      {step === 2 && (
+          user ? (
+              <CheckoutAddressForm
+                  onSubmit={(data) => handleAddressSubmit(data)}
+                  loading={updateLoading}
+              />
+          ) : (
+              <CheckoutForm
+                  onSubmit={(data) => handleRegister(data)}
+                  loading={registerLoading}
+              />
+          )
       )}
 
       {step === 3 && <PaymentStep onCheckout={handleCheckout} />}

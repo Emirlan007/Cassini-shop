@@ -59,3 +59,30 @@ export const logoutThunk = createAsyncThunk(
     }
 );
 
+export const updateUserAddress = createAsyncThunk<
+    User,
+    { userId: string; city: string; address: string },
+    { rejectValue: IGlobalError }
+>(
+    "/users/update-address",
+    async ({ userId, city, address }, { rejectWithValue }) => {
+        try {
+            const { data } = await axiosApi.patch<User>(`/users/${userId}/address`, {
+                city,
+                address,
+            });
+
+            return data;
+        } catch (error) {
+            if (
+                isAxiosError(error) &&
+                error.response &&
+                error.response.status === 400
+            ) {
+                return rejectWithValue(error.response.data);
+            }
+            throw error;
+        }
+    }
+);
+

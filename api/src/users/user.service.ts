@@ -25,4 +25,16 @@ export class UserService {
     }
     return users;
   }
+
+  async updateAddress(
+    userId: string,
+    city: string,
+    address: string,
+  ): Promise<User | null> {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { city, address },
+      { new: true },
+    );
+  }
 }

@@ -8,12 +8,9 @@ import {
   ToggleButtonGroup,
   TextField,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../app/hooks.ts";
 import React, { useState } from "react";
-import { clearCart, selectItems, selectTotalPrice } from "../cartSlice.ts";
-import { createOrder } from "../../orders/ordersThunk.ts";
-import toast from "react-hot-toast";
+import { selectTotalPrice } from "../cartSlice.ts";
 
 interface Props {
   onCheckout: (paymentData: {
@@ -26,49 +23,17 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "qrCode">("cash");
   const [comment, setComment] = useState("");
 
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const items = useAppSelector(selectItems);
   const totalPrice = useAppSelector(selectTotalPrice);
-
-  //   const handleCheckout = async () => {
-  //     if (!user) {
-  //       navigate("/register");
-  //       return;
-  //     }
-
-  //     const orderItems = items.map((item) => ({
-  //       product: item.productId,
-  //       title: item.title,
-  //       image: item.image,
-  //       selectedColor: item.selectedColor,
-  //       selectedSize: item.selectedSize,
-  //       price: item.price,
-  //       quantity: item.quantity,
-  //     }));
-
-  //     const orderData = {
-  //       items: orderItems,
-  //       totalPrice,
-  //       paymentMethod,
-  //     };
-
-  //     try {
-  //       await dispatch(createOrder(orderData)).unwrap();
-  //       dispatch(clearCart());
-  //       navigate("/account");
-  //       toast.success("Заказ оформлен!");
-  //     } catch (e) {
-  //       console.error(e);
-  //       toast.error("Ошибка при создании заказа");
-  //     }
-  //   };
 
   return (
     <Paper sx={{ p: 3, mt: 3 }}>
       <Stack spacing={3}>
         <Box>
-          <Typography variant="h6" mb={2}>
+          <Typography
+              variant="h6"
+              mb={2}
+              color="#660033"
+          >
             Способ оплаты
           </Typography>
 
@@ -99,6 +64,12 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
           <Button
             variant="contained"
             onClick={() => onCheckout({ paymentMethod, comment })}
+            sx={{
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontWeight: '700',
+              padding: '10px 20px'
+            }}
           >
             Оформить заказ
           </Button>

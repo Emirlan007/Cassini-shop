@@ -72,6 +72,7 @@ export interface Product {
   finalPrice?: number;
   isNew: boolean;
   isPopular: boolean;
+  inStock: boolean;
 }
 
 export interface ProductInput {
@@ -80,9 +81,11 @@ export interface ProductInput {
   size: string[];
   colors: string[];
   category: string;
-  images: File[] | null;
-  video: File | null;
+  images: (File | string)[] | null;
+  video: File | string | null;
   price: number;
+  imagesByColor?: Record<string, number[]>;
+  inStock: boolean;
 }
 
 export interface ProductDiscountInput {

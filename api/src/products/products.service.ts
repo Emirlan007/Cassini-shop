@@ -43,7 +43,7 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     files?: { images?: Express.Multer.File[]; video?: Express.Multer.File[] },
   ): Promise<Product> {
-    const { category, ...restDto } = createProductDto;
+    const { category, imagesByColor, ...restDto } = createProductDto;
 
     const productData: Omit<Partial<Product>, 'category'> & {
       category?: Types.ObjectId;
@@ -58,16 +58,96 @@ export class ProductsService {
     productData.isNew = createProductDto.isNew ?? true;
     productData.createdAt = new Date();
 
-    if (files?.images && files.images.length > 0) {
-      productData.images = files.images.map((file) =>
+    if (
+      createProductDto.images &&
+      createProductDto.images.length > 0 &&
+      typeof createProductDto.images[0] === 'string'
+    ) {
+      productData.images = createProductDto.images;
+
+      if (imagesByColor && Object.keys(imagesByColor).length > 0) {
+        const transformedImagesByColor: Record<string, string[]> = {};
+
+        const productColors = new Set(createProductDto.colors);
+        const imageColors = Object.keys(imagesByColor);
+
+        for (const color of imageColors) {
+          if (!productColors.has(color)) {
+            throw new BadRequestException(
+              `Color "${color}" in imagesByColor is not in product colors list`,
+            );
+          }
+        }
+
+        for (const [color, indices] of Object.entries(imagesByColor)) {
+          const validIndices = indices.filter(
+            (idx) => idx >= 0 && idx < createProductDto.images!.length,
+          );
+
+          if (validIndices.length === 0) {
+            throw new BadRequestException(
+              `No valid image indices found for color "${color}"`,
+            );
+          }
+
+          transformedImagesByColor[color] = validIndices.map(
+            (idx) => createProductDto.images![idx],
+          );
+        }
+
+        productData.imagesByColor = transformedImagesByColor;
+      }
+    } else if (files?.images && files.images.length > 0) {
+      const uploadedImages = files.images.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
+      productData.images = uploadedImages;
+
+      if (imagesByColor && Object.keys(imagesByColor).length > 0) {
+        const transformedImagesByColor: Record<string, string[]> = {};
+
+        const productColors = new Set(createProductDto.colors);
+        const imageColors = Object.keys(imagesByColor);
+
+        for (const color of imageColors) {
+          if (!productColors.has(color)) {
+            throw new BadRequestException(
+              `Color "${color}" in imagesByColor is not in product colors list`,
+            );
+          }
+        }
+
+        for (const [color, indices] of Object.entries(imagesByColor)) {
+          const validIndices = indices.filter(
+            (idx) => idx >= 0 && idx < uploadedImages.length,
+          );
+
+          if (validIndices.length === 0) {
+            throw new BadRequestException(
+              `No valid image indices found for color "${color}"`,
+            );
+          }
+
+          transformedImagesByColor[color] = validIndices.map(
+            (idx) => uploadedImages[idx],
+          );
+        }
+
+        productData.imagesByColor = transformedImagesByColor;
+      }
+    } else if (imagesByColor && Object.keys(imagesByColor).length > 0) {
+      throw new BadRequestException('Cannot set imagesByColor without images');
     }
 
     if (files?.video?.[0]) {
       productData.video = this.fileUploadService.getPublicPath(
         files.video[0].filename,
       );
+    } else if (
+      createProductDto.video &&
+      typeof createProductDto.video === 'string'
+    ) {
+      productData.video = createProductDto.video;
     }
 
     const createdProduct = new this.productModel(productData);
@@ -231,7 +311,7 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
-    const { category, ...restDto } = updateProductDto;
+    const { category, imagesByColor, ...restDto } = updateProductDto;
 
     const updateData: Omit<Partial<Product>, 'category'> & {
       category?: Types.ObjectId;
@@ -242,6 +322,8 @@ export class ProductsService {
     if (category) {
       updateData.category = this.validateAndConvertCategory(category);
     }
+
+    let uploadedImages: string[] = [];
 
     if (files?.images && files.images.length > 0) {
       if (product.images && product.images.length > 0) {
@@ -257,9 +339,76 @@ export class ProductsService {
           }
         }
       }
-      updateData.images = files.images.map((file) =>
+      uploadedImages = files.images.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
+      updateData.images = uploadedImages;
+
+      if (imagesByColor) {
+        const transformedImagesByColor: Record<string, string[]> = {};
+
+        const productColors = new Set(
+          updateProductDto.colors || product.colors,
+        );
+        const imageColors = Object.keys(imagesByColor);
+
+        for (const color of imageColors) {
+          if (!productColors.has(color)) {
+            throw new BadRequestException(
+              `Color "${color}" in imagesByColor is not in product colors list`,
+            );
+          }
+        }
+
+        for (const [color, indices] of Object.entries(imagesByColor)) {
+          const validIndices = indices.filter(
+            (idx) => idx >= 0 && idx < uploadedImages.length,
+          );
+
+          if (validIndices.length === 0) {
+            throw new BadRequestException(
+              `No valid image indices found for color "${color}"`,
+            );
+          }
+
+          transformedImagesByColor[color] = validIndices.map(
+            (idx) => uploadedImages[idx],
+          );
+        }
+
+        updateData.imagesByColor = transformedImagesByColor;
+      }
+    } else if (imagesByColor && product.images) {
+      const transformedImagesByColor: Record<string, string[]> = {};
+
+      const productColors = new Set(updateProductDto.colors || product.colors);
+      const imageColors = Object.keys(imagesByColor);
+
+      for (const color of imageColors) {
+        if (!productColors.has(color)) {
+          throw new BadRequestException(
+            `Color "${color}" in imagesByColor is not in product colors list`,
+          );
+        }
+      }
+
+      for (const [color, indices] of Object.entries(imagesByColor)) {
+        const validIndices = indices.filter(
+          (idx) => idx >= 0 && idx < product.images!.length,
+        );
+
+        if (validIndices.length === 0) {
+          throw new BadRequestException(
+            `No valid image indices found for color "${color}"`,
+          );
+        }
+
+        transformedImagesByColor[color] = validIndices.map(
+          (idx) => product.images![idx],
+        );
+      }
+
+      updateData.imagesByColor = transformedImagesByColor;
     }
 
     if (files?.video?.[0]) {

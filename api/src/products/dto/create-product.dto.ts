@@ -67,9 +67,21 @@ export class CreateProductDto {
   images?: string[];
 
   @IsOptional()
-  @IsObject()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return value;
+  })
   @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
-  imagesByColor?: Record<string, string[]>;
+  @IsObject()
+  imagesByColor?: Record<string, number[]>;
 
   @IsOptional()
   @IsBoolean()

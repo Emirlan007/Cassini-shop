@@ -92,14 +92,24 @@ export const createProduct = createAsyncThunk<
     { rejectValue: IGlobalError }
 >("products/create", async (productData, {rejectWithValue}) => {
     try {
+        console.log('=== THUNK: createProduct ===');
+        console.log('productData:', productData);
+        console.log('inStock:', productData.inStock, 'type:', typeof productData.inStock);
+        console.log('size:', productData.size, 'isArray:', Array.isArray(productData.size));
+
         const formData = new FormData();
 
         formData.append("name", productData.name);
         formData.append("price", String(productData.price));
         formData.append("category", productData.category);
+        formData.append("inStock", String(productData.inStock ?? true));
 
-        if (productData.size) {
+        if (productData.size && Array.isArray(productData.size)) {
+            console.log('Appending size as JSON:', JSON.stringify(productData.size));
             formData.append("size", JSON.stringify(productData.size));
+        } else {
+            console.log('Size is not valid array:', productData.size);
+            formData.append("size", "[]");
         }
 
         if (productData.colors) {
@@ -120,6 +130,15 @@ export const createProduct = createAsyncThunk<
             formData.append("video", productData.video);
         }
 
+        if (productData.imagesByColor && Object.keys(productData.imagesByColor).length > 0) {
+            console.log('Appending imagesByColor:', productData.imagesByColor);
+            formData.append("imagesByColor", JSON.stringify(productData.imagesByColor));
+        } else {
+            console.log('No imagesByColor to append');
+        }
+
+        console.log('=== END THUNK ===');
+
         const {data: product} = await axiosApi.post<Product>(
             "/products",
             formData
@@ -128,6 +147,7 @@ export const createProduct = createAsyncThunk<
         return product;
     } catch (error) {
         if (isAxiosError(error) && error.response) {
+            console.log('Error response:', error.response.data);
             return rejectWithValue(error.response.data);
         }
 
@@ -164,6 +184,10 @@ export const updateProduct = createAsyncThunk<
 
     if (product.video) {
         formData.append("video", product.video);
+    }
+
+    if (product.imagesByColor) {
+        formData.append("imagesByColor", JSON.stringify(product.imagesByColor));
     }
 
     const {data} = await axiosApi.patch(`/products/${_productId}`, formData, {

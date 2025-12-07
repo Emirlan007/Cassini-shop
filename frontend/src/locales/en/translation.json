@@ -44,6 +44,10 @@
     "selectedSizes": "Selected Sizes",
     "selectedColors": "Selected Colors",
     "images": "Images",
+    "colorImageBinding": "Color and image binding",
+    "colorImageDescription": "Select which images belong to each product color",
+    "uploadedImages": "Uploaded images",
+    "currentBindings": "Current bindings",
     "video": "Video",
     "create": "Create",
     "creating": "Creating..."

@@ -43,6 +43,10 @@
     "selectedSizes": "Выбранные размеры",
     "selectedColors": "Выбранные цвета",
     "images": "Изображения",
+    "colorImageBinding": "Привязка изображений к цветам",
+    "colorImageDescription": "Выберите какие изображения относятся к каждому цвету товара",
+    "uploadedImages": "Загруженные изображения",
+    "currentBindings": "Текущие привязки:",
     "video": "Видео",
     "create": "Создать",
     "creating": "Создание..."

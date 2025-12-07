@@ -44,6 +44,10 @@
     "selectedSizes": "Тандалган өлчөмдөр",
     "selectedColors": "Тандалган түстөр",
     "images": "Сүрөттөр",
+    "colorImageBinding": "Сүрөттөрдү түстөр менен байланыштыруу",
+    "colorImageDescription": "Ар бир товар түсүнө кайсы сүрөттөр таандык экенин тандаңыз",
+    "uploadedImages": "Жүктөлгөн сүрөттөр",
+    "currentBindings": "Учурдагы бирикмелер:",
     "video": "Видео",
     "create": "Жаратуу",
     "creating": "Жаратууда..."

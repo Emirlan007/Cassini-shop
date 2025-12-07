@@ -1,18 +1,21 @@
 import {
+    Box,
     Button,
-    CircularProgress, Divider,
+    Card,
+    CardContent, Checkbox,
+    Chip,
+    CircularProgress, Divider, FormControlLabel,
     ImageList,
     ImageListItem,
     MenuItem,
     Stack,
-    TextField,
+    TextField, Typography,
 } from "@mui/material";
 import FileInput from "../../../components/UI/FileInput/FileInput.tsx";
 import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
 import type {ProductInput} from "../../../types";
 import SizesModal from "../../../components/UI/SizesModal/SizesModal.tsx";
 import ColorsModal from "../../../components/UI/ColorsModal/ColorsModal.tsx";
-import {useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
 import {
     selectCategories,
@@ -31,7 +34,6 @@ const ProductForm = ({onSubmit, loading}: Props) => {
     const [isColorsOpen, setColorsOpen] = useState(false);
 
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     const categories = useAppSelector(selectCategories);
     const categoriesLoading = useAppSelector(selectFetchingCategories);
@@ -48,6 +50,7 @@ const ProductForm = ({onSubmit, loading}: Props) => {
         price: 0,
         images: [],
         video: null,
+        inStock: true,
     });
 
     useEffect(() => {
@@ -102,23 +105,89 @@ const ProductForm = ({onSubmit, loading}: Props) => {
     };
 
     const handleColorsChange = (value: string, checked: boolean) => {
-        setState((prev) => ({
-            ...prev,
-            colors: checked
+        setState((prev) => {
+            const newColors = checked
                 ? [...prev.colors, value]
-                : prev.colors.filter((c) => c !== value),
-        }));
+                : prev.colors.filter((c) => c !== value);
+
+            let updatedImagesByColor = prev.imagesByColor || {};
+
+            if (!checked && updatedImagesByColor[value]) {
+                const clone = {...updatedImagesByColor};
+                delete clone[value];
+                updatedImagesByColor = clone;
+            }
+
+            return {
+                ...prev,
+                colors: newColors,
+                imagesByColor: updatedImagesByColor,
+            };
+        });
+    };
+
+    const handleImageColorBinding = (color: string, imageIndex: number, checked: boolean) => {
+        setState((prev) => {
+            const map = prev.imagesByColor ? {...prev.imagesByColor} : {};
+
+            const existing = map[color] || [];
+
+            map[color] = checked
+                ? [...existing, imageIndex]
+                : existing.filter((i) => i !== imageIndex);
+
+            return {
+                ...prev,
+                imagesByColor: map,
+            };
+        });
     };
 
     const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        try {
-            onSubmit(state);
-            navigate("/");
-        } catch (e) {
-            console.log(e);
-        }
+        console.log('=== FORM SUBMIT ===');
+        console.log('state.inStock:', state.inStock);
+        console.log('state.size:', state.size);
+
+        const filteredImagesByColor =
+            state.imagesByColor &&
+            Object.fromEntries(
+                Object.entries(state.imagesByColor)
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    .filter(([_, indexes]) => indexes.length > 0)
+                    .map(([color, indexes]) => [
+                        color,
+                        indexes.filter((i) => state.images && state.images[i]),
+                    ])
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    .filter(([_, validArr]) => validArr.length > 0)
+            );
+
+        const dataToSend: ProductInput = {
+            name: state.name,
+            description: state.description || "",
+            category: state.category,
+            size: state.size,
+            colors: state.colors,
+            price: state.price,
+            images: state.images || null,
+            video: state.video || null,
+            inStock: state.inStock ?? true,
+            imagesByColor:
+                filteredImagesByColor &&
+                Object.keys(filteredImagesByColor).length > 0
+                    ? filteredImagesByColor
+                    : undefined,
+        };
+
+        console.log("Submitting:", dataToSend);
+
+        onSubmit(dataToSend);
+    };
+
+    const isImageSelectedForColor = (color: string, imageIndex: number) => {
+        return state.imagesByColor?.[color]?.includes(imageIndex) || false;
     };
 
     return (
@@ -181,6 +250,17 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                 required
             />
 
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={state.inStock}
+                        onChange={(e) => setState(prev => ({...prev, inStock: e.target.checked}))}
+                        name="inStock"
+                    />
+                }
+                label="В наличии"
+            />
+
             <SizesModal
                 open={isSizesOpen}
                 onClose={() => setSizesOpen(false)}
@@ -229,35 +309,131 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                     onClick={() => setColorsOpen(true)}
                     sx={{width: {xs: "100%", sm: "20%", md: "15%"}}}
                 >
-            {t("productForm.colors")}
+                    {t("productForm.colors")}
                 </Button>
             </Stack>
 
             <FileInput label={t("productForm.images")} name="images" onChange={imagesChangeHandler}/>
 
             {state.images?.length ? (
-                <ImageList cols={10} rowHeight={164}>
-                    {state.images.map((image, index) => (
-                        <Stack key={index}>
-                            <ImageListItem>
-                                <img
-                                    src={
-                                        image instanceof File
-                                            ? URL.createObjectURL(image)
-                                            : `http://localhost:8000/${image}`
-                                    }
-                                />
-                            </ImageListItem>
-                            <Button
-                                onClick={() => removeImageHandler(image)}
-                                color="error"
-                                variant="contained"
-                            >
-                                {t("remove")}
-                            </Button>
-                        </Stack>
-                    ))}
-                </ImageList>
+                <Stack spacing={2}>
+                    <Typography variant="h6">{t("productForm.uploadedImages")}</Typography>
+                    <ImageList cols={5} rowHeight={164}>
+                        {state.images.map((image, index) => (
+                            <Stack key={index} spacing={1}>
+                                <ImageListItem>
+                                    <img
+                                        src={
+                                            image instanceof File
+                                                ? URL.createObjectURL(image)
+                                                : `http://localhost:8000/${image}`
+                                        }
+                                        alt={`Image ${index + 1}`}
+                                        style={{width: '100%', height: '150px', objectFit: 'cover'}}
+                                    />
+                                </ImageListItem>
+                                <Button
+                                    onClick={() => removeImageHandler(image)}
+                                    color="error"
+                                    variant="outlined"
+                                    size="small"
+                                >
+                                    {t("remove")}
+                                </Button>
+                            </Stack>
+                        ))}
+                    </ImageList>
+
+                    {state.colors.length > 0 && (
+                        <Card variant="outlined">
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom>
+                                    {t("productForm.colorImageBinding")}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                    {t("productForm.colorImageDescription")}
+                                </Typography>
+
+                                <Stack spacing={3} mt={2}>
+                                    {state.colors.map((color) => (
+                                        <Box key={color}>
+                                            <Typography variant="subtitle1" gutterBottom>
+                                                <Chip
+                                                    label={color}
+                                                    sx={{
+                                                        backgroundColor: color.toLowerCase(),
+                                                        color: 'white',
+                                                        mb: 1
+                                                    }}
+                                                />
+                                            </Typography>
+
+                                            <Stack direction="row" flexWrap="wrap" gap={2}>
+                                                {state.images?.map((image, imageIndex) => (
+                                                    <Box key={imageIndex} sx={{ width: 120 }}>
+                                                        <Stack alignItems="center" spacing={1}>
+                                                            <img
+                                                                src={
+                                                                    image instanceof File
+                                                                        ? URL.createObjectURL(image)
+                                                                        : `http://localhost:8000/${image}`
+                                                                }
+                                                                alt={`Image ${imageIndex + 1}`}
+                                                                style={{
+                                                                    width: '100px',
+                                                                    height: '100px',
+                                                                    objectFit: 'cover',
+                                                                    border: isImageSelectedForColor(color, imageIndex)
+                                                                        ? '3px solid #1976d2'
+                                                                        : '1px solid #ddd'
+                                                                }}
+                                                            />
+                                                            <FormControlLabel
+                                                                control={
+                                                                    <Checkbox
+                                                                        checked={isImageSelectedForColor(color, imageIndex)}
+                                                                        onChange={(e) =>
+                                                                            handleImageColorBinding(color, imageIndex, e.target.checked)
+                                                                        }
+                                                                    />
+                                                                }
+                                                                label={`Image ${imageIndex + 1}`}
+                                                            />
+                                                        </Stack>
+                                                    </Box>
+                                                ))}
+                                            </Stack>
+                                        </Box>
+                                    ))}
+                                </Stack>
+
+                                {state.imagesByColor && Object.keys(state.imagesByColor).length > 0 && (
+                                    <Box mt={3}>
+                                        <Typography variant="subtitle2" gutterBottom>
+                                            {t("productForm.currentBindings")}
+                                        </Typography>
+                                        {Object.entries(state.imagesByColor).map(([color, imageIndices]) => (
+                                            <Box key={color} sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+                                                <Chip
+                                                    label={color}
+                                                    size="small"
+                                                    sx={{
+                                                        backgroundColor: color.toLowerCase(),
+                                                        color: 'white',
+                                                        mr: 1
+                                                    }}
+                                                />
+                                                <Typography variant="body2" component="span">
+                                                    → Images: {imageIndices.map(idx => idx + 1).join(', ')}
+                                                </Typography>
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+                </Stack>
             ) : null}
 
             <FileInput label={t("productForm.video")} name="video" onChange={videoChangeHandler}/>

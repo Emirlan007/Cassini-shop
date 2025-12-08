@@ -239,7 +239,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
               id="category"
               label="Category"
               name="category"
-              value={state.category}
+              value={state.category ?? ""}
               onChange={inputChangeHandler}
               required
             >

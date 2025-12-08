@@ -237,6 +237,7 @@ export class ProductsService {
       category?: Types.ObjectId;
     } = {
       ...restDto,
+      images: updateProductDto.images ?? [],
     };
 
     if (category) {
@@ -257,9 +258,10 @@ export class ProductsService {
           }
         }
       }
-      updateData.images = files.images.map((file) =>
+      const newImages = files?.images?.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
+      updateData.images = [...(updateData.images || []), ...(newImages || [])];
     }
 
     if (files?.video?.[0]) {

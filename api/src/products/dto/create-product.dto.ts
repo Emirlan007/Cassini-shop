@@ -45,6 +45,7 @@ export class CreateProductDto {
   //Available sizes: XS, S, M, L, XL, XXL, XXXL
   @IsArray()
   @IsIn(AVAILABLE_SIZES, { each: true })
+  @Transform((value) => transformToArray(value))
   size: string[];
 
   @IsString()

@@ -1,26 +1,21 @@
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Stack,
-} from "@mui/material";
+import { Card, CardContent, Typography, Box, Stack } from "@mui/material";
 import type { Product } from "../../types";
 import { API_URL } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {AnimatePresence, motion} from "framer-motion";
+import { AnimatePresence, motion, number } from "framer-motion";
 
 interface Props {
   product: Product;
 }
 
 const MotionCard = motion(Card);
-const MotionCardMedia = motion('img');
+const MotionCardMedia = motion("img");
 
 const ProductCard = ({ product }: Props) => {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState<string>("");
+
   const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -37,23 +32,40 @@ const ProductCard = ({ product }: Props) => {
     return `${API_URL}${cleanPath}`;
   };
 
+  const convertSeconds = (totalSeconds: number) => {
+    let remaining = totalSeconds;
+
+    const weeks = Math.floor(remaining / (7 * 24 * 60 * 60 * 1000));
+    remaining %= 7 * 24 * 60 * 60 * 1000;
+
+    const days = Math.floor(remaining / (24 * 60 * 60 * 1000));
+    remaining %= 24 * 60 * 60 * 1000;
+
+    const hours = Math.floor(remaining / (60 * 60 * 1000));
+    remaining %= 60 * 60 * 1000;
+
+    const minutes = Math.floor(remaining / (60 * 1000));
+    remaining %= 60 * 1000;
+
+    return { weeks, days, hours, minutes };
+  };
+
   useEffect(() => {
     const checkDiscount = () => {
       if (product.discount && product.discountUntil) {
         const now = new Date();
         const discountUntil = new Date(product.discountUntil);
-
         if (discountUntil > now) {
           void setHasActiveDiscount(true);
-
           const diff = discountUntil.getTime() - now.getTime();
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const { weeks, days, hours, minutes } = convertSeconds(diff);
 
-          if (hours > 0) {
-            setTimeLeft(`${hours}ч ${minutes}м`);
-          } else {
-            setTimeLeft(`${minutes}м`);
+          console.log(weeks, days, hours, minutes);
+          if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
+            const result = `${
+              days > 0 && days + (weeks * 7) + " d"
+            } ${hours > 0 && hours + " h"} ${minutes > 0 && minutes + " m"}`;
+            setTimeLeft(result);
           }
         } else {
           setHasActiveDiscount(false);
@@ -72,16 +84,15 @@ const ProductCard = ({ product }: Props) => {
     return () => clearInterval(interval);
   }, [product.discount, product.discountUntil]);
 
+  useEffect(() => {
+    if (!isHovered || !product.images || product.images.length <= 1) return;
 
-    useEffect(() => {
-        if (!isHovered || !product.images || product.images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
+    }, 2500);
 
-        const interval = setInterval(() => {
-          setCurrentImageIndex(prev => (prev + 1) % product.images!.length);
-        }, 2500);
-
-        return () => clearInterval(interval);
-    }, [isHovered, product.images]);
+    return () => clearInterval(interval);
+  }, [isHovered, product.images]);
 
   const calculateFinalPrice = () => {
     if (product.discount && hasActiveDiscount) {
@@ -98,8 +109,8 @@ const ProductCard = ({ product }: Props) => {
       onClick={() => navigate(`/product/${product._id}`)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
-          setIsHovered(false);
-          setCurrentImageIndex(0);
+        setIsHovered(false);
+        setCurrentImageIndex(0);
       }}
       whileHover={{ scale: 1.03 }}
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
@@ -183,42 +194,48 @@ const ProductCard = ({ product }: Props) => {
         </Box>
       )}
 
-      <Box sx={{ position: "relative", width: "100%", height: { xs: "180px", sm: "240px", md: "320px", lg: "448px" } }}>
+      <Box
+        sx={{
+          position: "relative",
+          width: "100%",
+          height: { xs: "180px", sm: "240px", md: "320px", lg: "448px" },
+        }}
+      >
         <AnimatePresence mode="wait">
           {product.images && product.images.length > 0 ? (
-              <MotionCardMedia
-                  key={currentImageIndex}
-                  src={getImageUrl(product.images[currentImageIndex])}
-                  alt={product.name}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1 }}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-              />
+            <MotionCardMedia
+              key={currentImageIndex}
+              src={getImageUrl(product.images[currentImageIndex])}
+              alt={product.name}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
           ) : (
-              <Box
-                  sx={{
-                    width: "100%",
-                    height: {
-                      xs: "180px",
-                      sm: "240px",
-                      md: "320px",
-                      lg: "448px",
-                    },
-                    backgroundColor: "#f3f4f6",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#9ca3af",
-                  }}
-              >
-                Нет изображения
-              </Box>
+            <Box
+              sx={{
+                width: "100%",
+                height: {
+                  xs: "180px",
+                  sm: "240px",
+                  md: "320px",
+                  lg: "448px",
+                },
+                backgroundColor: "#f3f4f6",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#9ca3af",
+              }}
+            >
+              Нет изображения
+            </Box>
           )}
         </AnimatePresence>
       </Box>

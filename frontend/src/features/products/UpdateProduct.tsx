@@ -43,7 +43,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
     description: product.description,
     size: product.size,
     colors: product.colors,
-    category: product.category?._id ?? "",
+    category: product.category?._id ?? null,
     images: product.images,
     video: product.video,
     price: product.price,

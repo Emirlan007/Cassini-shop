@@ -166,4 +166,14 @@ export class OrderService {
     await order.save();
     return order;
   }
+
+  async updateOrdersStatus(orderId: string, status: string) {
+    const order = await this.orderModel
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+
+  }
 }

@@ -57,6 +57,12 @@ export class Order {
 
   @Prop({ required: true })
   createdAt: Date;
+
+  @Prop({
+    enum: ['WAREHOUSE', 'ON_THE_WAY', 'DELIVERED'],
+    default: 'WAREHOUSE',
+  })
+  deliveryStatus: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

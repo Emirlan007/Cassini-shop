@@ -34,11 +34,8 @@ import SearchResultsPage from "./pages/SearchResultsPage.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
-  // const location = useLocation();
+
   const isMobile = useMediaQuery("(max-width: 600px)");
-
-  // const hideFooter = isMobile && location.pathname.startsWith("/product/");
-
   return (
     <Box
       display="flex"

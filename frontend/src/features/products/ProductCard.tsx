@@ -3,7 +3,8 @@ import type { Product } from "../../types";
 import { API_URL } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, number } from "framer-motion";
+import { AnimatePresence, motion} from "framer-motion";
+import { convertSeconds } from "../../utils/dateFormatter";
 
 interface Props {
   product: Product;
@@ -32,23 +33,7 @@ const ProductCard = ({ product }: Props) => {
     return `${API_URL}${cleanPath}`;
   };
 
-  const convertSeconds = (totalSeconds: number) => {
-    let remaining = totalSeconds;
-
-    const weeks = Math.floor(remaining / (7 * 24 * 60 * 60 * 1000));
-    remaining %= 7 * 24 * 60 * 60 * 1000;
-
-    const days = Math.floor(remaining / (24 * 60 * 60 * 1000));
-    remaining %= 24 * 60 * 60 * 1000;
-
-    const hours = Math.floor(remaining / (60 * 60 * 1000));
-    remaining %= 60 * 60 * 1000;
-
-    const minutes = Math.floor(remaining / (60 * 1000));
-    remaining %= 60 * 1000;
-
-    return { weeks, days, hours, minutes };
-  };
+ 
 
   useEffect(() => {
     const checkDiscount = () => {
@@ -59,8 +44,6 @@ const ProductCard = ({ product }: Props) => {
           void setHasActiveDiscount(true);
           const diff = discountUntil.getTime() - now.getTime();
           const { weeks, days, hours, minutes } = convertSeconds(diff);
-
-          console.log(weeks, days, hours, minutes);
           if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
             const result = `${
               days > 0 && days + (weeks * 7) + " d"

@@ -3,7 +3,6 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
-  IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";

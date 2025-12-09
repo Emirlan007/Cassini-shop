@@ -97,15 +97,19 @@ export const createProduct = createAsyncThunk<
     formData.append("name", productData.name);
     formData.append("price", String(productData.price));
     formData.append("category", productData.category);
+    formData.append("inStock", String(productData.inStock ?? true));
 
-    if (productData.size) {
-      formData.append("size", JSON.stringify(productData.size));
+    if (productData.size && productData.size.length > 0) {
+      productData.size.forEach(s => {
+        formData.append("size", s);
+      });
     }
 
-    if (productData.colors) {
-      formData.append("colors", JSON.stringify(productData.colors));
+    if (productData.colors && productData.colors.length > 0) {
+      productData.colors.forEach(c => {
+        formData.append("colors", c);
+      });
     }
-
     if (productData.description) {
       formData.append("description", productData.description);
     }

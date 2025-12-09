@@ -1,11 +1,14 @@
 import {
     Button,
-    CircularProgress, Divider,
+    CircularProgress,
+    Divider,
     ImageList,
     ImageListItem,
     MenuItem,
     Stack,
     TextField,
+    FormControlLabel,
+    Checkbox,
 } from "@mui/material";
 import FileInput from "../../../components/UI/FileInput/FileInput.tsx";
 import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
@@ -22,7 +25,7 @@ import {fetchCategories} from "../../categories/categoryThunk.ts";
 import {useTranslation} from "react-i18next";
 
 interface Props {
-    onSubmit: (product: ProductInput) => void;
+    onSubmit: (product: ProductInput) => Promise<void>;
     loading: boolean;
 }
 
@@ -48,6 +51,10 @@ const ProductForm = ({onSubmit, loading}: Props) => {
         price: 0,
         images: [],
         video: null,
+        inStock: true,
+        material: "",
+        isNew: false,
+        isPopular: false,
     });
 
     useEffect(() => {
@@ -81,7 +88,7 @@ const ProductForm = ({onSubmit, loading}: Props) => {
     const removeImageHandler = (file: File) => {
         setState((prev) => ({
             ...prev,
-            images: prev.images?.filter((i) => i !== file) || [],
+            images: prev.images.filter((i) => i !== file),
         }));
     };
 
@@ -110,14 +117,25 @@ const ProductForm = ({onSubmit, loading}: Props) => {
         }));
     };
 
-    const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
+    const submitFormHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // Валидация
+        if (state.size.length === 0) {
+            alert("Пожалуйста, выберите хотя бы один размер");
+            return;
+        }
+
+        if (state.colors.length === 0) {
+            alert("Пожалуйста, выберите хотя бы один цвет");
+            return;
+        }
+
         try {
-            onSubmit(state);
-            navigate("/");
+            await onSubmit(state);
+            navigate("/admin/products");
         } catch (e) {
-            console.log(e);
+            console.error("Error creating product:", e);
         }
     };
 
@@ -181,6 +199,59 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                 required
             />
 
+            <TextField
+                id="material"
+                label="Материал (опционально)"
+                name="material"
+                value={state.material}
+                onChange={inputChangeHandler}
+            />
+
+            <Stack direction="row" spacing={2}>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={state.inStock}
+                            onChange={(e) =>
+                                setState((prev) => ({
+                                    ...prev,
+                                    inStock: e.target.checked,
+                                }))
+                            }
+                        />
+                    }
+                    label="В наличии"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={state.isNew}
+                            onChange={(e) =>
+                                setState((prev) => ({
+                                    ...prev,
+                                    isNew: e.target.checked,
+                                }))
+                            }
+                        />
+                    }
+                    label="Новинка"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={state.isPopular}
+                            onChange={(e) =>
+                                setState((prev) => ({
+                                    ...prev,
+                                    isPopular: e.target.checked,
+                                }))
+                            }
+                        />
+                    }
+                    label="Популярное"
+                />
+            </Stack>
+
             <SizesModal
                 open={isSizesOpen}
                 onClose={() => setSizesOpen(false)}
@@ -197,6 +268,9 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                     label={t("productForm.selectedSizes")}
                     value={state.size.length > 0 ? state.size.join(", ") : "No sizes selected"}
                     InputProps={{readOnly: true}}
+                    required
+                    error={state.size.length === 0}
+                    helperText={state.size.length === 0 ? "Выберите хотя бы один размер" : ""}
                 />
                 <Button
                     variant="contained"
@@ -221,31 +295,31 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                 <TextField
                     sx={{width: "100%"}}
                     label={t("productForm.selectedColors")}
-                    value={state.colors.join(", ")}
+                    value={state.colors.length > 0 ? state.colors.join(", ") : "No colors selected"}
                     InputProps={{readOnly: true}}
+                    required
+                    error={state.colors.length === 0}
+                    helperText={state.colors.length === 0 ? "Выберите хотя бы один цвет" : ""}
                 />
                 <Button
                     variant="contained"
                     onClick={() => setColorsOpen(true)}
                     sx={{width: {xs: "100%", sm: "20%", md: "15%"}}}
                 >
-            {t("productForm.colors")}
+                    {t("productForm.colors")}
                 </Button>
             </Stack>
 
             <FileInput label={t("productForm.images")} name="images" onChange={imagesChangeHandler}/>
 
-            {state.images?.length ? (
+            {state.images.length > 0 && (
                 <ImageList cols={10} rowHeight={164}>
                     {state.images.map((image, index) => (
                         <Stack key={index}>
                             <ImageListItem>
                                 <img
-                                    src={
-                                        image instanceof File
-                                            ? URL.createObjectURL(image)
-                                            : `http://localhost:8000/${image}`
-                                    }
+                                    src={URL.createObjectURL(image)}
+                                    alt={`Preview ${index + 1}`}
                                 />
                             </ImageListItem>
                             <Button
@@ -258,7 +332,7 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                         </Stack>
                     ))}
                 </ImageList>
-            ) : null}
+            )}
 
             <FileInput label={t("productForm.video")} name="video" onChange={videoChangeHandler}/>
 

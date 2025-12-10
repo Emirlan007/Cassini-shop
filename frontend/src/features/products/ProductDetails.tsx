@@ -19,6 +19,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -35,8 +36,12 @@ import { updateProductDiscount } from "./admin/adminProductsThunks.ts";
 import ProductList from "./ProductsList.tsx";
 import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
 import { convertSeconds } from "../../utils/dateFormatter.ts";
+import theme from "../../theme.ts";
+import CustomTabPanel from "../../components/UI/Tabs/CustomTabPanel.tsx";
+import a11yProps from "../../components/UI/Tabs/AllyProps.tsx"
 
 const ProductDetails = () => {
+  const isMobile = useMediaQuery("(max-width: 600px)");
   const dispatch = useAppDispatch();
   const product = useAppSelector(selectProduct);
   const loading = useAppSelector(selectProductFetchLoading);
@@ -55,6 +60,8 @@ const ProductDetails = () => {
   const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
   const [discountValue, setDiscountValue] = useState<string>("0");
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
+
+  const [tabValue, setTabValue] = useState(0);
 
   const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
@@ -105,7 +112,7 @@ const ProductDetails = () => {
         const discountUntil = new Date(product.discountUntil);
 
         if (discountUntil > now) {
-          setHasActiveDiscount(true);        
+          setHasActiveDiscount(true);
           const diff = discountUntil.getTime() - now.getTime();
           const { weeks, days, hours, minutes } = convertSeconds(diff);
           if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
@@ -125,11 +132,15 @@ const ProductDetails = () => {
     };
 
     checkDiscount();
-
     const interval = setInterval(checkDiscount, 1000);
 
     return () => clearInterval(interval);
   }, [product?.discount, product?.discountUntil]);
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
 
   const calculateFinalPrice = () => {
     if (product?.discount && hasActiveDiscount) {
@@ -215,8 +226,7 @@ const ProductDetails = () => {
         >
           <Swiper
             modules={[Pagination, Navigation]}
-            navigation={true}
-            pagination={{ clickable: true }}
+            navigation={!isMobile}
             className="mySwiper"
           >
             {product?.video && (
@@ -384,7 +394,10 @@ const ProductDetails = () => {
                 sx={{
                   minHeight: 0,
                   "& .MuiTabs-flexContainer": { gap: "10px" },
-                  "& .MuiTabs-indicator": { display: "none" },
+                  "& .MuiTabs-indicator": {
+                    backgroundColor: theme.palette.secondary.main,
+                    height: 0,
+                  },
                 }}
               >
                 {product.colors.map((c) => (
@@ -400,10 +413,10 @@ const ProductDetails = () => {
                           backgroundColor: c,
                           border:
                             selectedColor === c
-                              ? "2px solid #000"
-                              : "1px solid #ccc",
-                          padding: "3px",
+                              ? `4px solid ${theme.palette.secondary.main}`
+                              : "4px solid #ccc",
                           backgroundClip: "content-box",
+                          transition: "border-color 0.3s ease-in-out",
                         }}
                       />
                     }
@@ -471,6 +484,7 @@ const ProductDetails = () => {
                     value={size}
                     disabled={!isAvailable}
                     sx={{
+                      textDecoration: isAvailable ? "" : "line-through",
                       color: isAvailable ? "#000" : "#999",
                       backgroundColor: isAvailable ? "#FFF" : "#F5F5F5",
                       cursor: isAvailable ? "pointer" : "default",
@@ -501,7 +515,9 @@ const ProductDetails = () => {
                   </ToggleButton>
                 );
               })}
+              
             </ToggleButtonGroup>
+            
 
             {productAvailableSizes.length > 0 && (
               <Typography
@@ -516,7 +532,18 @@ const ProductDetails = () => {
                 Доступные размеры: {productAvailableSizes.join(", ")}
               </Typography>
             )}
-
+            {product?.inStock && (
+              <Typography 
+                sx={{ 
+                  color: "green",
+                  display: "block",
+                  mt: 1,
+                  fontWeight: 600,
+                }}
+              >
+                In stock
+              </Typography>
+            )}
             {selectedSize && !productAvailableSizes.includes(selectedSize) && (
               <Typography
                 color="error"
@@ -538,22 +565,6 @@ const ProductDetails = () => {
               </Typography>
             )}
           </Box>
-
-          <Box>
-            <Typography
-              variant={"h6"}
-              sx={{ marginY: 1, fontSize: "16px", fontWeight: "700" }}
-            >
-              Product Details
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ color: "#525252", fontSize: "14px" }}
-            >
-              {product?.description}
-            </Typography>
-          </Box>
-
           <Box mt={4}>
             <Box
               display="flex"
@@ -643,6 +654,41 @@ const ProductDetails = () => {
           )}
         </Box>
       </Box>
+
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs 
+            value={tabValue} 
+            aria-label="basic tabs example" 
+            onChange={handleChange}
+            sx={{
+              "& .MuiTabs-indicator": {
+                backgroundColor: theme.palette.secondary.main,
+              },
+              "& .Mui-selected": {
+                color: `${theme.palette.secondary.main} !important`,
+              },
+            }}
+          >
+            <Tab label="Product Details" {...a11yProps(0)}/>
+            <Tab label="Sizing & Fit Guide"  {...a11yProps(1)}/>
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={tabValue} index={0}>
+          <Box>
+            <Typography
+              variant="body1"
+              sx={{ color: "#525252", fontSize: "14px" }}
+            >
+              {product?.description}
+            </Typography>
+          </Box>
+        </CustomTabPanel>
+        <CustomTabPanel value={tabValue} index={1}>
+          Information about sizing and fit guide has not been added yet
+        </CustomTabPanel>
+      </Box>
+
       <Box marginTop={9}>
         <Typography
           variant="h6"

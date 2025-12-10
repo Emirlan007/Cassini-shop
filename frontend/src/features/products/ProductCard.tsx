@@ -46,8 +46,8 @@ const ProductCard = ({ product }: Props) => {
           const { weeks, days, hours, minutes } = convertSeconds(diff);
           if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
             const result = `${
-              days > 0 && days + (weeks * 7) + " d"
-            } ${hours > 0 && hours + " h"} ${minutes > 0 && minutes + " m"}`;
+              (days > 0 || weeks > 0) ? days + (weeks * 7) + " d" :""
+            } ${hours > 0 ? hours + " h" :""} ${minutes > 0 ? minutes + " m" :""}`;
             setTimeLeft(result);
           }
         } else {

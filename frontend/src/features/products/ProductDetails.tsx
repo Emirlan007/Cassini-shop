@@ -38,7 +38,10 @@ import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
 import { convertSeconds } from "../../utils/dateFormatter.ts";
 import theme from "../../theme.ts";
 import CustomTabPanel from "../../components/UI/Tabs/CustomTabPanel.tsx";
-import a11yProps from "../../components/UI/Tabs/AllyProps.tsx"
+import a11yProps from "../../components/UI/Tabs/AllyProps.tsx";
+import { GetColorName } from "hex-color-to-color-name";
+import { useTranslation } from "react-i18next";
+import { colorMapping, findClosestColor, normalizeColorName } from "../../utils/colorNormalizer.ts";
 
 const ProductDetails = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -52,6 +55,7 @@ const ProductDetails = () => {
   );
   const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
   const categoryProducts = useAppSelector(selectProducts);
+  const { t } = useTranslation();
 
   const { productId } = useParams() as { productId: string };
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -141,7 +145,6 @@ const ProductDetails = () => {
     setTabValue(newValue);
   };
 
-
   const calculateFinalPrice = () => {
     if (product?.discount && hasActiveDiscount) {
       return Math.round(product?.price * (1 - product?.discount / 100));
@@ -163,6 +166,14 @@ const ProductDetails = () => {
 
     const numericValue = Math.max(0, Math.min(100, Number(value)));
     setDiscountValue(numericValue.toString());
+  };
+
+  const getClothesColorName = (hex: string) => {
+  
+     const test = findClosestColor(hex)
+     console.log(test)
+   
+    return t(`colors.${test}`);
   };
 
   const handleDiscountSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -383,7 +394,8 @@ const ProductDetails = () => {
                 mb={1}
                 sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
               >
-                Цвет:
+                {t("color")}: {selectedColor && getClothesColorName(selectedColor)}
+                
               </Typography>
 
               <Tabs
@@ -436,7 +448,7 @@ const ProductDetails = () => {
               mb={1}
               sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
             >
-              Размер:
+              {t("size")} :
             </Typography>
             <ToggleButtonGroup
               value={selectedSize}
@@ -515,9 +527,7 @@ const ProductDetails = () => {
                   </ToggleButton>
                 );
               })}
-              
             </ToggleButtonGroup>
-            
 
             {productAvailableSizes.length > 0 && (
               <Typography
@@ -529,19 +539,19 @@ const ProductDetails = () => {
                   fontSize: "12px",
                 }}
               >
-                Доступные размеры: {productAvailableSizes.join(", ")}
+                {t("availableSizes")} {productAvailableSizes.join(", ")}
               </Typography>
             )}
             {product?.inStock && (
-              <Typography 
-                sx={{ 
+              <Typography
+                sx={{
                   color: "green",
                   display: "block",
                   mt: 1,
                   fontWeight: 600,
                 }}
               >
-                In stock
+               {t("inStock")}
               </Typography>
             )}
             {selectedSize && !productAvailableSizes.includes(selectedSize) && (
@@ -589,7 +599,7 @@ const ProductDetails = () => {
                 disabled={!selectedColor || !selectedSize}
                 onClick={handleAddToCart}
               >
-                Add to Cart
+               {t("addToCart")}
               </Button>
             </Box>
             {user?.role === "admin" && (
@@ -657,9 +667,9 @@ const ProductDetails = () => {
 
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs 
-            value={tabValue} 
-            aria-label="basic tabs example" 
+          <Tabs
+            value={tabValue}
+            aria-label="basic tabs example"
             onChange={handleChange}
             sx={{
               "& .MuiTabs-indicator": {
@@ -670,8 +680,8 @@ const ProductDetails = () => {
               },
             }}
           >
-            <Tab label="Product Details" {...a11yProps(0)}/>
-            <Tab label="Sizing & Fit Guide"  {...a11yProps(1)}/>
+            <Tab label={t("productDetail")} {...a11yProps(0)} />
+            <Tab label={t("sizingGuide")} {...a11yProps(1)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={tabValue} index={0}>

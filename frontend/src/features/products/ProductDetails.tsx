@@ -42,6 +42,7 @@ import a11yProps from "../../components/UI/Tabs/AllyProps.tsx";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useTranslation } from "react-i18next";
 import { findClosestColor } from "../../utils/colorNormalizer.ts";
+import ThumbNail from "../../components/UI/ThumbNail/ThumbNail.tsx";
 
 const ProductDetails = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -66,6 +67,7 @@ const ProductDetails = () => {
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
 
   const [tabValue, setTabValue] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
@@ -223,6 +225,7 @@ const ProductDetails = () => {
     <>
       <Box
         sx={{
+          position: "relative",
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           gap: 3,
@@ -237,6 +240,7 @@ const ProductDetails = () => {
             modules={[Pagination, Navigation]}
             navigation={!isMobile}
             className="mySwiper"
+            onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
           >
             {product?.video && (
               <SwiperSlide key="video">
@@ -272,6 +276,7 @@ const ProductDetails = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+          <ThumbNail product={product} activeSlide={activeSlide} />
         </Box>
 
         <Box
@@ -593,7 +598,10 @@ const ProductDetails = () => {
               >
                 ${finalPrice}
               </Typography>
-              <Box component="div" style={{display:"flex", width:"100%", gap:"10px"}}>
+              <Box
+                component="div"
+                style={{ display: "flex", width: "100%", gap: "10px" }}
+              >
                 <Button
                   sx={{ width: "60%" }}
                   variant="contained"
@@ -602,8 +610,14 @@ const ProductDetails = () => {
                 >
                   {t("addToCart")}
                 </Button>
-                <Button sx={{color:"#808080", border:"1px solid #808080", borderRadius:"10%"}}>
-                  <FavoriteBorderIcon/>
+                <Button
+                  sx={{
+                    color: "#808080",
+                    border: "1px solid #808080",
+                    borderRadius: "10%",
+                  }}
+                >
+                  <FavoriteBorderIcon />
                 </Button>
               </Box>
             </Box>

@@ -86,7 +86,6 @@ export interface ProductInput {
   price: number;
   inStock: boolean;
   material?: string;
-  isNew?: boolean;
   isPopular?: boolean;
 }
 

@@ -53,7 +53,6 @@ const ProductForm = ({onSubmit, loading}: Props) => {
         video: null,
         inStock: true,
         material: "",
-        isNew: false,
         isPopular: false,
     });
 
@@ -120,7 +119,6 @@ const ProductForm = ({onSubmit, loading}: Props) => {
     const submitFormHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Валидация
         if (state.size.length === 0) {
             alert("Пожалуйста, выберите хотя бы один размер");
             return;
@@ -221,20 +219,6 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                         />
                     }
                     label="В наличии"
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={state.isNew}
-                            onChange={(e) =>
-                                setState((prev) => ({
-                                    ...prev,
-                                    isNew: e.target.checked,
-                                }))
-                            }
-                        />
-                    }
-                    label="Новинка"
                 />
                 <FormControlLabel
                     control={

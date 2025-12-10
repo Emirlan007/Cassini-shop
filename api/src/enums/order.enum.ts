@@ -1,5 +1,11 @@
+export enum DeliveryStatus {
+  Warehouse = 'warehouse',
+  OnTheWay = 'on_the_way',
+  Delivered = 'delivered',
+}
 export enum OrderStatus {
-  Warehouse = 'WAREHOUSE',
-  OnTheWay = 'ON_THE_WAY',
-  Delivered = 'DELIVERED',
+  Pending = 'pending',
+  Processing = 'processing',
+  Completed = 'completed',
+  Cancelled = 'cancelled',
 }

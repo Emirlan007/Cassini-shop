@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { DeliveryStatus, OrderStatus } from '../enums/order.enum';
 
 export type OrderDocument = Order & Document;
 
@@ -37,10 +38,17 @@ export class Order {
 
   @Prop({
     type: String,
-    enum: ['pending', 'processing', 'completed'],
-    default: 'pending',
+    enum: OrderStatus,
+    default: OrderStatus.Pending,
   })
-  status: 'pending' | 'processing' | 'completed';
+  status: OrderStatus;
+
+  @Prop({
+    type: String,
+    enum: DeliveryStatus,
+    default: DeliveryStatus.Warehouse,
+  })
+  deliveryStatus: DeliveryStatus;
 
   @Prop({
     type: String,

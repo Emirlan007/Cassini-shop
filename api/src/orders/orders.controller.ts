@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -14,6 +15,7 @@ import { RolesGuard } from '../role-auth/role-auth.guard';
 import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { CommentDto } from './dto/comment.dto';
+import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -78,5 +80,18 @@ export class OrdersController {
     @Body() commentDto: CommentDto,
   ) {
     return this.ordersService.addAdminComment(orderId, commentDto.comment);
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Patch(':id/status')
+  async updateOrderStatus(
+    @Param('id') orderId: string,
+    @Body() updateDeliveryStatusDto: UpdateDeliveryStatusDto,
+  ) {
+    return this.ordersService.updateDeliveryOrderStatus(
+      orderId,
+      updateDeliveryStatusDto,
+    );
   }
 }

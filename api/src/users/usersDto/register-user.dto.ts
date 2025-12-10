@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPhoneNumber } from 'class-validator';
 
 export class RegisterUserDto {
   @IsNotEmpty()
   name: string;
 
   @IsNotEmpty()
-  // @IsPhoneNumber()
+  @IsPhoneNumber()
   phoneNumber: string;
 
   @IsOptional()

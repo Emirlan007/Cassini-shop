@@ -39,9 +39,9 @@ import { convertSeconds } from "../../utils/dateFormatter.ts";
 import theme from "../../theme.ts";
 import CustomTabPanel from "../../components/UI/Tabs/CustomTabPanel.tsx";
 import a11yProps from "../../components/UI/Tabs/AllyProps.tsx";
-import { GetColorName } from "hex-color-to-color-name";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useTranslation } from "react-i18next";
-import { colorMapping, findClosestColor, normalizeColorName } from "../../utils/colorNormalizer.ts";
+import { findClosestColor } from "../../utils/colorNormalizer.ts";
 
 const ProductDetails = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -169,10 +169,8 @@ const ProductDetails = () => {
   };
 
   const getClothesColorName = (hex: string) => {
-  
-     const test = findClosestColor(hex)
-     console.log(test)
-   
+    const test = findClosestColor(hex);
+
     return t(`colors.${test}`);
   };
 
@@ -297,7 +295,7 @@ const ProductDetails = () => {
                   fontWeight: "bold",
                 }}
               >
-                New
+                {t("new")}
               </Box>
             )}
           </Stack>
@@ -387,15 +385,16 @@ const ProductDetails = () => {
               )}
             </Box>
           </Box>
-
           {product.colors?.length > 0 && (
             <Box mt={3}>
               <Typography
                 mb={1}
                 sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
               >
-                {t("color")}: {selectedColor && getClothesColorName(selectedColor)}
-                
+                {t("color")}:{" "}
+                <strong style={{ color: "black" }}>
+                  {selectedColor && getClothesColorName(selectedColor)}
+                </strong>
               </Typography>
 
               <Tabs
@@ -551,7 +550,7 @@ const ProductDetails = () => {
                   fontWeight: 600,
                 }}
               >
-               {t("inStock")}
+                {t("inStock")}
               </Typography>
             )}
             {selectedSize && !productAvailableSizes.includes(selectedSize) && (
@@ -594,14 +593,21 @@ const ProductDetails = () => {
               >
                 ${finalPrice}
               </Typography>
-              <Button
-                variant="contained"
-                disabled={!selectedColor || !selectedSize}
-                onClick={handleAddToCart}
-              >
-               {t("addToCart")}
-              </Button>
+              <Box component="div" style={{display:"flex", width:"100%", gap:"10px"}}>
+                <Button
+                  sx={{ width: "60%" }}
+                  variant="contained"
+                  disabled={!selectedColor || !selectedSize}
+                  onClick={handleAddToCart}
+                >
+                  {t("addToCart")}
+                </Button>
+                <Button sx={{color:"#808080", border:"1px solid #808080", borderRadius:"10%"}}>
+                  <FavoriteBorderIcon/>
+                </Button>
+              </Box>
             </Box>
+
             {user?.role === "admin" && (
               <Box
                 component="form"
@@ -712,7 +718,7 @@ const ProductDetails = () => {
             marginTop: 5,
           }}
         >
-          <b>You Might Also Like</b>
+          <b>{t("youMightAlsoLike")}</b>
         </Typography>
 
         <ProductList products={recommended} />

@@ -34,6 +34,7 @@ import { updateProductDiscount } from "./admin/adminProductsThunks.ts";
 import ProductList from "./ProductsList.tsx";
 import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
 import { addItemToCart, fetchCart } from "../cart/cartThunks.ts";
+import { convertSeconds } from "../../utils/dateFormatter.ts";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -107,19 +108,14 @@ const ProductDetails = () => {
         const discountUntil = new Date(product.discountUntil);
 
         if (discountUntil > now) {
-          setHasActiveDiscount(true);
-
+          setHasActiveDiscount(true);        
           const diff = discountUntil.getTime() - now.getTime();
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-          if (hours > 0) {
-            setTimeLeft(`${hours}ч ${minutes}м ${seconds}с`);
-          } else if (minutes > 0) {
-            setTimeLeft(`${minutes}м ${seconds}с`);
-          } else {
-            setTimeLeft(`${seconds}с`);
+          const { weeks, days, hours, minutes } = convertSeconds(diff);
+          if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
+            const result = `${days > 0 && days + weeks * 7 + " d"} ${
+              hours > 0 && hours + " h"
+            } ${minutes > 0 && minutes + " m"}`;
+            setTimeLeft(result);
           }
         } else {
           setHasActiveDiscount(false);

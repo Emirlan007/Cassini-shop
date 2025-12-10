@@ -9,6 +9,8 @@ import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { Order, OrderDocument } from '../schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order-dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
+import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
+import { OrderStatus } from '../enums/order.enum';
 
 @Injectable()
 export class OrderService {
@@ -98,7 +100,7 @@ export class OrderService {
       user: userId,
       items: processedItems,
       paymentMethod,
-      status: status ?? 'pending',
+      status: status ?? OrderStatus.Pending,
       userComment: userComment ?? null,
       adminComments: [],
       createdAt: new Date(),
@@ -165,6 +167,30 @@ export class OrderService {
     order.adminComments.push(comment);
 
     await order.save();
+    return order;
+  }
+
+  async updateDeliveryOrderStatus(
+    orderId: string,
+    updateDeliveryStatusDto: UpdateDeliveryStatusDto,
+  ) {
+    const { deliveryStatus } = updateDeliveryStatusDto;
+
+    const order = await this.orderModel.findByIdAndUpdate(
+      orderId,
+      {
+        $set: {
+          deliveryStatus,
+          updatedAt: new Date(),
+        },
+      },
+      { new: true },
+    );
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
     return order;
   }
 }

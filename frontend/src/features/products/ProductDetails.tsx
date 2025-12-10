@@ -6,7 +6,7 @@ import {
   selectProductFetchLoading,
   selectProducts,
 } from "./productsSlice";
-import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useMemo, useState} from "react";
 import { fetchProductById, fetchProducts } from "./productsThunks";
 import {
   Box,
@@ -56,13 +56,31 @@ const ProductDetails = () => {
   const [discountValue, setDiscountValue] = useState<string>("0");
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
 
-  const recommended = categoryProducts
+    const [swiperKey, setSwiperKey] = useState(0);
+
+    const getCurrentImages = useMemo(() => {
+        if (!product?.images || product.images.length === 0) return [];
+
+        if (!selectedColor || !product.imagesByColor?.[selectedColor]) {
+            return product.images;
+        }
+
+        const imageIndices = product.imagesByColor[selectedColor];
+        return imageIndices
+            .map(idx => product.images![idx])
+            .filter(img => img !== undefined);
+    }, [product, selectedColor]);
+
+
+    const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
     .filter((p) => p._id !== product?._id)
     .slice(0, 4);
 
   const handleAddToCart = () => {
     if (!product || !selectedSize || !selectedColor) return;
+
+      const productImage = getCurrentImages[0] || product.images?.[0] || "";
 
     dispatch(
       addToCart({
@@ -72,7 +90,7 @@ const ProductDetails = () => {
         quantity: 1,
         selectedColor: selectedColor,
         selectedSize: selectedSize,
-        image: product!.images![0],
+        image: productImage,
       })
     );
 
@@ -97,6 +115,10 @@ const ProductDetails = () => {
       );
     }
   }, [dispatch, product]);
+
+    useEffect(() => {
+        setSwiperKey(prev => prev + 1);
+    }, [selectedColor]);
 
   useEffect(() => {
     const checkDiscount = () => {
@@ -214,6 +236,7 @@ const ProductDetails = () => {
           }}
         >
           <Swiper
+              key={`swiper-${swiperKey}`}
             modules={[Pagination, Navigation]}
             navigation={true}
             pagination={{ clickable: true }}
@@ -236,7 +259,7 @@ const ProductDetails = () => {
                 </Box>
               </SwiperSlide>
             )}
-            {product?.images.map((image) => (
+            {getCurrentImages.map((image) => (
               <SwiperSlide key={image}>
                 <Box
                   sx={{

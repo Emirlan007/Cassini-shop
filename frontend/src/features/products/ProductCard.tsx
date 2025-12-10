@@ -22,7 +22,38 @@ const ProductCard = ({ product }: Props) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
-  const getImageUrl = (imagePath: string) => {
+  const getMainImage = () => {
+      if (!product.images || product.images.length === 0) return "";
+
+      if (product.colors && product.colors.length > 0 && product.imagesByColor) {
+          const firstColor = product.colors[0];
+          const firstImageIndex = product.imagesByColor[firstColor]?.[0];
+
+          if (firstImageIndex !== undefined && product.images[firstImageIndex]) {
+              return product.images[firstImageIndex];
+          }
+      }
+      return product.images[0];
+  };
+
+  const getImagesForAnimation = () => {
+      if (!product.images || product.images.length === 0) return [];
+
+      if (product.colors && product.colors.length > 0 && product.imagesByColor) {
+          const firstColor = product.colors[0];
+          const imageIndices = product.imagesByColor[firstColor];
+
+          if (imageIndices && imageIndices.length > 0) {
+              return imageIndices
+                  .map(idx => product.images![idx])
+                  .filter(img => img !== undefined);
+          }
+      }
+      return product.images;
+  };
+
+
+    const getImageUrl = (imagePath: string) => {
     if (!imagePath) return "";
     if (imagePath.startsWith("http")) return imagePath;
 
@@ -33,7 +64,11 @@ const ProductCard = ({ product }: Props) => {
     return `${API_URL}${cleanPath}`;
   };
 
- 
+    const mainImage = getMainImage();
+    const animationImages = getImagesForAnimation();
+    const displayImages = animationImages.length > 0
+        ? animationImages
+        : (mainImage ? [mainImage] : []);
 
   useEffect(() => {
     const checkDiscount = () => {
@@ -185,15 +220,15 @@ const ProductCard = ({ product }: Props) => {
         }}
       >
         <AnimatePresence mode="wait">
-          {product.images && product.images.length > 0 ? (
+          {displayImages.length > 0 ? (
             <MotionCardMedia
               key={currentImageIndex}
-              src={getImageUrl(product.images[currentImageIndex])}
+              src={getImageUrl(displayImages[currentImageIndex])}
               alt={product.name}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
+              transition={{ duration: 0.5 }}
               style={{
                 width: "100%",
                 height: "100%",

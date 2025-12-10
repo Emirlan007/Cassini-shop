@@ -217,6 +217,7 @@ const ProductCard = ({ product }: Props) => {
           position: "relative",
           width: "100%",
           height: { xs: "180px", sm: "240px", md: "320px", lg: "448px" },
+            //backgroundColor: "#f8f8f8"
         }}
       >
         <AnimatePresence mode="wait">
@@ -232,7 +233,7 @@ const ProductCard = ({ product }: Props) => {
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "contain",
               }}
             />
           ) : (

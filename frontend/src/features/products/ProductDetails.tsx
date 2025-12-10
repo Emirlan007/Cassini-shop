@@ -252,6 +252,12 @@ const ProductDetails = () => {
                     muted
                     loop
                     playsInline
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        // backgroundColor: '#f8f8f8',
+                    }}
                   >
                     <source src={API_URL + product.video} type="video/mp4" />
                     Ваш браузер не поддерживает видео.
@@ -264,6 +270,7 @@ const ProductDetails = () => {
                 <Box
                   sx={{
                     height: { xs: 320, sm: 400 },
+                      // backgroundColor: '#f8f8f8',
                   }}
                 >
                   <img
@@ -271,6 +278,11 @@ const ProductDetails = () => {
                       image.startsWith("/") ? image.slice(1) : image
                     }`}
                     alt={product.name}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                    }}
                   />
                 </Box>
               </SwiperSlide>

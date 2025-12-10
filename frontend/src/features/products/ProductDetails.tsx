@@ -25,7 +25,6 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 import { selectUser } from "../users/usersSlice.ts";
-import { addToCart } from "../cart/cartSlice.ts";
 import toast from "react-hot-toast";
 import {
   selectAdminUpdateDiscountError,
@@ -33,7 +32,8 @@ import {
 } from "./admin/adminProductsSlice.ts";
 import { updateProductDiscount } from "./admin/adminProductsThunks.ts";
 import ProductList from "./ProductsList.tsx";
-import {AVAILABLE_SIZES} from "../../constants/sizes.ts";
+import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
+import { addItemToCart, fetchCart } from "../cart/cartThunks.ts";
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -60,20 +60,23 @@ const ProductDetails = () => {
     .filter((p) => p._id !== product?._id)
     .slice(0, 4);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product || !selectedSize || !selectedColor) return;
 
-    dispatch(
-      addToCart({
-        productId: product._id,
+    await dispatch(
+      addItemToCart({
+        product: product._id,
         title: product.name,
-        price: product.finalPrice!,
+        price: product.finalPrice ?? product.price,
+        finalPrice: product.finalPrice ?? product.price,
         quantity: 1,
         selectedColor: selectedColor,
         selectedSize: selectedSize,
-        image: product!.images![0],
+        image: product.images?.[0] ?? "",
       })
     );
+
+    await dispatch(fetchCart());
 
     toast.success("Товар добавлен в корзину!");
   };
@@ -227,12 +230,12 @@ const ProductDetails = () => {
               <SwiperSlide key="video">
                 <Box sx={{ height: { xs: 320, sm: 400 } }}>
                   <video
-                      width="100%"
-                      height="100%"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
+                    width="100%"
+                    height="100%"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
                   >
                     <source src={API_URL + product.video} type="video/mp4" />
                     Ваш браузер не поддерживает видео.
@@ -326,7 +329,7 @@ const ProductDetails = () => {
                 <Typography
                   sx={{
                     fontWeight: 700,
-                    fontSize: { xs: '18px', sm: '24px'},
+                    fontSize: { xs: "18px", sm: "24px" },
                     color: "#660033",
                   }}
                 >
@@ -372,173 +375,176 @@ const ProductDetails = () => {
           </Box>
 
           {product.colors?.length > 0 && (
-              <Box mt={3}>
-                <Typography
-                    mb={1}
-                    sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
-                >
-                  Цвет:
-                </Typography>
+            <Box mt={3}>
+              <Typography
+                mb={1}
+                sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
+              >
+                Цвет:
+              </Typography>
 
-                <Tabs
-                    value={selectedColor ?? false}
-                    onChange={(_, v) => setSelectedColor(v)}
-                    variant="scrollable"
-                    scrollButtons="auto"
+              <Tabs
+                value={selectedColor ?? false}
+                onChange={(_, v) => setSelectedColor(v)}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                  minHeight: 0,
+                  "& .MuiTabs-flexContainer": { gap: "10px" },
+                  "& .MuiTabs-indicator": { display: "none" },
+                }}
+              >
+                {product.colors.map((c) => (
+                  <Tab
+                    key={c}
+                    value={c}
+                    label={
+                      <Box
+                        sx={{
+                          width: 35,
+                          height: 35,
+                          borderRadius: "50%",
+                          backgroundColor: c,
+                          border:
+                            selectedColor === c
+                              ? "2px solid #000"
+                              : "1px solid #ccc",
+                          padding: "3px",
+                          backgroundClip: "content-box",
+                        }}
+                      />
+                    }
                     sx={{
                       minHeight: 0,
-                      "& .MuiTabs-flexContainer": { gap: "10px" },
-                      "& .MuiTabs-indicator": { display: "none" },
+                      minWidth: 0,
+                      padding: 0,
                     }}
-                >
-                  {product.colors.map((c) => (
-                      <Tab
-                          key={c}
-                          value={c}
-                          label={
-                            <Box
-                                sx={{
-                                  width: 35,
-                                  height: 35,
-                                  borderRadius: "50%",
-                                  backgroundColor: c,
-                                  border:
-                                      selectedColor === c
-                                          ? "2px solid #000"
-                                          : "1px solid #ccc",
-                                  padding: "3px",
-                                  backgroundClip: "content-box",
-                                }}
-                            />
-                          }
-                          sx={{
-                            minHeight: 0,
-                            minWidth: 0,
-                            padding: 0,
-                          }}
-                      />
-                  ))}
-                </Tabs>
-              </Box>
+                  />
+                ))}
+              </Tabs>
+            </Box>
           )}
 
-            <Box mt={3}>
-                <Typography
-                    mb={1}
-                    sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
-                >
-                    Размер:
-                </Typography>
-                <ToggleButtonGroup
-                    value={selectedSize}
-                    exclusive
-                    onChange={(_, value) => {
-                        if (value !== null && productAvailableSizes.includes(value)) {
-                            setSelectedSize(value);
-                        }
-                    }}
+          <Box mt={3}>
+            <Typography
+              mb={1}
+              sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
+            >
+              Размер:
+            </Typography>
+            <ToggleButtonGroup
+              value={selectedSize}
+              exclusive
+              onChange={(_, value) => {
+                if (value !== null && productAvailableSizes.includes(value)) {
+                  setSelectedSize(value);
+                }
+              }}
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 1,
+                "& .MuiToggleButtonGroup-grouped": {
+                  border: "1px solid #D9D9D9",
+                  borderRadius: "8px !important",
+                  margin: 0,
+                  px: 3,
+                  py: 1,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  "&:not(:first-of-type)": {
+                    marginLeft: 0,
+                    borderLeft: "1px solid #D9D9D9",
+                  },
+                  "&.Mui-selected": {
+                    border: "1px solid #000 !important",
+                    backgroundColor: "#F2F2F2",
+                    color: "#000",
+                    "&:hover": {
+                      backgroundColor: "#F2F2F2",
+                    },
+                  },
+                },
+              }}
+            >
+              {AVAILABLE_SIZES.map((size) => {
+                const isAvailable = productAvailableSizes.includes(size);
+                const isSelected = selectedSize === size;
+
+                return (
+                  <ToggleButton
+                    key={size}
+                    value={size}
+                    disabled={!isAvailable}
                     sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 1,
-                        "& .MuiToggleButtonGroup-grouped": {
-                            border: "1px solid #D9D9D9",
-                            borderRadius: "8px !important",
-                            margin: 0,
-                            px: 3,
-                            py: 1,
-                            textTransform: "none",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                            "&:not(:first-of-type)": {
-                                marginLeft: 0,
-                                borderLeft: "1px solid #D9D9D9",
-                            },
-                            "&.Mui-selected": {
-                                border: "1px solid #000 !important",
-                                backgroundColor: "#F2F2F2",
-                                color: "#000",
-                                "&:hover": {
-                                    backgroundColor: "#F2F2F2",
-                                },
-                            },
+                      color: isAvailable ? "#000" : "#999",
+                      backgroundColor: isAvailable ? "#FFF" : "#F5F5F5",
+                      cursor: isAvailable ? "pointer" : "default",
+                      opacity: isAvailable ? 1 : 0.6,
+                      "&:hover": {
+                        backgroundColor: isAvailable
+                          ? isSelected
+                            ? "#F2F2F2"
+                            : "#F9F9F9"
+                          : "#F5F5F5",
+                      },
+                      "&.Mui-selected": {
+                        backgroundColor: "#F2F2F2",
+                        color: "#000",
+                        "&.Mui-disabled": {
+                          backgroundColor: "#F5F5F5",
+                          color: "#999",
                         },
+                      },
+                      "&.Mui-disabled": {
+                        backgroundColor: "#F5F5F5",
+                        borderColor: "#E0E0E0",
+                        color: "#999",
+                      },
                     }}
-                >
-                    {AVAILABLE_SIZES.map((size) => {
-                        const isAvailable = productAvailableSizes.includes(size);
-                        const isSelected = selectedSize === size;
+                  >
+                    {size}
+                  </ToggleButton>
+                );
+              })}
+            </ToggleButtonGroup>
 
-                        return (
-                            <ToggleButton
-                                key={size}
-                                value={size}
-                                disabled={!isAvailable}
-                                sx={{
-                                    color: isAvailable ? "#000" : "#999",
-                                    backgroundColor: isAvailable ? "#FFF" : "#F5F5F5",
-                                    cursor: isAvailable ? "pointer" : "default",
-                                    opacity: isAvailable ? 1 : 0.6,
-                                    "&:hover": {
-                                        backgroundColor: isAvailable
-                                            ? (isSelected ? "#F2F2F2" : "#F9F9F9")
-                                            : "#F5F5F5",
-                                    },
-                                    "&.Mui-selected": {
-                                        backgroundColor: "#F2F2F2",
-                                        color: "#000",
-                                        "&.Mui-disabled": {
-                                            backgroundColor: "#F5F5F5",
-                                            color: "#999",
-                                        }
-                                    },
-                                    "&.Mui-disabled": {
-                                        backgroundColor: "#F5F5F5",
-                                        borderColor: "#E0E0E0",
-                                        color: "#999",
-                                    }
-                                }}
-                            >
-                                {size}
-                            </ToggleButton>
-                        );
-                    })}
-                </ToggleButtonGroup>
+            {productAvailableSizes.length > 0 && (
+              <Typography
+                variant="caption"
+                sx={{
+                  display: "block",
+                  mt: 1,
+                  color: "#666",
+                  fontSize: "12px",
+                }}
+              >
+                Доступные размеры: {productAvailableSizes.join(", ")}
+              </Typography>
+            )}
 
-                {productAvailableSizes.length > 0 && (
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            display: "block",
-                            mt: 1,
-                            color: "#666",
-                            fontSize: "12px"
-                        }}
-                    >
-                        Доступные размеры: {productAvailableSizes.join(", ")}
-                    </Typography>
-                )}
+            {selectedSize && !productAvailableSizes.includes(selectedSize) && (
+              <Typography
+                color="error"
+                variant="caption"
+                sx={{ display: "block", mt: 1 }}
+              >
+                Этот размер недоступен для данного товара
+              </Typography>
+            )}
 
-                {selectedSize && !productAvailableSizes.includes(selectedSize) && (
-                    <Typography
-                        color="error"
-                        variant="caption"
-                        sx={{ display: "block", mt: 1 }}
-                    >
-                        Этот размер недоступен для данного товара
-                    </Typography>
-                )}
-
-                {error && (
-                    <Typography
-                        color="error"
-                        variant="body2"
-                        sx={{ display: "block", mt: 1 }}
-                    >
-                        Ошибка: {error}. Доступные размеры: {productAvailableSizes.join(", ") || "нет"}
-                    </Typography>
-                )}
-            </Box>
+            {error && (
+              <Typography
+                color="error"
+                variant="body2"
+                sx={{ display: "block", mt: 1 }}
+              >
+                Ошибка: {error}. Доступные размеры:{" "}
+                {productAvailableSizes.join(", ") || "нет"}
+              </Typography>
+            )}
+          </Box>
 
           <Box>
             <Typography

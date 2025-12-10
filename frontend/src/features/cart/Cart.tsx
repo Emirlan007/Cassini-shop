@@ -1,37 +1,56 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
-import {
-  clearCart,
-  removeFromCart,
-  selectItems,
-  selectTotalPrice,
-  updateQuantity,
-} from "./cartSlice.ts";
+import { clearCart, selectCart } from "./cartSlice.ts";
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { API_URL } from "../../constants.ts";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckoutForm from "./components/CheckoutForm.tsx";
 import PaymentStep from "./components/PaymentStep.tsx";
-import {selectRegisterLoading, selectUpdateAddressLoading, selectUser} from "../users/usersSlice.ts";
+import {
+  selectRegisterLoading,
+  selectUpdateAddressLoading,
+  selectUser,
+} from "../users/usersSlice.ts";
 import { createOrder } from "../orders/ordersThunk.ts";
 import toast from "react-hot-toast";
-import {registerThunk, updateUserAddress} from "../users/usersThunks.ts";
+import { registerThunk, updateUserAddress } from "../users/usersThunks.ts";
 import CheckoutAddressForm from "./components/CheckoutAddressForm.tsx";
 import Stepper from "./components/Stepper.tsx";
+import {
+  deleteCart,
+  fetchCart,
+  removeItem,
+  updateItemQuantity,
+} from "./cartThunks.ts";
+import type { CartItem } from "../../types";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const items = useAppSelector(selectItems);
+  const items = useAppSelector(selectCart)?.items;
   const user = useAppSelector(selectUser);
-  const totalPrice = useAppSelector(selectTotalPrice);
+  const totalPrice = useAppSelector(selectCart)?.totalPrice;
   const registerLoading = useAppSelector(selectRegisterLoading);
-  const updateLoading = useAppSelector(selectUpdateAddressLoading)
+  const updateLoading = useAppSelector(selectUpdateAddressLoading);
   const { t } = useTranslation();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+
+  const handleUpdateQuantity = async (item: CartItem) => {
+    await dispatch(updateItemQuantity(item));
+    await dispatch(fetchCart());
+  };
+
+  const handleRemoveItem = async (item: CartItem) => {
+    await dispatch(removeItem(item));
+    await dispatch(fetchCart());
+  };
 
   const handleRegister = async (userData: {
     name: string;
@@ -54,11 +73,11 @@ const Cart = () => {
 
     try {
       await dispatch(
-          updateUserAddress({
-            userId: user._id,
-            city: userData.city,
-            address: userData.address,
-          })
+        updateUserAddress({
+          userId: user._id,
+          city: userData.city,
+          address: userData.address,
+        })
       ).unwrap();
 
       setStep(3);
@@ -67,20 +86,20 @@ const Cart = () => {
     }
   };
 
-
   const handleCheckout = async (paymentData: {
     paymentMethod: "cash" | "qrCode";
     comment?: string;
   }) => {
     const orderData = {
-      items,
-      totalPrice,
+      items: items ?? [],
+      totalPrice: totalPrice ?? 0,
       paymentMethod: paymentData.paymentMethod,
       userComment: paymentData.comment,
     };
 
     try {
       await dispatch(createOrder(orderData)).unwrap();
+      await dispatch(deleteCart());
       dispatch(clearCart());
       navigate("/account");
       toast.success("Заказ оформлен!");
@@ -90,7 +109,7 @@ const Cart = () => {
     }
   };
 
-  if (!items.length) {
+  if (!items || items?.length === 0) {
     return (
       <Box
         display="flex"
@@ -116,24 +135,23 @@ const Cart = () => {
 
   return (
     <Stack spacing={2} p={2}>
-
       <Stepper step={step} />
 
       {step === 1 && (
         <>
           <Typography
-              sx={{
-                fontWeight: '700',
-                fontSize: '28px',
-                marginBottom: '20px',
-                color: '#660033'
-              }}
+            sx={{
+              fontWeight: "700",
+              fontSize: "28px",
+              marginBottom: "20px",
+              color: "#660033",
+            }}
           >
             Детали заказа
           </Typography>
           {items.map((item) => (
             <Box
-              key={`${item.productId}-${item.selectedColor}-${item.selectedSize}`}
+              key={`${item.product}-${item.selectedColor}-${item.selectedSize}`}
               display="flex"
               flexDirection={{ xs: "column", sm: "row" }}
               alignItems={{ xs: "flex-start", sm: "center" }}
@@ -173,9 +191,10 @@ const Cart = () => {
                   size="small"
                   sx={{ color: "red", fontSize: 30, height: "30px" }}
                   onClick={() =>
-                    dispatch(
-                      updateQuantity({ ...item, quantity: item.quantity - 1 })
-                    )
+                    handleUpdateQuantity({
+                      ...item,
+                      quantity: item.quantity - 1,
+                    })
                   }
                 >
                   -
@@ -185,24 +204,17 @@ const Cart = () => {
                   size="small"
                   sx={{ color: "red", fontSize: 20, height: "30px" }}
                   onClick={() =>
-                    dispatch(
-                      updateQuantity({ ...item, quantity: item.quantity + 1 })
-                    )
+                    handleUpdateQuantity({
+                      ...item,
+                      quantity: item.quantity + 1,
+                    })
                   }
                 >
                   +
                 </Button>
                 <IconButton
                   color="error"
-                  onClick={() =>
-                    dispatch(
-                      removeFromCart({
-                        productId: item.productId,
-                        selectedColor: item.selectedColor,
-                        selectedSize: item.selectedSize,
-                      })
-                    )
-                  }
+                  onClick={() => handleRemoveItem(item)}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -210,41 +222,40 @@ const Cart = () => {
             </Box>
           ))}
           <Button
-              variant="contained"
-              sx={{
-                borderRadius: '14px',
-                fontSize: '16px',
-                fontWeight: '700',
-                padding: '10px 0'
-              }}
-              onClick={() => {
-                if (!user) {
-                  setStep(2);
-                } else if (!user.city || !user.address) {
-                  setStep(2);
-                } else {
-                  setStep(3);
-                }
-              }}
+            variant="contained"
+            sx={{
+              borderRadius: "14px",
+              fontSize: "16px",
+              fontWeight: "700",
+              padding: "10px 0",
+            }}
+            onClick={() => {
+              if (!user) {
+                setStep(2);
+              } else if (!user.city || !user.address) {
+                setStep(2);
+              } else {
+                setStep(3);
+              }
+            }}
           >
             Далее
           </Button>
         </>
       )}
 
-      {step === 2 && (
-          user ? (
-              <CheckoutAddressForm
-                  onSubmit={(data) => handleAddressSubmit(data)}
-                  loading={updateLoading}
-              />
-          ) : (
-              <CheckoutForm
-                  onSubmit={(data) => handleRegister(data)}
-                  loading={registerLoading}
-              />
-          )
-      )}
+      {step === 2 &&
+        (user ? (
+          <CheckoutAddressForm
+            onSubmit={(data) => handleAddressSubmit(data)}
+            loading={updateLoading}
+          />
+        ) : (
+          <CheckoutForm
+            onSubmit={(data) => handleRegister(data)}
+            loading={registerLoading}
+          />
+        ))}
 
       {step === 3 && <PaymentStep onCheckout={handleCheckout} />}
     </Stack>

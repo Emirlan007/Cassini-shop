@@ -16,21 +16,15 @@ import { persistReducer, persistStore } from "redux-persist";
 import { cartReducer } from "../features/cart/cartSlice.ts";
 import { ordersReducer } from "../features/orders/ordersSlice.ts";
 import uiReducer from "../features/ui/uiSlice.ts";
-import {adminUsersReducer} from "../features/users/admin/usersSlice.ts";
-import {adminProductsReducer} from "../features/products/admin/adminProductsSlice.ts";
-import {adminCategoriesReducer} from "../features/categories/admin/categorySlice.ts";
+import { adminUsersReducer } from "../features/users/admin/usersSlice.ts";
+import { adminProductsReducer } from "../features/products/admin/adminProductsSlice.ts";
+import { adminCategoriesReducer } from "../features/categories/admin/categorySlice.ts";
 import { adminOrders } from "../features/orders/admin/ordersSlice.ts";
 
 const userPersistConfig = {
   key: "shop:users",
   storage,
   whitelist: ["user"],
-};
-
-const cartPersistConfig = {
-  key: "shop:cart",
-  storage,
-  whitelist: ["items", "totalPrice", "totalQuantity"],
 };
 
 const rootReducer = combineReducers({
@@ -42,7 +36,7 @@ const rootReducer = combineReducers({
   adminProducts: adminProductsReducer,
   adminCategories: adminCategoriesReducer,
   users: persistReducer(userPersistConfig, usersReducer),
-  cart: persistReducer(cartPersistConfig, cartReducer),
+  cart: cartReducer,
   ui: uiReducer,
   adminOrders: adminOrders,
 });

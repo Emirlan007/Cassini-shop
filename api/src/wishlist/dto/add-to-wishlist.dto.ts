@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CommentDto {
-  @IsString()
+export class AddToWishlistDto {
   @IsNotEmpty()
-  comment: string;
+  @IsString()
+  productId: string;
 }

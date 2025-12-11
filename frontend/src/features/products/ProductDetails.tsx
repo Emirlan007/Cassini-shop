@@ -11,7 +11,7 @@ import { fetchProductById, fetchProducts } from "./productsThunks";
 import {
   Box,
   Button,
-  CircularProgress,
+  CircularProgress, IconButton,
   Stack,
   Tab,
   Tabs,
@@ -25,7 +25,6 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 import { selectUser } from "../users/usersSlice.ts";
-import { addToCart } from "../cart/cartSlice.ts";
 import toast from "react-hot-toast";
 import {
   selectAdminUpdateDiscountError,
@@ -34,7 +33,12 @@ import {
 import { updateProductDiscount } from "./admin/adminProductsThunks.ts";
 import ProductList from "./ProductsList.tsx";
 import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
+import { addItemToCart, fetchCart } from "../cart/cartThunks.ts";
 import { convertSeconds } from "../../utils/dateFormatter.ts";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
+import { selectWishlistProductIds } from "../wishlist/wishlistSlice";
+import { addToWishlist, removeFromWishlist, fetchWishlist } from "../wishlist/wishlistThunks";
+
 
 const ProductDetails = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +51,8 @@ const ProductDetails = () => {
   );
   const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
   const categoryProducts = useAppSelector(selectProducts);
+  const wishlistProductIds = useAppSelector(selectWishlistProductIds);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
   const { productId } = useParams() as { productId: string };
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -61,20 +67,23 @@ const ProductDetails = () => {
     .filter((p) => p._id !== product?._id)
     .slice(0, 4);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product || !selectedSize || !selectedColor) return;
 
-    dispatch(
-      addToCart({
-        productId: product._id,
+    await dispatch(
+      addItemToCart({
+        product: product._id,
         title: product.name,
-        price: product.finalPrice!,
+        price: product.finalPrice ?? product.price,
+        finalPrice: product.finalPrice ?? product.price,
         quantity: 1,
         selectedColor: selectedColor,
         selectedSize: selectedSize,
-        image: product!.images![0],
+        image: product.images?.[0] ?? "",
       })
     );
+
+    await dispatch(fetchCart());
 
     toast.success("Товар добавлен в корзину!");
   };
@@ -131,6 +140,35 @@ const ProductDetails = () => {
 
     return () => clearInterval(interval);
   }, [product?.discount, product?.discountUntil]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchWishlist());
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    setIsInWishlist(wishlistProductIds.includes(productId));
+  }, [wishlistProductIds, productId]);
+
+  const handleWishlistToggle = async () => {
+    if (!user) {
+      toast.error("Войдите в аккаунт, чтобы добавить товар в избранное");
+      return;
+    }
+
+    try {
+      if (isInWishlist) {
+        await dispatch(removeFromWishlist(productId)).unwrap();
+        toast.success("Товар удален из избранного");
+      } else {
+        await dispatch(addToWishlist(productId)).unwrap();
+        toast.success("Товар добавлен в избранное");
+      }
+    } catch (error) {
+      toast.error("Произошла ошибка");
+    }
+  };
 
   const calculateFinalPrice = () => {
     if (product?.discount && hasActiveDiscount) {
@@ -261,25 +299,39 @@ const ProductDetails = () => {
             width: { xs: "100%", md: "50%" },
           }}
         >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="h6" sx={{ marginBottom: 1 }}>
-              <b>{product?.name}</b>
-            </Typography>
+          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                <b>{product?.name}</b>
+              </Typography>
 
-            {product?.isNew && (
-              <Box
+              {product?.isNew && (
+                  <Box
+                      sx={{
+                        backgroundColor: "secondary.main",
+                        color: "white",
+                        borderRadius: "4px",
+                        padding: "4px 8px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                  >
+                    New
+                  </Box>
+              )}
+            </Stack>
+
+            <IconButton
+                onClick={handleWishlistToggle}
                 sx={{
-                  backgroundColor: "secondary.main",
-                  color: "white",
-                  borderRadius: "4px",
-                  padding: "4px 8px",
-                  fontSize: "12px",
-                  fontWeight: "bold",
+                  color: isInWishlist ? "#ff4444" : "inherit",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 68, 68, 0.1)",
+                  },
                 }}
-              >
-                New
-              </Box>
-            )}
+            >
+              {isInWishlist ? <Favorite /> : <FavoriteBorder />}
+            </IconButton>
           </Stack>
           <Box
             sx={{

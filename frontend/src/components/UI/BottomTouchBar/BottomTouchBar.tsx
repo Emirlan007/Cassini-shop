@@ -3,7 +3,6 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
-  IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
@@ -12,17 +11,17 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import theme from "../../../theme";
 import { useTranslation } from "react-i18next";
-import { selectTotalQuantity } from "../../../features/cart/cartSlice";
 import { useAppSelector, useAppDispatch } from "../../../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { selectUser } from "../../../features/users/usersSlice";
 import { selectIsSearchOpen, toggleSearch } from "../../../features/ui/uiSlice";
 import CloseIcon from "@mui/icons-material/Close";
+import { selectCart } from "../../../features/cart/cartSlice";
 
 const BottomTouchBar = () => {
   const [selectTouchBar, setSelectTouchBar] = useState("home");
   const user = useAppSelector(selectUser);
-  const totalQuantity = useAppSelector(selectTotalQuantity);
+  const totalQuantity = useAppSelector(selectCart)?.totalQuantity;
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();

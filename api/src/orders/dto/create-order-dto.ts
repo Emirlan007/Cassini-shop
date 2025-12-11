@@ -67,8 +67,4 @@ export class CreateOrderDto {
   @IsOptional()
   @IsString()
   userComment?: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  totalPrice: number;
 }

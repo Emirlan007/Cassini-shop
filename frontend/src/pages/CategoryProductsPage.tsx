@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     Box,
@@ -28,11 +28,14 @@ import {
 import ProductList from "../features/products/ProductsList.tsx";
 import type { FilterState, FilterParams } from "../types";
 import ProductFilters from "../features/products/ProductFilters.tsx";
+import {selectCategories} from "../features/categories/categorySlice.ts";
+import {fetchCategories} from "../features/categories/categoryThunk.ts";
 
 const CategoryProductsPage = () => {
     const { categoryId } = useParams<{ categoryId: string }>();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const categories = useAppSelector(selectCategories);
     const loading = useAppSelector(selectProductsFetchLoading);
     const error = useAppSelector(selectProductsFetchError);
     const allProducts = useAppSelector(selectProducts);
@@ -42,6 +45,17 @@ const CategoryProductsPage = () => {
     const totalCount = useAppSelector(selectTotalCount);
     const currentPage = useAppSelector(selectCurrentPage);
     const totalPages = useAppSelector(selectTotalPages);
+
+  const currentCategory = useMemo(() => {
+    if (!categoryId || !categories) return null;
+    return categories.find(cat => cat._id === categoryId);
+  }, [categoryId, categories]);
+
+  useEffect(() => {
+    if (categories.length === 0) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categories.length]);
 
     const availableOptions = useMemo(() => {
         if (!allProducts.length) {
@@ -111,7 +125,9 @@ const CategoryProductsPage = () => {
                 limit: 16,
             };
 
-            dispatch(fetchFilteredProducts(filterParams));
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+          dispatch(fetchFilteredProducts(filterParams));
         }
     }, [dispatch, categoryId, filters, page, availableOptions.priceRange]);
 
@@ -245,7 +261,7 @@ const CategoryProductsPage = () => {
                             mb: 4,
                         }}
                     >
-                        Товары категории
+                        {currentCategory ? `Товары категории: ${currentCategory.title}` : "Товары категории"}
                         {totalCount > 0 && (
                             <Typography
                                 component="span"

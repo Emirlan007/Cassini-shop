@@ -5,14 +5,14 @@ import {
   Get,
   Headers,
   HttpCode,
-  NotFoundException,
   Param,
   Patch,
   Post,
-  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -21,7 +21,6 @@ import { RegisterUserDto } from './usersDto/register-user.dto';
 import { LoginUserDto } from './usersDto/login-user.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { ConfigService } from '@nestjs/config';
-
 import { FileUploadInterceptorAvatar } from 'src/shared/file-upload/file-upload.interceptor';
 import { TokenAuthGuard } from '../auth/token-auth.guard';
 import { RolesGuard } from '../role-auth/role-auth.guard';
@@ -55,6 +54,18 @@ export class UsersController {
     @Headers('session-id') sessionId: string,
   ) {
     const { phoneNumber, name } = userData;
+
+    if (!/^\+?[0-9]{10,15}$/.test(phoneNumber)) {
+      throw new BadRequestException('Некорректный формат номера телефона');
+    }
+
+    const existingUser = await this.userModel.findOne({ phoneNumber });
+    if (existingUser) {
+      throw new BadRequestException(
+        'Пользователь с таким номером уже существует',
+      );
+    }
+
     const user = new this.userModel({
       phoneNumber,
       name,
@@ -74,10 +85,19 @@ export class UsersController {
     @Headers('session-id') sessionId: string,
   ) {
     const { phoneNumber, name } = userData;
-    const user = await this.authService.validateUser(phoneNumber, name);
+
+    if (!/^\+?[0-9]{10,15}$/.test(phoneNumber)) {
+      throw new BadRequestException('Некорректный формат номера телефона');
+    }
+
+    const user = await this.userModel.findOne({ phoneNumber });
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new BadRequestException('Пользователь с таким номером не найден');
+    }
+
+    if (user.name !== name) {
+      throw new BadRequestException('Неверное имя пользователя');
     }
 
     await this.cartService.mergeCart(String(user._id), sessionId);
@@ -92,6 +112,7 @@ export class UsersController {
     const user = await this.userModel.findOne({ token });
     if (!user) return;
     user.generateToken();
+    await user.save();
   }
 
   @UseGuards(TokenAuthGuard)
@@ -103,9 +124,11 @@ export class UsersController {
     const { city, address } = body;
 
     const updated = await this.userService.updateAddress(userId, city, address);
+
     if (!updated) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Пользователь не найден');
     }
+
     return updated;
   }
 }

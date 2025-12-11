@@ -159,23 +159,24 @@ const ProductCard = ({ product }: Props) => {
       </Stack>
 
       {showDiscount && timeLeft && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            color: "white",
-            borderRadius: "4px",
-            padding: "4px 8px",
-            fontSize: "12px",
-            fontWeight: "bold",
-            zIndex: 1,
-          }}
-        >
-          {timeLeft}
-        </Box>
+          <Box
+              sx={{
+                position: "absolute",
+                top: { xs: 46, sm: 46, md: 46, lg: 46 },
+                left: 8,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                color: "white",
+                borderRadius: "4px",
+                padding: "4px 8px",
+                fontSize: { xs: "10px", sm: "12px" },
+                fontWeight: "bold",
+                zIndex: 1,
+              }}
+          >
+            {timeLeft}
+          </Box>
       )}
+
 
       <Box
         sx={{

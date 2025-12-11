@@ -63,5 +63,8 @@ export const selectWishlistLoading = (state: RootState) => state.wishlist.loadin
 export const selectWishlistError = (state: RootState) => state.wishlist.error;
 export const selectWishlistProductIds = createSelector(
     [selectWishlist],
-    (wishlist) => wishlist?.products.map((p) => p._id) || []
+    (wishlist) => {
+        if (!wishlist?.products) return [];
+        return wishlist.products.map((p) => p._id);
+    }
 );

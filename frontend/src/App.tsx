@@ -72,7 +72,6 @@ const App = () => {
           />
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
-            <Route path="/cart" element={<Cart />} />
             <Route
                 path="/wishlist"
                 element={
@@ -81,7 +80,6 @@ const App = () => {
                     </ProtectedRoute>
                 }
             />
-            <Route path="/account" element={<AccountPage />} />
           <Route path="/account" element={<AccountPage />} />
             <Route
                 path="/admin"

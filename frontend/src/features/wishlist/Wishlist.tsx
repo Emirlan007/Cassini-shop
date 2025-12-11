@@ -12,6 +12,8 @@ import {
     CircularProgress,
     Grid,
     Button,
+    Container,
+    Paper,
 } from "@mui/material";
 import { FavoriteBorderOutlined } from "@mui/icons-material";
 import ProductCard from "../products/ProductCard";
@@ -30,62 +32,150 @@ const Wishlist = () => {
 
     if (loading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-                <CircularProgress />
-            </Box>
+            <Container maxWidth="lg">
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="60vh"
+                >
+                    <CircularProgress size={48} />
+                </Box>
+            </Container>
         );
     }
 
     if (error) {
         return (
-            <Box textAlign="center" py={4}>
-                <Typography color="error">{error}</Typography>
-            </Box>
+            <Container maxWidth="lg">
+                <Box textAlign="center" py={6}>
+                    <Typography color="error" variant="h6">
+                        {error}
+                    </Typography>
+                </Box>
+            </Container>
         );
     }
 
     if (!wishlist || wishlist.products.length === 0) {
         return (
-            <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                minHeight="50vh"
-                gap={3}
-            >
-                <FavoriteBorderOutlined sx={{ fontSize: 80, color: "#ccc" }} />
-                <Typography variant="h5" color="text.secondary">
-                    Ваш список избранного пуст
-                </Typography>
-                <Typography color="text.secondary">
-                    Добавьте товары в избранное, чтобы не потерять их
-                </Typography>
-                <Button
-                    variant="contained"
-                    onClick={() => navigate("/")}
-                    sx={{ mt: 2 }}
+            <Container maxWidth="sm">
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    minHeight="60vh"
+                    gap={2}
                 >
-                    Перейти к покупкам
-                </Button>
-            </Box>
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            width: 120,
+                            height: 120,
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            bgcolor: "grey.100",
+                            mb: 1,
+                        }}
+                    >
+                        <FavoriteBorderOutlined
+                            sx={{ fontSize: 60, color: "grey.400" }}
+                        />
+                    </Paper>
+                    <Typography
+                        variant="h5"
+                        color="text.primary"
+                        fontWeight={600}
+                        gutterBottom
+                    >
+                        Список избранного пуст
+                    </Typography>
+                    <Typography
+                        color="text.secondary"
+                        textAlign="center"
+                        sx={{ mb: 2 }}
+                    >
+                        Добавьте товары в избранное, чтобы не потерять их
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={() => navigate("/")}
+                        sx={{
+                            mt: 1,
+                            px: 4,
+                            py: 1.5,
+                            borderRadius: 2,
+                        }}
+                    >
+                        Перейти к покупкам
+                    </Button>
+                </Box>
+            </Container>
         );
     }
 
     return (
-        <Box>
-            <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
-                Избранное ({wishlist.products.length})
-            </Typography>
+        <Container maxWidth="lg">
+            <Box sx={{ py: { xs: 2, md: 4 } }}>
+                <Box
+                    sx={{
+                        mb: { xs: 3, md: 4 },
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                    }}
+                >
+                    <Typography
+                        variant="h4"
+                        sx={{
+                            fontWeight: 600,
+                            fontSize: { xs: "1.75rem", md: "2.125rem" }
+                        }}
+                    >
+                        Избранное
+                    </Typography>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            color: "text.secondary",
+                            fontWeight: 400,
+                            fontSize: { xs: "1.25rem", md: "1.5rem" }
+                        }}
+                    >
+                        ({wishlist.products.length})
+                    </Typography>
+                </Box>
 
-            <Grid container spacing={2}>
-                {wishlist.products.map((product) => (
-                    <Grid item xs={6} sm={6} md={4} lg={3} key={product._id} {...({} as any)}>
-                        <ProductCard product={product} />
-                    </Grid>
-                ))}
-            </Grid>
-        </Box>
+                <Grid
+                    container
+                    spacing={{ xs: 2, sm: 2.5, md: 3 }}
+                    sx={{
+                        "& .MuiGrid-item": {
+                            display: "flex",
+                        }
+                    }}
+                >
+                    {wishlist.products.map((product) => (
+                        <Grid
+                            item
+                            xs={6}
+                            sm={6}
+                            md={4}
+                            lg={3}
+                            key={product._id}
+                        >
+                            <Box sx={{ width: "100%" }}>
+                                <ProductCard product={product} />
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Box>
+        </Container>
     );
 };
 

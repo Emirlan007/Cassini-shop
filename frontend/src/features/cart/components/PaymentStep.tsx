@@ -55,7 +55,7 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
         />
 
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Итого: {totalPrice}₸</Typography>
+          <Typography variant="h6">Итого: {totalPrice}⃀</Typography>
 
           <Button
             variant="contained"

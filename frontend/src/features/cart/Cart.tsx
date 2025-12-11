@@ -182,7 +182,7 @@ const Cart = () => {
                   {t("size")}: {item.selectedSize}
                 </Typography>
                 <Typography variant="body2">
-                  {t("price")}: {item.price}₸
+                  {t("price")}: {item.price}⃀
                 </Typography>
               </Box>
 

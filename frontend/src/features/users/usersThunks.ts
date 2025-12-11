@@ -20,12 +20,18 @@ export const registerThunk = createAsyncThunk<
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 400) {
-      const message = error.response.data.message;
+      const raw = error.response.data.message;
+      const message = Array.isArray(raw) ? raw[0] : raw;
+
+      const normalizedMessage =
+          typeof message === "string" && message.includes("must be a valid phone number")
+              ? "Некорректный формат номера телефона"
+              : message;
 
       return rejectWithValue({
         errors: {
           name: message.includes("имя") ? { message } : undefined,
-          phoneNumber: { message },
+          phoneNumber: { message: normalizedMessage },
         },
       });
     }

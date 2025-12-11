@@ -122,7 +122,7 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
       <TableCell>{product._id}</TableCell>
       <TableCell>{product.name}</TableCell>
       <TableCell>{product.category?.title}</TableCell>
-      <TableCell>{product.price} ₸</TableCell>
+      <TableCell>{product.price} ⃀</TableCell>
       <TableCell align="center">
         {product.discount ? `${product.discount}%` : "-"}
       </TableCell>

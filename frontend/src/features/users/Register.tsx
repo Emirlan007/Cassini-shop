@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FormEvent, useState } from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectRegisterError, selectRegisterLoading } from "./usersSlice";
+import {clearLoginError, clearRegisterError, selectRegisterError, selectRegisterLoading} from "./usersSlice";
 import { registerThunk } from "./usersThunks";
 import type { RegisterMutation } from "../../types";
 import { useTranslation } from "react-i18next";
@@ -24,8 +24,12 @@ const Register = () => {
 
   const [state, setState] = useState<RegisterMutation>({
     name: "",
-    phoneNumber: "",
+    phoneNumber: "+996",
   });
+
+  useEffect(() => {
+    dispatch(clearRegisterError());
+  }, [dispatch]);
 
   const getFieldError = (fieldName: string) => {
     try {
@@ -37,6 +41,9 @@ const Register = () => {
 
   const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    dispatch(clearRegisterError());
+
     setState((prevState) => ({ ...prevState, [name]: value }));
   };
 

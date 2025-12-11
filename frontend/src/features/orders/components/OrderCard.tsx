@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import {Box, Chip, Stack, Typography} from "@mui/material";
 import { API_URL } from "../../../constants";
 import { useTranslation } from "react-i18next";
 import type { Order } from "../../../types";
@@ -13,6 +13,30 @@ interface Props {
 const OrderCard = ({ order, onClick }: Props) => {
   const user = useAppSelector(selectUser);
   const { t } = useTranslation();
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'success';
+      case 'cancelled':
+        return 'error';
+      case 'pending':
+      default:
+        return 'warning';
+    }
+  };
+
+  const getPaymentStatusText = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'Оплачен';
+      case 'cancelled':
+        return 'Отменен';
+      case 'pending':
+      default:
+        return 'Ожидает оплаты';
+    }
+  };
 
   return (
     <Box
@@ -44,14 +68,22 @@ const OrderCard = ({ order, onClick }: Props) => {
           {order._id}
         </Typography>
 
-        <Typography variant="subtitle2">
-          {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-        </Typography>
+          <Box display="flex" alignItems="center" gap={1}>
+              <Chip
+                  label={getPaymentStatusText(order.paymentStatus)}
+                  color={getPaymentStatusColor(order.paymentStatus)}
+                  size="small"
+              />
+
+            <Typography variant="subtitle2">
+            {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
+            </Typography>
+          </Box>
       </Box>
 
       {order.items.map((item, index) => (
         <Box
-          key={`${order._id}-${item.productId}-${item.selectedColor}-${item.selectedSize}-${index}`}
+          key={`${order._id}-${item.product}-${item.selectedColor}-${item.selectedSize}-${index}`}
           display="flex"
           flexDirection={{ xs: "column", sm: "row" }}
           alignItems={{ xs: "flex-start", sm: "center" }}
@@ -90,6 +122,15 @@ const OrderCard = ({ order, onClick }: Props) => {
           </Box>
         </Box>
       ))}
+
+      {user?.role !== 'admin' && (
+        <Box mt={1}>
+          <Typography variant="body2">
+            <strong>Статус оплаты:</strong> {getPaymentStatusText(order.paymentStatus)}
+          </Typography>
+        </Box>
+      )}
+
       {order.userComment && order.userComment.trim() !== "" && (
         <Stack>
           <Typography variant="body1">Комментарий</Typography>

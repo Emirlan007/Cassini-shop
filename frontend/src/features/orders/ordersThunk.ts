@@ -8,6 +8,7 @@ export const createOrder = createAsyncThunk(
   async (order: OrderMutation, { rejectWithValue }) => {
     const payload = {
       ...order,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       items: order.items.map(({ _id, ...rest }) => rest),
     };
 

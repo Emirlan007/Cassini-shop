@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { fetchAdminOrders } from "./ordersThunks";
 import { selectOrders, selectFetchingOrders } from "./ordersSlice";
-import { Box, Typography, CircularProgress, Stack } from "@mui/material";
+import {Box, Typography, CircularProgress, Stack, Chip} from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "../../../constants";
 import { selectUser } from "../../users/usersSlice";
@@ -23,6 +23,30 @@ const AdminOrders = () => {
   useEffect(() => {
     void fetchAllOrders();
   }, [fetchAllOrders]);
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'success';
+      case 'cancelled':
+        return 'error';
+      case 'pending':
+      default:
+        return 'warning';
+    }
+  };
+
+  const getPaymentStatusText = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'Оплачен';
+      case 'cancelled':
+        return 'Отменен';
+      case 'pending':
+      default:
+        return 'Ожидает оплаты';
+    }
+  };
 
   return (
     <>
@@ -59,9 +83,16 @@ const AdminOrders = () => {
               <Typography variant="subtitle2">
                 {t("customer")}: {order.user?.name || "N/A"}
               </Typography>
-              <Typography variant="subtitle2">
-                {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-              </Typography>
+              <Box display="flex" alignItems="center" gap={1}>
+                <Chip
+                  label={getPaymentStatusText(order.paymentStatus)}
+                  color={getPaymentStatusColor(order.paymentStatus)}
+                  size="small"
+                />
+                <Typography variant="subtitle2">
+                  {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
+                </Typography>
+              </Box>
               <Typography variant="subtitle2">
                 {t("total")}: {order.totalPrice}₸
               </Typography>
@@ -69,7 +100,7 @@ const AdminOrders = () => {
 
             {order.items.map((item, index) => (
               <Box
-                key={`${order._id}-${item.productId}-${index}`}
+                key={`${order._id}-${item.product}-${index}`}
                 display="flex"
                 flexDirection={{ xs: "column", sm: "row" }}
                 alignItems={{ xs: "flex-start", sm: "center" }}

@@ -6,8 +6,15 @@ import {
   selectProductFetchLoading,
   selectProducts,
 } from "./productsSlice";
-import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import {
+  type ChangeEvent,
+  type FormEvent,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { fetchProductById, fetchProducts } from "./productsThunks";
+import type { Swiper as SwiperType } from "swiper";
 import {
   Box,
   Button,
@@ -68,6 +75,13 @@ const ProductDetails = () => {
 
   const [tabValue, setTabValue] = useState(0);
   const [activeSlide, setActiveSlide] = useState(0);
+  const swiperRef = useRef<SwiperType | null>(null);
+
+  const handleThumbnailClick = (index: number) => {
+    if (swiperRef.current) {
+      swiperRef.current.slideTo(index);
+    }
+  };
 
   const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
@@ -238,8 +252,9 @@ const ProductDetails = () => {
         >
           <Swiper
             modules={[Pagination, Navigation]}
-            navigation={!isMobile}
+            navigation={false}
             className="mySwiper"
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
             onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
           >
             {product?.video && (
@@ -276,7 +291,11 @@ const ProductDetails = () => {
               </SwiperSlide>
             ))}
           </Swiper>
-          <ThumbNail product={product} activeSlide={activeSlide} />
+          <ThumbNail
+            product={product}
+            activeSlide={activeSlide}
+            onThumbnailClick={handleThumbnailClick}
+          />
         </Box>
 
         <Box

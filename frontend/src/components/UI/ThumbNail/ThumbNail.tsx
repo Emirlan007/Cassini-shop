@@ -6,10 +6,19 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 interface Props {
   product: Product;
   activeSlide: number;
+  onThumbnailClick: (index: number) => void;
 }
 
-const ThumbNail: React.FC<Props> = ({ product, activeSlide }) => {
+const ThumbNail: React.FC<Props> = ({
+  product,
+  activeSlide,
+  onThumbnailClick,
+}) => {
   const hasVideo = !!product.video;
+  const THUMBNAILS_PER_VIEW = 4;
+  const startIndex =
+    Math.floor(activeSlide / THUMBNAILS_PER_VIEW) * THUMBNAILS_PER_VIEW;
+  const endIndex = startIndex + THUMBNAILS_PER_VIEW;
 
   return (
     <Box
@@ -17,15 +26,16 @@ const ThumbNail: React.FC<Props> = ({ product, activeSlide }) => {
       sx={{
         position: "absolute",
         zIndex: 50,
-        top: 1,
+        top: "5%",
         left: 1,
         display: "flex",
         flexDirection: "column",
-    
+        gap: "1rem",
       }}
     >
-      {hasVideo && (
+      {hasVideo && activeSlide >= 0 && activeSlide < THUMBNAILS_PER_VIEW && (
         <Box
+          onClick={() => onThumbnailClick(0)}
           sx={{
             position: "relative",
             width: 40,
@@ -62,9 +72,15 @@ const ThumbNail: React.FC<Props> = ({ product, activeSlide }) => {
       {product.images?.map((item, index) => {
         const imageIndex = hasVideo ? index + 1 : index;
         const isActive = activeSlide === imageIndex;
+
+        if (imageIndex < startIndex || imageIndex >= endIndex) {
+          return null;
+        }
+
         return (
           <div key={index}>
             <Avatar
+              onClick={() => onThumbnailClick(imageIndex)}
               variant="square"
               sizes="lg"
               alt="Remy Sharp"
@@ -74,6 +90,7 @@ const ThumbNail: React.FC<Props> = ({ product, activeSlide }) => {
                 opacity: isActive ? 1 : 0.5,
                 transition: "opacity 0.3s ease-in-out",
                 cursor: "pointer",
+                borderRadius: "20%",
               }}
             />
           </div>

@@ -25,7 +25,6 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/swiper.css";
 import { API_URL } from "../../constants";
 import { selectUser } from "../users/usersSlice.ts";
-import { addToCart } from "../cart/cartSlice.ts";
 import toast from "react-hot-toast";
 import {
   selectAdminUpdateDiscountError,
@@ -34,6 +33,7 @@ import {
 import { updateProductDiscount } from "./admin/adminProductsThunks.ts";
 import ProductList from "./ProductsList.tsx";
 import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
+import { addItemToCart, fetchCart } from "../cart/cartThunks.ts";
 import { convertSeconds } from "../../utils/dateFormatter.ts";
 
 const ProductDetails = () => {
@@ -61,20 +61,23 @@ const ProductDetails = () => {
     .filter((p) => p._id !== product?._id)
     .slice(0, 4);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product || !selectedSize || !selectedColor) return;
 
-    dispatch(
-      addToCart({
-        productId: product._id,
+    await dispatch(
+      addItemToCart({
+        product: product._id,
         title: product.name,
-        price: product.finalPrice!,
+        price: product.finalPrice ?? product.price,
+        finalPrice: product.finalPrice ?? product.price,
         quantity: 1,
         selectedColor: selectedColor,
         selectedSize: selectedSize,
-        image: product!.images![0],
+        image: product.images?.[0] ?? "",
       })
     );
+
+    await dispatch(fetchCart());
 
     toast.success("Товар добавлен в корзину!");
   };

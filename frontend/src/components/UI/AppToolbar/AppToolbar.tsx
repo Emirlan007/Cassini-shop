@@ -9,21 +9,21 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAppSelector} from "../../../app/hooks";
+import { useAppSelector } from "../../../app/hooks";
 import { selectLoginLoading } from "../../../features/users/usersSlice";
 // import { logoutThunk } from "../../../features/users/usersThunks";
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
 import Badge from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { selectTotalQuantity } from "../../../features/cart/cartSlice.ts";
 import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
 import BackButton from "../BackButton.tsx";
 import SearchInput from "../SearchInput/SearchInput.tsx";
+import { selectCart } from "../../../features/cart/cartSlice.ts";
 
 const AppToolbar = () => {
   // const user = useAppSelector(selectUser);
   const isLoading = useAppSelector(selectLoginLoading);
-  const totalQuantity = useAppSelector(selectTotalQuantity);
+  const totalQuantity = useAppSelector(selectCart)?.totalQuantity;
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -47,7 +47,7 @@ const AppToolbar = () => {
           }}
         >
           <Box display="flex" alignItems="center" gap={1}>
-              <BackButton />
+            <BackButton />
             <IconButton sx={{ color: "#d9d9d9" }} onClick={toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>

@@ -5,7 +5,3 @@ export class CommentDto {
   @IsNotEmpty()
   comment: string;
 }
-
-
-
-

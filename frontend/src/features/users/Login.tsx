@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {useTranslation} from "react-i18next";
+import { fetchCart } from "../cart/cartThunks";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -46,6 +47,7 @@ const Login = () => {
 
     try {
       await dispatch(loginThunk(state)).unwrap();
+      await dispatch(fetchCart());
       navigate("/");
     } catch (e) {
       console.log(e);

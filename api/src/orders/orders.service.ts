@@ -68,23 +68,24 @@ export class OrderService {
 
     const processedItems = await Promise.all(
       items.map(async (item) => {
-        const product = await this.productModel.findById(item.productId).lean();
+        const product = await this.productModel.findById(item.product).lean();
 
         if (!product) {
           throw new NotFoundException(
-            `Product with ID ${item.productId} not found`,
+            `Product with ID ${item.product} not found`,
           );
         }
 
         const finalPrice = this.calculateFinalPrice(product);
 
         return {
-          productId: item.productId,
+          product: item.product,
           title: item.title,
           image: item.image,
           selectedColor: item.selectedColor,
           selectedSize: item.selectedSize,
-          price: finalPrice,
+          price: item.price,
+          finalPrice,
           quantity: item.quantity,
         };
       }),

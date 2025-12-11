@@ -1,102 +1,135 @@
- import type {CartItem} from "../../types";
-import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import type { Cart } from "../../types";
+import { createSlice } from "@reduxjs/toolkit";
+import {
+  addItemToCart,
+  deleteCart,
+  fetchCart,
+  removeItem,
+  updateItemQuantity,
+} from "./cartThunks";
 
 interface CartState {
-    items: CartItem[];
-    totalPrice: number;
-    totalQuantity: number;
+  cart: Cart | null;
+  fetchCartLoading: boolean;
+  fetchCartError: string | null;
+  addItemLoading: boolean;
+  addItemError: string | null;
+  updateQuantityLoading: boolean;
+  updateQuantityError: string | null;
+  removeItemLoading: boolean;
+  removeItemError: string | null;
+  deleteCartLoading: boolean;
 }
 
 const initialState: CartState = {
-    items: [],
-    totalPrice: 0,
-    totalQuantity: 0,
-}
-
-const calculateTotals = (state: CartState) => {
-    state.totalQuantity = state.items.reduce((sum, item) => sum + item.quantity, 0);
-    state.totalPrice = state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  cart: null,
+  fetchCartLoading: false,
+  fetchCartError: null,
+  addItemLoading: false,
+  addItemError: null,
+  updateQuantityLoading: false,
+  updateQuantityError: null,
+  removeItemLoading: false,
+  removeItemError: null,
+  deleteCartLoading: false,
 };
 
 const cartSlice = createSlice({
-    name: "cart",
-    initialState,
-    reducers: {
-        addToCart: (state, { payload }: PayloadAction<CartItem>) => {
-            const existingIndex = state.items.findIndex(
-                (item) =>
-                    item.productId === payload.productId &&
-                    item.selectedColor === payload.selectedColor &&
-                    item.selectedSize === payload.selectedSize
-            );
-
-            if (existingIndex !== -1) {
-                state.items[existingIndex].quantity += payload.quantity;
-            } else {
-                state.items.push(payload);
-            }
-
-            calculateTotals(state);
-        },
-
-        updateQuantity: (
-            state,
-            { payload }: PayloadAction<{ productId: string; selectedColor: string; selectedSize: string; quantity: number }>
-        ) => {
-            const item = state.items.find(
-                (i) =>
-                    i.productId === payload.productId &&
-                    i.selectedColor === payload.selectedColor &&
-                    i.selectedSize === payload.selectedSize
-            );
-
-            if (!item) return;
-
-            item.quantity = payload.quantity;
-
-            if (item.quantity <= 0) {
-                state.items = state.items.filter(
-                    (i) =>
-                        !(
-                            i.productId === payload.productId &&
-                            i.selectedColor === payload.selectedColor &&
-                            i.selectedSize === payload.selectedSize
-                        )
-                );
-            }
-
-            calculateTotals(state);
-        },
-
-        removeFromCart: (
-            state,
-            { payload }: PayloadAction<{ productId: string; selectedColor: string; selectedSize: string }>
-        ) => {
-            state.items = state.items.filter(
-                (item) =>
-                    !(
-                        item.productId === payload.productId &&
-                        item.selectedColor === payload.selectedColor &&
-                        item.selectedSize === payload.selectedSize
-                    )
-            );
-
-            calculateTotals(state);
-        },
-
-        clearCart: (state) => {
-            state.items = [];
-            state.totalPrice = 0;
-            state.totalQuantity = 0;
-        },
+  name: "cart",
+  initialState,
+  reducers: {
+    clearCart: (state) => {
+      state.cart = null;
     },
-    selectors: {
-        selectItems: ( state ) => state.items,
-        selectTotalPrice: (state) => state.totalPrice,
-        selectTotalQuantity: (state) => state.totalQuantity,
-    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCart.pending, (state) => {
+        state.fetchCartLoading = true;
+      })
+      .addCase(fetchCart.fulfilled, (state, { payload: cart }) => {
+        state.fetchCartLoading = false;
+        state.cart = cart;
+      })
+      .addCase(fetchCart.rejected, (state, { payload: error }) => {
+        state.fetchCartLoading = false;
+        state.fetchCartError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(addItemToCart.pending, (state) => {
+        state.addItemLoading = true;
+      })
+      .addCase(addItemToCart.fulfilled, (state) => {
+        state.addItemLoading = false;
+      })
+      .addCase(addItemToCart.rejected, (state, { payload: error }) => {
+        state.addItemLoading = false;
+        state.addItemError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(updateItemQuantity.pending, (state) => {
+        state.updateQuantityLoading = true;
+      })
+      .addCase(updateItemQuantity.fulfilled, (state) => {
+        state.updateQuantityLoading = false;
+      })
+      .addCase(updateItemQuantity.rejected, (state, { payload: error }) => {
+        state.updateQuantityLoading = false;
+        state.updateQuantityError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(removeItem.pending, (state) => {
+        state.removeItemLoading = true;
+      })
+      .addCase(removeItem.fulfilled, (state) => {
+        state.removeItemLoading = false;
+      })
+      .addCase(removeItem.rejected, (state, { payload: error }) => {
+        state.removeItemLoading = false;
+        state.removeItemError = error?.error ?? null;
+      });
+
+    builder
+      .addCase(deleteCart.pending, (state) => {
+        state.deleteCartLoading = true;
+      })
+      .addCase(deleteCart.fulfilled, (state) => {
+        state.deleteCartLoading = false;
+      })
+      .addCase(deleteCart.rejected, (state) => {
+        state.deleteCartLoading = false;
+      });
+  },
+  selectors: {
+    selectCart: (state) => state.cart,
+    selectFetchCartLoading: (state) => state.fetchCartLoading,
+    selectFetchCartError: (state) => state.fetchCartError,
+    selectAddItemLoading: (state) => state.addItemLoading,
+    selectAddItemError: (state) => state.addItemError,
+    selectUpdateQuantityLoading: (state) => state.updateQuantityLoading,
+    selectUpdateQuantityError: (state) => state.updateQuantityError,
+    selectRemoveItemLoading: (state) => state.removeItemLoading,
+    selectRemoveItemError: (state) => state.removeItemError,
+    selectDeleteCartLoading: (state) => state.deleteCartLoading,
+  },
 });
 
 export const cartReducer = cartSlice.reducer;
-export const { addToCart, updateQuantity, removeFromCart, clearCart } = cartSlice.actions;
-export const { selectItems, selectTotalQuantity, selectTotalPrice } = cartSlice.selectors;
+
+export const { clearCart } = cartSlice.actions;
+
+export const {
+  selectCart,
+  selectFetchCartLoading,
+  selectFetchCartError,
+  selectAddItemLoading,
+  selectAddItemError,
+  selectUpdateQuantityLoading,
+  selectUpdateQuantityError,
+  selectRemoveItemLoading,
+  selectRemoveItemError,
+  selectDeleteCartLoading,
+} = cartSlice.selectors;

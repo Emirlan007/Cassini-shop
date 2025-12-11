@@ -28,6 +28,7 @@ import { RolesGuard } from '../role-auth/role-auth.guard';
 import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { UserService } from './user.service';
+import { CartService } from 'src/cart/cart.service';
 
 @Controller('users')
 export class UsersController {
@@ -36,6 +37,7 @@ export class UsersController {
     private configService: ConfigService,
     private authService: AuthService,
     private userService: UserService,
+    private cartService: CartService,
   ) {}
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -50,6 +52,7 @@ export class UsersController {
   async register(
     @Body() userData: RegisterUserDto,
     @UploadedFile() file: Express.Multer.File,
+    @Headers('session-id') sessionId: string,
   ) {
     const { phoneNumber, name } = userData;
     const user = new this.userModel({
@@ -60,16 +63,25 @@ export class UsersController {
 
     user.generateToken();
 
+    await this.cartService.mergeCart(String(user._id), sessionId);
+
     return await user.save();
   }
 
   @Post('login')
-  async login(@Body() userData: LoginUserDto) {
+  async login(
+    @Body() userData: LoginUserDto,
+    @Headers('session-id') sessionId: string,
+  ) {
     const { phoneNumber, name } = userData;
     const user = await this.authService.validateUser(phoneNumber, name);
+
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    await this.cartService.mergeCart(String(user._id), sessionId);
+
     return user;
   }
 

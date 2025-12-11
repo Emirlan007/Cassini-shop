@@ -6,8 +6,13 @@ import { axiosApi } from "../../axiosApi.ts";
 export const createOrder = createAsyncThunk(
   "cart/createOrder",
   async (order: OrderMutation, { rejectWithValue }) => {
+    const payload = {
+      ...order,
+      items: order.items.map(({ _id, ...rest }) => rest),
+    };
+
     try {
-      const response = await axiosApi.post("/orders", order);
+      const response = await axiosApi.post("/orders", payload);
       return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response) {

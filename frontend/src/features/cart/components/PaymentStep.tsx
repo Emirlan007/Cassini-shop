@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useAppSelector } from "../../../app/hooks.ts";
 import React, { useState } from "react";
-import { selectTotalPrice } from "../cartSlice.ts";
+import { selectCart } from "../cartSlice.ts";
 
 interface Props {
   onCheckout: (paymentData: {
@@ -23,17 +23,13 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "qrCode">("cash");
   const [comment, setComment] = useState("");
 
-  const totalPrice = useAppSelector(selectTotalPrice);
+  const totalPrice = useAppSelector(selectCart)?.totalPrice;
 
   return (
     <Paper sx={{ p: 3, mt: 3 }}>
       <Stack spacing={3}>
         <Box>
-          <Typography
-              variant="h6"
-              mb={2}
-              color="#660033"
-          >
+          <Typography variant="h6" mb={2} color="#660033">
             Способ оплаты
           </Typography>
 
@@ -65,10 +61,10 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
             variant="contained"
             onClick={() => onCheckout({ paymentMethod, comment })}
             sx={{
-              borderRadius: '12px',
-              fontSize: '14px',
-              fontWeight: '700',
-              padding: '10px 20px'
+              borderRadius: "12px",
+              fontSize: "14px",
+              fontWeight: "700",
+              padding: "10px 20px",
             }}
           >
             Оформить заказ

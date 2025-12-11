@@ -1,12 +1,12 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
-import {persistor, store} from "./app/store.ts";
+import { persistor, store } from "./app/store.ts";
 import { BrowserRouter } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./theme.ts";
-import {axiosApi} from "./axiosApi.ts";
-import {PersistGate} from "redux-persist/integration/react";
+import { axiosApi } from "./axiosApi.ts";
+import { PersistGate } from "redux-persist/integration/react";
 import "./i18n.ts";
 
 axiosApi.interceptors.request.use((config) => {
@@ -15,20 +15,37 @@ axiosApi.interceptors.request.use((config) => {
 
   if (token && config.headers) {
     config.headers.Authorization = token;
+
+    return config;
   }
+
+  const sessionId = getSessionId();
+
+  config.headers["Session-Id"] = sessionId;
 
   return config;
 });
 
+const getSessionId = () => {
+  let sessionId = localStorage.getItem("sessionId");
+
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("sessionId", sessionId);
+  }
+
+  return sessionId;
+};
+
 createRoot(document.getElementById("root")!).render(
-    <Provider store={store}>
-        <PersistGate persistor={persistor}>
-            <BrowserRouter>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <App />
-                </ThemeProvider>
-            </BrowserRouter>
-        </PersistGate>
-    </Provider>
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
 );

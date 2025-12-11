@@ -160,19 +160,29 @@ export interface BannerFormData {
 }
 
 export interface CartItem {
-  productId: string;
+  _id?: string;
+  product: string;
   title: string;
   price: number;
+  finalPrice: number;
   quantity: number;
   selectedColor: string;
   selectedSize: string;
   image: string;
 }
 
+export interface Cart {
+  items: CartItem[];
+  totalPrice: number;
+  totalQuantity: number;
+  createdAt: string;
+}
+
 export interface OrderItem extends CartItem {
-  productId: string;
+  product: string;
   title: string;
   price: number;
+  finalPrice: number;
   quantity: number;
   selectedColor: string;
   selectedSize: string;
@@ -192,12 +202,14 @@ export interface Order {
 }
 
 export interface OrderItemDto {
-  productId: string;
+  _id?: string;
+  product: string;
   title: string;
   image: string;
   selectedColor: string;
   selectedSize: string;
   price: number;
+  finalPrice: number;
   quantity: number;
 }
 

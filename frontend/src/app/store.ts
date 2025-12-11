@@ -20,6 +20,7 @@ import { adminUsersReducer } from "../features/users/admin/usersSlice.ts";
 import { adminProductsReducer } from "../features/products/admin/adminProductsSlice.ts";
 import { adminCategoriesReducer } from "../features/categories/admin/categorySlice.ts";
 import { adminOrders } from "../features/orders/admin/ordersSlice.ts";
+import {wishlistReducer} from "../features/wishlist/wishlistSlice.ts";
 
 const userPersistConfig = {
   key: "shop:users",
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   ui: uiReducer,
   adminOrders: adminOrders,
+  wishlist: wishlistReducer,
 });
 
 export const store = configureStore({

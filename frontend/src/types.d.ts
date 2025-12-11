@@ -245,3 +245,21 @@ export interface PopularProducts {
   total: number;
   totalPages: number;
 }
+
+export interface Wishlist {
+  _id: string;
+  userId: string;
+  products: Product[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WishlistState {
+  wishlist: Wishlist | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface AddToWishlistPayload {
+  productId: string;
+}

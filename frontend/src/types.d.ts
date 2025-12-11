@@ -73,6 +73,7 @@ export interface Product {
   isNew: boolean;
   isPopular: boolean;
   inStock?: boolean;
+  material?: string;
 }
 
 export interface ProductInput {

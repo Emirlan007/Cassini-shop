@@ -51,7 +51,7 @@ const FilesInput: FC<Props> = ({ onChange, name, label }) => {
                 />
 
                 <Button color="success" variant="contained" onClick={activateInput}>
-                    Browse
+                    Найти
                 </Button>
             </Stack>
         </>

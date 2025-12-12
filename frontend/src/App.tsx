@@ -19,18 +19,17 @@ import { Toaster } from "react-hot-toast";
 import AccountPage from "./pages/AccountPage.tsx";
 import BottomTouchBar from "./components/UI/BottomTouchBar/BottomTouchBar.tsx";
 import MobileLogo from "./components/UI/Mobile/MobileLogo.tsx";
-
 import AdminOrders from "./features/orders/admin/AdminOrders.tsx";
 import UpdateBanner from "./features/banners/admin/UpdateBanner.tsx";
 import OrderDetails from "./features/orders/OrderDetails.tsx";
 import UsersList from "./features/users/admin/UsersList.tsx";
 import AdminBannersList from "./features/banners/admin/AdminBannersList.tsx";
 import User from "./features/users/admin/User.tsx";
-
 import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage.tsx";
+import "./index.css"
 import Wishlist from "./features/wishlist/Wishlist.tsx";
 
 const App = () => {

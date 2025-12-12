@@ -393,7 +393,7 @@ const ProductDetails = () => {
                       textDecoration: "line-through",
                     }}
                   >
-                    {product.price} $
+                    {product.price} ⃀
                   </Typography>
                   <Typography
                     sx={{
@@ -402,7 +402,7 @@ const ProductDetails = () => {
                       color: "#ff4444",
                     }}
                   >
-                    {finalPrice} $
+                    {finalPrice} ⃀
                   </Typography>
                 </>
               ) : (
@@ -413,7 +413,7 @@ const ProductDetails = () => {
                     color: "#660033",
                   }}
                 >
-                  ${product.price}
+                  {product.price} ⃀
                 </Typography>
               )}
 
@@ -661,7 +661,7 @@ const ProductDetails = () => {
                   alignSelf: "center",
                 }}
               >
-                ${finalPrice}
+                {finalPrice} ⃀
               </Typography>
               <Box
                   component="div"

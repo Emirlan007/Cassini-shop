@@ -63,7 +63,7 @@ const AdminOrders = () => {
                 {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
               </Typography>
               <Typography variant="subtitle2">
-                {t("total")}: {order.totalPrice}₸
+                {t("total")}: {order.totalPrice}⃀
               </Typography>
             </Box>
 
@@ -97,13 +97,13 @@ const AdminOrders = () => {
                     {t("size")}: {item.selectedSize}
                   </Typography>
                   <Typography variant="body2">
-                    {t("price")}: {item.price}₸
+                    {t("price")}: {item.price}⃀
                   </Typography>
                   <Typography variant="body2">
                     {t("quantity")}: {item.quantity}
                   </Typography>
                   <Typography variant="body2">
-                    {t("total")}: {item.price * item.quantity}₸
+                    {t("total")}: {item.price * item.quantity}⃀
                   </Typography>
                 </Box>
               </Box>

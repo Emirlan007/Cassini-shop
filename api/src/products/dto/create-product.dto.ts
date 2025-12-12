@@ -68,8 +68,26 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsObject()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value) as unknown;
+        if (
+          typeof parsed === 'object' &&
+          parsed !== null &&
+          !Array.isArray(parsed)
+        ) {
+          return parsed as Record<string, number[]>;
+        }
+        return value;
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  })
   @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
-  imagesByColor?: Record<string, string[]>;
+  imagesByColor?: Record<string, number[]>;
 
   @IsOptional()
   @IsBoolean()

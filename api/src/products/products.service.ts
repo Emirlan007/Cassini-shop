@@ -43,7 +43,7 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     files?: { images?: Express.Multer.File[]; video?: Express.Multer.File[] },
   ): Promise<Product> {
-    const { category, ...restDto } = createProductDto;
+    const { category, imagesByColor, ...restDto } = createProductDto;
 
     const productData: Omit<Partial<Product>, 'category'> & {
       category?: Types.ObjectId;
@@ -62,6 +62,39 @@ export class ProductsService {
       productData.images = files.images.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
+
+      if (imagesByColor) {
+        const imagesByColorPaths: Record<string, string[]> = {};
+
+        for (const [color, indices] of Object.entries(imagesByColor)) {
+          const validIndices = indices.filter(
+            (idx) => idx >= 0 && idx < productData.images!.length,
+          );
+
+          if (validIndices.length !== indices.length) {
+            throw new BadRequestException(
+              `Invalid image indices for color "${color}". Indices must be between 0 and ${productData.images.length - 1}`,
+            );
+          }
+
+          imagesByColorPaths[color] = validIndices.map(
+            (idx) => productData.images![idx],
+          );
+        }
+
+        productData.imagesByColor = imagesByColorPaths;
+
+        const productColors = new Set(createProductDto.colors);
+        const imageColors = Object.keys(productData.imagesByColor);
+
+        for (const color of imageColors) {
+          if (!productColors.has(color)) {
+            throw new BadRequestException(
+              `Color "${color}" in imagesByColor is not in product colors list`,
+            );
+          }
+        }
+      }
     }
 
     if (files?.video?.[0]) {
@@ -231,7 +264,7 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
-    const { category, ...restDto } = updateProductDto;
+    const { category, imagesByColor, ...restDto } = updateProductDto;
 
     const updateData: Omit<Partial<Product>, 'category'> & {
       category?: Types.ObjectId;
@@ -258,10 +291,68 @@ export class ProductsService {
           }
         }
       }
+
       const newImages = files?.images?.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
       updateData.images = [...(updateData.images || []), ...(newImages || [])];
+
+      if (imagesByColor) {
+        const imagesByColorPaths: Record<string, string[]> = {};
+
+        for (const [color, indices] of Object.entries(imagesByColor)) {
+          const validIndices = indices.filter(
+            (idx) => idx >= 0 && idx < updateData.images!.length,
+          );
+
+          if (validIndices.length !== indices.length) {
+            throw new BadRequestException(
+              `Invalid image indices for color "${color}". Indices must be between 0 and ${updateData.images.length - 1}`,
+            );
+          }
+
+          imagesByColorPaths[color] = validIndices.map(
+            (idx) => updateData.images![idx],
+          );
+        }
+
+        updateData.imagesByColor = imagesByColorPaths;
+      }
+    } else if (imagesByColor && product.images) {
+      const imagesByColorPaths: Record<string, string[]> = {};
+
+      for (const [color, indices] of Object.entries(imagesByColor)) {
+        const validIndices = indices.filter(
+          (idx) => idx >= 0 && idx < product.images!.length,
+        );
+
+        if (validIndices.length !== indices.length) {
+          throw new BadRequestException(
+            `Invalid image indices for color "${color}". Indices must be between 0 and ${product.images.length - 1}`,
+          );
+        }
+
+        imagesByColorPaths[color] = validIndices.map(
+          (idx) => product.images![idx],
+        );
+      }
+
+      updateData.imagesByColor = imagesByColorPaths;
+    }
+
+    if (updateData.imagesByColor) {
+      const productColors = new Set(
+        updateProductDto.colors || product.colors || [],
+      );
+      const imageColors = Object.keys(updateData.imagesByColor);
+
+      for (const color of imageColors) {
+        if (!productColors.has(color)) {
+          throw new BadRequestException(
+            `Color "${color}" in imagesByColor is not in product colors list`,
+          );
+        }
+      }
     }
 
     if (files?.video?.[0]) {

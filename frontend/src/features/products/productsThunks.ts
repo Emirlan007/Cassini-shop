@@ -153,6 +153,12 @@ export const updateProduct = createAsyncThunk<
   formData.append("name", product.name);
   formData.append("price", String(product.price));
   formData.append("category", product.category);
+    formData.append("inStock", String(product.inStock ?? true));
+    formData.append("isPopular", String(product.isPopular ?? false));
+
+    if (product.material) {
+        formData.append("material", product.material);
+    }
 
   if (product.description) {
     formData.append("description", product.description);

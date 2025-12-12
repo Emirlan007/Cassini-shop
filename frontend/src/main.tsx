@@ -15,8 +15,6 @@ axiosApi.interceptors.request.use((config) => {
 
   if (token && config.headers) {
     config.headers.Authorization = token;
-
-    return config;
   }
 
   const sessionId = getSessionId();

@@ -52,8 +52,15 @@ import { findClosestColor } from "../../utils/colorNormalizer.ts";
 import ThumbNail from "../../components/UI/ThumbNail/ThumbNail.tsx";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { selectWishlistProductIds } from "../wishlist/wishlistSlice";
-import { addToWishlist, removeFromWishlist, fetchWishlist } from "../wishlist/wishlistThunks";
-
+import {
+  addToWishlist,
+  removeFromWishlist,
+  fetchWishlist,
+} from "../wishlist/wishlistThunks";
+import {
+  trackAddProductToWishlist,
+  trackProductView,
+} from "../../analytics/analytics.ts";
 
 const ProductDetails = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -78,7 +85,6 @@ const ProductDetails = () => {
   const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
   const [discountValue, setDiscountValue] = useState<string>("0");
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
-
 
   const [tabValue, setTabValue] = useState(0);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -121,6 +127,10 @@ const ProductDetails = () => {
   }, [dispatch, productId]);
 
   useEffect(() => {
+    trackProductView(productId);
+  }, [productId]);
+
+  useEffect(() => {
     if (product?.category?._id) {
       void dispatch(fetchProducts(product.category._id));
     }
@@ -147,8 +157,10 @@ const ProductDetails = () => {
           const { weeks, days, hours, minutes } = convertSeconds(diff);
           if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
             const result = `${
-                (days > 0 || weeks > 0) ? days + (weeks * 7) + " d" :""
-            } ${hours > 0 ? hours + "h" :""} ${minutes > 0 ? minutes + " m" :""}`;
+              days > 0 || weeks > 0 ? days + weeks * 7 + " d" : ""
+            } ${hours > 0 ? hours + "h" : ""} ${
+              minutes > 0 ? minutes + " m" : ""
+            }`;
             setTimeLeft(result);
           }
         } else {
@@ -170,7 +182,7 @@ const ProductDetails = () => {
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
-  }
+  };
 
   useEffect(() => {
     if (user) {
@@ -194,6 +206,7 @@ const ProductDetails = () => {
         toast.success("Товар удален из избранного");
       } else {
         await dispatch(addToWishlist(productId)).unwrap();
+        trackAddProductToWishlist(productId).catch((err) => console.error(err));
         toast.success("Товар добавлен в избранное");
       }
     } catch {
@@ -224,12 +237,11 @@ const ProductDetails = () => {
     setDiscountValue(numericValue.toString());
   };
 
+  const getClothesColorName = (hex: string) => {
+    const test = findClosestColor(hex);
 
-    const getClothesColorName = (hex: string) => {
-      const test = findClosestColor(hex);
-
-      return t(`colors.${test}`);
-    };
+    return t(`colors.${test}`);
+  };
 
   const handleDiscountSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -333,9 +345,9 @@ const ProductDetails = () => {
             ))}
           </Swiper>
           <ThumbNail
-              product={product}
-              activeSlide={activeSlide}
-              onThumbnailClick={handleThumbnailClick}
+            product={product}
+            activeSlide={activeSlide}
+            onThumbnailClick={handleThumbnailClick}
           />
         </Box>
 
@@ -344,28 +356,32 @@ const ProductDetails = () => {
             width: { xs: "100%", md: "50%" },
           }}
         >
-          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography variant="h6" sx={{ marginBottom: 1 }}>
                 <b>{product?.name}</b>
               </Typography>
 
               {product?.isNew && (
-                  <Box
-                      sx={{
-                        backgroundColor: "secondary.main",
-                        color: "white",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                      }}
-                  >
-                    {t("new")}
-                  </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "secondary.main",
+                    color: "white",
+                    borderRadius: "4px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {t("new")}
+                </Box>
               )}
             </Stack>
-
           </Stack>
           <Box
             sx={{
@@ -493,8 +509,8 @@ const ProductDetails = () => {
                           backgroundColor: c,
                           border:
                             selectedColor === c
-                                ? `4px solid ${theme.palette.secondary.main}`
-                                : "4px solid #ccc",
+                              ? `4px solid ${theme.palette.secondary.main}`
+                              : "4px solid #ccc",
                           backgroundClip: "content-box",
                         }}
                       />
@@ -610,15 +626,15 @@ const ProductDetails = () => {
               </Typography>
             )}
             {product?.inStock && (
-                <Typography
-                    sx={{
-                      color: "green",
-                      display: "block",
-                      mt: 1,
-                      fontWeight: 600,
-                    }}
-                >
-                  {t("inStock")}
+              <Typography
+                sx={{
+                  color: "green",
+                  display: "block",
+                  mt: 1,
+                  fontWeight: 600,
+                }}
+              >
+                {t("inStock")}
               </Typography>
             )}
 
@@ -664,33 +680,32 @@ const ProductDetails = () => {
                 {finalPrice} ⃀
               </Typography>
               <Box
-                  component="div"
-                  style={{ display: "flex", width: "100%", gap: "10px" }}
+                component="div"
+                style={{ display: "flex", width: "100%", gap: "10px" }}
               >
                 <Button
-                    sx={{ width: "60%" }}
-                    variant="contained"
-                    disabled={!selectedColor || !selectedSize}
-                    onClick={handleAddToCart}
+                  sx={{ width: "60%" }}
+                  variant="contained"
+                  disabled={!selectedColor || !selectedSize}
+                  onClick={handleAddToCart}
                 >
                   {t("addToCart")}
                 </Button>
                 <Button
-                    onClick={handleWishlistToggle}
-                    sx={{
-                      color: "#808080",
-                      border: "1px solid #808080",
-                      borderRadius: "10%",
-                    }}
+                  onClick={handleWishlistToggle}
+                  sx={{
+                    color: "#808080",
+                    border: "1px solid #808080",
+                    borderRadius: "10%",
+                  }}
                 >
                   <IconButton
-                      sx={{
-                        color: isInWishlist ? "#ff4444" : "inherit",
-                        "&:hover": {
-                          backgroundColor: "rgba(255, 68, 68, 0.1)",
-                        },
-                      }}
-
+                    sx={{
+                      color: isInWishlist ? "#ff4444" : "inherit",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 68, 68, 0.1)",
+                      },
+                    }}
                   >
                     {isInWishlist ? <Favorite /> : <FavoriteBorder />}
                   </IconButton>
@@ -763,17 +778,17 @@ const ProductDetails = () => {
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
-              value={tabValue}
-              aria-label="basic tabs example"
-              onChange={handleChange}
-              sx={{
-                "& .MuiTabs-indicator": {
-                  backgroundColor: theme.palette.secondary.main,
-                },
-                "& .Mui-selected": {
-                  color: `${theme.palette.secondary.main} !important`,
-                },
-              }}
+            value={tabValue}
+            aria-label="basic tabs example"
+            onChange={handleChange}
+            sx={{
+              "& .MuiTabs-indicator": {
+                backgroundColor: theme.palette.secondary.main,
+              },
+              "& .Mui-selected": {
+                color: `${theme.palette.secondary.main} !important`,
+              },
+            }}
           >
             <Tab label={t("productDetail")} {...a11yProps(0)} />
             <Tab label={t("sizingGuide")} {...a11yProps(1)} />
@@ -782,8 +797,8 @@ const ProductDetails = () => {
         <CustomTabPanel value={tabValue} index={0}>
           <Box>
             <Typography
-                variant="body1"
-                sx={{ color: "#525252", fontSize: "14px" }}
+              variant="body1"
+              sx={{ color: "#525252", fontSize: "14px" }}
             >
               {product?.description}
             </Typography>
@@ -815,6 +830,5 @@ const ProductDetails = () => {
     </>
   );
 };
-
 
 export default ProductDetails;

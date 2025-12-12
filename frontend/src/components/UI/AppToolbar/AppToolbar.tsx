@@ -21,7 +21,7 @@ import SearchInput from "../SearchInput/SearchInput.tsx";
 import { selectCart } from "../../../features/cart/cartSlice.ts";
 
 const AppToolbar = () => {
-  // const user = useAppSelector(selectUser);
+  
   const isLoading = useAppSelector(selectLoginLoading);
   const totalQuantity = useAppSelector(selectCart)?.totalQuantity;
   const navigate = useNavigate();
@@ -29,11 +29,7 @@ const AppToolbar = () => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (value: boolean) => () => setOpen(value);
-  //
-  // const handleLogout = async () => {
-  //   await dispatch(logoutThunk());
-  //   navigate("/login");
-  // };
+ 
 
   return (
     <>

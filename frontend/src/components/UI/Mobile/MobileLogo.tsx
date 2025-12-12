@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -31,6 +31,7 @@ const MobileLogo = () => {
   const isSearchOpen = useAppSelector(selectIsSearchOpen);
   const searchProduct = useAppSelector(selectSearchQuery);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -63,6 +64,9 @@ const MobileLogo = () => {
 
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+     if (searchProduct.length >= 2 || searchProduct.length === 0) {
+      navigate(`/search?q=${encodeURIComponent(searchProduct)}`);
+    }
     dispatch(setSearchQuery(value));
     debouncedSearch();
   };

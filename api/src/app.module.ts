@@ -22,6 +22,10 @@ import { OrdersController } from './orders/orders.controller';
 import { OrderService } from './orders/orders.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrdersModule } from './orders/orders.module';
+import { CartService } from './cart/cart.service';
+import { CartController } from './cart/cart.controller';
+import { Cart, CartSchema } from './schemas/cart.schema';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -33,10 +37,12 @@ import { OrdersModule } from './orders/orders.module';
       { name: Banner.name, schema: BannerSchema },
       { name: Category.name, schema: CategorySchema },
       { name: Order.name, schema: OrderSchema },
+      { name: Cart.name, schema: CartSchema },
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     OrdersModule,
+    WishlistModule,
   ],
   controllers: [
     UsersController,
@@ -44,6 +50,7 @@ import { OrdersModule } from './orders/orders.module';
     BannersController,
     CategoriesController,
     OrdersController,
+    CartController,
   ],
   providers: [
     IsUserExistsValidator,
@@ -53,6 +60,7 @@ import { OrdersModule } from './orders/orders.module';
     BannerService,
     CategoriesService,
     OrderService,
+    CartService,
   ],
 })
 export class AppModule {}

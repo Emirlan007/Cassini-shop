@@ -14,7 +14,7 @@ import { Type } from 'class-transformer';
 export class OrderItemDto {
   @IsNotEmpty()
   @IsMongoId()
-  productId: string;
+  product: string;
 
   @IsNotEmpty()
   @IsString()
@@ -36,6 +36,11 @@ export class OrderItemDto {
   @IsNumber()
   @Min(0)
   price: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
+  finalPrice: number;
 
   @IsNotEmpty()
   @IsNumber()

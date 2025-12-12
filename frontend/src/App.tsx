@@ -30,6 +30,7 @@ import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage.tsx";
 import "./index.css"
+import Wishlist from "./features/wishlist/Wishlist.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -70,6 +71,14 @@ const App = () => {
           />
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
+            <Route
+                path="/wishlist"
+                element={
+                    <ProtectedRoute isAllowed={!!user}>
+                        <Wishlist />
+                    </ProtectedRoute>
+                }
+            />
           <Route path="/account" element={<AccountPage />} />
             <Route
                 path="/admin"

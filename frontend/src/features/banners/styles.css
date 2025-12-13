@@ -28,6 +28,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.swiper-fade .swiper-slide {
+  transition-property: opacity;
 }
 
 .mySwiper .swiper-pagination {
@@ -65,3 +70,4 @@
     height: 20rem;
   }
 }
+

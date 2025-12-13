@@ -29,8 +29,8 @@ export class Product {
   @Prop({ type: [String] })
   images?: string[];
 
-  @Prop({ type: Map, of: [String] })
-  imagesByColor?: Record<string, string[]>;
+  @Prop({ type: Map, of: [Number] })
+  imagesByColor?: Record<string, number[]>;
 
   @Prop({ min: 0, max: 100 })
   discount?: number;

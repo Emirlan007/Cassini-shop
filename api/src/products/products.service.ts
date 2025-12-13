@@ -43,7 +43,7 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     files?: { images?: Express.Multer.File[]; video?: Express.Multer.File[] },
   ): Promise<Product> {
-    const { category, imagesByColor, ...restDto } = createProductDto;
+    const { category, ...restDto } = createProductDto;
 
     const productData: Omit<Partial<Product>, 'category'> & {
       category?: Types.ObjectId;
@@ -63,29 +63,23 @@ export class ProductsService {
         this.fileUploadService.getPublicPath(file.filename),
       );
 
-      if (imagesByColor) {
-        const imagesByColorPaths: Record<string, string[]> = {};
-
-        for (const [color, indices] of Object.entries(imagesByColor)) {
-          const validIndices = indices.filter(
-            (idx) => idx >= 0 && idx < productData.images!.length,
+      if (createProductDto.imagesByColor) {
+        for (const [color, indices] of Object.entries(
+          createProductDto.imagesByColor,
+        )) {
+          const invalidIndices = indices.filter(
+            (idx) => idx < 0 || idx >= productData.images!.length,
           );
 
-          if (validIndices.length !== indices.length) {
+          if (invalidIndices.length > 0) {
             throw new BadRequestException(
-              `Invalid image indices for color "${color}". Indices must be between 0 and ${productData.images.length - 1}`,
+              `Invalid image indices for color "${color}". Indices must be between 0 and ${productData.images!.length - 1}`,
             );
           }
-
-          imagesByColorPaths[color] = validIndices.map(
-            (idx) => productData.images![idx],
-          );
         }
 
-        productData.imagesByColor = imagesByColorPaths;
-
         const productColors = new Set(createProductDto.colors);
-        const imageColors = Object.keys(productData.imagesByColor);
+        const imageColors = Object.keys(createProductDto.imagesByColor);
 
         for (const color of imageColors) {
           if (!productColors.has(color)) {
@@ -94,6 +88,8 @@ export class ProductsService {
             );
           }
         }
+
+        productData.imagesByColor = createProductDto.imagesByColor;
       }
     }
 
@@ -264,7 +260,7 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
 
-    const { category, imagesByColor, ...restDto } = updateProductDto;
+    const { category, ...restDto } = updateProductDto;
 
     const updateData: Omit<Partial<Product>, 'category'> & {
       category?: Types.ObjectId;
@@ -297,47 +293,39 @@ export class ProductsService {
       );
       updateData.images = [...(updateData.images || []), ...(newImages || [])];
 
-      if (imagesByColor) {
-        const imagesByColorPaths: Record<string, string[]> = {};
-
-        for (const [color, indices] of Object.entries(imagesByColor)) {
-          const validIndices = indices.filter(
-            (idx) => idx >= 0 && idx < updateData.images!.length,
+      if (updateProductDto.imagesByColor) {
+        for (const [color, indices] of Object.entries(
+          updateProductDto.imagesByColor,
+        )) {
+          const invalidIndices = indices.filter(
+            (idx) => idx < 0 || idx >= updateData.images!.length,
           );
 
-          if (validIndices.length !== indices.length) {
+          if (invalidIndices.length > 0) {
             throw new BadRequestException(
-              `Invalid image indices for color "${color}". Indices must be between 0 and ${updateData.images.length - 1}`,
+              `Invalid image indices for color "${color}". Indices must be between 0 and ${updateData.images!.length - 1}`,
             );
           }
-
-          imagesByColorPaths[color] = validIndices.map(
-            (idx) => updateData.images![idx],
-          );
         }
 
-        updateData.imagesByColor = imagesByColorPaths;
+        updateData.imagesByColor = updateProductDto.imagesByColor;
       }
-    } else if (imagesByColor && product.images) {
-      const imagesByColorPaths: Record<string, string[]> = {};
-
-      for (const [color, indices] of Object.entries(imagesByColor)) {
-        const validIndices = indices.filter(
-          (idx) => idx >= 0 && idx < product.images!.length,
+    } else if (updateProductDto.imagesByColor && product.images) {
+      for (const [color, indices] of Object.entries(
+        updateProductDto.imagesByColor,
+      )) {
+        const invalidIndices = indices.filter(
+          (idx) => idx < 0 || idx >= product.images!.length,
         );
 
-        if (validIndices.length !== indices.length) {
+        if (invalidIndices.length > 0) {
           throw new BadRequestException(
-            `Invalid image indices for color "${color}". Indices must be between 0 and ${product.images.length - 1}`,
+            `Invalid image indices for color "${color}". Indices must be between 0 and ${product.images!.length - 1}`,
           );
         }
-
-        imagesByColorPaths[color] = validIndices.map(
-          (idx) => product.images![idx],
-        );
       }
 
-      updateData.imagesByColor = imagesByColorPaths;
+      updateData.imagesByColor = updateProductDto.imagesByColor;
     }
 
     if (updateData.imagesByColor) {
@@ -552,7 +540,7 @@ export class ProductsService {
     if (filters.sortBy) {
       sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
     }
-
+св
     const [products, totalCount] = await Promise.all([
       this.productModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
       this.productModel.countDocuments(filter),

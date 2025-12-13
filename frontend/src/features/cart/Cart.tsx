@@ -63,6 +63,8 @@ const Cart = () => {
   };
 
   const handleAddressSubmit = async (userData: {
+    name: string;
+    phoneNumber: string;
     city: string;
     address: string;
   }) => {
@@ -75,6 +77,8 @@ const Cart = () => {
       await dispatch(
         updateUserAddress({
           userId: user._id,
+          name: userData.name,
+          phoneNumber: userData.phoneNumber,
           city: userData.city,
           address: userData.address,
         })
@@ -221,6 +225,7 @@ const Cart = () => {
               fontWeight: "700",
               padding: "10px 0",
             }}
+            disabled={items.length === 0}
             onClick={() => setStep(2)}
           >
             Далее

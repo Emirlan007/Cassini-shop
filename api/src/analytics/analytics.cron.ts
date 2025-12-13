@@ -10,7 +10,8 @@ import { EventDocument } from './schemas/event.schema';
 
 interface AggregatedEvent {
   _id: string;
-  count: number;
+  views: number;
+  wishlistCount: number;
   qty_sum: number;
 }
 
@@ -24,40 +25,61 @@ export class AnalyticsCron {
     private productStatsByDayModel: Model<ProductStatsByDayDocument>,
   ) {}
 
-  @Cron('5 0 * * *')
-  async aggregateProductViews() {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+  @Cron('* * * * *')
+  async aggregateProductStatsByDay() {
+    console.log('aggregate product events');
 
-    const date = yesterday.toISOString().split('T')[0];
-    const dayStart = date + 'T00:00:00.000Z';
-    const dayEnd = date + 'T23:59:59.999Z';
+    // const yesterday = new Date();
+    // yesterday.setDate(yesterday.getDate() - 1);
+
+    // const dateStr = yesterday.toISOString().split('T')[0];
+    // const dayStart = new Date(`${dateStr}T00:00:00.000Z`);
+    // const dayEnd = new Date(`${dateStr}T23:59:59.999Z`);
+
+    const dateStr = new Date().toISOString().split('T')[0];
+
+    const dayStart = new Date(`${dateStr}T00:00:00.000Z`);
+    const dayEnd = new Date(`${dateStr}T23:59:59.999Z`);
 
     const events = await this.eventModel.aggregate<AggregatedEvent>([
       {
         $match: {
-          createdAt: {
-            $gte: new Date(dayStart),
-            $lte: new Date(dayEnd),
-          },
+          createdAt: { $gte: dayStart, $lte: dayEnd },
+          productId: { $exists: true },
         },
       },
       {
         $group: {
           _id: '$productId',
-          count: { $sum: 1 },
-          qty_sum: { $sum: '$qty' },
+
+          views: {
+            $sum: {
+              $cond: [{ $eq: ['$type', 'product_view'] }, 1, 0],
+            },
+          },
+
+          wishlistCount: {
+            $sum: {
+              $cond: [{ $eq: ['$type', 'add_to_wishlist'] }, 1, 0],
+            },
+          },
         },
       },
     ]);
 
     for (const item of events) {
       await this.productStatsByDayModel.findOneAndUpdate(
-        { date: date, product: item._id },
         {
-          $inc: { views: item.count },
+          date: new Date(`${dateStr}T00:00:00.000Z`),
+          productId: item._id,
         },
-        { upsert: true, new: true },
+        {
+          $set: {
+            views: item.views,
+            wishlistCount: item.wishlistCount,
+          },
+        },
+        { upsert: true },
       );
     }
 

@@ -305,7 +305,7 @@ const ProductCard = ({ product }: Props) => {
                   textDecoration: "line-through",
                 }}
               >
-                {product.price} ⃀
+                {product.price} сом
               </Typography>
               <Typography
                 sx={{
@@ -314,7 +314,7 @@ const ProductCard = ({ product }: Props) => {
                   color: "#ff4444",
                 }}
               >
-                {finalPrice} ⃀
+                {finalPrice} сом
               </Typography>
             </>
           ) : (
@@ -325,7 +325,7 @@ const ProductCard = ({ product }: Props) => {
                 color: "#4B5563",
               }}
             >
-              {product.price} ⃀
+              {product.price} сом
             </Typography>
           )}
         </Box>

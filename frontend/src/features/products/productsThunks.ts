@@ -126,6 +126,11 @@ export const createProduct = createAsyncThunk<
       formData.append("video", productData.video);
     }
 
+    formData.append(
+        "imagesByColor",
+        JSON.stringify(productData.imagesByColor ?? {})
+    );
+
     const { data: product } = await axiosApi.post<Product>(
       "/products",
       formData
@@ -185,6 +190,11 @@ export const updateProduct = createAsyncThunk<
   if (product.video) {
     formData.append("video", product.video);
   }
+
+  formData.append(
+      "imagesByColor",
+      JSON.stringify(product.imagesByColor ?? {})
+  );
 
   const { data } = await axiosApi.patch(`/products/${_productId}`, formData, {
     headers: { Authorization: token },

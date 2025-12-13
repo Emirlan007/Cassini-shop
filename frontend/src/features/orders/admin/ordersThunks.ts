@@ -37,7 +37,27 @@ export const addAdminCommentToOrder = createAsyncThunk(
       if (isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data);
       }
+      throw error;
+    }
+  }
+);
 
+export const changeOrderDeliveryStatus = createAsyncThunk<
+  OrderItemAdmin,
+  { orderId: string; value: string }
+>(
+  "adminOrder/changeDeliveryStatus",
+  async ({ orderId, value }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosApi.patch<OrderItemAdmin>(
+        `orders/${orderId}/status`,
+        { deliveryStatus: value }
+      );
+      return data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
       throw error;
     }
   }

@@ -195,7 +195,7 @@ export interface Order {
   items: OrderItem[];
   totalPrice: number;
   createdAt: string;
-  status: "pending" | "processing" | "completed";
+  status: "warehouse" | "on_the_way" | "delivered";
   paymentMethod: "cash" | "qrCode";
   userComment: string;
   adminComments: string[];
@@ -232,6 +232,7 @@ export interface OrderItemAdmin {
   _id: string;
   user: User;
   createdAt: string;
+  deliveryStatus:string,
   items: CartItem[];
   totalPrice: number;
   userComment: string;

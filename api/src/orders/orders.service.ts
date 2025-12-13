@@ -175,7 +175,7 @@ export class OrderService {
     updateDeliveryStatusDto: UpdateDeliveryStatusDto,
   ) {
     const { deliveryStatus } = updateDeliveryStatusDto;
-
+    
     const order = await this.orderModel.findByIdAndUpdate(
       orderId,
       {

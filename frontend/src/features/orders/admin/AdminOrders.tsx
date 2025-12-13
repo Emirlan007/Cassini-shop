@@ -1,10 +1,20 @@
-import { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { fetchAdminOrders } from "./ordersThunks";
+import { changeOrderDeliveryStatus, fetchAdminOrders } from "./ordersThunks";
 import { selectOrders, selectFetchingOrders } from "./ordersSlice";
-import { Box, Typography, CircularProgress, Stack } from "@mui/material";
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  type SelectChangeEvent,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { API_URL } from "../../../constants";
+import { API_URL, DeliveryStatus } from "../../../constants";
 import { selectUser } from "../../users/usersSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +33,12 @@ const AdminOrders = () => {
   useEffect(() => {
     void fetchAllOrders();
   }, [fetchAllOrders]);
+
+  const handleChange = async (event: SelectChangeEvent, orderId: string) => {
+    event.stopPropagation();
+    await dispatch(changeOrderDeliveryStatus({ orderId, value: event.target.value }));
+    fetchAllOrders()
+  };
 
   return (
     <>
@@ -69,7 +85,7 @@ const AdminOrders = () => {
 
             {order.items.map((item, index) => (
               <Box
-                key={`${order._id}-${item.productId}-${index}`}
+                key={`${order._id}-${item.product}-${index}`}
                 display="flex"
                 flexDirection={{ xs: "column", sm: "row" }}
                 alignItems={{ xs: "flex-start", sm: "center" }}
@@ -144,6 +160,27 @@ const AdminOrders = () => {
                 ))}
               </Stack>
             )}
+            <FormControl fullWidth onClick={(e) => e.stopPropagation()}>
+              <InputLabel id="demo-simple-select-label">
+                Order Status
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={order.deliveryStatus}
+                label="Order Status"
+                onChange={(e) => handleChange(e, order._id)}
+              >
+                {Object.keys(DeliveryStatus).map((item: string) => (
+                  <MenuItem
+                    key={item}
+                    value={DeliveryStatus[item as keyof typeof DeliveryStatus]}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
         ))
       )}

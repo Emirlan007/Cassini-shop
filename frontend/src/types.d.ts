@@ -88,6 +88,7 @@ export interface ProductInput {
   inStock: boolean;
   material?: string;
   isPopular?: boolean;
+  imagesByColor?: Record<string, number[]>;
 }
 
 export interface ProductDiscountInput {

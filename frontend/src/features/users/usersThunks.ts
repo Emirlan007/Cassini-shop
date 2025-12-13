@@ -88,13 +88,15 @@ export const logoutThunk = createAsyncThunk(
 
 export const updateUserAddress = createAsyncThunk<
     User,
-    { userId: string; city: string; address: string },
+    { userId: string; name: string; phoneNumber: string; city: string; address: string },
     { rejectValue: IGlobalError }
 >(
     "/users/update-address",
-    async ({ userId, city, address }, { rejectWithValue }) => {
+    async ({ userId, name, phoneNumber, city, address }, { rejectWithValue }) => {
         try {
             const { data } = await axiosApi.patch<User>(`/users/${userId}/address`, {
+                name,
+                phoneNumber,
                 city,
                 address,
             });

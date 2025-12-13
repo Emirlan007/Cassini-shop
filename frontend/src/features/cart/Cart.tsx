@@ -29,9 +29,9 @@ import type { CartItem } from "../../types";
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const items = useAppSelector(selectCart)?.items;
+  const items = useAppSelector(selectCart)?.items ?? [];
   const user = useAppSelector(selectUser);
-  const totalPrice = useAppSelector(selectCart)?.totalPrice;
+  const totalPrice = useAppSelector(selectCart)?.totalPrice ?? 0;
   const registerLoading = useAppSelector(selectRegisterLoading);
   const updateLoading = useAppSelector(selectUpdateAddressLoading);
   const { t } = useTranslation();
@@ -63,6 +63,8 @@ const Cart = () => {
   };
 
   const handleAddressSubmit = async (userData: {
+    name: string;
+    phoneNumber: string;
     city: string;
     address: string;
   }) => {
@@ -75,6 +77,8 @@ const Cart = () => {
       await dispatch(
         updateUserAddress({
           userId: user._id,
+          name: userData.name,
+          phoneNumber: userData.phoneNumber,
           city: userData.city,
           address: userData.address,
         })
@@ -90,15 +94,31 @@ const Cart = () => {
     paymentMethod: "cash" | "qrCode";
     comment?: string;
   }) => {
-    const orderData = {
-      items: items ?? [],
-      totalPrice: totalPrice ?? 0,
-      paymentMethod: paymentData.paymentMethod,
-      userComment: paymentData.comment,
-    };
+    if (items.length === 0) {
+      toast.error("Корзина пуста");
+      return;
+    }
+
+    const orderItems = items.map((item) => ({
+      product: item.product,
+      title: item.title,
+      image: item.image,
+      selectedColor: item.selectedColor,
+      selectedSize: item.selectedSize,
+      price: item.price,
+      finalPrice: item.finalPrice,
+      quantity: item.quantity,
+    }));
 
     try {
-      await dispatch(createOrder(orderData)).unwrap();
+      await dispatch(
+        createOrder({
+          items: orderItems,
+          totalPrice: totalPrice,
+          paymentMethod: paymentData.paymentMethod,
+          userComment: paymentData.comment,
+        })
+      ).unwrap();
       await dispatch(deleteCart());
       dispatch(clearCart());
       navigate("/account");
@@ -108,30 +128,6 @@ const Cart = () => {
       toast.error("Ошибка при создании заказа");
     }
   };
-
-  if (!items || items?.length === 0) {
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        height="70vh"
-        textAlign="center"
-        gap={2}
-      >
-        <Typography variant="h4" fontWeight="bold">
-          {t("emptyCart")}
-        </Typography>
-        <Typography variant="body1">
-          {t("addProductToStartShopping")}
-        </Typography>
-        <Button variant="contained" onClick={() => navigate("/")}>
-          {t("startShopping")}
-        </Button>
-      </Box>
-    );
-  }
 
   return (
     <Stack spacing={2} p={2}>
@@ -229,33 +225,28 @@ const Cart = () => {
               fontWeight: "700",
               padding: "10px 0",
             }}
-            onClick={() => {
-              if (!user) {
-                setStep(2);
-              } else if (!user.city || !user.address) {
-                setStep(2);
-              } else {
-                setStep(3);
-              }
-            }}
+            disabled={items.length === 0}
+            onClick={() => setStep(2)}
           >
             Далее
           </Button>
         </>
       )}
 
-      {step === 2 &&
-        (user ? (
+      {step === 2 && (
+        user ? (
           <CheckoutAddressForm
-            onSubmit={(data) => handleAddressSubmit(data)}
+            user={user}
+            onSubmit={handleAddressSubmit}
             loading={updateLoading}
           />
         ) : (
           <CheckoutForm
-            onSubmit={(data) => handleRegister(data)}
+            onSubmit={handleRegister}
             loading={registerLoading}
           />
-        ))}
+        )
+      )}
 
       {step === 3 && <PaymentStep onCheckout={handleCheckout} />}
     </Stack>

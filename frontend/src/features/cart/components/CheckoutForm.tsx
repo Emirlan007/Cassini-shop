@@ -1,6 +1,7 @@
-import { type FC, useState } from "react";
+import {type FC, useState} from "react";
 import {Box, Button, Stack, TextField, Typography} from "@mui/material";
 import toast from "react-hot-toast";
+import PhoneInput from "./PhoneInput.tsx";
 
 interface CheckoutFormProps {
   onSubmit: (data: {
@@ -15,31 +16,16 @@ interface CheckoutFormProps {
 const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
   const [userData, setUserData] = useState({
     name: "",
-    phoneNumber: "",
+    phoneNumber: "+996",
     city: "",
     address: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setUserData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = () => {
-    if (
-      !userData.name ||
-      !userData.phoneNumber ||
-      !userData.city ||
-      !userData.address
-    ) {
+    if (!userData.name || !userData.phoneNumber || !userData.city || !userData.address) {
       toast.error("Пожалуйста, заполните все поля");
       return;
     }
-
     onSubmit(userData);
   };
 
@@ -58,120 +44,25 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
       <Stack spacing={2}>
         <TextField
           label="Имя"
-          name="name"
           value={userData.name}
-          onChange={handleChange}
-          fullWidth
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-              backgroundColor: "#F5F5F5",
-              height: "56px",
-              padding: "0 17px",
-              "& fieldset": {
-                border: "2px solid #F5F5F5",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#d8d7d7",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#b3b0b0 !important",
-              }
-            },
-          }}
+          onChange={(e) => setUserData({ ...userData, name: e.target.value })}
         />
-        <TextField
-          label="Номер"
-          name="phoneNumber"
+        <PhoneInput
           value={userData.phoneNumber}
-          onChange={handleChange}
-          fullWidth
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-              backgroundColor: "#F5F5F5",
-              height: "56px",
-              padding: "0 17px",
-              "& fieldset": {
-                border: "2px solid #F5F5F5",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#d8d7d7",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#b3b0b0 !important",
-              }
-            },
-          }}
+          onChange={(value) => setUserData({ ...userData, phoneNumber: value })}
         />
         <TextField
           label="Город"
-          name="city"
           value={userData.city}
-          onChange={handleChange}
-          fullWidth
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-              backgroundColor: "#F5F5F5",
-              height: "56px",
-              padding: "0 17px",
-              "& fieldset": {
-                border: "2px solid #F5F5F5",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#d8d7d7",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#b3b0b0 !important",
-              }
-            },
-          }}
+          onChange={(e) => setUserData({ ...userData, city: e.target.value })}
         />
         <TextField
           label="Адрес"
-          name="address"
           value={userData.address}
-          onChange={handleChange}
-          fullWidth
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-              backgroundColor: "#F5F5F5",
-              height: "56px",
-              padding: "0 17px",
-              "& fieldset": {
-                border: "2px solid #F5F5F5",
-              },
-
-              "&:hover fieldset": {
-                borderColor: "#d8d7d7",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "#b3b0b0 !important",
-              }
-            },
-          }}
+          onChange={(e) => setUserData({ ...userData, address: e.target.value })}
         />
 
-        <Button
-            variant="contained"
-            onClick={handleSubmit}
-            loading={loading}
-            sx={{
-              borderRadius: '14px',
-              fontSize: '16px',
-              fontWeight: '700',
-              padding: '10px 0'
-            }}
-        >
+        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
           Далее
         </Button>
       </Stack>

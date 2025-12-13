@@ -7,6 +7,7 @@ export interface User {
   avatar?: string;
   city?: string;
   address?: string;
+  phoneNumber: string;
 }
 
 export interface AdminUser {
@@ -225,9 +226,9 @@ export interface OrderMutation {
   user?: {
     id: string;
     name: string | undefined;
-    number: string | undefined;
-    city: string | undefined;
-    address: string | undefined;
+    phoneNumber: string;
+    city?: string | undefined;
+    address?: string | undefined;
   };
 }
 

@@ -195,7 +195,7 @@ export interface Order {
   items: OrderItem[];
   totalPrice: number;
   createdAt: string;
-  status: "warehouse" | "on_the_way" | "delivered";
+  deliveryStatus: "warehouse" | "on_the_way" | "delivered";
   paymentMethod: "cash" | "qrCode";
   userComment: string;
   adminComments: string[];

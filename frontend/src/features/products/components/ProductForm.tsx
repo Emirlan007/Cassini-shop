@@ -11,7 +11,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import FileInput from "../../../components/UI/FileInput/FileInput.tsx";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import type { ProductInput } from "../../../types";
 import SizesModal from "../../../components/UI/SizesModal/SizesModal.tsx";
 import ColorsModal from "../../../components/UI/ColorsModal/ColorsModal.tsx";

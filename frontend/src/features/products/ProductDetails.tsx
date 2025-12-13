@@ -12,6 +12,7 @@ import {
   useEffect,
   useState,
   useRef,
+  useMemo,
 } from "react";
 import { fetchProductById, fetchProducts } from "./productsThunks";
 import type { Swiper as SwiperType } from "swiper";
@@ -19,7 +20,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  IconButton,
   Stack,
   Tab,
   Tabs,
@@ -27,7 +27,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
-  useMediaQuery,
+  // useMediaQuery,
 } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -63,7 +63,7 @@ import {
 } from "../../analytics/analytics.ts";
 
 const ProductDetails = () => {
-  const isMobile = useMediaQuery("(max-width: 600px)");
+  // const isMobile = useMediaQuery("(max-width: 600px)");
   const dispatch = useAppDispatch();
   const product = useAppSelector(selectProduct);
   const loading = useAppSelector(selectProductFetchLoading);
@@ -81,6 +81,8 @@ const ProductDetails = () => {
   const { productId } = useParams() as { productId: string };
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  // console.log(selectedColor)
+  // console.log(product && product);
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
   const [discountValue, setDiscountValue] = useState<string>("0");
@@ -96,6 +98,22 @@ const ProductDetails = () => {
     }
   };
 
+  const [swiperKey, setSwiperKey] = useState(0);
+
+  const getCurrentImages = useMemo(() => {
+    if (!product?.images || product.images.length === 0) return [];
+
+    if (!selectedColor || !product.imagesByColor?.[selectedColor]) {
+      return product.images;
+    }
+
+    const imageIndices = product.imagesByColor[selectedColor];
+    return imageIndices
+        .map(idx => product.images![idx])
+        .filter(img => img !== undefined);
+  }, [product, selectedColor]);
+
+
   const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
     .filter((p) => p._id !== product?._id)
@@ -103,6 +121,8 @@ const ProductDetails = () => {
 
   const handleAddToCart = async () => {
     if (!product || !selectedSize || !selectedColor) return;
+
+    const productImage = getCurrentImages[0] || product.images?.[0] || "";
 
     await dispatch(
       addItemToCart({
@@ -113,7 +133,7 @@ const ProductDetails = () => {
         quantity: 1,
         selectedColor: selectedColor,
         selectedSize: selectedSize,
-        image: product.images?.[0] ?? "",
+        image: productImage,
       })
     );
 
@@ -144,6 +164,11 @@ const ProductDetails = () => {
       );
     }
   }, [dispatch, product]);
+
+  useEffect(() => {
+    setSwiperKey(prev => prev + 1);
+    console.log(swiperKey, 'swiper key')
+  }, [selectedColor]);
 
   useEffect(() => {
     const checkDiscount = () => {
@@ -304,6 +329,7 @@ const ProductDetails = () => {
           }}
         >
           <Swiper
+            key={`swiper-${swiperKey}`}
             modules={[Pagination, Navigation]}
             navigation={false}
             className="mySwiper"
@@ -320,6 +346,11 @@ const ProductDetails = () => {
                     muted
                     loop
                     playsInline
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
                   >
                     <source src={API_URL + product.video} type="video/mp4" />
                     Ваш браузер не поддерживает видео.
@@ -327,7 +358,7 @@ const ProductDetails = () => {
                 </Box>
               </SwiperSlide>
             )}
-            {product?.images.map((image) => (
+            {getCurrentImages.map((image) => (
               <SwiperSlide key={image}>
                 <Box
                   sx={{
@@ -339,6 +370,11 @@ const ProductDetails = () => {
                       image.startsWith("/") ? image.slice(1) : image
                     }`}
                     alt={product.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
                   />
                 </Box>
               </SwiperSlide>
@@ -699,7 +735,7 @@ const ProductDetails = () => {
                     borderRadius: "10%",
                   }}
                 >
-                  <IconButton
+                  <Box
                     sx={{
                       color: isInWishlist ? "#ff4444" : "inherit",
                       "&:hover": {
@@ -708,7 +744,7 @@ const ProductDetails = () => {
                     }}
                   >
                     {isInWishlist ? <Favorite /> : <FavoriteBorder />}
-                  </IconButton>
+                  </Box>
                 </Button>
               </Box>
             </Box>

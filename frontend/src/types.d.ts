@@ -66,7 +66,7 @@ export interface Product {
   images?: string[];
   video?: string;
   price: number;
-  imagesByColor?: Record<string, string[]>;
+  imagesByColor?: Record<string, number[]>;
   discount?: number;
   discountUntil?: string;
   finalPrice?: number;

@@ -540,7 +540,7 @@ export class ProductsService {
     if (filters.sortBy) {
       sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
     }
-св
+
     const [products, totalCount] = await Promise.all([
       this.productModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
       this.productModel.countDocuments(filter),

@@ -73,8 +73,8 @@ const ordersSlice = createSlice({
     selectOrders: (state) => state.orders,
     selectFetchingOrders: (state) => state.isFetchingLoading,
     selectCreateAdminCommentLoading: (state) => state.createCommentLoading,
-      selectUpdatePaymentStatusLoading: (state) => state.updatePaymentStatusLoading,
-      selectUpdatePaymentStatusError: (state) => state.updatePaymentStatusError,
+    selectUpdatePaymentStatusLoading: (state) => state.updatePaymentStatusLoading,
+    selectUpdatePaymentStatusError: (state) => state.updatePaymentStatusError,
   },
 });
 
@@ -83,7 +83,7 @@ export const {
   selectFetchingOrders,
   selectOrders,
   selectCreateAdminCommentLoading,
-    selectUpdatePaymentStatusLoading,
-    selectUpdatePaymentStatusError,
+  selectUpdatePaymentStatusLoading,
+  selectUpdatePaymentStatusError,
 } = ordersSlice.selectors;
 export const { clearPaymentStatusError } = ordersSlice.actions;

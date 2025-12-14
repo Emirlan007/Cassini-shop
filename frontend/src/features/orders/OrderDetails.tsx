@@ -8,9 +8,12 @@ import {
 import { useEffect, useState } from "react";
 import { addUserCommentToOrder, fetchOrderById } from "./ordersThunk";
 import {
+  Alert,
   Box,
-  Button,
+  Button, Chip,
   CircularProgress,
+  FormControl,
+  InputLabel, MenuItem, Select,
   Stack,
   TextField,
   Typography,
@@ -19,12 +22,18 @@ import { API_URL } from "../../constants";
 import { useTranslation } from "react-i18next";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { selectUser } from "../users/usersSlice.ts";
-import { addAdminCommentToOrder } from "./admin/ordersThunks.ts";
-import { selectCreateAdminCommentLoading } from "./admin/ordersSlice.ts";
+import {addAdminCommentToOrder, updateOrderPaymentStatusThunk} from "./admin/ordersThunks.ts";
+import {
+  clearPaymentStatusError,
+  selectCreateAdminCommentLoading,
+  selectUpdatePaymentStatusError,
+  selectUpdatePaymentStatusLoading
+} from "./admin/ordersSlice.ts";
 
 const OrderDetails = () => {
   const [userComment, setUserComment] = useState("");
   const [adminComment, setAdminComment] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'paid' | 'cancelled'>('pending');
 
   const dispatch = useAppDispatch();
   const order = useAppSelector(selectOrderDetails);
@@ -35,6 +44,8 @@ const OrderDetails = () => {
   const createAdminCommentLoading = useAppSelector(
     selectCreateAdminCommentLoading
   );
+  const updatePaymentStatusLoading = useAppSelector(selectUpdatePaymentStatusLoading);
+  const updatePaymentStatusError = useAppSelector(selectUpdatePaymentStatusError);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const user = useAppSelector(selectUser);
@@ -47,6 +58,12 @@ const OrderDetails = () => {
     }
   }, [dispatch, orderId]);
 
+  useEffect(() => {
+    if (order?.paymentStatus) {
+      setPaymentStatus(order.paymentStatus);
+    }
+  }, [order]);
+
   const handleUserCommentSubmit = async () => {
     await dispatch(addUserCommentToOrder({ comment: userComment, orderId }));
     await dispatch(fetchOrderById(orderId));
@@ -55,6 +72,37 @@ const OrderDetails = () => {
   const handleAdminCommentSubmit = async () => {
     await dispatch(addAdminCommentToOrder({ comment: adminComment, orderId }));
     await dispatch(fetchOrderById(orderId));
+  };
+
+  const handlePaymentStatusChange = async () => {
+    if (orderId && paymentStatus !== order?.paymentStatus) {
+      await dispatch(updateOrderPaymentStatusThunk({ orderId, paymentStatus }));
+      await dispatch(fetchOrderById(orderId));
+    }
+  };
+
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'success';
+      case 'cancelled':
+        return 'error';
+      case 'pending':
+      default:
+        return 'warning';
+    }
+  };
+
+  const getPaymentStatusText = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'Оплачен';
+      case 'cancelled':
+        return 'Отменен';
+      case 'pending':
+      default:
+        return 'Ожидает оплаты';
+    }
   };
 
   if (loading) {
@@ -108,6 +156,74 @@ const OrderDetails = () => {
           </Typography>
         </Box>
 
+        <Box mb={2} display="flex" alignItems="center" gap={2}>
+          <Typography variant="body1" fontWeight="bold">
+            Статус оплаты:
+          </Typography>
+          <Chip
+            label={getPaymentStatusText(order.paymentStatus)}
+            color={getPaymentStatusColor(order.paymentStatus)}
+          />
+        </Box>
+
+        {user?.role === "admin" && (
+          <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Управление статусом оплаты
+            </Typography>
+
+            {updatePaymentStatusError && (
+              <Alert
+                severity="error"
+                sx={{ mb: 2 }}
+                onClose={() => dispatch(clearPaymentStatusError())}
+              >
+                {updatePaymentStatusError}
+              </Alert>
+            )}
+
+            <Box display="flex" gap={2} alignItems="center">
+              <FormControl sx={{ minWidth: 200 }}>
+                <InputLabel>Статус оплаты</InputLabel>
+                <Select
+                  value={paymentStatus}
+                  label="Статус оплаты"
+                  onChange={(e) => setPaymentStatus(e.target.value as 'pending' | 'paid' | 'cancelled')}
+                >
+                  <MenuItem value="pending">Ожидает оплаты</MenuItem>
+                  <MenuItem value="paid">Оплачен</MenuItem>
+                  <MenuItem value="cancelled">Отменен</MenuItem>
+                </Select>
+              </FormControl>
+
+              <Button
+                variant="contained"
+                onClick={handlePaymentStatusChange}
+                disabled={paymentStatus === order.paymentStatus || updatePaymentStatusLoading}
+                loading={updatePaymentStatusLoading}
+              >
+                Обновить
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {user?.role === "admin" && order.user && (
+          <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              {t("customerInfo")}
+            </Typography>
+
+            <Typography variant="body1">
+              <b>{t("displayName")}:</b> {order.user.name}
+            </Typography>
+
+            <Typography variant="body1">
+              <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
+            </Typography>
+          </Box>
+        )}
+
         {user?.role === "admin" && order.user && (
           <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
             <Typography variant="h6" sx={{ mb: 1 }}>
@@ -126,7 +242,7 @@ const OrderDetails = () => {
 
         {order.items.map((item, index) => (
           <Box
-            key={`${item.productId}-${item.selectedColor}-${item.selectedSize}-${index}`}
+            key={`${item.product}-${item.selectedColor}-${item.selectedSize}-${index}`}
             display="flex"
             flexDirection="column"
             gap={3}

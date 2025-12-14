@@ -59,6 +59,13 @@ export class Order {
   })
   paymentMethod: 'cash' | 'qrCode';
 
+  @Prop({
+    type: String,
+    enum: ['pending', 'paid', 'cancelled'],
+    default: 'pending',
+  })
+  paymentStatus: string;
+
   @Prop({ type: String, default: null })
   userComment: string | null;
 

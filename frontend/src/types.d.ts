@@ -7,6 +7,7 @@ export interface User {
   avatar?: string;
   city?: string;
   address?: string;
+  phoneNumber: string;
 }
 
 export interface AdminUser {
@@ -66,13 +67,14 @@ export interface Product {
   images?: string[];
   video?: string;
   price: number;
-  imagesByColor?: Record<string, string[]>;
+  imagesByColor?: Record<string, number[]>;
   discount?: number;
   discountUntil?: string;
   finalPrice?: number;
   isNew: boolean;
   isPopular: boolean;
   inStock?: boolean;
+  material?: string;
 }
 
 export interface ProductInput {
@@ -87,6 +89,7 @@ export interface ProductInput {
   inStock: boolean;
   material?: string;
   isPopular?: boolean;
+  imagesByColor?: Record<string, number[]>;
 }
 
 export interface ProductDiscountInput {
@@ -197,6 +200,7 @@ export interface Order {
   createdAt: string;
   deliveryStatus: "warehouse" | "on_the_way" | "delivered";
   paymentMethod: "cash" | "qrCode";
+  paymentStatus: 'pending' | 'paid' | 'cancelled';
   userComment: string;
   adminComments: string[];
 }
@@ -222,9 +226,9 @@ export interface OrderMutation {
   user?: {
     id: string;
     name: string | undefined;
-    number: string | undefined;
-    city: string | undefined;
-    address: string | undefined;
+    phoneNumber: string;
+    city?: string | undefined;
+    address?: string | undefined;
   };
 }
 
@@ -237,6 +241,7 @@ export interface OrderItemAdmin {
   totalPrice: number;
   userComment: string;
   adminComments: string[];
+  paymentStatus: 'pending' | 'paid' | 'cancelled';
 }
 
 export interface PopularProducts {

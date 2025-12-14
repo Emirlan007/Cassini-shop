@@ -26,6 +26,7 @@ import { CartService } from './cart/cart.service';
 import { CartController } from './cart/cart.controller';
 import { Cart, CartSchema } from './schemas/cart.schema';
 import { WishlistModule } from './wishlist/wishlist.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
     ScheduleModule.forRoot(),
     OrdersModule,
     WishlistModule,
+    AnalyticsModule,
   ],
   controllers: [
     UsersController,

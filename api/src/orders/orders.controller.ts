@@ -16,6 +16,7 @@ import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { CommentDto } from './dto/comment.dto';
 import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
+import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -64,9 +65,9 @@ export class OrdersController {
     @Body() commentDto: CommentDto,
     @Req() req: RequestWithUser,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return this.ordersService.addUserComment(
       orderId,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       req.user.id,
       commentDto.comment,
     );
@@ -92,6 +93,19 @@ export class OrdersController {
     return this.ordersService.updateDeliveryOrderStatus(
       orderId,
       updateDeliveryStatusDto,
+    );
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Patch(':id/payment-status')
+  async updatePaymentStatus(
+    @Param('id') orderId: string,
+    @Body() updatePaymentStatusDto: UpdatePaymentStatusDto,
+  ) {
+    return this.ordersService.updateOrderPaymentStatus(
+      orderId,
+      updatePaymentStatusDto.paymentStatus,
     );
   }
 }

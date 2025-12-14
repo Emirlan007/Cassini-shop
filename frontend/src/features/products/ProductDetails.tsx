@@ -6,12 +6,20 @@ import {
   selectProductFetchLoading,
   selectProducts,
 } from "./productsSlice";
-import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import {
+  type ChangeEvent,
+  type FormEvent,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 import { fetchProductById, fetchProducts } from "./productsThunks";
+import type { Swiper as SwiperType } from "swiper";
 import {
   Box,
   Button,
-  CircularProgress, IconButton,
+  CircularProgress,
   Stack,
   Tab,
   Tabs,
@@ -19,6 +27,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  // useMediaQuery,
 } from "@mui/material";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -35,12 +44,26 @@ import ProductList from "./ProductsList.tsx";
 import { AVAILABLE_SIZES } from "../../constants/sizes.ts";
 import { addItemToCart, fetchCart } from "../cart/cartThunks.ts";
 import { convertSeconds } from "../../utils/dateFormatter.ts";
+import theme from "../../theme.ts";
+import CustomTabPanel from "../../components/UI/Tabs/CustomTabPanel.tsx";
+import a11yProps from "../../components/UI/Tabs/AllyProps.tsx";
+import { useTranslation } from "react-i18next";
+import { findClosestColor } from "../../utils/colorNormalizer.ts";
+import ThumbNail from "../../components/UI/ThumbNail/ThumbNail.tsx";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { selectWishlistProductIds } from "../wishlist/wishlistSlice";
-import { addToWishlist, removeFromWishlist, fetchWishlist } from "../wishlist/wishlistThunks";
-
+import {
+  addToWishlist,
+  removeFromWishlist,
+  fetchWishlist,
+} from "../wishlist/wishlistThunks";
+import {
+  trackAddProductToWishlist,
+  trackProductView,
+} from "../../analytics/analytics.ts";
 
 const ProductDetails = () => {
+  // const isMobile = useMediaQuery("(max-width: 600px)");
   const dispatch = useAppDispatch();
   const product = useAppSelector(selectProduct);
   const loading = useAppSelector(selectProductFetchLoading);
@@ -51,16 +74,45 @@ const ProductDetails = () => {
   );
   const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
   const categoryProducts = useAppSelector(selectProducts);
+  const { t } = useTranslation();
   const wishlistProductIds = useAppSelector(selectWishlistProductIds);
   const [isInWishlist, setIsInWishlist] = useState(false);
 
   const { productId } = useParams() as { productId: string };
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  // console.log(selectedColor)
+  // console.log(product && product);
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [hasActiveDiscount, setHasActiveDiscount] = useState(false);
   const [discountValue, setDiscountValue] = useState<string>("0");
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
+
+  const [tabValue, setTabValue] = useState(0);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const swiperRef = useRef<SwiperType | null>(null);
+
+  const handleThumbnailClick = (index: number) => {
+    if (swiperRef.current) {
+      swiperRef.current.slideTo(index);
+    }
+  };
+
+  const [swiperKey, setSwiperKey] = useState(0);
+
+  const getCurrentImages = useMemo(() => {
+    if (!product?.images || product.images.length === 0) return [];
+
+    if (!selectedColor || !product.imagesByColor?.[selectedColor]) {
+      return product.images;
+    }
+
+    const imageIndices = product.imagesByColor[selectedColor];
+    return imageIndices
+        .map(idx => product.images![idx])
+        .filter(img => img !== undefined);
+  }, [product, selectedColor]);
+
 
   const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
@@ -69,6 +121,8 @@ const ProductDetails = () => {
 
   const handleAddToCart = async () => {
     if (!product || !selectedSize || !selectedColor) return;
+
+    const productImage = getCurrentImages[0] || product.images?.[0] || "";
 
     await dispatch(
       addItemToCart({
@@ -79,7 +133,7 @@ const ProductDetails = () => {
         quantity: 1,
         selectedColor: selectedColor,
         selectedSize: selectedSize,
-        image: product.images?.[0] ?? "",
+        image: productImage,
       })
     );
 
@@ -91,6 +145,10 @@ const ProductDetails = () => {
   useEffect(() => {
     void dispatch(fetchProductById(productId));
   }, [dispatch, productId]);
+
+  useEffect(() => {
+    trackProductView(productId);
+  }, [productId]);
 
   useEffect(() => {
     if (product?.category?._id) {
@@ -108,19 +166,26 @@ const ProductDetails = () => {
   }, [dispatch, product]);
 
   useEffect(() => {
+    setSwiperKey(prev => prev + 1);
+    console.log(swiperKey, 'swiper key')
+  }, [selectedColor]);
+
+  useEffect(() => {
     const checkDiscount = () => {
       if (product?.discount && product?.discountUntil) {
         const now = new Date();
         const discountUntil = new Date(product.discountUntil);
 
         if (discountUntil > now) {
-          setHasActiveDiscount(true);        
+          setHasActiveDiscount(true);
           const diff = discountUntil.getTime() - now.getTime();
           const { weeks, days, hours, minutes } = convertSeconds(diff);
           if (weeks > 0 || days > 0 || hours > 0 || minutes > 0) {
-            const result = `${days > 0 && days + weeks * 7 + " d"} ${
-              hours > 0 && hours + " h"
-            } ${minutes > 0 && minutes + " m"}`;
+            const result = `${
+              days > 0 || weeks > 0 ? days + weeks * 7 + " d" : ""
+            } ${hours > 0 ? hours + "h" : ""} ${
+              minutes > 0 ? minutes + " m" : ""
+            }`;
             setTimeLeft(result);
           }
         } else {
@@ -139,6 +204,10 @@ const ProductDetails = () => {
 
     return () => clearInterval(interval);
   }, [product?.discount, product?.discountUntil]);
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
 
   useEffect(() => {
     if (user) {
@@ -162,9 +231,10 @@ const ProductDetails = () => {
         toast.success("Товар удален из избранного");
       } else {
         await dispatch(addToWishlist(productId)).unwrap();
+        trackAddProductToWishlist(productId).catch((err) => console.error(err));
         toast.success("Товар добавлен в избранное");
       }
-    } catch (error) {
+    } catch {
       toast.error("Произошла ошибка");
     }
   };
@@ -190,6 +260,12 @@ const ProductDetails = () => {
 
     const numericValue = Math.max(0, Math.min(100, Number(value)));
     setDiscountValue(numericValue.toString());
+  };
+
+  const getClothesColorName = (hex: string) => {
+    const test = findClosestColor(hex);
+
+    return t(`colors.${test}`);
   };
 
   const handleDiscountSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -242,6 +318,7 @@ const ProductDetails = () => {
       <Box
         sx={{
           display: "flex",
+          position: "relative",
           flexDirection: { xs: "column", md: "row" },
           gap: 3,
         }}
@@ -252,10 +329,12 @@ const ProductDetails = () => {
           }}
         >
           <Swiper
+            key={`swiper-${swiperKey}`}
             modules={[Pagination, Navigation]}
-            navigation={true}
-            pagination={{ clickable: true }}
+            navigation={false}
             className="mySwiper"
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
+            onSlideChange={(swiper) => setActiveSlide(swiper.activeIndex)}
           >
             {product?.video && (
               <SwiperSlide key="video">
@@ -267,6 +346,11 @@ const ProductDetails = () => {
                     muted
                     loop
                     playsInline
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
                   >
                     <source src={API_URL + product.video} type="video/mp4" />
                     Ваш браузер не поддерживает видео.
@@ -274,7 +358,7 @@ const ProductDetails = () => {
                 </Box>
               </SwiperSlide>
             )}
-            {product?.images.map((image) => (
+            {getCurrentImages.map((image) => (
               <SwiperSlide key={image}>
                 <Box
                   sx={{
@@ -286,11 +370,21 @@ const ProductDetails = () => {
                       image.startsWith("/") ? image.slice(1) : image
                     }`}
                     alt={product.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
                   />
                 </Box>
               </SwiperSlide>
             ))}
           </Swiper>
+          <ThumbNail
+            product={product}
+            activeSlide={activeSlide}
+            onThumbnailClick={handleThumbnailClick}
+          />
         </Box>
 
         <Box
@@ -298,39 +392,32 @@ const ProductDetails = () => {
             width: { xs: "100%", md: "50%" },
           }}
         >
-          <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Stack direction="row" spacing={1} alignItems="center">
               <Typography variant="h6" sx={{ marginBottom: 1 }}>
                 <b>{product?.name}</b>
               </Typography>
 
               {product?.isNew && (
-                  <Box
-                      sx={{
-                        backgroundColor: "secondary.main",
-                        color: "white",
-                        borderRadius: "4px",
-                        padding: "4px 8px",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                      }}
-                  >
-                    New
-                  </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "secondary.main",
+                    color: "white",
+                    borderRadius: "4px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {t("new")}
+                </Box>
               )}
             </Stack>
-
-            <IconButton
-                onClick={handleWishlistToggle}
-                sx={{
-                  color: isInWishlist ? "#ff4444" : "inherit",
-                  "&:hover": {
-                    backgroundColor: "rgba(255, 68, 68, 0.1)",
-                  },
-                }}
-            >
-              {isInWishlist ? <Favorite /> : <FavoriteBorder />}
-            </IconButton>
           </Stack>
           <Box
             sx={{
@@ -358,7 +445,7 @@ const ProductDetails = () => {
                       textDecoration: "line-through",
                     }}
                   >
-                    {product.price} $
+                    {product.price} сом
                   </Typography>
                   <Typography
                     sx={{
@@ -367,7 +454,7 @@ const ProductDetails = () => {
                       color: "#ff4444",
                     }}
                   >
-                    {finalPrice} $
+                    {finalPrice} сом
                   </Typography>
                 </>
               ) : (
@@ -378,7 +465,7 @@ const ProductDetails = () => {
                     color: "#660033",
                   }}
                 >
-                  ${product.price}
+                  {product.price} сом
                 </Typography>
               )}
 
@@ -425,7 +512,10 @@ const ProductDetails = () => {
                 mb={1}
                 sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
               >
-                Цвет:
+                {t("color")}:{" "}
+                <strong style={{ color: "black" }}>
+                  {selectedColor && getClothesColorName(selectedColor)}
+                </strong>
               </Typography>
 
               <Tabs
@@ -436,7 +526,10 @@ const ProductDetails = () => {
                 sx={{
                   minHeight: 0,
                   "& .MuiTabs-flexContainer": { gap: "10px" },
-                  "& .MuiTabs-indicator": { display: "none" },
+                  "& .MuiTabs-indicator": {
+                    backgroundColor: theme.palette.secondary.main,
+                    height: 0,
+                  },
                 }}
               >
                 {product.colors.map((c) => (
@@ -452,9 +545,8 @@ const ProductDetails = () => {
                           backgroundColor: c,
                           border:
                             selectedColor === c
-                              ? "2px solid #000"
-                              : "1px solid #ccc",
-                          padding: "3px",
+                              ? `4px solid ${theme.palette.secondary.main}`
+                              : "4px solid #ccc",
                           backgroundClip: "content-box",
                         }}
                       />
@@ -475,7 +567,7 @@ const ProductDetails = () => {
               mb={1}
               sx={{ color: "#525252", fontSize: "14px", fontWeight: "400" }}
             >
-              Размер:
+              {t("size")} :
             </Typography>
             <ToggleButtonGroup
               value={selectedSize}
@@ -523,6 +615,7 @@ const ProductDetails = () => {
                     value={size}
                     disabled={!isAvailable}
                     sx={{
+                      textDecoration: isAvailable ? "" : "line-through",
                       color: isAvailable ? "#000" : "#999",
                       backgroundColor: isAvailable ? "#FFF" : "#F5F5F5",
                       cursor: isAvailable ? "pointer" : "default",
@@ -565,7 +658,19 @@ const ProductDetails = () => {
                   fontSize: "12px",
                 }}
               >
-                Доступные размеры: {productAvailableSizes.join(", ")}
+                {t("availableSizes")} {productAvailableSizes.join(", ")}
+              </Typography>
+            )}
+            {product?.inStock && (
+              <Typography
+                sx={{
+                  color: "green",
+                  display: "block",
+                  mt: 1,
+                  fontWeight: 600,
+                }}
+              >
+                {t("inStock")}
               </Typography>
             )}
 
@@ -591,21 +696,6 @@ const ProductDetails = () => {
             )}
           </Box>
 
-          <Box>
-            <Typography
-              variant={"h6"}
-              sx={{ marginY: 1, fontSize: "16px", fontWeight: "700" }}
-            >
-              Product Details
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ color: "#525252", fontSize: "14px" }}
-            >
-              {product?.description}
-            </Typography>
-          </Box>
-
           <Box mt={4}>
             <Box
               display="flex"
@@ -623,15 +713,40 @@ const ProductDetails = () => {
                   alignSelf: "center",
                 }}
               >
-                ${finalPrice}
+                {finalPrice} сом
               </Typography>
-              <Button
-                variant="contained"
-                disabled={!selectedColor || !selectedSize}
-                onClick={handleAddToCart}
+              <Box
+                component="div"
+                style={{ display: "flex", width: "100%", gap: "10px" }}
               >
-                Add to Cart
-              </Button>
+                <Button
+                  sx={{ width: "60%" }}
+                  variant="contained"
+                  disabled={!selectedColor || !selectedSize}
+                  onClick={handleAddToCart}
+                >
+                  {t("addToCart")}
+                </Button>
+                <Button
+                  onClick={handleWishlistToggle}
+                  sx={{
+                    color: "#808080",
+                    border: "1px solid #808080",
+                    borderRadius: "10%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      color: isInWishlist ? "#ff4444" : "inherit",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 68, 68, 0.1)",
+                      },
+                    }}
+                  >
+                    {isInWishlist ? <Favorite /> : <FavoriteBorder />}
+                  </Box>
+                </Button>
+              </Box>
             </Box>
             {user?.role === "admin" && (
               <Box
@@ -695,6 +810,41 @@ const ProductDetails = () => {
           )}
         </Box>
       </Box>
+
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={tabValue}
+            aria-label="basic tabs example"
+            onChange={handleChange}
+            sx={{
+              "& .MuiTabs-indicator": {
+                backgroundColor: theme.palette.secondary.main,
+              },
+              "& .Mui-selected": {
+                color: `${theme.palette.secondary.main} !important`,
+              },
+            }}
+          >
+            <Tab label={t("productDetail")} {...a11yProps(0)} />
+            <Tab label={t("sizingGuide")} {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={tabValue} index={0}>
+          <Box>
+            <Typography
+              variant="body1"
+              sx={{ color: "#525252", fontSize: "14px" }}
+            >
+              {product?.description}
+            </Typography>
+          </Box>
+        </CustomTabPanel>
+        <CustomTabPanel value={tabValue} index={1}>
+          Information about sizing and fit guide has not been added yet
+        </CustomTabPanel>
+      </Box>
+
       <Box marginTop={9}>
         <Typography
           variant="h6"
@@ -708,7 +858,7 @@ const ProductDetails = () => {
             marginTop: 5,
           }}
         >
-          <b>You Might Also Like</b>
+          <b>{t("youMightAlsoLike")}</b>
         </Typography>
 
         <ProductList products={recommended} />

@@ -38,6 +38,28 @@ const AdminOrders = () => {
     event.stopPropagation();
     await dispatch(changeOrderDeliveryStatus({ orderId, value: event.target.value }));
     fetchAllOrders()
+  const getPaymentStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'success';
+      case 'cancelled':
+        return 'error';
+      case 'pending':
+      default:
+        return 'warning';
+    }
+  };
+
+  const getPaymentStatusText = (status: string) => {
+    switch (status) {
+      case 'paid':
+        return 'Оплачен';
+      case 'cancelled':
+        return 'Отменен';
+      case 'pending':
+      default:
+        return 'Ожидает оплаты';
+    }
   };
 
   return (
@@ -52,7 +74,7 @@ const AdminOrders = () => {
         orders.map((order) => (
           <Box
             key={order._id}
-            onClick={() => navigate(`/orders/${order._id}`)}
+            onClick={() => navigate(`/orders/${order._id}`)}deliveryStatus:string,
             sx={{
               mb: 3,
               p: 2,
@@ -75,11 +97,18 @@ const AdminOrders = () => {
               <Typography variant="subtitle2">
                 {t("customer")}: {order.user?.name || "N/A"}
               </Typography>
+              <Box display="flex" alignItems="center" gap={1}>
+                <Chip
+                  label={getPaymentStatusText(order.paymentStatus)}
+                  color={getPaymentStatusColor(order.paymentStatus)}
+                  size="small"
+                />
+                <Typography variant="subtitle2">
+                  {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
+                </Typography>
+              </Box>
               <Typography variant="subtitle2">
-                {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-              </Typography>
-              <Typography variant="subtitle2">
-                {t("total")}: {order.totalPrice}₸
+                {t("total")}: {order.totalPrice}сом
               </Typography>
             </Box>
 
@@ -113,13 +142,13 @@ const AdminOrders = () => {
                     {t("size")}: {item.selectedSize}
                   </Typography>
                   <Typography variant="body2">
-                    {t("price")}: {item.price}₸
+                    {t("price")}: {item.price}сом
                   </Typography>
                   <Typography variant="body2">
                     {t("quantity")}: {item.quantity}
                   </Typography>
                   <Typography variant="body2">
-                    {t("total")}: {item.price * item.quantity}₸
+                    {t("total")}: {item.price * item.quantity}сом
                   </Typography>
                 </Box>
               </Box>

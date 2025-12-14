@@ -62,3 +62,26 @@ export const changeOrderDeliveryStatus = createAsyncThunk<
     }
   }
 );
+
+export interface UpdatePaymentStatusData {
+    orderId: string;
+    paymentStatus: 'pending' | 'paid' | 'cancelled';
+}
+
+export const updateOrderPaymentStatusThunk = createAsyncThunk(
+    'orders/updatePaymentStatus',
+    async (data: UpdatePaymentStatusData, { rejectWithValue }) => {
+        try {
+            const response = await axiosApi.patch(
+                `/orders/${data.orderId}/payment-status`,
+                { paymentStatus: data.paymentStatus }
+            );
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            }
+            throw error;
+        }
+    }
+);

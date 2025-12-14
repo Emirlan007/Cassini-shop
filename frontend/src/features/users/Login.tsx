@@ -1,7 +1,7 @@
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectLoginError, selectLoginLoading} from "./usersSlice";
+import {clearLoginError, selectLoginError, selectLoginLoading} from "./usersSlice";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
-import {type ChangeEvent, type FormEvent, useState} from "react";
+import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
 import type {LoginMutation} from "../../types";
 import {loginThunk} from "./usersThunks";
 import {
@@ -26,8 +26,12 @@ const Login = () => {
 
   const [state, setState] = useState<LoginMutation>({
     name: "",
-    phoneNumber: "",
+    phoneNumber: "+996",
   });
+
+  useEffect(() => {
+    dispatch(clearLoginError());
+  }, [dispatch]);
 
   const getFieldError = (field: string) => {
     try {

@@ -7,14 +7,15 @@ import {
   useState,
 } from "react";
 import {
-  Box,
-  Button,
-  ImageList,
-  ImageListItem,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
+    Box,
+    Button, Checkbox,
+    FormControlLabel,
+    ImageList,
+    ImageListItem,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 import FilesInput from "../../components/FilesInput/FilesInput.tsx";
 import { useNavigate } from "react-router-dom";
@@ -25,8 +26,11 @@ import SizesModal from "../../components/UI/SizesModal/SizesModal.tsx";
 import ColorsModal from "../../components/UI/ColorsModal/ColorsModal.tsx";
 
 interface Props {
-  product: Omit<ProductInput, "category"> & { category: ICategory };
-
+  product: Omit<ProductInput, "category"> & { category: ICategory } & {
+      material?: string;
+      inStock?: boolean;
+      isPopular?: boolean;
+  };
   onSubmit(product: ProductInput): void;
 }
 
@@ -47,6 +51,9 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
     images: product.images,
     video: product.video,
     price: product.price,
+      material: product.material || "",
+      inStock: product.inStock ?? true,
+      isPopular: product.isPopular ?? false,
   });
 
   useEffect(() => {
@@ -63,7 +70,8 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
     const newFiles = Array.from(files);
 
     setState((prev) => {
-      // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       const existing = prev[name] || [];
 
       if (existing.length >= MAX_IMAGES) {
@@ -144,7 +152,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
         }}
       >
         <Typography component="h1" variant="h5" sx={{ color: "#660033" }}>
-          Update Product
+          Редактировать товар
         </Typography>
         <Box
           component="form"
@@ -158,7 +166,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
             <TextField
               required
               fullWidth
-              label="Name"
+              label="Название товара"
               name="name"
               value={state.name}
               onChange={inputChangeHandler}
@@ -185,7 +193,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
               required
               fullWidth
               type="description"
-              label="Description"
+              label="Описание"
               name="description"
               value={state.description}
               onChange={inputChangeHandler}
@@ -212,7 +220,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
               required
               fullWidth
               type="price"
-              label="price"
+              label="Цена"
               name="price"
               value={state.price}
               onChange={inputChangeHandler}
@@ -234,10 +242,60 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
               }}
             />
 
+              <TextField
+                  id="material"
+                  label="Материал (опционально)"
+                  name="material"
+                  value={state.material}
+                  onChange={inputChangeHandler}
+                  fullWidth
+                  sx={{
+                      "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                              borderColor: "#660033",
+                          },
+                          "&:hover fieldset": {
+                              borderColor: "#F0544F",
+                          },
+                      },
+                  }}
+              />
+
+              <Stack direction="row" spacing={2}>
+                  <FormControlLabel
+                      control={
+                          <Checkbox
+                              checked={state.inStock}
+                              onChange={(e) =>
+                                  setState((prev) => ({
+                                      ...prev,
+                                      inStock: e.target.checked,
+                                  }))
+                              }
+                          />
+                      }
+                      label="В наличии"
+                  />
+                  <FormControlLabel
+                      control={
+                          <Checkbox
+                              checked={state.isPopular}
+                              onChange={(e) =>
+                                  setState((prev) => ({
+                                      ...prev,
+                                      isPopular: e.target.checked,
+                                  }))
+                              }
+                          />
+                      }
+                      label="Популярное"
+                  />
+              </Stack>
+
             <TextField
               select
               id="category"
-              label="Category"
+              label="Категория"
               name="category"
               value={state.category ?? ""}
               onChange={inputChangeHandler}
@@ -262,7 +320,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
             <Stack direction="row" spacing={2} alignItems={"center"}>
               <TextField
                 sx={{ width: "100%" }}
-                label="Selected Sizes"
+                label="Выбранные размеры"
                 value={
                   state.size.length > 0
                     ? state.size.join(", ")
@@ -270,7 +328,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
                 }
               />
               <Button variant="contained" onClick={() => setSizesOpen(true)}>
-                Sizes
+                Размеры
               </Button>
             </Stack>
 
@@ -283,23 +341,23 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
             <Stack direction="row" spacing={2} alignItems={"center"}>
               <TextField
                 sx={{ width: "100%" }}
-                label="Selected Colors"
+                label="Выбранные расцветки"
                 value={state.colors.join(", ")}
               />
               <Button variant="contained" onClick={() => setColorsOpen(true)}>
-                Colors
+                Расцветки
               </Button>
             </Stack>
 
             <FilesInput
-              label="Video"
+              label="Видео"
               name="video"
               onChange={videoChangeHandler}
             />
 
             <Stack>
               <FilesInput
-                label="Images"
+                label="Изображения"
                 name="images"
                 onChange={fileInputChangeHandler}
               />
@@ -327,7 +385,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
                         color={"error"}
                         variant={"contained"}
                       >
-                        Remove
+                        Удалить
                       </Button>
                     </Stack>
                   ))}
@@ -336,7 +394,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
             </Stack>
 
             <Button type="submit" fullWidth variant="contained">
-              Edit
+              Редактировать
             </Button>
           </Stack>
         </Box>

@@ -63,6 +63,28 @@ export class OrderService {
     return orders;
   }
 
+  async updateOrderPaymentStatus(
+    orderId: string,
+    paymentStatus: 'pending' | 'paid' | 'cancelled',
+  ) {
+    const order = await this.orderModel.findByIdAndUpdate(
+      orderId,
+      {
+        $set: {
+          paymentStatus,
+          updatedAt: new Date(),
+        },
+      },
+      { new: true },
+    );
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+    return order;
+  }
+
   async create(createOrderDto: CreateOrderDto, userId: string) {
     const { items, paymentMethod, status, userComment } = createOrderDto;
 
@@ -101,6 +123,7 @@ export class OrderService {
       items: processedItems,
       paymentMethod,
       status: status ?? OrderStatus.Pending,
+      paymentStatus: 'pending',
       userComment: userComment ?? null,
       adminComments: [],
       createdAt: new Date(),

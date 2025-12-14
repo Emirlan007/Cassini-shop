@@ -62,6 +62,35 @@ export class ProductsService {
       productData.images = files.images.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
+
+      if (createProductDto.imagesByColor) {
+        for (const [color, indices] of Object.entries(
+          createProductDto.imagesByColor,
+        )) {
+          const invalidIndices = indices.filter(
+            (idx) => idx < 0 || idx >= productData.images!.length,
+          );
+
+          if (invalidIndices.length > 0) {
+            throw new BadRequestException(
+              `Invalid image indices for color "${color}". Indices must be between 0 and ${productData.images!.length - 1}`,
+            );
+          }
+        }
+
+        const productColors = new Set(createProductDto.colors);
+        const imageColors = Object.keys(createProductDto.imagesByColor);
+
+        for (const color of imageColors) {
+          if (!productColors.has(color)) {
+            throw new BadRequestException(
+              `Color "${color}" in imagesByColor is not in product colors list`,
+            );
+          }
+        }
+
+        productData.imagesByColor = createProductDto.imagesByColor;
+      }
     }
 
     if (files?.video?.[0]) {
@@ -258,10 +287,60 @@ export class ProductsService {
           }
         }
       }
+
       const newImages = files?.images?.map((file) =>
         this.fileUploadService.getPublicPath(file.filename),
       );
       updateData.images = [...(updateData.images || []), ...(newImages || [])];
+
+      if (updateProductDto.imagesByColor) {
+        for (const [color, indices] of Object.entries(
+          updateProductDto.imagesByColor,
+        )) {
+          const invalidIndices = indices.filter(
+            (idx) => idx < 0 || idx >= updateData.images!.length,
+          );
+
+          if (invalidIndices.length > 0) {
+            throw new BadRequestException(
+              `Invalid image indices for color "${color}". Indices must be between 0 and ${updateData.images!.length - 1}`,
+            );
+          }
+        }
+
+        updateData.imagesByColor = updateProductDto.imagesByColor;
+      }
+    } else if (updateProductDto.imagesByColor && product.images) {
+      for (const [color, indices] of Object.entries(
+        updateProductDto.imagesByColor,
+      )) {
+        const invalidIndices = indices.filter(
+          (idx) => idx < 0 || idx >= product.images!.length,
+        );
+
+        if (invalidIndices.length > 0) {
+          throw new BadRequestException(
+            `Invalid image indices for color "${color}". Indices must be between 0 and ${product.images!.length - 1}`,
+          );
+        }
+      }
+
+      updateData.imagesByColor = updateProductDto.imagesByColor;
+    }
+
+    if (updateData.imagesByColor) {
+      const productColors = new Set(
+        updateProductDto.colors || product.colors || [],
+      );
+      const imageColors = Object.keys(updateData.imagesByColor);
+
+      for (const color of imageColors) {
+        if (!productColors.has(color)) {
+          throw new BadRequestException(
+            `Color "${color}" in imagesByColor is not in product colors list`,
+          );
+        }
+      }
     }
 
     if (files?.video?.[0]) {
@@ -461,7 +540,7 @@ export class ProductsService {
     if (filters.sortBy) {
       sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
     }
-
+св
     const [products, totalCount] = await Promise.all([
       this.productModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
       this.productModel.countDocuments(filter),

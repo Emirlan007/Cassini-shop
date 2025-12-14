@@ -1,38 +1,41 @@
-import {type ChangeEvent, type FC, useState} from "react";
+import { type FC, useState} from "react";
 import toast from "react-hot-toast";
 import {Box, Button, Stack, TextField, Typography} from "@mui/material";
+import type {User} from "../../../types";
+import PhoneInput from "./PhoneInput.tsx";
 
 interface Props {
-    onSubmit: (data: {
-        city: string;
-        address: string;
-    }) => void;
-    loading: boolean;
+  user: User;
+  onSubmit: (data: {
+    name: string;
+    phoneNumber: string;
+    city: string;
+    address: string;
+  }) => void;
+  loading: boolean;
 }
 
-const CheckoutAddressForm: FC<Props> = ({ onSubmit, loading }) => {
-    const [userData, setUserData] = useState({
-        city: "",
-        address: "",
-    });
+const CheckoutAddressForm: FC<Props> = ({ user, onSubmit, loading }) => {
+  const [userData, setUserData] = useState({
+    name: user.name ?? "",
+    phoneNumber: user.phoneNumber ?? "+996",
+    city: user.city ?? "",
+    address: user.address ?? "",
+  });
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+  const handleSubmit = () => {
+    if (
+      !userData.name ||
+      !userData.phoneNumber ||
+      !userData.city ||
+      !userData.address
+    ) {
+      toast.error("Заполните город и адрес");
+      return;
+    }
 
-        setUserData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = () => {
-        if ( !userData.city || !userData.address) {
-            toast.error("Пожалуйста, заполните все поля");
-            return;
-        }
-
-        onSubmit(userData);
-    };
+    onSubmit(userData);
+  };
     return (
         <Box>
             <Typography
@@ -46,71 +49,36 @@ const CheckoutAddressForm: FC<Props> = ({ onSubmit, loading }) => {
                 Личные данные
             </Typography>
             <Stack spacing={2}>
-                <TextField
-                    label="Город"
-                    name="city"
-                    value={userData.city}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                        "& .MuiOutlinedInput-root": {
-                            borderRadius: "12px",
-                            backgroundColor: "#F5F5F5",
-                            height: "56px",
-                            padding: "0 17px",
-                            "& fieldset": {
-                                border: "2px solid #F5F5F5",
-                            },
+              <TextField
+                label="Имя"
+                value={userData.name}
+                onChange={(e) =>
+                  setUserData({ ...userData, name: e.target.value })
+                }
+              />
 
-                            "&:hover fieldset": {
-                                borderColor: "#d8d7d7",
-                            },
+              <PhoneInput
+                value={userData.phoneNumber}
+                onChange={(value) =>
+                  setUserData({ ...userData, phoneNumber: value })
+                }
+              />
 
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#b3b0b0 !important",
-                            }
-                        },
-                    }}
-                />
-                <TextField
-                    label="Адрес"
-                    name="address"
-                    value={userData.address}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                        "& .MuiOutlinedInput-root": {
-                            borderRadius: "12px",
-                            backgroundColor: "#F5F5F5",
-                            height: "56px",
-                            padding: "0 17px",
-                            "& fieldset": {
-                                border: "2px solid #F5F5F5",
-                            },
+              <TextField
+                label="Город"
+                value={userData.city}
+                onChange={(e) => setUserData({ ...userData, city: e.target.value })}
+              />
+              <TextField
+                label="Адрес"
+                value={userData.address}
+                onChange={(e) => setUserData({ ...userData, address: e.target.value })}
+              />
 
-                            "&:hover fieldset": {
-                                borderColor: "#d8d7d7",
-                            },
 
-                            "&.Mui-focused fieldset": {
-                                borderColor: "#b3b0b0 !important",
-                            }
-                        },
-                    }}
-                />
-                <Button
-                    variant="contained"
-                    onClick={handleSubmit}
-                    loading={loading}
-                    sx={{
-                        borderRadius: '14px',
-                        fontSize: '16px',
-                        fontWeight: '700',
-                        padding: '10px 0'
-                    }}
-                >
-                    Далее
-                </Button>
+              <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+                Далее
+              </Button>
             </Stack>
         </Box>
     );

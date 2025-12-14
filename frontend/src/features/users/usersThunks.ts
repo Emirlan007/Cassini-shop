@@ -20,12 +20,18 @@ export const registerThunk = createAsyncThunk<
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 400) {
-      const message = error.response.data.message;
+      const raw = error.response.data.message;
+      const message = Array.isArray(raw) ? raw[0] : raw;
+
+      const normalizedMessage =
+          typeof message === "string" && message.includes("must be a valid phone number")
+              ? "Некорректный формат номера телефона"
+              : message;
 
       return rejectWithValue({
         errors: {
           name: message.includes("имя") ? { message } : undefined,
-          phoneNumber: { message },
+          phoneNumber: { message: normalizedMessage },
         },
       });
     }
@@ -82,13 +88,15 @@ export const logoutThunk = createAsyncThunk(
 
 export const updateUserAddress = createAsyncThunk<
     User,
-    { userId: string; city: string; address: string },
+    { userId: string; name: string; phoneNumber: string; city: string; address: string },
     { rejectValue: IGlobalError }
 >(
     "/users/update-address",
-    async ({ userId, city, address }, { rejectWithValue }) => {
+    async ({ userId, name, phoneNumber, city, address }, { rejectWithValue }) => {
         try {
             const { data } = await axiosApi.patch<User>(`/users/${userId}/address`, {
+                name,
+                phoneNumber,
                 city,
                 address,
             });

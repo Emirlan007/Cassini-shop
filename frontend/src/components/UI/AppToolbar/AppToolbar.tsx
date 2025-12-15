@@ -7,6 +7,7 @@ import {
   Stack,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAppSelector } from "../../../app/hooks";
@@ -19,12 +20,14 @@ import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
 import BackButton from "../BackButton.tsx";
 import SearchInput from "../SearchInput/SearchInput.tsx";
 import { selectCart } from "../../../features/cart/cartSlice.ts";
+import {selectWishlistCount} from "../../../features/wishlist/wishlistSlice.ts";
 
 const AppToolbar = () => {
   
   const isLoading = useAppSelector(selectLoginLoading);
   const totalQuantity = useAppSelector(selectCart)?.totalQuantity;
   const navigate = useNavigate();
+  const wishlistCount = useAppSelector(selectWishlistCount);
 
   const [open, setOpen] = useState(false);
 
@@ -55,8 +58,18 @@ const AppToolbar = () => {
 
           {isLoading && <CircularProgress color="primary" />}
 
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2.5} alignItems="center">
             <LanguageSelect />
+            <Badge
+              badgeContent={wishlistCount}
+              max={99}
+              color="error"
+              onClick={() => navigate("/wishlist")}
+              sx={{ cursor: "pointer" }}
+            >
+              <FavoriteIcon sx={{ color: "#374151" }} />
+            </Badge>
+
             <Badge
               badgeContent={totalQuantity}
               max={99}

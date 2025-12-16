@@ -63,6 +63,82 @@ export class OrderService {
     return orders;
   }
 
+  async getOrdersCountByStatus() {
+    const result = await this.orderModel.aggregate<{
+      _id: OrderStatus;
+      count: number;
+    }>([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const statusCounts: Record<OrderStatus, number> = {} as Record<
+      OrderStatus,
+      number
+    >;
+
+    result.forEach((item) => {
+      statusCounts[item._id] = item.count;
+    });
+
+    Object.values(OrderStatus).forEach((status) => {
+      if (!statusCounts[status]) {
+        statusCounts[status] = 0;
+      }
+    });
+
+    return statusCounts;
+  }
+
+  async getOrdersCountByStatusToday() {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const result = await this.orderModel.aggregate<{
+      _id: OrderStatus;
+      count: number;
+    }>([
+      {
+        $match: {
+          createdAt: {
+            $gte: startOfDay,
+            $lte: endOfDay,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const statusCounts: Record<OrderStatus, number> = {} as Record<
+      OrderStatus,
+      number
+    >;
+
+    result.forEach((item) => {
+      statusCounts[item._id] = item.count;
+    });
+
+    Object.values(OrderStatus).forEach((status) => {
+      if (!statusCounts[status]) {
+        statusCounts[status] = 0;
+      }
+    });
+
+    return statusCounts;
+  }
+
   async updateOrderPaymentStatus(
     orderId: string,
     paymentStatus: 'pending' | 'paid' | 'cancelled',

@@ -59,6 +59,11 @@ export class CreateOrderDto {
   @IsIn(['cash', 'qrCode'])
   paymentMethod: 'cash' | 'qrCode';
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
+  totalPrice: number;
+
   @IsOptional()
   @IsString()
   @IsIn(['pending', 'processing', 'completed'])

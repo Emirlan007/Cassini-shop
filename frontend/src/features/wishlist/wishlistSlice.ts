@@ -68,3 +68,10 @@ export const selectWishlistProductIds = createSelector(
         return wishlist.products.map((p) => p._id);
     }
 );
+export const selectWishlistCount = createSelector(
+  [selectWishlist],
+  (wishlist) => {
+    if (!wishlist?.products) return 0;
+    return wishlist.products.length;
+  }
+);

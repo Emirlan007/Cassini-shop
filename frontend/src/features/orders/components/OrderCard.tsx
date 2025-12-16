@@ -1,9 +1,18 @@
-import {Box, Chip, Stack, Typography} from "@mui/material";
-import { API_URL } from "../../../constants";
+import {
+  Box,
+  Stack,
+  Step,
+  StepLabel,
+  Chip,
+  Stepper,
+  Typography,
+} from "@mui/material";
+import { API_URL, DeliveryStatus } from "../../../constants";
 import { useTranslation } from "react-i18next";
 import type { Order } from "../../../types";
 import { useAppSelector } from "../../../app/hooks";
 import { selectUser } from "../../users/usersSlice";
+import theme from "../../../theme";
 
 interface Props {
   order: Order;
@@ -13,6 +22,8 @@ interface Props {
 const OrderCard = ({ order, onClick }: Props) => {
   const user = useAppSelector(selectUser);
   const { t } = useTranslation();
+
+  const steps = Object.values(DeliveryStatus);
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
@@ -137,6 +148,42 @@ const OrderCard = ({ order, onClick }: Props) => {
           <Typography variant="body2">{order.userComment}</Typography>
         </Stack>
       )}
+
+      <Box
+          sx={{
+            width: "100%",
+            background: theme.palette.secondary.main,
+            py: "1rem",
+            borderRadius: "10%",
+          }}
+      >
+        <Stepper
+            activeStep={Object.values(DeliveryStatus).indexOf(
+                order.deliveryStatus
+            ) + 1}
+            alternativeLabel
+        >
+          {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel
+                    sx={{
+                      "& .MuiStepLabel-label": {
+                        color: "white !important",
+                      },
+                      "& .MuiStepIcon-root": {
+                        color: "white",
+                      },
+                      "& .MuiStepIcon-text": {
+                        fill: theme.palette.secondary.main,
+                      },
+                    }}
+                >
+                  {label}
+                </StepLabel>
+              </Step>
+          ))}
+        </Stepper>
+      </Box>
 
       {user?.role === "admin" && order.adminComments.length > 0 && (
         <Stack>

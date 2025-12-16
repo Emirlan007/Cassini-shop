@@ -1,35 +1,38 @@
 import {
+  Box,
   Button,
+  Checkbox,
   CircularProgress,
-  Divider,
+  FormControlLabel,
   ImageList,
   ImageListItem,
   MenuItem,
   Stack,
   TextField,
-  FormControlLabel,
-  Checkbox,
+  Typography,
 } from "@mui/material";
-import FileInput from "../../../components/UI/FileInput/FileInput.tsx";
-import {type ChangeEvent, type FormEvent, useEffect, useState } from "react";
-import type { ProductInput } from "../../../types";
-import SizesModal from "../../../components/UI/SizesModal/SizesModal.tsx";
-import ColorsModal from "../../../components/UI/ColorsModal/ColorsModal.tsx";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+
+import FileInput from "../../../components/UI/FileInput/FileInput";
+import SizesModal from "../../../components/UI/SizesModal/SizesModal";
+import ColorsModal from "../../../components/UI/ColorsModal/ColorsModal";
+
+import {useAppDispatch, useAppSelector} from "../../../app/hooks";
 import {
   selectCategories,
   selectFetchingCategories,
-} from "../../categories/categorySlice.ts";
-import { fetchCategories } from "../../categories/categoryThunk.ts";
-import { useTranslation } from "react-i18next";
+} from "../../categories/categorySlice";
+import {fetchCategories} from "../../categories/categoryThunk";
+
+import type {ProductInput} from "../../../types";
 
 interface Props {
   onSubmit: (product: ProductInput) => Promise<void>;
   loading: boolean;
 }
 
-const ProductForm = ({ onSubmit, loading }: Props) => {
+const ProductForm = ({onSubmit, loading}: Props) => {
   const [isSizesOpen, setSizesOpen] = useState(false);
   const [isColorsOpen, setColorsOpen] = useState(false);
 
@@ -38,7 +41,6 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
 
   const categories = useAppSelector(selectCategories);
   const categoriesLoading = useAppSelector(selectFetchingCategories);
-  const { t } = useTranslation();
 
   const MAX_IMAGES = 10;
 
@@ -61,9 +63,20 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
+  const fieldSx = {
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {borderColor: "#660033"},
+      "&:hover fieldset": {borderColor: "#F0544F"},
+    },
+    "& .MuiInputLabel-root": {color: "#660033"},
+  };
+
   const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setState((prev) => ({ ...prev, [name]: value }));
+    const {name, value} = e.target;
+    setState((prev) => ({
+      ...prev,
+      [name]: name === "price" ? Number(value) : value,
+    }));
   };
 
   const imagesChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,12 +86,11 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     const newFiles = Array.from(files);
 
     setState((prev) => {
-      const total = prev.images.length + newFiles.length;
-      if (total > MAX_IMAGES) {
+      if (prev.images.length + newFiles.length > MAX_IMAGES) {
         alert(`Максимум ${MAX_IMAGES} изображений`);
         return prev;
       }
-      return { ...prev, images: [...prev.images, ...newFiles] };
+      return {...prev, images: [...prev.images, ...newFiles]};
     });
   };
 
@@ -106,7 +118,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
   const videoChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setState((prev) => ({ ...prev, video: file }));
+    setState((prev) => ({...prev, video: file}));
   };
 
   const handleSizeChange = (value: string, checked: boolean) => {
@@ -120,10 +132,8 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
 
   const handleColorsChange = (value: string, checked: boolean) => {
     setState((prev) => {
-      const updatedImagesByColor = { ...prev.imagesByColor };
-      if (!checked) {
-        delete updatedImagesByColor[value];
-      }
+      const updatedImagesByColor = {...prev.imagesByColor};
+      if (!checked) delete updatedImagesByColor[value];
 
       return {
         ...prev,
@@ -137,20 +147,18 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
 
   const toggleImageColor = (
       color: string,
-      imageIndex: number,
+      index: number,
       checked: boolean
   ) => {
     setState((prev) => {
       const prevImages = prev.imagesByColor[color] || [];
-      const updatedImages = checked
-          ? [...prevImages, imageIndex]
-          : prevImages.filter((i) => i !== imageIndex);
-
       return {
         ...prev,
         imagesByColor: {
           ...prev.imagesByColor,
-          [color]: updatedImages,
+          [color]: checked
+              ? [...prevImages, index]
+              : prevImages.filter((i) => i !== index),
         },
       };
     });
@@ -159,193 +167,219 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
   const submitFormHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!state.size.length) {
-      alert("Выберите хотя бы один размер");
-      return;
-    }
-
-    if (!state.colors.length) {
-      alert("Выберите хотя бы один цвет");
-      return;
-    }
+    if (!state.size.length) return alert("Выберите размер");
+    if (!state.colors.length) return alert("Выберите цвет");
 
     await onSubmit(state);
     navigate("/admin/products");
   };
 
   return (
-      <Stack spacing={2} component="form" onSubmit={submitFormHandler}>
-        <TextField
-            select
-            label={t("productForm.category")}
-            value={state.category}
-            onChange={(e) =>
-                setState((prev) => ({ ...prev, category: e.target.value }))
-            }
-            required
-        >
-          <MenuItem value="" disabled>
-            Please select a category
-          </MenuItem>
+      <Box
+          sx={{
+            mt: {xs: 4, sm: 8},
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            px: 2,
+          }}
+      >
+        <Typography variant="h5" sx={{color: "#660033", mb: 2}}>
+          Новый товар
+        </Typography>
 
-          {categoriesLoading && <CircularProgress size={20} />}
-
-          {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.title}
+        <Box component="form" onSubmit={submitFormHandler} sx={{width: "100%"}}>
+          <Stack spacing={2}>
+            <TextField
+                select
+                label="Категория"
+                name="category"
+                value={state.category}
+                onChange={inputChangeHandler}
+                required
+                sx={fieldSx}
+            >
+              <MenuItem value="" disabled>
+                Выберите категорию
               </MenuItem>
-          ))}
-        </TextField>
-
-        <TextField
-            label={t("productForm.name")}
-            name="name"
-            value={state.name}
-            onChange={inputChangeHandler}
-            required
-        />
-
-        <TextField
-            multiline
-            minRows={3}
-            label={t("productForm.description")}
-            name="description"
-            value={state.description}
-            onChange={inputChangeHandler}
-            required
-        />
-
-        <TextField
-            type="number"
-            label={t("productForm.price")}
-            name="price"
-            value={state.price}
-            onChange={inputChangeHandler}
-            required
-        />
-
-        <TextField
-            label="Материал"
-            name="material"
-            value={state.material}
-            onChange={inputChangeHandler}
-        />
-
-        <Stack direction="row" spacing={2}>
-          <FormControlLabel
-              control={
-                <Checkbox
-                    checked={state.inStock}
-                    onChange={(e) =>
-                        setState((prev) => ({ ...prev, inStock: e.target.checked }))
-                    }
-                />
-              }
-              label="В наличии"
-          />
-          <FormControlLabel
-              control={
-                <Checkbox
-                    checked={state.isPopular}
-                    onChange={(e) =>
-                        setState((prev) => ({ ...prev, isPopular: e.target.checked }))
-                    }
-                />
-              }
-              label="Популярное"
-          />
-        </Stack>
-
-        <SizesModal
-            open={isSizesOpen}
-            onClose={() => setSizesOpen(false)}
-            sizes={state.size}
-            onChange={handleSizeChange}
-        />
-
-        <Button variant="contained" onClick={() => setSizesOpen(true)}>
-          {t("productForm.sizes")}
-        </Button>
-
-        <ColorsModal
-            open={isColorsOpen}
-            onClose={() => setColorsOpen(false)}
-            colors={state.colors}
-            onChange={handleColorsChange}
-        />
-
-        <Button variant="contained" onClick={() => setColorsOpen(true)}>
-          {t("productForm.colors")}
-        </Button>
-
-        <FileInput
-            label={t("productForm.images")}
-            name="images"
-            onChange={imagesChangeHandler}
-        />
-
-        {state.images.length > 0 && (
-            <ImageList cols={5} rowHeight={140}>
-              {state.images.map((image, index) => (
-                  <Stack key={index}>
-                    <ImageListItem>
-                      <img src={URL.createObjectURL(image)} />
-                    </ImageListItem>
-                    <Button
-                        color="error"
-                        onClick={() => removeImageHandler(image)}
-                    >
-                      {t("remove")}
-                    </Button>
-                  </Stack>
+              {categoriesLoading && <CircularProgress size={20}/>}
+              {categories.map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>
+                    {cat.title}
+                  </MenuItem>
               ))}
-            </ImageList>
-        )}
+            </TextField>
 
-        {state.images.length > 0 && state.colors.length > 0 && (
-            <>
-              <Divider />
-              <strong>Привязка изображений к цветам</strong>
+            <TextField
+                label="Название"
+                name="name"
+                value={state.name}
+                onChange={inputChangeHandler}
+                required
+                sx={fieldSx}
+            />
 
-              {state.colors.map((color) => (
-                  <Stack key={color}>
-                    <strong>{color}</strong>
+            <TextField
+                multiline
+                minRows={3}
+                label="Описание"
+                name="description"
+                value={state.description}
+                onChange={inputChangeHandler}
+                required
+                sx={fieldSx}
+            />
 
-                    <Stack direction="row" flexWrap="wrap">
-                      {state.images.map((_, index) => (
-                          <FormControlLabel
-                              key={index}
-                              control={
-                                <Checkbox
-                                    checked={
-                                        state.imagesByColor[color]?.includes(index) || false
-                                    }
-                                    onChange={(e) =>
-                                        toggleImageColor(color, index, e.target.checked)
-                                    }
-                                />
-                              }
-                              label={`Изображение ${index + 1}`}
-                          />
-                      ))}
-                    </Stack>
-                  </Stack>
-              ))}
-            </>
-        )}
+            <TextField
+                type="number"
+                label="Цена"
+                name="price"
+                value={state.price}
+                onChange={inputChangeHandler}
+                required
+                sx={fieldSx}
+            />
 
-        <FileInput
-            label={t("productForm.video")}
-            name="video"
-            onChange={videoChangeHandler}
-        />
+            <TextField
+                label="Материал"
+                name="material"
+                value={state.material}
+                onChange={inputChangeHandler}
+                sx={fieldSx}
+            />
 
-        <Divider />
+            <Stack direction="row" spacing={2}>
+              <FormControlLabel
+                  control={
+                    <Checkbox
+                        checked={state.inStock}
+                        onChange={(e) =>
+                            setState((p) => ({...p, inStock: e.target.checked}))
+                        }
+                    />
+                  }
+                  label="В наличии"
+              />
+              <FormControlLabel
+                  control={
+                    <Checkbox
+                        checked={state.isPopular}
+                        onChange={(e) =>
+                            setState((p) => ({...p, isPopular: e.target.checked}))
+                        }
+                    />
+                  }
+                  label="Популярное"
+              />
+            </Stack>
 
-        <Button type="submit" variant="contained" disabled={loading}>
-          {loading ? t("productForm.creating") : t("productForm.create")}
-        </Button>
-      </Stack>
+            <SizesModal
+                open={isSizesOpen}
+                onClose={() => setSizesOpen(false)}
+                sizes={state.size}
+                onChange={handleSizeChange}
+            />
+
+            <Stack direction="row" spacing={2} alignItems={'center'}>
+              <TextField
+                  fullWidth
+                  label="Выбранные размеры"
+                  value={state.size.join(", ") || "Не выбраны"}
+              />
+              <Button variant="contained" onClick={() => setSizesOpen(true)}>
+                Размеры
+              </Button>
+            </Stack>
+
+            <ColorsModal
+                open={isColorsOpen}
+                onClose={() => setColorsOpen(false)}
+                colors={state.colors}
+                onChange={handleColorsChange}
+            />
+
+            <Stack direction="row" spacing={2} alignItems={'center'}>
+              <TextField
+                  fullWidth
+                  label="Выбранные расцветки"
+                  value={state.colors.join(", ") || "Не выбраны"}
+              />
+              <Button variant="contained" onClick={() => setColorsOpen(true)}>
+                Расцветки
+              </Button>
+            </Stack>
+
+            <FileInput
+                label="Видео"
+                name="video"
+                onChange={videoChangeHandler}
+            />
+
+            <FileInput
+                label="Изображения"
+                name="images"
+                onChange={imagesChangeHandler}
+            />
+
+            {state.images.length > 0 && (
+                <ImageList cols={5} rowHeight={140}>
+                  {state.images.map((image, index) => (
+                      <Stack key={index}>
+                        <ImageListItem>
+                          <img src={URL.createObjectURL(image)}/>
+                        </ImageListItem>
+                        <Button
+                            variant={'contained'}
+                            color="error"
+                            onClick={() => removeImageHandler(image)}
+                        >
+                          Удалить
+                        </Button>
+                      </Stack>
+                  ))}
+                </ImageList>
+            )}
+
+            {state.images.length > 0 && state.colors.length > 0 && (
+                <>
+                  {state.colors.map((color) => (
+                      <Stack key={color}>
+                        <Typography fontWeight={600}>{color}</Typography>
+                        <Stack direction="row" flexWrap="wrap">
+                          {state.images.map((_, index) => (
+                              <FormControlLabel
+                                  key={index}
+                                  control={
+                                    <Checkbox
+                                        checked={
+                                            state.imagesByColor[color]?.includes(index) ||
+                                            false
+                                        }
+                                        onChange={(e) =>
+                                            toggleImageColor(
+                                                color,
+                                                index,
+                                                e.target.checked
+                                            )
+                                        }
+                                    />
+                                  }
+                                  label={`Изображение ${index + 1}`}
+                              />
+                          ))}
+                        </Stack>
+                      </Stack>
+                  ))}
+                </>
+            )}
+
+            <Button type="submit" variant="contained" disabled={loading}>
+              Создать товар
+            </Button>
+          </Stack>
+        </Box>
+      </Box>
   );
 };
 

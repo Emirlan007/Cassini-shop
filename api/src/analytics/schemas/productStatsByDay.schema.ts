@@ -38,3 +38,7 @@ export class ProductStatsByDay {
 
 export const ProductStatsByDaySchema =
   SchemaFactory.createForClass(ProductStatsByDay);
+
+ProductStatsByDaySchema.index({ date: 1 });
+
+ProductStatsByDaySchema.index({ productId: 1, date: 1 });

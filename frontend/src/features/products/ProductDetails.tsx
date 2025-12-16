@@ -661,6 +661,22 @@ const ProductDetails = () => {
                 {t("availableSizes")} {productAvailableSizes.join(", ")}
               </Typography>
             )}
+
+            {product.material && (
+              <Box mt={3}>
+                <Typography
+                  sx={{
+                    color: "#525252",
+                    fontSize: "14px",
+                    fontWeight: "400",
+                    mb: 1
+                  }}
+                >
+                  Материал: <strong style={{ color: "#333" }}>{product.material}</strong>
+                </Typography>
+              </Box>
+            )}
+
             {product?.inStock && (
               <Typography
                 sx={{

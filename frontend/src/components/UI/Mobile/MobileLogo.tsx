@@ -7,9 +7,10 @@ import {
   Stack,
   Collapse,
   TextField,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -24,6 +25,8 @@ import {
   setSearchQuery,
 } from "../../../features/ui/uiSlice.ts";
 import BackButton from "../BackButton.tsx";
+import {selectWishlistCount} from "../../../features/wishlist/wishlistSlice.ts";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const MobileLogo = () => {
   const searchRef = useRef<HTMLDivElement>(null);
@@ -32,6 +35,7 @@ const MobileLogo = () => {
   const searchProduct = useAppSelector(selectSearchQuery);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate()
+  const wishlistCount = useAppSelector(selectWishlistCount);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -94,6 +98,16 @@ const MobileLogo = () => {
           </Link>
 
           <Stack direction="row" spacing={2} alignItems="center">
+            <Badge
+              badgeContent={wishlistCount}
+              max={99}
+              color="error"
+              onClick={() => navigate("/wishlist")}
+              sx={{ cursor: "pointer" }}
+            >
+              <FavoriteIcon sx={{ color: theme.palette.secondary.light }} />
+            </Badge>
+
             <NotificationsIcon sx={{ color: theme.palette.secondary.light }} />
             <div ref={searchRef}>
               <Collapse

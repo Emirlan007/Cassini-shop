@@ -72,12 +72,20 @@ const CategoryProductsPage = () => {
         const prices = allProducts.map(p => p.price);
         const minPrice = Math.floor(Math.min(...prices) / 100) * 100;
         const maxPrice = Math.ceil(Math.max(...prices) / 100) * 100;
-        //const materials = Array.from(new Set(allProducts.map(p => p.material).filter(Boolean)));
+        const materials = Array.from(
+          new Set(
+            allProducts
+              .map(p => p.material)
+              .filter(Boolean)
+              .filter((material): material is string => typeof material === 'string')
+          )
+        );
 
-        return {
+
+      return {
             colors,
             sizes,
-            materials: [], // Пока пустой
+            materials,
             priceRange: { min: minPrice, max: maxPrice }
         };
     }, [allProducts]);

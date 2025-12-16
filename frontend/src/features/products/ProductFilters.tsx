@@ -35,6 +35,7 @@ interface ProductFiltersProps {
 const ProductFilters: React.FC<ProductFiltersProps> = ({
         availableColors,
         availableSizes,
+  availableMaterials,
         priceRange,
         onFilterChange,
         currentFilters,
@@ -42,7 +43,10 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const [localFilters, setLocalFilters] = useState<FilterState>(currentFilters);
+    const [localFilters, setLocalFilters] = useState<FilterState>({
+      ...currentFilters,
+      material: currentFilters.material || undefined
+    });
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
@@ -84,6 +88,17 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
         setLocalFilters(newFilters);
         onFilterChange(newFilters);
     };
+
+  const handleMaterialToggle = (material: string) => {
+    const newMaterial = localFilters.material === material ? undefined : material;
+
+    const newFilters: FilterState = {
+      ...localFilters,
+      material: newMaterial
+    };
+    setLocalFilters(newFilters);
+    onFilterChange(newFilters);
+  };
 
     const handlePriceChange = (_: Event, newValue: number | number[]) => {
         if (Array.isArray(newValue) && newValue.length === 2) {
@@ -202,6 +217,32 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                     </Box>
                 </AccordionDetails>
             </Accordion>
+
+          <Accordion defaultExpanded sx={{ boxShadow: 'none', border: '1px solid #e0e0e0', mb: 2 }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>Материал</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {availableMaterials.map(material => (
+                  <Chip
+                    key={material}
+                    label={material}
+                    onClick={() => handleMaterialToggle(material)}
+                    variant={localFilters.material === material ? "filled" : "outlined"}
+                    sx={{
+                      backgroundColor: localFilters.material === material ? '#660033' : 'transparent',
+                      color: localFilters.material === material ? 'white' : 'inherit',
+                      borderColor: '#660033',
+                      '&:hover': {
+                        backgroundColor: localFilters.material === material ? '#550022' : 'rgba(102, 0, 51, 0.08)',
+                      },
+                    }}
+                  />
+                ))}
+              </Box>
+            </AccordionDetails>
+          </Accordion>
 
             <Accordion defaultExpanded sx={{
                 boxShadow: 'none',

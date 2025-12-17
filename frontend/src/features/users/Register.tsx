@@ -10,10 +10,11 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {clearLoginError, clearRegisterError, selectRegisterError, selectRegisterLoading} from "./usersSlice";
+import { clearRegisterError, selectRegisterError, selectRegisterLoading} from "./usersSlice";
 import { registerThunk } from "./usersThunks";
 import type { RegisterMutation } from "../../types";
 import { useTranslation } from "react-i18next";
+import PhoneInput from "../cart/components/PhoneInput.tsx";
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -45,6 +46,11 @@ const Register = () => {
     dispatch(clearRegisterError());
 
     setState((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const phoneChangeHandler = (value: string) => {
+    dispatch(clearRegisterError());
+    setState((prevState) => ({ ...prevState, phoneNumber: value }));
   };
 
   const submitFormHandler = async (e: FormEvent) => {
@@ -116,33 +122,13 @@ const Register = () => {
             }}
           />
 
-          <TextField
-            required
-            fullWidth
-            type="phoneNumber"
-            label={t("phoneNumber")}
-            name="phoneNumber"
+          <PhoneInput
             value={state.phoneNumber}
-            onChange={inputChangeHandler}
-            autoComplete="new-phoneNumber"
+            onChange={phoneChangeHandler}
             error={Boolean(getFieldError("phoneNumber"))}
             helperText={getFieldError("phoneNumber")}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#660033",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#F0544F",
-                },
-                "&:active fieldset": {
-                  borderColor: "#F0544F",
-                },
-              },
-              "& .MuiInputLabel-root": {
-                color: "#660033",
-              },
-            }}
+            label={t("phoneNumber")}
+            required
           />
           <Button
             type="submit"

@@ -16,6 +16,7 @@ import {
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import {useTranslation} from "react-i18next";
 import { fetchCart } from "../cart/cartThunks";
+import PhoneInput from "../cart/components/PhoneInput.tsx";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -44,6 +45,10 @@ const Login = () => {
   const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
     setState((prevState) => ({...prevState, [name]: value}));
+  };
+
+  const phoneChangeHandler = (value: string) => {
+    setState((prevState) => ({...prevState, phoneNumber: value}));
   };
 
   const submitFormHandler = async (e: FormEvent) => {
@@ -114,30 +119,13 @@ const Login = () => {
                   },
                 }}
             />
-            <TextField
-                required
-                fullWidth
-                type="phoneNumber"
-                label={t("phoneNumber")}
-                name="phoneNumber"
-                value={state.phoneNumber}
-                onChange={inputChangeHandler}
-                autoComplete="current-password"
-                error={Boolean(getFieldError("phoneNumber"))}
-                helperText={getFieldError("phoneNumber")}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#660033",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#F0544F",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#660033",
-                  },
-                }}
+            <PhoneInput
+              value={state.phoneNumber}
+              onChange={phoneChangeHandler}
+              error={Boolean(getFieldError("phoneNumber"))}
+              helperText={getFieldError("phoneNumber")}
+              label={t("phoneNumber")}
+              required
             />
             <Button
                 type="submit"

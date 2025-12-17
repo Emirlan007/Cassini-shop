@@ -57,4 +57,27 @@ export class AnalyticsController {
 
     return this.analyticsService.getProductMetrics(fromDate, toDate);
   }
+
+  @Get('orders')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getOrdersMetrics(
+    @Query('period') period?: 'day' | 'week' | 'month' | 'year' | 'all',
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    let fromDate: Date;
+    let toDate: Date;
+
+    if (period) {
+      ({ fromDate, toDate } = getRangeByPeriod(period));
+    } else if (from && to) {
+      fromDate = getStartOfDay(new Date(from));
+      toDate = getEndOfDay(new Date(to));
+    } else {
+      ({ fromDate, toDate } = getYesterdayRange());
+    }
+
+    return this.analyticsService.getOrderMetrics(fromDate, toDate);
+  }
 }

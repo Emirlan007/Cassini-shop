@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
@@ -67,9 +68,10 @@ export class OrdersController {
   async createOrder(
     @Body() orderData: CreateOrderDto,
     @Req() req: RequestWithUser,
+    @Headers('session-id') sessionId: string,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.ordersService.create(orderData, req.user.id);
+    return this.ordersService.create(orderData, req.user.id, sessionId);
   }
 
   @UseGuards(TokenAuthGuard)

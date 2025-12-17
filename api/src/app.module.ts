@@ -51,7 +51,6 @@ import { AnalyticsModule } from './analytics/analytics.module';
     ProductsController,
     BannersController,
     CategoriesController,
-    OrdersController,
     CartController,
   ],
   providers: [
@@ -61,7 +60,6 @@ import { AnalyticsModule } from './analytics/analytics.module';
     UserService,
     BannerService,
     CategoriesService,
-    OrderService,
     CartService,
   ],
 })

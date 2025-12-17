@@ -27,25 +27,25 @@ const OrderCard = ({ order, onClick }: Props) => {
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
-      case 'paid':
-        return 'success';
-      case 'cancelled':
-        return 'error';
-      case 'pending':
+      case "paid":
+        return "success";
+      case "cancelled":
+        return "error";
+      case "pending":
       default:
-        return 'warning';
+        return "warning";
     }
   };
 
   const getPaymentStatusText = (status: string) => {
     switch (status) {
-      case 'paid':
-        return 'Оплачен';
-      case 'cancelled':
-        return 'Отменен';
-      case 'pending':
+      case "paid":
+        return "Оплачен";
+      case "cancelled":
+        return "Отменен";
+      case "pending":
       default:
-        return 'Ожидает оплаты';
+        return "Ожидает оплаты";
     }
   };
 
@@ -57,6 +57,9 @@ const OrderCard = ({ order, onClick }: Props) => {
       border="1px solid #ccc"
       borderRadius={2}
       sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
         cursor: "pointer",
         transition: "all 0.2s",
         "&:hover": {
@@ -72,24 +75,26 @@ const OrderCard = ({ order, onClick }: Props) => {
         justifyContent="space-between"
         alignItems={{ sm: "center" }}
         mb={1}
-        gap={0.5}
+        gap={1}
       >
-        <Typography variant="subtitle2">
+        <Typography variant="subtitle2" flexGrow={1} sx={{ order: 1 }}>
           {t("orderNumber")}
           {order._id}
         </Typography>
 
-          <Box display="flex" alignItems="center" gap={1}>
-              <Chip
-                  label={getPaymentStatusText(order.paymentStatus)}
-                  color={getPaymentStatusColor(order.paymentStatus)}
-                  size="small"
-              />
+        <Chip
+          label={getPaymentStatusText(order.paymentStatus)}
+          color={getPaymentStatusColor(order.paymentStatus)}
+          size="small"
+          sx={{
+            maxWidth: "max-content",
+            order: { xs: 3, sm: 2 },
+          }}
+        />
 
-            <Typography variant="subtitle2">
-            {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-            </Typography>
-          </Box>
+        <Typography variant="subtitle2" sx={{ order: { xs: 2, sm: 3 } }}>
+          {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
+        </Typography>
       </Box>
 
       {order.items.map((item, index) => (
@@ -99,7 +104,6 @@ const OrderCard = ({ order, onClick }: Props) => {
           flexDirection={{ xs: "column", sm: "row" }}
           alignItems={{ xs: "flex-start", sm: "center" }}
           gap={2}
-          mb={1}
         >
           {item.image && (
             <img
@@ -113,74 +117,81 @@ const OrderCard = ({ order, onClick }: Props) => {
               }}
             />
           )}
-          <Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 0.5,
+            }}
+          >
             <Typography>{item.title}</Typography>
             <Typography variant="body2">
-              {t("color")}: {item.selectedColor}
+              <strong>{t("color")}</strong>: {item.selectedColor}
             </Typography>
             <Typography variant="body2">
-              {t("size")}: {item.selectedSize}
+              <strong>{t("size")}</strong>: {item.selectedSize}
             </Typography>
             <Typography variant="body2">
-              {t("price")}: {item.price} сом
+              <strong>{t("price")}</strong>: {item.price} сом
             </Typography>
             <Typography variant="body2">
-              {t("quantity")}: {item.quantity}
+              <strong>{t("quantity")}</strong>: {item.quantity}
             </Typography>
             <Typography variant="body2">
-              {t("total")}: {item.price * item.quantity} сом
+              <strong>{t("total")}</strong>: {item.price * item.quantity} сом
             </Typography>
           </Box>
         </Box>
       ))}
 
-      {user?.role !== 'admin' && (
-        <Box mt={1}>
-          <Typography variant="body2">
-            <strong>Статус оплаты:</strong> {getPaymentStatusText(order.paymentStatus)}
-          </Typography>
-        </Box>
-      )}
-
       {order.userComment && order.userComment.trim() !== "" && (
         <Stack>
           <Typography variant="body1">Комментарий</Typography>
-          <Typography variant="body2">{order.userComment}</Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              background: "#dddddd",
+              borderRadius: 1,
+              p: 0.5,
+            }}
+          >
+            {order.userComment}
+          </Typography>
         </Stack>
       )}
 
       <Box
-          sx={{
-            width: "100%",
-            background: theme.palette.secondary.main,
-            py: "1rem",
-            borderRadius: "10%",
-          }}
+        sx={{
+          width: "100%",
+          background: theme.palette.secondary.main,
+          py: "1rem",
+          borderRadius: "10%",
+        }}
       >
         <Stepper
-            activeStep={Object.values(DeliveryStatus).indexOf(
-                order.deliveryStatus
-            ) + 1}
-            alternativeLabel
+          activeStep={
+            Object.values(DeliveryStatus).indexOf(order.deliveryStatus) + 1
+          }
+          alternativeLabel
         >
           {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel
-                    sx={{
-                      "& .MuiStepLabel-label": {
-                        color: "white !important",
-                      },
-                      "& .MuiStepIcon-root": {
-                        color: "white",
-                      },
-                      "& .MuiStepIcon-text": {
-                        fill: theme.palette.secondary.main,
-                      },
-                    }}
-                >
-                  {label}
-                </StepLabel>
-              </Step>
+            <Step key={label}>
+              <StepLabel
+                sx={{
+                  "& .MuiStepLabel-label": {
+                    color: "white !important",
+                  },
+                  "& .MuiStepIcon-root": {
+                    color: "white",
+                  },
+                  "& .MuiStepIcon-text": {
+                    fill: theme.palette.secondary.main,
+                  },
+                }}
+              >
+                {label}
+              </StepLabel>
+            </Step>
           ))}
         </Stepper>
       </Box>

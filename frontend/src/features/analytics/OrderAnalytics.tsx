@@ -6,7 +6,9 @@ import {
   Card,
   CardContent,
   ToggleButtonGroup,
-  ToggleButton
+  ToggleButton,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   LineChart,
@@ -16,14 +18,17 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import {useAppDispatch, useAppSelector} from "../../app/hooks.ts";
-import {fetchOrderAnalytics} from "./orderAnalyticsThunks.ts";
+import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
+import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
 
 const OrderAnalytics = () => {
   const dispatch = useAppDispatch();
   const { data, loading } = useAppSelector(
     (state) => state.orderAnalytics
   );
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [period, setPeriod] = useState<
     "day" | "week" | "month" | "year" | "all"
@@ -38,8 +43,18 @@ const OrderAnalytics = () => {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4" fontWeight={600} gutterBottom>
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3, md: 4 },
+        maxWidth: '100%',
+        overflowX: 'hidden',
+      }}
+    >
+      <Typography
+        variant={isMobile ? "h5" : "h4"}
+        fontWeight={600}
+        gutterBottom
+      >
         Аналитика заказов
       </Typography>
 
@@ -47,7 +62,12 @@ const OrderAnalytics = () => {
         value={period}
         exclusive
         onChange={(_, value) => value && setPeriod(value)}
-        sx={{ mb: 4 }}
+        sx={{
+          mb: 4,
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+        }}
       >
         <ToggleButton value="day">Сегодня</ToggleButton>
         <ToggleButton value="week">Неделя</ToggleButton>
@@ -56,75 +76,86 @@ const OrderAnalytics = () => {
         <ToggleButton value="all">Всё время</ToggleButton>
       </ToggleButtonGroup>
 
-      {loading || !data ? (
-        <Typography>Загрузка...</Typography>
-      ) : (
-        <>
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-              <StatCard
-                title="Создано заказов"
-                value={data.totals.ordersCreated}
-              />
-            </Grid>
-            <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-              <StatCard
-                title="Завершено"
-                value={data.totals.ordersCompleted}
-              />
-            </Grid>
-            <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-              <StatCard
-                title="Отменено"
-                value={data.totals.ordersCanceled}
-              />
-            </Grid>
-            <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-              <StatCard
-                title="Выручка"
-                value={`${data.totals.revenue} ₸`}
-              />
-            </Grid>
-          </Grid>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Создано заказов"
+            value={data.totals.ordersCreated}
+          />
+        </Grid>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Завершено"
+            value={data.totals.ordersCompleted}
+          />
+        </Grid>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Отменено"
+            value={data.totals.ordersCanceled}
+          />
+        </Grid>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Выручка"
+            value={`${data.totals.revenue} ₸`}
+          />
+        </Grid>
+      </Grid>
 
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Динамика заказов
-              </Typography>
+      <Card sx={{ overflowX: 'hidden' }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Динамика заказов
+          </Typography>
 
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data.items}>
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="ordersCreated"
-                    name="Создано"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="ordersCompleted"
-                    name="Завершено"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </>
-      )}
+          <ResponsiveContainer width="100%" height={isMobile ? 220 : 300}>
+            <LineChart data={data.items}>
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+                interval={isMobile ? 'preserveStartEnd' : 0}
+              />
+              <YAxis
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+                width={isMobile ? 30 : 40}
+              />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="ordersCreated"
+                name="Создано"
+                strokeWidth={2}
+                dot={!isMobile}
+              />
+              <Line
+                type="monotone"
+                dataKey="ordersCompleted"
+                name="Завершено"
+                strokeWidth={2}
+                dot={!isMobile}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </Box>
   );
 };
 
-const StatCard = ({ title, value }: { title: string; value: string | number }) => (
-  <Card>
+const StatCard = ({
+                    title,
+                    value,
+                  }: {
+  title: string;
+  value: string | number;
+}) => (
+  <Card sx={{ height: '100%' }}>
     <CardContent>
       <Typography variant="body2" color="text.secondary">
         {title}
       </Typography>
-      <Typography variant="h5" fontWeight={600}>
+      <Typography variant="h6" fontWeight={600}>
         {value}
       </Typography>
     </CardContent>

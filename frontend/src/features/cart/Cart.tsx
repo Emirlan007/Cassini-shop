@@ -62,6 +62,11 @@ const Cart = () => {
     setStep(3);
   };
 
+  const prevStep = () => {
+    setStep((prev) => (prev > 1 ? (prev - 1) as 1 | 2 | 3 : prev));
+  };
+
+
   const handleAddressSubmit = async (userData: {
     name: string;
     phoneNumber: string;
@@ -234,21 +239,39 @@ const Cart = () => {
       )}
 
       {step === 2 && (
-        user ? (
-          <CheckoutAddressForm
-            user={user}
-            onSubmit={handleAddressSubmit}
-            loading={updateLoading}
-          />
-        ) : (
-          <CheckoutForm
-            onSubmit={handleRegister}
-            loading={registerLoading}
-          />
-        )
+          <Stack spacing={2}>
+            <Box>
+              <Button variant={'contained'} onClick={prevStep}>
+                Назад
+              </Button>
+            </Box>
+
+            {user ? (
+                <CheckoutAddressForm
+                    user={user}
+                    onSubmit={handleAddressSubmit}
+                    loading={updateLoading}
+                />
+            ) : (
+                <CheckoutForm
+                    onSubmit={handleRegister}
+                    loading={registerLoading}
+                />
+            )}
+          </Stack>
       )}
 
-      {step === 3 && <PaymentStep onCheckout={handleCheckout} />}
+
+      {step === 3 &&
+          <>
+          <Box>
+            <Button variant={'contained'} onClick={prevStep}>
+              Назад
+            </Button>
+          </Box>
+          <PaymentStep onCheckout={handleCheckout} />
+          </>
+      }
     </Stack>
   );
 };

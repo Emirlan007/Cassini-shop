@@ -100,7 +100,7 @@ const AdminOrders = () => {
                 </Typography>
               </Box>
               <Typography variant="subtitle2">
-                {t("total")}: {order.totalPrice}сом
+                {t("total")}: {order.totalPrice} сом
               </Typography>
             </Box>
 
@@ -134,13 +134,13 @@ const AdminOrders = () => {
                     {t("size")}: {item.selectedSize}
                   </Typography>
                   <Typography variant="body2">
-                    {t("price")}: {item.price}сом
+                    {t("price")}: {item.price} сом
                   </Typography>
                   <Typography variant="body2">
                     {t("quantity")}: {item.quantity}
                   </Typography>
                   <Typography variant="body2">
-                    {t("total")}: {item.price * item.quantity}сом
+                    {t("total")}: {item.price * item.quantity} сом
                   </Typography>
                 </Box>
               </Box>

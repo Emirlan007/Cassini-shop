@@ -269,3 +269,21 @@ export interface WishlistState {
 export interface AddToWishlistPayload {
   productId: string;
 }
+
+export interface OrderAnalyticsItem {
+  date: string;
+  ordersCreated: number;
+  ordersCanceled: number;
+  ordersCompleted: number;
+  revenue: number;
+}
+
+export interface OrderAnalyticsResponse {
+  items: OrderAnalyticsItem[];
+  totals: {
+    ordersCreated: number;
+    ordersCanceled: number;
+    ordersCompleted: number;
+    revenue: number;
+  };
+}

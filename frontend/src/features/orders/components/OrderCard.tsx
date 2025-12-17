@@ -122,13 +122,13 @@ const OrderCard = ({ order, onClick }: Props) => {
               {t("size")}: {item.selectedSize}
             </Typography>
             <Typography variant="body2">
-              {t("price")}: {item.price}₸
+              {t("price")}: {item.price} сом
             </Typography>
             <Typography variant="body2">
               {t("quantity")}: {item.quantity}
             </Typography>
             <Typography variant="body2">
-              {t("total")}: {item.price * item.quantity}₸
+              {t("total")}: {item.price * item.quantity} сом
             </Typography>
           </Box>
         </Box>

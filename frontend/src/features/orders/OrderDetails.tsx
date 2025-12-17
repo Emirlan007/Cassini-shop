@@ -144,9 +144,9 @@ const OrderDetails = () => {
           flexDirection={{ xs: "column", sm: "row" }}
           justifyContent="space-between"
           alignItems={{ sm: "center" }}
-          mb={3}
+          mb={4}
         >
-          <Typography variant="h6" fontWeight="bold">
+          <Typography mb={2} variant="h6" fontWeight="bold">
             {t("orderNumber")}
             {order._id}
           </Typography>
@@ -156,7 +156,7 @@ const OrderDetails = () => {
           </Typography>
         </Box>
 
-        <Box mb={2} display="flex" alignItems="center" gap={2}>
+        <Box mb={4} display="flex" alignItems="center" gap={2}>
           <Typography variant="body1" fontWeight="bold">
             Статус оплаты:
           </Typography>
@@ -182,7 +182,7 @@ const OrderDetails = () => {
               </Alert>
             )}
 
-            <Box display="flex" gap={2} alignItems="center">
+            <Box display="flex" flexWrap={'wrap'} gap={2} alignItems="center">
               <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel>Статус оплаты</InputLabel>
                 <Select
@@ -210,27 +210,11 @@ const OrderDetails = () => {
 
         {user?.role === "admin" && order.user && (
           <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
               {t("customerInfo")}
             </Typography>
 
-            <Typography variant="body1">
-              <b>{t("displayName")}:</b> {order.user.name}
-            </Typography>
-
-            <Typography variant="body1">
-              <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
-            </Typography>
-          </Box>
-        )}
-
-        {user?.role === "admin" && order.user && (
-          <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              {t("customerInfo")}
-            </Typography>
-
-            <Typography variant="body1">
+            <Typography variant="body1" mb={1}>
               <b>{t("displayName")}:</b> {order.user.name}
             </Typography>
 
@@ -291,7 +275,7 @@ const OrderDetails = () => {
                 {t("size")}: {item.selectedSize}
               </Typography>
               <Typography variant="body2" sx={{ mb: 0.5 }}>
-                {t("price")}: {item.price}₸
+                {t("price")}: {item.price} сом
               </Typography>
 
               <Typography variant="body2" sx={{ mb: 0.5 }}>
@@ -310,7 +294,7 @@ const OrderDetails = () => {
         >
           <Typography variant="h6">{t("total")}:</Typography>
           <Typography variant="h5" fontWeight="bold">
-            {order.totalPrice}₸
+            {order.totalPrice} сом
           </Typography>
         </Box>
 
@@ -337,7 +321,8 @@ const OrderDetails = () => {
               onSubmit={handleUserCommentSubmit}
               component="form"
               direction="row"
-              spacing={1}
+              flexWrap={'wrap'}
+              gap={1}
               mt={3}
             >
               <TextField
@@ -381,7 +366,8 @@ const OrderDetails = () => {
             onSubmit={handleAdminCommentSubmit}
             component="form"
             direction="row"
-            spacing={1}
+            flexWrap={'wrap'}
+            gap={1}
             mt={3}
           >
             <TextField

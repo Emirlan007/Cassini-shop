@@ -30,11 +30,6 @@ export class OrdersController {
     return this.ordersService.getMyOrders(req.user.id);
   }
 
-  @Get(':id')
-  getOrderById(@Param('id') id: string) {
-    return this.ordersService.findOne(id);
-  }
-
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Get('admin/orders')
@@ -44,9 +39,28 @@ export class OrdersController {
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
+  @Get('admin/count-by-status')
+  async getOrdersCountByStatus() {
+    return this.ordersService.getOrdersCountByStatus();
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Get('admin/count-by-status-today')
+  async getOrdersCountByStatusToday() {
+    return this.ordersService.getOrdersCountByStatusToday();
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get('admin/user/:userId')
   async getUserOrders(@Param('userId') userId: string) {
     return this.ordersService.getUserOrders(userId);
+  }
+
+  @Get(':id')
+  getOrderById(@Param('id') id: string) {
+    return this.ordersService.findOne(id);
   }
 
   @UseGuards(TokenAuthGuard)

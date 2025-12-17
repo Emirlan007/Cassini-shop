@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosApi } from "../../axiosApi";
-import type { OrderAnalyticsResponse } from "../../types";
+import { axiosApi } from "../../../axiosApi.ts";
+import type { OrderAnalyticsResponse } from "../../../types";
 import { isAxiosError } from "axios";
 
 export const fetchOrderAnalytics = createAsyncThunk<

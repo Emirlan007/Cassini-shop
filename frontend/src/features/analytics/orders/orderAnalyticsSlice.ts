@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchOrderAnalytics } from "./orderAnalyticsThunks";
-import type { OrderAnalyticsResponse } from "../../types";
+import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
+import type { OrderAnalyticsResponse } from "../../../types";
 
 interface OrderAnalyticsState {
   data: OrderAnalyticsResponse | null;

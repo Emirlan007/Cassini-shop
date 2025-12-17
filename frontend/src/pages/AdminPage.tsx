@@ -57,6 +57,12 @@ const AdminPage = () => {
         icon: <AnalyticsIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
         description: 'Статистика и графики заказов',
       },
+      {
+        title: 'Аналитика товаров',
+        path: '/admin/analytics/products',
+        icon: <AnalyticsIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+        description: 'Статистика и таблица товаров',
+      },
     ];
 
     return (

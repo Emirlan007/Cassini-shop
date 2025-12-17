@@ -9,6 +9,10 @@ import {
   ProductStatsByDaySchema,
 } from './schemas/productStatsByDay.schema';
 import { AnalyticsCron } from './analytics.cron';
+import {
+  OrderStatsByDay,
+  OrderStatsByDaySchema,
+} from './schemas/orderStatsByDay.schema';
 
 @Module({
   imports: [
@@ -16,6 +20,7 @@ import { AnalyticsCron } from './analytics.cron';
       { name: Event.name, schema: EventSchema },
       { name: User.name, schema: UserSchema },
       { name: ProductStatsByDay.name, schema: ProductStatsByDaySchema },
+      { name: OrderStatsByDay.name, schema: OrderStatsByDaySchema },
     ]),
   ],
   controllers: [AnalyticsController],

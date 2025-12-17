@@ -7,6 +7,7 @@ import { Product, ProductSchema } from '../schemas/product.schema';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { User, UserSchema } from 'src/schemas/user.schema';
 import { TokenAuthGuard } from 'src/auth/token-auth.guard';
+import { Event, EventSchema } from 'src/analytics/schemas/event.schema';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { TokenAuthGuard } from 'src/auth/token-auth.guard';
       { name: Order.name, schema: OrderSchema },
       { name: Product.name, schema: ProductSchema },
       { name: User.name, schema: UserSchema },
+      { name: Event.name, schema: EventSchema },
     ]),
   ],
   controllers: [OrdersController],

@@ -11,6 +11,7 @@ import { CreateOrderDto } from './dto/create-order-dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
 import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
 import { OrderStatus } from '../enums/order.enum';
+import { Event, EventDocument } from 'src/analytics/schemas/event.schema';
 
 @Injectable()
 export class OrderService {
@@ -19,6 +20,8 @@ export class OrderService {
     private orderModel: Model<OrderDocument>,
     @InjectModel(Product.name)
     private productModel: Model<ProductDocument>,
+    @InjectModel(Event.name)
+    private eventModel: Model<EventDocument>,
     private fileUploadService: FileUploadService,
   ) {}
 
@@ -85,7 +88,11 @@ export class OrderService {
     return order;
   }
 
-  async create(createOrderDto: CreateOrderDto, userId: string) {
+  async create(
+    createOrderDto: CreateOrderDto,
+    userId: string,
+    sessionId: string,
+  ) {
     const { items, paymentMethod, status, userComment } = createOrderDto;
 
     const processedItems = await Promise.all(
@@ -131,6 +138,13 @@ export class OrderService {
     });
 
     await createdOrder.save();
+
+    await this.eventModel.create({
+      type: 'order_created',
+      userId,
+      sessionId,
+      orderId: createdOrder._id,
+    });
 
     return {
       message: 'Order created',

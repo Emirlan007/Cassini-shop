@@ -16,6 +16,8 @@ export interface AdminUser {
   phoneNumber: string;
   role: string;
   avatar?: string;
+  city:string,
+  address:string
 }
 
 export interface RegisterMutation {

@@ -125,9 +125,23 @@ const OrderCard = ({ order, onClick }: Props) => {
             }}
           >
             <Typography>{item.title}</Typography>
-            <Typography variant="body2">
-              <strong>{t("color")}</strong>: {item.selectedColor}
-            </Typography>
+
+     
+
+             <Box component="div" sx={{display:"flex", gap:1, alignItems:"center"}}>
+                    <Typography variant="body2"><strong>{t("color")}:</strong></Typography>
+                    <Box
+                      component="div"
+                      sx={{
+                        background: `${item.selectedColor}`,
+                        height: "1rem",
+                        width: "1rem",
+                        borderRadius: "50%",
+                        display: "",
+                      }}
+                    />
+                  </Box>
+
             <Typography variant="body2">
               <strong>{t("size")}</strong>: {item.selectedSize}
             </Typography>

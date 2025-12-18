@@ -132,7 +132,7 @@ const User = () => {
                <Divider></Divider>
             <Grid sx={{ xs: 12, sm: 6 }}>
               <Typography>
-                <strong>Adress:</strong> {user.address}
+                <strong>Address:</strong> {user.address}
               </Typography>
             </Grid>
             

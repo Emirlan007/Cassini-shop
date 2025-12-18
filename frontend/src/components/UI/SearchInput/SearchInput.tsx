@@ -1,16 +1,26 @@
-import {Box, Collapse, IconButton, TextField} from "@mui/material";
+import { Box, Collapse, IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-import {useEffect, useRef, useState} from "react";
-import {useDebouncedCallback} from "use-debounce";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { useNavigate } from "react-router-dom";
+
+const getSessionId = () => {
+  let sessionId = localStorage.getItem("sessionId");
+
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("sessionId", sessionId);
+  }
+
+  return sessionId;
+};
 
 const SearchInput = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
   const [searchProduct, setSearchProduct] = useState("");
+  const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
 
   const openSearchInput = () => {
     setIsSearchOpen(true);
@@ -24,7 +34,34 @@ const SearchInput = () => {
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchProduct(value);
-    debouncedSearch();
+    debouncedSearch(value);
+  };
+
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    if (value.length >= 2 || value.length === 0) {
+      navigate(`/search?q=${encodeURIComponent(value)}`);
+    }
+  }, 500);
+
+  const confirmSearch = () => {
+    const query = searchProduct.trim();
+    if (!query) return;
+
+    fetch("/analytics/event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "search_query",
+        sessionId: getSessionId(),
+        payload: {
+          query,
+        },
+      }),
+    });
+
+    navigate(`/search?q=${encodeURIComponent(query)}`);
   };
 
   useEffect(() => {
@@ -45,12 +82,6 @@ const SearchInput = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isSearchOpen]);
-
-  const debouncedSearch = useDebouncedCallback(() => {
-    if (searchProduct.length >= 2 || searchProduct.length === 0) {
-      navigate(`/search?q=${encodeURIComponent(searchProduct)}`);
-    }
-  }, 500);
 
   return (
       <Box
@@ -84,8 +115,13 @@ const SearchInput = () => {
               placeholder="Поиск товаров..."
               size="small"
               fullWidth
-              onChange={handleSearchInput}
               value={searchProduct}
+              onChange={handleSearchInput}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  confirmSearch();
+                }
+              }}
               sx={{
                 "& fieldset": { border: "none" },
                 backgroundColor: "white",

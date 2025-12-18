@@ -326,7 +326,12 @@ const ProductForm = ({onSubmit, loading}: Props) => {
                 <ImageList cols={5} rowHeight={140}>
                   {state.images.map((image, index) => (
                       <Stack key={index}>
-                        <ImageListItem>
+                        <ImageListItem
+                            sx={{
+                              height: 140,
+                              overflow: 'hidden',
+                            }}
+                        >
                           <img src={URL.createObjectURL(image)}/>
                         </ImageListItem>
                         <Button

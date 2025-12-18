@@ -9,6 +9,7 @@ import {
   Grid,
   Container,
   Button,
+  Divider,
 } from "@mui/material";
 import { fetchAllUsers } from "./usersThunks";
 import { selectUsers, selectIsLoading } from "./usersSlice";
@@ -103,22 +104,38 @@ const User = () => {
           <Typography variant="h6" gutterBottom>
             Основная информация
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{flexDirection:"column"}}>
             <Grid sx={{ xs: 12, sm: 6 }}>
               <Typography>
                 <strong>Имя:</strong> {user.name}
               </Typography>
+            
             </Grid>
+              <Divider></Divider>
             <Grid sx={{ xs: 12, sm: 6 }}>
               <Typography>
                 <strong>Телефон:</strong> {user.phoneNumber}
               </Typography>
             </Grid>
+               <Divider></Divider>
             <Grid sx={{ xs: 12, sm: 6 }}>
               <Typography>
                 <strong>ID:</strong> {user._id}
               </Typography>
             </Grid>
+               <Divider></Divider>
+             <Grid sx={{ xs: 12, sm: 6 }}>
+              <Typography>
+                <strong>City:</strong> {user.city}
+              </Typography>
+            </Grid>
+               <Divider></Divider>
+            <Grid sx={{ xs: 12, sm: 6 }}>
+              <Typography>
+                <strong>Adress:</strong> {user.address}
+              </Typography>
+            </Grid>
+            
           </Grid>
         </Box>
 

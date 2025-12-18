@@ -10,10 +10,13 @@ import { addUserCommentToOrder, fetchOrderById } from "./ordersThunk";
 import {
   Alert,
   Box,
-  Button, Chip,
+  Button,
+  Chip,
   CircularProgress,
   FormControl,
-  InputLabel, MenuItem, Select,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -22,18 +25,23 @@ import { API_URL } from "../../constants";
 import { useTranslation } from "react-i18next";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { selectUser } from "../users/usersSlice.ts";
-import {addAdminCommentToOrder, updateOrderPaymentStatusThunk} from "./admin/ordersThunks.ts";
+import {
+  addAdminCommentToOrder,
+  updateOrderPaymentStatusThunk,
+} from "./admin/ordersThunks.ts";
 import {
   clearPaymentStatusError,
   selectCreateAdminCommentLoading,
   selectUpdatePaymentStatusError,
-  selectUpdatePaymentStatusLoading
+  selectUpdatePaymentStatusLoading,
 } from "./admin/ordersSlice.ts";
 
 const OrderDetails = () => {
   const [userComment, setUserComment] = useState("");
   const [adminComment, setAdminComment] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'paid' | 'cancelled'>('pending');
+  const [paymentStatus, setPaymentStatus] = useState<
+    "pending" | "paid" | "cancelled"
+  >("pending");
 
   const dispatch = useAppDispatch();
   const order = useAppSelector(selectOrderDetails);
@@ -44,8 +52,12 @@ const OrderDetails = () => {
   const createAdminCommentLoading = useAppSelector(
     selectCreateAdminCommentLoading
   );
-  const updatePaymentStatusLoading = useAppSelector(selectUpdatePaymentStatusLoading);
-  const updatePaymentStatusError = useAppSelector(selectUpdatePaymentStatusError);
+  const updatePaymentStatusLoading = useAppSelector(
+    selectUpdatePaymentStatusLoading
+  );
+  const updatePaymentStatusError = useAppSelector(
+    selectUpdatePaymentStatusError
+  );
   const navigate = useNavigate();
   const { t } = useTranslation();
   const user = useAppSelector(selectUser);
@@ -83,25 +95,25 @@ const OrderDetails = () => {
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
-      case 'paid':
-        return 'success';
-      case 'cancelled':
-        return 'error';
-      case 'pending':
+      case "paid":
+        return "success";
+      case "cancelled":
+        return "error";
+      case "pending":
       default:
-        return 'warning';
+        return "warning";
     }
   };
 
   const getPaymentStatusText = (status: string) => {
     switch (status) {
-      case 'paid':
-        return 'Оплачен';
-      case 'cancelled':
-        return 'Отменен';
-      case 'pending':
+      case "paid":
+        return "Оплачен";
+      case "cancelled":
+        return "Отменен";
+      case "pending":
       default:
-        return 'Ожидает оплаты';
+        return "Ожидает оплаты";
     }
   };
 
@@ -182,13 +194,17 @@ const OrderDetails = () => {
               </Alert>
             )}
 
-            <Box display="flex" flexWrap={'wrap'} gap={2} alignItems="center">
+            <Box display="flex" flexWrap={"wrap"} gap={2} alignItems="center">
               <FormControl sx={{ minWidth: 200 }}>
                 <InputLabel>Статус оплаты</InputLabel>
                 <Select
                   value={paymentStatus}
                   label="Статус оплаты"
-                  onChange={(e) => setPaymentStatus(e.target.value as 'pending' | 'paid' | 'cancelled')}
+                  onChange={(e) =>
+                    setPaymentStatus(
+                      e.target.value as "pending" | "paid" | "cancelled"
+                    )
+                  }
                 >
                   <MenuItem value="pending">Ожидает оплаты</MenuItem>
                   <MenuItem value="paid">Оплачен</MenuItem>
@@ -199,7 +215,10 @@ const OrderDetails = () => {
               <Button
                 variant="contained"
                 onClick={handlePaymentStatusChange}
-                disabled={paymentStatus === order.paymentStatus || updatePaymentStatusLoading}
+                disabled={
+                  paymentStatus === order.paymentStatus ||
+                  updatePaymentStatusLoading
+                }
                 loading={updatePaymentStatusLoading}
               >
                 Обновить
@@ -267,9 +286,23 @@ const OrderDetails = () => {
                 <b>{item.title}</b>
               </Typography>
 
-              <Typography variant="body2" sx={{ mb: 0.5 }}>
-                {t("color")}: {item.selectedColor}
-              </Typography>
+        
+              <Box
+                component="div"
+                sx={{ display: "flex", gap: 1, alignItems: "center" }}
+              >
+                <Typography variant="body2">{t("color")}:</Typography>
+                <Box
+                  component="div"
+                  sx={{
+                    background: `${item.selectedColor}`,
+                    height: "1rem",
+                    width: "1rem",
+                    borderRadius: "50%",
+                    display: "",
+                  }}
+                />
+              </Box>
 
               <Typography variant="body2" sx={{ mb: 0.5 }}>
                 {t("size")}: {item.selectedSize}
@@ -321,7 +354,7 @@ const OrderDetails = () => {
               onSubmit={handleUserCommentSubmit}
               component="form"
               direction="row"
-              flexWrap={'wrap'}
+              flexWrap={"wrap"}
               gap={1}
               mt={3}
             >
@@ -366,7 +399,7 @@ const OrderDetails = () => {
             onSubmit={handleAdminCommentSubmit}
             component="form"
             direction="row"
-            flexWrap={'wrap'}
+            flexWrap={"wrap"}
             gap={1}
             mt={3}
           >

@@ -53,7 +53,7 @@ export class OrderService {
   async getUserOrders(userId: string) {
     const orders = await this.orderModel
       .find({ user: userId })
-      .populate('user', 'email name')
+      .populate('user', 'email name city address')
       .sort({ createdAt: -1 })
       .exec();
 

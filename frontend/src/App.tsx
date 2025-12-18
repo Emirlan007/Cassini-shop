@@ -31,6 +31,8 @@ import AdminPage from "./pages/AdminPage.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage.tsx";
 import "./index.css"
 import Wishlist from "./features/wishlist/Wishlist.tsx";
+import OrderAnalytics from "./features/analytics/orders/OrderAnalytics.tsx";
+import ProductAnalytics from "./features/analytics/products/ProductAnalytics.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -142,11 +144,27 @@ const App = () => {
                     </ProtectedRoute>
                 }
             />
-           <Route
+          <Route
             path="/admin/orders"
             element={
               <ProtectedRoute isAllowed={user && user.role === "admin"}>
              <AdminOrders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics/orders"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <OrderAnalytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics/products"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <ProductAnalytics />
               </ProtectedRoute>
             }
           />

@@ -1,0 +1,165 @@
+import { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  ToggleButtonGroup,
+  ToggleButton,
+  useTheme,
+  useMediaQuery,
+} from '@mui/material';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
+
+const OrderAnalytics = () => {
+  const dispatch = useAppDispatch();
+  const { data, loading } = useAppSelector(
+    (state) => state.orderAnalytics
+  );
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [period, setPeriod] = useState<
+    "day" | "week" | "month" | "year" | "all"
+  >("week");
+
+  useEffect(() => {
+    dispatch(fetchOrderAnalytics({ period }));
+  }, [dispatch, period]);
+
+  if (loading || !data) {
+    return <Typography>Загрузка...</Typography>;
+  }
+
+  return (
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3, md: 4 },
+        maxWidth: '100%',
+        overflowX: 'hidden',
+      }}
+    >
+      <Typography
+        variant={isMobile ? "h5" : "h4"}
+        fontWeight={600}
+        gutterBottom
+      >
+        Аналитика заказов
+      </Typography>
+
+      <ToggleButtonGroup
+        value={period}
+        exclusive
+        onChange={(_, value) => value && setPeriod(value)}
+        sx={{
+          mb: 4,
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+        }}
+      >
+        <ToggleButton value="day">Сегодня</ToggleButton>
+        <ToggleButton value="week">Неделя</ToggleButton>
+        <ToggleButton value="month">Месяц</ToggleButton>
+        <ToggleButton value="year">Год</ToggleButton>
+        <ToggleButton value="all">Всё время</ToggleButton>
+      </ToggleButtonGroup>
+
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Создано заказов"
+            value={data.totals.ordersCreated}
+          />
+        </Grid>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Завершено"
+            value={data.totals.ordersCompleted}
+          />
+        </Grid>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Отменено"
+            value={data.totals.ordersCanceled}
+          />
+        </Grid>
+        <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard
+            title="Выручка"
+            value={`${data.totals.revenue} ₸`}
+          />
+        </Grid>
+      </Grid>
+
+      <Card sx={{ overflowX: 'hidden' }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Динамика заказов
+          </Typography>
+
+          <ResponsiveContainer width="100%" height={isMobile ? 220 : 300}>
+            <LineChart data={data.items}>
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+                interval={isMobile ? 'preserveStartEnd' : 0}
+              />
+              <YAxis
+                tick={{ fontSize: isMobile ? 10 : 12 }}
+                width={isMobile ? 30 : 40}
+              />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="ordersCreated"
+                name="Создано"
+                strokeWidth={2}
+                dot={!isMobile}
+              />
+              <Line
+                type="monotone"
+                dataKey="ordersCompleted"
+                name="Завершено"
+                strokeWidth={2}
+                dot={!isMobile}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+};
+
+const StatCard = ({
+                    title,
+                    value,
+                  }: {
+  title: string;
+  value: string | number;
+}) => (
+  <Card sx={{ height: '100%' }}>
+    <CardContent>
+      <Typography variant="body2" color="text.secondary">
+        {title}
+      </Typography>
+      <Typography variant="h6" fontWeight={600}>
+        {value}
+      </Typography>
+    </CardContent>
+  </Card>
+);
+
+export default OrderAnalytics;

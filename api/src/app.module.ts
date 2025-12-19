@@ -18,8 +18,6 @@ import { Category, CategorySchema } from './schemas/category.schema';
 import { CategoriesController } from './categories/categories.controller';
 import { CategoriesService } from './categories/categories.service';
 import { Order, OrderSchema } from './schemas/order.schema';
-import { OrdersController } from './orders/orders.controller';
-import { OrderService } from './orders/orders.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrdersModule } from './orders/orders.module';
 import { CartService } from './cart/cart.service';
@@ -27,6 +25,7 @@ import { CartController } from './cart/cart.controller';
 import { Cart, CartSchema } from './schemas/cart.schema';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { SearchQueriesModule } from './search/search-query.module';
 
 @Module({
   imports: [
@@ -45,6 +44,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     OrdersModule,
     WishlistModule,
     AnalyticsModule,
+    SearchQueriesModule,
   ],
   controllers: [
     UsersController,

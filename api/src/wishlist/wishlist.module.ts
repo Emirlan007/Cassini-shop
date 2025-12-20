@@ -5,6 +5,7 @@ import { WishlistService } from './wishlist.service';
 import { Wishlist, WishlistSchema } from '../schemas/wishlist.schema';
 import { Product, ProductSchema } from '../schemas/product.schema';
 import { User, UserSchema } from '../schemas/user.schema';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -13,9 +14,13 @@ import { User, UserSchema } from '../schemas/user.schema';
       { name: Product.name, schema: ProductSchema },
       { name: User.name, schema: UserSchema },
     ]),
+    AuthModule,
   ],
   controllers: [WishlistController],
   providers: [WishlistService],
-  exports: [WishlistService],
+  exports: [
+    WishlistService,
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+  ],
 })
 export class WishlistModule {}

@@ -32,7 +32,7 @@ export class CreateEventDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  qty?: string;
+  qty?: number;
 
   @IsOptional()
   payload?: Record<string, unknown>;

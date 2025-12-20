@@ -6,8 +6,8 @@ export type ProductAnalyticsPeriod = "day" | "week" | "month";
 
 export interface ProductAnalyticsItem {
   productTitle: string;
-  addedToCart: number;
-  addedToWishlist: number;
+  addToCartQty: number;
+  wishlistCount: number;
   views: number;
 }
 

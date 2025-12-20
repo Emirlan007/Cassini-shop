@@ -13,12 +13,14 @@ import {
   OrderStatsByDay,
   OrderStatsByDaySchema,
 } from './schemas/orderStatsByDay.schema';
+import { Product, ProductSchema } from '../schemas/product.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Event.name, schema: EventSchema },
       { name: User.name, schema: UserSchema },
+      { name: Product.name, schema: ProductSchema },
       { name: ProductStatsByDay.name, schema: ProductStatsByDaySchema },
       { name: OrderStatsByDay.name, schema: OrderStatsByDaySchema },
     ]),

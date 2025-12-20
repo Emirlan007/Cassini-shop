@@ -25,29 +25,6 @@ export class AnalyticsService {
 
   async trackEvent(dto: CreateEventDto) {
     await this.eventModel.create(dto);
-
-    if (dto.type === EventType.AddToCart && dto.productId) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      await this.productStatsByDayModel.findOneAndUpdate(
-        {
-          productId: dto.productId,
-          date: today,
-        },
-        {
-          $inc: {
-            addToCart: 1,
-            addToCartQty: dto.qty || 1,
-          },
-        },
-        {
-          upsert: true,
-          new: true,
-        },
-      );
-    }
-
     return { status: 'ok' };
   }
 
@@ -97,64 +74,4 @@ export class AnalyticsService {
     };
   }
 
-  ///Aggregation starts EveryDayAt_1_AM
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
-  async aggregateAddToCartStats() {
-    this.logger.log('Starting add_to_cart aggregation...');
-    try {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      yesterday.setHours(0, 0, 0, 0);
-
-      const endOfYesterday = new Date(yesterday);
-      endOfYesterday.setHours(23, 59, 59, 999);
-      const aggregation = await this.eventModel.aggregate([
-        {
-          $match: {
-            type: EventType.AddToCart,
-            createdAt: {
-              $gte: yesterday,
-              $lte: endOfYesterday,
-            },
-            productId: { $exists: true },
-          },
-        },
-        {
-          $group: {
-            _id: '$productId',
-            addToCartCount: { $sum: 1 },
-            addToCartQty: { $sum: { $ifNull: ['$qty', 1] } },
-          },
-        },
-      ]);
-
-      this.logger.log(
-        `Found ${aggregation.length} products with add_to_cart events`,
-      );
-
-      for (const item of aggregation) {
-        await this.productStatsByDayModel.findOneAndUpdate(
-          {
-            productId: item._id,
-            date: yesterday,
-          },
-          {
-            $inc: {
-              addToCart: item.addToCartCount,
-              addToCartQty: item.addToCartQty,
-            },
-          },
-          {
-            upsert: true, // Создать, если не существует
-            new: true,
-          },
-        );
-      }
-
-      this.logger.log('Add_to_cart aggregation completed successfully');
-    } catch (error) {
-      this.logger.error('Error during add_to_cart aggregation:', error);
-      throw error;
-    }
-  }
 }

@@ -80,6 +80,4 @@ export class AnalyticsController {
 
     return this.analyticsService.getOrderMetrics(fromDate, toDate);
   }
-
-  
 }

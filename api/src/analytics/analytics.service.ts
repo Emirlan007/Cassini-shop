@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event } from 'src/analytics/schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
 import { ProductStatsByDay } from './schemas/productStatsByDay.schema';
 import { OrderStatsByDay } from './schemas/orderStatsByDay.schema';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { EventType } from 'src/enums/event.enum';
 import { Product } from '../schemas/product.schema';
 
 type ProductPopulated = {
@@ -13,6 +15,8 @@ type ProductPopulated = {
 
 @Injectable()
 export class AnalyticsService {
+  private readonly logger = new Logger(AnalyticsService.name);
+
   constructor(
     @InjectModel(Event.name)
     private eventModel: Model<Event>,
@@ -29,7 +33,6 @@ export class AnalyticsService {
 
   async trackEvent(dto: CreateEventDto) {
     await this.eventModel.create(dto);
-
     return { status: 'ok' };
   }
 
@@ -89,4 +92,5 @@ export class AnalyticsService {
       totals,
     };
   }
+
 }

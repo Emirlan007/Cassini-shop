@@ -17,7 +17,7 @@ import {
 import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
 import {fetchProductAnalytics, type ProductAnalyticsPeriod} from "./productAnalyticsThunks.ts";
 
-const ProductAnalyticsTable = () => {
+const ProductAnalytics = () => {
   const dispatch = useAppDispatch();
   const { data, loading } = useAppSelector(
     (state) => state.productAnalytics
@@ -61,10 +61,10 @@ const ProductAnalyticsTable = () => {
                 </Typography>
 
                 <Typography variant="body2">
-                  🛒 В корзину: {item.addedToCart}
+                  🛒 В корзину: {item.addToCartQty}
                 </Typography>
                 <Typography variant="body2">
-                  ❤️ Вишлист: {item.addedToWishlist}
+                  ❤️ Вишлист: {item.wishlistCount}
                 </Typography>
                 <Typography variant="body2">
                   👀 Просмотры: {item.views}
@@ -87,8 +87,8 @@ const ProductAnalyticsTable = () => {
             {data.map((item) => (
               <TableRow key={item.productTitle}>
                 <TableCell>{item.productTitle}</TableCell>
-                <TableCell align="right">{item.addedToCart}</TableCell>
-                <TableCell align="right">{item.addedToWishlist}</TableCell>
+                <TableCell align="right">{item.addToCartQty}</TableCell>
+                <TableCell align="right">{item.wishlistCount}</TableCell>
                 <TableCell align="right">{item.views}</TableCell>
               </TableRow>
             ))}
@@ -99,4 +99,4 @@ const ProductAnalyticsTable = () => {
   );
 };
 
-export default ProductAnalyticsTable;
+export default ProductAnalytics;

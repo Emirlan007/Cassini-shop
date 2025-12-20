@@ -15,8 +15,9 @@ import {
 interface AggregatedProduct {
   _id: string;
   views: number;
+  addToCart: number;
+  addToCartQty: number;
   wishlistCount: number;
-  qty_sum: number;
 }
 
 interface AggregatedOrder {
@@ -40,7 +41,7 @@ export class AnalyticsCron {
     private orderStatsByDayModel: Model<OrderStatsByDayDocument>,
   ) {}
 
-  @Cron('5 0 * * *')
+  @Cron('* * * * *')
   async aggregateProductStatsByDay() {
     // const yesterday = new Date();
     // yesterday.setDate(yesterday.getDate() - 1);
@@ -70,6 +71,20 @@ export class AnalyticsCron {
               $cond: [{ $eq: ['$type', 'product_view'] }, 1, 0],
             },
           },
+          addToCart: {
+            $sum: {
+              $cond: [{ $eq: ['$type', 'add_to_cart'] }, 1, 0],
+            },
+          },
+          addToCartQty: {
+            $sum: {
+              $cond: [
+                { $eq: ['$type', 'add_to_cart'] },
+                { $ifNull: ['$qty', 1] },
+                0,
+              ],
+            },
+          },
 
           wishlistCount: {
             $sum: {
@@ -81,6 +96,10 @@ export class AnalyticsCron {
     ]);
 
     for (const item of events) {
+      console.log(
+        `Product ${item._id}: views=${item.views}, cart=${item.addToCart}, wishlist=${item.wishlistCount}`,
+      );
+
       await this.productStatsByDayModel.findOneAndUpdate(
         {
           date: new Date(`${dateStr}T00:00:00.000Z`),
@@ -89,6 +108,8 @@ export class AnalyticsCron {
         {
           $set: {
             views: item.views,
+            addToCart: item.addToCart,
+            addToCartQty: item.addToCartQty,
             wishlistCount: item.wishlistCount,
           },
         },
@@ -99,7 +120,7 @@ export class AnalyticsCron {
     return { status: 'ok' };
   }
 
-  @Cron('10 0 * * *')
+  @Cron('* * * * *')
   async aggregateOrderStatsByDay() {
     // const yesterday = new Date();
     // yesterday.setDate(yesterday.getDate() - 1);

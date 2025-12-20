@@ -7,6 +7,11 @@ import { ProductStatsByDay } from './schemas/productStatsByDay.schema';
 import { OrderStatsByDay } from './schemas/orderStatsByDay.schema';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventType } from 'src/enums/event.enum';
+import { Product } from '../schemas/product.schema';
+
+type ProductPopulated = {
+  name: string;
+};
 
 @Injectable()
 export class AnalyticsService {
@@ -15,6 +20,9 @@ export class AnalyticsService {
   constructor(
     @InjectModel(Event.name)
     private eventModel: Model<Event>,
+
+    @InjectModel(Product.name)
+    private productModel: Model<Product>,
 
     @InjectModel(ProductStatsByDay.name)
     private productStatsByDayModel: Model<ProductStatsByDay>,
@@ -29,15 +37,26 @@ export class AnalyticsService {
   }
 
   async getProductMetrics(from: Date, to: Date) {
-    return this.productStatsByDayModel
+    const stats = await this.productStatsByDayModel
       .find({
-        date: {
-          $gte: from,
-          $lte: to,
-        },
+        date: { $gte: from, $lte: to },
       })
-      .sort({ date: 1 })
+      .populate({
+        path: 'productId',
+        select: 'name',
+      })
       .lean();
+
+    return stats.map((item) => {
+      const product = item.productId as ProductPopulated | null;
+
+      return {
+        productTitle: product?.name ?? 'Удалённый товар',
+        views: item.views ?? 0,
+        addToCartQty: item.addToCartQty ?? 0,
+        wishlistCount: item.wishlistCount ?? 0,
+      };
+    });
   }
 
   async getOrderMetrics(from: Date, to: Date) {

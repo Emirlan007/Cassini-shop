@@ -11,7 +11,7 @@ export async function createProductFixtures(
   const products = [
     {
       name: 'Classic Black Shawl Lapel Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -31,9 +31,9 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket8.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       isPopular: true,
       material: 'silk',
@@ -41,7 +41,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -61,9 +61,9 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket9.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       isPopular: true,
       material: 'silk',
@@ -71,7 +71,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -91,9 +91,9 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket10.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       isPopular: true,
       material: 'silk',
@@ -101,7 +101,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -121,9 +121,9 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket11.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       isPopular: true,
       material: 'silk',
@@ -131,7 +131,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
@@ -149,16 +149,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket12.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'silk',
       inStock: true,
     },
     {
       name: 'Midnight Blue Peak Lapel Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A sophisticated twist on the traditional black, this midnight blue tuxedo commands attention under evening lights. The peak lapels and slim-fit design highlight modern elegance, making it an ideal choice for the man who wants to stand out—subtly.',
       size: ['XS', 'XXL'],
@@ -176,16 +176,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket13.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'silk',
       inStock: false,
     },
     {
       name: 'White Dinner Jacket Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         "Crisp, bold, and effortlessly suave, this white dinner jacket tuxedo pairs a cream or ivory jacket with black trousers. Featuring satin-covered buttons and a tailored fit, it channels a vintage James Bond aesthetic that's perfect for summer soirées or destination weddings.",
       size: ['XS', 'XL', 'XXL'],
@@ -203,16 +203,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket14.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'cotton',
       inStock: false,
     },
     {
       name: 'Velvet Burgundy Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Rich in color and texture, this burgundy velvet tuxedo brings luxury to the forefront. The plush fabric adds depth and warmth, while the black satin lapels introduce a sharp contrast. Ideal for evening events where you want to make a statement without saying a word.',
       size: ['XS', 'S'],
@@ -230,16 +230,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket15.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'cotton',
       inStock: true,
     },
     {
       name: 'Modern Slim-Fit Charcoal Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         "Designed for the contemporary gentleman, this charcoal tuxedo blends formal tradition with modern tailoring. The narrow lapels and tapered trousers create a streamlined silhouette that's both minimalist and fashion-forward — perfect for creative professionals or urban weddings.",
       size: ['XL', 'XXL'],
@@ -257,16 +257,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket16.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'cotton',
       inStock: true,
     },
     {
       name: 'Patterned Jacquard Dress',
-      colors: ['#d8031c', '#01016f', '#5a5a5a'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'For the bold and fashion-savvy, this jacquard tuxedo features an intricate woven pattern that catches the light beautifully. The mix of texture and sheen gives a regal, couture-inspired feel, making it the centerpiece of any red-carpet or high-profile event.',
       size: ['XS', 'S'],
@@ -284,16 +284,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket17.png',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2, 3],
-        black: [4, 5],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'cotton',
       inStock: true,
     },
     {
       name: 'Elegant Ivory Evening Gown',
-      colors: ['#f5f5dc', '#000000'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A sophisticated ivory evening gown with a flowing silhouette and delicate satin finish. Ideal for weddings, formal receptions, and evening events.',
       size: ['XS', 'S', 'M', 'L', 'XL'],
@@ -311,16 +311,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket18.png',
       ],
       imagesByColor: {
-        red: [],
-        blue: [0, 1],
-        black: [2, 3],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'satin',
       inStock: true,
     },
     {
       name: 'Midnight Blue Tailored Suit',
-      colors: ['#0a1a3f', '#000000'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A sharp tailored suit in midnight blue, crafted for modern elegance. Perfect for business meetings or evening occasions.',
       size: ['S', 'M', 'L', 'XL', 'XXL'],
@@ -338,16 +338,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket1.jpg',
       ],
       imagesByColor: {
-        red: [],
-        blue: [0, 1],
-        black: [2],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'wool',
       inStock: true,
     },
     {
       name: 'Soft Beige Casual Dress',
-      colors: ['#e6d5c3', '#ffffff'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A lightweight beige casual dress designed for comfort and effortless style. Suitable for daytime outings and relaxed gatherings.',
       size: ['XS', 'S', 'M', 'L'],
@@ -365,16 +365,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket2.jpg',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [2],
-        black: [],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'cotton',
       inStock: true,
     },
     {
       name: 'Emerald Green Cocktail Dress',
-      colors: ['#046307', '#000000'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A stunning emerald green cocktail dress with a fitted waist and subtle shimmer. Designed to stand out at parties and special events.',
       size: ['XS', 'S', 'M', 'L', 'XL'],
@@ -392,16 +392,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket3.jpg',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [],
-        black: [2],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'polyester',
       inStock: true,
     },
     {
       name: 'Classic Grey Wool Coat',
-      colors: ['#9e9e9e', '#2b2b2b'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A timeless grey wool coat with a clean, structured design. Ideal for colder seasons and elegant layering.',
       size: ['S', 'M', 'L', 'XL'],
@@ -419,16 +419,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket4.jpg',
       ],
       imagesByColor: {
-        red: [0, 1],
-        blue: [],
-        black: [2],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'wool',
       inStock: true,
     },
     {
       name: 'Minimalist White Summer Dress',
-      colors: ['#ffffff', '#f2f2f2'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A fresh white summer dress with a minimalist cut. Breathable fabric and relaxed fit make it perfect for warm days.',
       size: ['XS', 'S', 'M', 'L'],
@@ -446,16 +446,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket5.jpg',
       ],
       imagesByColor: {
-        red: [],
-        blue: [0, 1, 2],
-        black: [],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'linen',
       inStock: true,
     },
     {
       name: 'Dark Burgundy Velvet Dress',
-      colors: ['#4a0f1a', '#000000'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A luxurious velvet dress in deep burgundy, offering a rich texture and elegant drape. Ideal for evening wear.',
       size: ['S', 'M', 'L', 'XL'],
@@ -473,16 +473,16 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket6.png',
       ],
       imagesByColor: {
-        red: [],
-        blue: [0, 1],
-        black: [2],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'velvet',
       inStock: true,
     },
     {
       name: 'Modern Black Jumpsuit',
-      colors: ['#000000'],
+      colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A modern black jumpsuit with clean lines and a flattering fit. A versatile piece suitable for both casual and formal styling.',
       size: ['XS', 'S', 'M', 'L', 'XL'],
@@ -500,9 +500,9 @@ export async function createProductFixtures(
         'fixtures/fixturesJacket7.png',
       ],
       imagesByColor: {
-        red: [],
-        blue: [],
-        black: [0, 1],
+        '#ff0000': [0, 1],
+        '#0000ff': [2, 3],
+        '#000000': [4, 5],
       },
       material: 'crepe',
       inStock: true,

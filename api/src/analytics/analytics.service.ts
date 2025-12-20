@@ -25,6 +25,29 @@ export class AnalyticsService {
 
   async trackEvent(dto: CreateEventDto) {
     await this.eventModel.create(dto);
+
+    if (dto.type === EventType.AddToCart && dto.productId) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      await this.productStatsByDayModel.findOneAndUpdate(
+        {
+          productId: dto.productId,
+          date: today,
+        },
+        {
+          $inc: {
+            addToCart: 1,
+            addToCartQty: dto.qty || 1,
+          },
+        },
+        {
+          upsert: true,
+          new: true,
+        },
+      );
+    }
+
     return { status: 'ok' };
   }
 
@@ -74,7 +97,6 @@ export class AnalyticsService {
     };
   }
 
- 
   ///Aggregation starts EveryDayAt_1_AM
   @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async aggregateAddToCartStats() {
@@ -98,7 +120,6 @@ export class AnalyticsService {
           },
         },
         {
-        
           $group: {
             _id: '$productId',
             addToCartCount: { $sum: 1 },
@@ -111,7 +132,6 @@ export class AnalyticsService {
         `Found ${aggregation.length} products with add_to_cart events`,
       );
 
-      
       for (const item of aggregation) {
         await this.productStatsByDayModel.findOneAndUpdate(
           {

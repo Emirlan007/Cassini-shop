@@ -17,13 +17,13 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import FilesInput from "../../components/FilesInput/FilesInput.tsx";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { selectCategories } from "../categories/categorySlice.ts";
 import { fetchCategories } from "../categories/categoryThunk.ts";
 import SizesModal from "../../components/UI/SizesModal/SizesModal.tsx";
 import ColorsModal from "../../components/UI/ColorsModal/ColorsModal.tsx";
+import FileInput from "../../components/UI/FileInput/FileInput.tsx";
 
 interface Props {
   product: Omit<ProductInput, "category"> & { category: ICategory } & {
@@ -349,18 +349,17 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
               </Button>
             </Stack>
 
-            <FilesInput
-              label="Видео"
-              name="video"
-              onChange={videoChangeHandler}
+            <FileInput
+                label="Видео"
+                name="video"
+                onChange={videoChangeHandler}
             />
 
-            <Stack>
-              <FilesInput
+            <FileInput
                 label="Изображения"
                 name="images"
                 onChange={fileInputChangeHandler}
-              />
+            />
 
               {!state.images ? null : (
                 <ImageList cols={10} rowHeight={164}>
@@ -396,7 +395,6 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
             <Button type="submit" fullWidth variant="contained">
               Редактировать
             </Button>
-          </Stack>
         </Box>
       </Box>
     </>

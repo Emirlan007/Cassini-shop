@@ -323,7 +323,7 @@ const ProductForm = ({onSubmit, loading}: Props) => {
             />
 
             {state.images.length > 0 && (
-                <ImageList cols={5} rowHeight={140}>
+                <ImageList cols={10} rowHeight={164}>
                   {state.images.map((image, index) => (
                       <Stack key={index}>
                         <ImageListItem>

@@ -1,12 +1,12 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {useNavigate, useParams} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {
   selectCreateUserCommentLoading,
   selectOrderDetails,
   selectOrderDetailsLoading,
 } from "./ordersSlice";
-import { useEffect, useState } from "react";
-import { addUserCommentToOrder, fetchOrderById } from "./ordersThunk";
+import {useEffect, useState} from "react";
+import {addUserCommentToOrder, fetchOrderById} from "./ordersThunk";
 import {
   Alert,
   Box,
@@ -21,10 +21,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { API_URL, DeliveryStatus } from "../../constants";
-import { useTranslation } from "react-i18next";
+import {API_URL, DeliveryStatus} from "../../constants";
+import {useTranslation} from "react-i18next";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { selectUser } from "../users/usersSlice.ts";
+import {selectUser} from "../users/usersSlice.ts";
 import {
   addAdminCommentToOrder,
   changeOrderDeliveryStatus,
@@ -66,10 +66,10 @@ const OrderDetails = () => {
       selectUpdatePaymentStatusError
   );
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const user = useAppSelector(selectUser);
 
-  const { orderId } = useParams() as { orderId: string };
+  const {orderId} = useParams() as { orderId: string };
 
   useEffect(() => {
     if (orderId) {
@@ -87,18 +87,18 @@ const OrderDetails = () => {
   }, [order]);
 
   const handleUserCommentSubmit = async () => {
-    await dispatch(addUserCommentToOrder({ comment: userComment, orderId }));
+    await dispatch(addUserCommentToOrder({comment: userComment, orderId}));
     await dispatch(fetchOrderById(orderId));
   };
 
   const handleAdminCommentSubmit = async () => {
-    await dispatch(addAdminCommentToOrder({ comment: adminComment, orderId }));
+    await dispatch(addAdminCommentToOrder({comment: adminComment, orderId}));
     await dispatch(fetchOrderById(orderId));
   };
 
   const handlePaymentStatusChange = async () => {
     if (orderId && paymentStatus !== order?.paymentStatus) {
-      await dispatch(updateOrderPaymentStatusThunk({ orderId, paymentStatus }));
+      await dispatch(updateOrderPaymentStatusThunk({orderId, paymentStatus}));
       await dispatch(fetchOrderById(orderId));
     }
   };
@@ -106,7 +106,7 @@ const OrderDetails = () => {
   const handleDeliveryStatusChange = async () => {
     if (orderId && deliveryStatus !== order?.deliveryStatus) {
       await dispatch(
-          changeOrderDeliveryStatus({ orderId, value: deliveryStatus })
+          changeOrderDeliveryStatus({orderId, value: deliveryStatus})
       );
       await dispatch(fetchOrderById(orderId));
     }
@@ -115,7 +115,7 @@ const OrderDetails = () => {
   if (loading) {
     return (
         <Box display="flex" justifyContent="center" mt={4}>
-          <CircularProgress color="inherit" />
+          <CircularProgress color="inherit"/>
         </Box>
     );
   }
@@ -131,7 +131,7 @@ const OrderDetails = () => {
   return (
       <Box>
         <Button
-            startIcon={<NavigateBeforeIcon />}
+            startIcon={<NavigateBeforeIcon/>}
             onClick={() => {
               if (window.history.state && window.history.length > 2) {
                 navigate(-1);
@@ -139,7 +139,7 @@ const OrderDetails = () => {
                 navigate("/account");
               }
             }}
-            sx={{ mb: 3 }}
+            sx={{mb: 3}}
             variant="contained"
         >
           {t("backToOrders")}
@@ -148,9 +148,9 @@ const OrderDetails = () => {
         <Box mb={4} p={3}>
           <Box
               display="flex"
-              flexDirection={{ xs: "column", sm: "row" }}
+              flexDirection={{xs: "column", sm: "row"}}
               justifyContent="space-between"
-              alignItems={{ sm: "center" }}
+              alignItems={{sm: "center"}}
               mb={3}
           >
             <Typography variant="h6" fontWeight="bold">
@@ -166,7 +166,7 @@ const OrderDetails = () => {
           <Box
               mb={3}
               display="flex"
-              flexDirection={{ xs: "column", md: "row" }}
+              flexDirection={{xs: "column", md: "row"}}
               gap={2}
           >
             <Box display="flex" alignItems="center" gap={2}>
@@ -193,14 +193,14 @@ const OrderDetails = () => {
           {user?.role === "admin" && (
               <>
                 <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                  <Typography variant="h6" sx={{mb: 2}}>
                     Управление статусом оплаты
                   </Typography>
 
                   {updatePaymentStatusError && (
                       <Alert
                           severity="error"
-                          sx={{ mb: 2 }}
+                          sx={{mb: 2}}
                           onClose={() => dispatch(clearPaymentStatusError())}
                       >
                         {updatePaymentStatusError}
@@ -208,7 +208,7 @@ const OrderDetails = () => {
                   )}
 
                   <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
-                    <FormControl sx={{ minWidth: 200 }}>
+                    <FormControl sx={{minWidth: 200}}>
                       <InputLabel>Статус оплаты</InputLabel>
                       <Select
                           value={paymentStatus}
@@ -234,7 +234,7 @@ const OrderDetails = () => {
                         }
                     >
                       {updatePaymentStatusLoading ? (
-                          <CircularProgress size={20} />
+                          <CircularProgress size={20}/>
                       ) : (
                           "Обновить"
                       )}
@@ -243,12 +243,12 @@ const OrderDetails = () => {
                 </Box>
 
                 <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
+                  <Typography variant="h6" sx={{mb: 2}}>
                     Управление статусом доставки
                   </Typography>
 
                   <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
-                    <FormControl sx={{ minWidth: 200 }}>
+                    <FormControl sx={{minWidth: 200}}>
                       <InputLabel>Статус доставки</InputLabel>
                       <Select
                           value={deliveryStatus}
@@ -282,7 +282,7 @@ const OrderDetails = () => {
 
           {user?.role === "admin" && order.user && (
               <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
+                <Typography variant="h6" sx={{mb: 1}}>
                   {t("customerInfo")}
                 </Typography>
 
@@ -293,8 +293,21 @@ const OrderDetails = () => {
                 <Typography variant="body1">
                   <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
                 </Typography>
+
+                {order.user.city && (
+                    <Typography variant="body1">
+                      <b>{t("city")}:</b> {order.user.city}
+                    </Typography>
+                )}
+
+                {order.user.address && (
+                    <Typography variant="body1">
+                      <b>{t("address")}:</b> {order.user.address}
+                    </Typography>
+                )}
               </Box>
           )}
+
 
           {order.items.map((item, index) => (
               <Box
@@ -313,7 +326,7 @@ const OrderDetails = () => {
                         alignItems="center"
                         flexDirection="column"
                         sx={{
-                          height: { xs: 320, sm: 400 },
+                          height: {xs: 320, sm: 400},
                           width: "100%",
                           overflow: "hidden",
                           borderRadius: 2,
@@ -335,22 +348,22 @@ const OrderDetails = () => {
                 )}
 
                 <Box>
-                  <Typography variant="h6" sx={{ mb: 1, mt: 2 }}>
+                  <Typography variant="h6" sx={{mb: 1, mt: 2}}>
                     <b>{item.title}</b>
                   </Typography>
 
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
+                  <Typography variant="body2" sx={{mb: 0.5}}>
                     {t("color")}: {item.selectedColor}
                   </Typography>
 
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
+                  <Typography variant="body2" sx={{mb: 0.5}}>
                     {t("size")}: {item.selectedSize}
                   </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
+                  <Typography variant="body2" sx={{mb: 0.5}}>
                     {t("price")}: {item.price}₸
                   </Typography>
 
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
+                  <Typography variant="body2" sx={{mb: 0.5}}>
                     {t("quantity")}: {item.quantity}
                   </Typography>
                 </Box>
@@ -399,7 +412,7 @@ const OrderDetails = () => {
                     <TextField
                         onChange={(e) => setUserComment(e.target.value)}
                         placeholder="Комментарий к заказу"
-                        sx={{ flexGrow: 1 }}
+                        sx={{flexGrow: 1}}
                     />
                     <Button
                         type="submit"
@@ -407,7 +420,7 @@ const OrderDetails = () => {
                         disabled={userComment.trim() === ""}
                     >
                       {createUserCommentLoading ? (
-                          <CircularProgress size={20} />
+                          <CircularProgress size={20}/>
                       ) : (
                           "Отправить"
                       )}
@@ -446,7 +459,7 @@ const OrderDetails = () => {
                 <TextField
                     onChange={(e) => setAdminComment(e.target.value)}
                     placeholder="Комментарий к заказу"
-                    sx={{ flexGrow: 1 }}
+                    sx={{flexGrow: 1}}
                 />
                 <Button
                     type="submit"
@@ -454,7 +467,7 @@ const OrderDetails = () => {
                     disabled={adminComment.trim() === ""}
                 >
                   {createAdminCommentLoading ? (
-                      <CircularProgress size={20} />
+                      <CircularProgress size={20}/>
                   ) : (
                       "Отправить"
                   )}

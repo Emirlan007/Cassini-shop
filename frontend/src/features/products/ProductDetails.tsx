@@ -50,6 +50,7 @@ import a11yProps from "../../components/UI/Tabs/AllyProps.tsx";
 import { useTranslation } from "react-i18next";
 import { findClosestColor } from "../../utils/colorNormalizer.ts";
 import ThumbNail from "../../components/UI/ThumbNail/ThumbNail.tsx";
+import { addToCart } from "../../analytics/analytics";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { selectWishlistProductIds } from "../wishlist/wishlistSlice";
 import {
@@ -109,10 +110,9 @@ const ProductDetails = () => {
 
     const imageIndices = product.imagesByColor[selectedColor];
     return imageIndices
-        .map(idx => product.images![idx])
-        .filter(img => img !== undefined);
+      .map((idx) => product.images![idx])
+      .filter((img) => img !== undefined);
   }, [product, selectedColor]);
-
 
   const recommended = categoryProducts
     .filter((p) => p.category?._id === product?.category?._id)
@@ -138,6 +138,8 @@ const ProductDetails = () => {
     );
 
     await dispatch(fetchCart());
+
+    await addToCart(product._id, 1);
 
     toast.success("Товар добавлен в корзину!");
   };
@@ -166,8 +168,8 @@ const ProductDetails = () => {
   }, [dispatch, product]);
 
   useEffect(() => {
-    setSwiperKey(prev => prev + 1);
-    console.log(swiperKey, 'swiper key')
+    setSwiperKey((prev) => prev + 1);
+    console.log(swiperKey, "swiper key");
   }, [selectedColor]);
 
   useEffect(() => {
@@ -347,9 +349,9 @@ const ProductDetails = () => {
                     loop
                     playsInline
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
                     }}
                   >
                     <source src={API_URL + product.video} type="video/mp4" />
@@ -371,9 +373,9 @@ const ProductDetails = () => {
                     }`}
                     alt={product.name}
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
                     }}
                   />
                 </Box>
@@ -669,10 +671,11 @@ const ProductDetails = () => {
                     color: "#525252",
                     fontSize: "14px",
                     fontWeight: "400",
-                    mb: 1
+                    mb: 1,
                   }}
                 >
-                  Материал: <strong style={{ color: "#333" }}>{product.material}</strong>
+                  Материал:{" "}
+                  <strong style={{ color: "#333" }}>{product.material}</strong>
                 </Typography>
               </Box>
             )}

@@ -1,5 +1,5 @@
 import AppToolbar from "./components/UI/AppToolbar/AppToolbar";
-import {Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import Register from "./features/users/Register";
 import Login from "./features/users/Login";
@@ -29,7 +29,7 @@ import AdminCategories from "./features/categories/admin/AdminCategories.tsx";
 import CreateBanner from "./features/banners/admin/CreateBanner.tsx";
 import AdminPage from "./pages/AdminPage.tsx";
 import SearchResultsPage from "./pages/SearchResultsPage.tsx";
-import "./index.css"
+import "./index.css";
 import Wishlist from "./features/wishlist/Wishlist.tsx";
 import OrderAnalytics from "./features/analytics/orders/OrderAnalytics.tsx";
 import ProductAnalytics from "./features/analytics/products/ProductAnalytics.tsx";
@@ -53,7 +53,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path={'/search'} element={<SearchResultsPage />} />
+          <Route path={"/search"} element={<SearchResultsPage />} />
           <Route
             path="/products/:productUpdate/update"
             element={<UpdateCreateWrap />}
@@ -63,7 +63,7 @@ const App = () => {
             element={<CategoryProductsPage />}
           />
           <Route path="/product/:productId" element={<ProductDetails />} />
-            <Route path="/orders/:orderId" element={<OrderDetails />} />
+          <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route
             path="/products/new"
             element={
@@ -74,39 +74,39 @@ const App = () => {
           />
           <Route path={"/addProduct"}></Route>
           <Route path="/cart" element={<Cart />} />
-            <Route
-                path="/wishlist"
-                element={
-                    <ProtectedRoute isAllowed={!!user}>
-                        <Wishlist />
-                    </ProtectedRoute>
-                }
-            />
-          <Route path="/account" element={<AccountPage />} />
-            <Route
-                path="/admin"
-                element={
-                    <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                        <AdminPage />
-                    </ProtectedRoute>
-                }
-            />
           <Route
-              path="/admin/users"
-              element={
-                <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                  <UsersList />
-                </ProtectedRoute>
-              }
+            path="/wishlist"
+            element={
+              <ProtectedRoute isAllowed={!!user}>
+                <Wishlist />
+              </ProtectedRoute>
+            }
           />
-            <Route
-                path="/admin/users/:userId"
-                element={
-                    <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                        <User />
-                    </ProtectedRoute>
-                }
-            />
+          <Route path="/account" element={<AccountPage />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <UsersList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users/:userId"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <User />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/products"
             element={
@@ -116,40 +116,43 @@ const App = () => {
             }
           />
           <Route
-              path="/admin/banners"
-              element={
-                  <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                      <AdminBannersList />
-                  </ProtectedRoute>
-              }
+            path="/admin/banners"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <AdminBannersList />
+              </ProtectedRoute>
+            }
           />
           <Route
-              path="/admin/categories"
-              element={
-                <ProtectedRoute isAllowed={user && user.role === "admin"}>
-                  <AdminCategories/>
-                </ProtectedRoute>
-              }
+            path="/admin/categories"
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <AdminCategories />
+              </ProtectedRoute>
+            }
           />
-          <Route path={'/admin/banners/new'} element={
-            <ProtectedRoute isAllowed={user && user.role === 'admin'}>
-              <CreateBanner/>
-            </ProtectedRoute>
-          }></Route>
+          <Route
+            path={"/admin/banners/new"}
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <CreateBanner />
+              </ProtectedRoute>
+            }
+          ></Route>
 
-            <Route
-                path={'/admin/banners/:bannerId/update'}
-                element={
-                    <ProtectedRoute isAllowed={user && user.role === 'admin'}>
-                        <UpdateBanner />
-                    </ProtectedRoute>
-                }
-            />
+          <Route
+            path={"/admin/banners/:bannerId/update"}
+            element={
+              <ProtectedRoute isAllowed={user && user.role === "admin"}>
+                <UpdateBanner />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/orders"
             element={
               <ProtectedRoute isAllowed={user && user.role === "admin"}>
-             <AdminOrders />
+                <AdminOrders />
               </ProtectedRoute>
             }
           />

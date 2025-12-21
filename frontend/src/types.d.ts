@@ -16,8 +16,8 @@ export interface AdminUser {
   phoneNumber: string;
   role: string;
   avatar?: string;
-  city:string,
-  address:string
+  city: string;
+  address: string;
 }
 
 export interface RegisterMutation {
@@ -202,7 +202,7 @@ export interface Order {
   createdAt: string;
   deliveryStatus: "warehouse" | "on_the_way" | "delivered";
   paymentMethod: "cash" | "qrCode";
-  paymentStatus: 'pending' | 'paid' | 'cancelled';
+  paymentStatus: "pending" | "paid" | "cancelled";
   userComment: string;
   adminComments: string[];
 }
@@ -238,12 +238,12 @@ export interface OrderItemAdmin {
   _id: string;
   user: User;
   createdAt: string;
-  deliveryStatus:string,
+  deliveryStatus: string;
   items: CartItem[];
   totalPrice: number;
   userComment: string;
   adminComments: string[];
-  paymentStatus: 'pending' | 'paid' | 'cancelled';
+  paymentStatus: "pending" | "paid" | "cancelled";
 }
 
 export interface PopularProducts {

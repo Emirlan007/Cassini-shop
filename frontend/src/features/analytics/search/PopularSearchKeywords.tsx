@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -14,10 +14,9 @@ import {
   CircularProgress,
   useTheme,
   useMediaQuery,
-} from '@mui/material';
+} from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
-import { fetchPopularSearchKeywords } from './searchKeywordsThunks.ts';
-
+import { fetchPopularSearchKeywords } from "./searchKeywordsThunks.ts";
 
 const PopularSearchKeywords = () => {
   const dispatch = useAppDispatch();
@@ -26,23 +25,27 @@ const PopularSearchKeywords = () => {
   );
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [currentPage, setCurrentPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    dispatch(fetchPopularSearchKeywords({ 
-      page: currentPage + 1, 
-      limit: rowsPerPage 
-    }));
+    dispatch(
+      fetchPopularSearchKeywords({
+        page: currentPage + 1,
+        limit: rowsPerPage,
+      })
+    );
   }, [dispatch, currentPage, rowsPerPage]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setCurrentPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(0);
   };
@@ -51,8 +54,8 @@ const PopularSearchKeywords = () => {
     <Box
       sx={{
         p: { xs: 2, sm: 3, md: 4 },
-        maxWidth: '100%',
-        overflowX: 'hidden',
+        maxWidth: "100%",
+        overflowX: "hidden",
       }}
     >
       <Typography
@@ -77,14 +80,10 @@ const PopularSearchKeywords = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        <Typography fontWeight={600}>
-                          #
-                        </Typography>
+                        <Typography fontWeight={600}>#</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography fontWeight={600}>
-                          Ключевое слово
-                        </Typography>
+                        <Typography fontWeight={600}>Ключевое слово</Typography>
                       </TableCell>
                       <TableCell align="right">
                         <Typography fontWeight={600}>
@@ -109,9 +108,7 @@ const PopularSearchKeywords = () => {
                             {currentPage * rowsPerPage + index + 1}
                           </TableCell>
                           <TableCell>
-                            <Typography>
-                              {item.keyword}
-                            </Typography>
+                            <Typography>{item.keyword}</Typography>
                           </TableCell>
                           <TableCell align="right">
                             <Typography fontWeight={500}>
@@ -134,7 +131,7 @@ const PopularSearchKeywords = () => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 labelRowsPerPage="Строк на странице:"
-                labelDisplayedRows={({ from, to, count }) => 
+                labelDisplayedRows={({ from, to, count }) =>
                   `${from}-${to} из ${count}`
                 }
               />

@@ -13,7 +13,8 @@ import {
     Category as CategoryIcon,
     Inventory as ProductsIcon,
     FeaturedVideo as BannersIcon,
-  Analytics as AnalyticsIcon
+    Analytics as AnalyticsIcon,
+    Search as SearchIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -62,6 +63,12 @@ const AdminPage = () => {
         path: '/admin/analytics/products',
         icon: <AnalyticsIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
         description: 'Статистика и таблица товаров',
+      },
+      {
+        title: 'Популярные запросы',
+        path: '/admin/analytics/search-keywords',
+        icon: <SearchIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
+        description: 'Популярные поисковые запросы',
       },
     ];
 

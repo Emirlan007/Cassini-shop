@@ -45,6 +45,8 @@ export class ProductsController {
     @Query('colors') colors: string,
     @Query('limit') limit = 16,
     @Query('page') page = 1,
+    @Query('userId') userId?: string,
+    @Query('sessionId') sessionId?: string,
   ) {
     const colorsArray = colors ? colors.split(',') : undefined;
 
@@ -54,6 +56,8 @@ export class ProductsController {
       colors: colorsArray,
       limit: Number(limit),
       page: Number(page),
+      userId,
+      sessionId,
     });
   }
 

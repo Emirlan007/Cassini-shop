@@ -26,7 +26,7 @@ export const getRangeByPeriod = (
   period: 'day' | 'week' | 'month' | 'year' | 'all',
 ) => {
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  // yesterday.setDate(yesterday.getDate() - 1);
 
   switch (period) {
     case 'day':

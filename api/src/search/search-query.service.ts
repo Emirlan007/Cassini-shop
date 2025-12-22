@@ -34,6 +34,20 @@ export class SearchQueriesService {
 
     const normalizedQuery = this.normalizeQuery(query);
 
+    const fiveSecondsAgo = new Date(Date.now() - 5000);
+    const recentQuery = await this.searchQueryModel.findOne({
+      normalizedQuery,
+      ...(sessionId ? { sessionId } : {}),
+      ...(userId && Types.ObjectId.isValid(userId)
+        ? { userId: new Types.ObjectId(userId) }
+        : {}),
+      createdAt: { $gte: fiveSecondsAgo },
+    });
+
+    if (recentQuery) {
+      return recentQuery;
+    }
+
     const searchQueryData: Partial<SearchQuery> = {
       query,
       normalizedQuery,
@@ -52,7 +66,8 @@ export class SearchQueriesService {
     return searchQuery.save();
   }
 
-  async getPopularQueries(limit: number = 10): Promise<Array<{
+  async getPopularQueries(limit: number = 10): Promise<
+    Array<{
       query: string;
       normalizedQuery: string;
       count: number;
@@ -101,7 +116,8 @@ export class SearchQueriesService {
       .exec();
   }
 
-  async getSearchStatistics(days: number = 7): Promise<Array<{
+  async getSearchStatistics(days: number = 7): Promise<
+    Array<{
       date: string;
       totalSearches: number;
       uniqueQueriesCount: number;

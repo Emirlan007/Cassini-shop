@@ -1,28 +1,21 @@
 import { IconButton, Tooltip } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-const BackButton = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+interface Props {
+    onBack: () => void;
+}
+
+const StepBackButton = ({ onBack }: Props) => {
     const { t } = useTranslation();
-
-    if (location.pathname === "/") {
-        return null;
-    }
-
-    const handleGoBack = () => {
-        navigate(-1);
-    };
 
     return (
         <Tooltip title={t("back")} arrow>
             <IconButton
-                onClick={handleGoBack}
+                onClick={onBack}
                 sx={{
                     color: "#374151",
-                    marginRight: 0.5,
+                    marginBottom: 2,
                     "&:hover": {
                         backgroundColor: "rgba(0, 0, 0, 0.04)",
                     },
@@ -35,4 +28,4 @@ const BackButton = () => {
     );
 };
 
-export default BackButton;
+export default StepBackButton;

@@ -162,10 +162,6 @@ const OrderDetails = () => {
           alignItems={{ sm: "center" }}
           mb={3}
         >
-          <Typography variant="h6" fontWeight="bold">
-            {t("orderNumber")}
-            {order._id}
-          </Typography>
 
           <Typography variant="body1" color="text.secondary">
             {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}

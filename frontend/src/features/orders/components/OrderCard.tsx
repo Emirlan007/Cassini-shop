@@ -55,22 +55,6 @@ const OrderCard = ({order, isAdmin}: Props) => {
                 mb={1}
                 gap={1}
             >
-                <Typography variant="subtitle2" sx={{order: 1}}>
-                    {t("orderNumber")}
-                    {order._id}
-                </Typography>
-
-                {isAdmin && (
-                    <Typography
-                        variant="subtitle2"
-                        sx={{
-                            order: 2,
-                        }}
-                    >
-                        {t("customer")}: {order.user?.name || "N/A"}
-                    </Typography>
-                )}
-
                 <Box
                     sx={{
                         display: "flex",
@@ -91,20 +75,11 @@ const OrderCard = ({order, isAdmin}: Props) => {
                     />
                 </Box>
 
-                <Typography variant="subtitle2" sx={{order: {xs: 2, sm: 3}}}>
-                    {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-                </Typography>
-
-                {isAdmin && (
-                    <Typography
-                        variant="subtitle2"
-                        sx={{
-                            order: {xs: 3, sm: 2},
-                        }}
-                    >
-                        {t("total")}: {order.totalPrice} сом
+                <Box>
+                    <Typography variant="subtitle2" sx={{order: {xs: 2, sm: 3}}}>
+                        {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
                     </Typography>
-                )}
+                </Box>
             </Box>
 
             {order.items.map((item, index) => (

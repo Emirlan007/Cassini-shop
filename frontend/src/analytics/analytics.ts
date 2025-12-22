@@ -13,17 +13,6 @@ export const trackProductView = async (productId: string) => {
   await axiosApi.post("/analytics/event", payload);
 };
 
-export const trackAddProductToWishlist = async (productId: string) => {
-  const userId = store.getState().users.user?._id;
-  const payload = {
-    type: "add_to_wishlist",
-    sessionId: getSessionId(),
-    userId,
-    productId,
-  };
-  await axiosApi.post("/analytics/event", payload);
-};
-
 export const addToCart = async (productId: string, qty: number = 1) => {
   const userId = store.getState().users.user?._id;
   const payload = {

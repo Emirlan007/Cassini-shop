@@ -7,6 +7,7 @@ import {
   UseGuards,
   Body,
   Req,
+  Headers,
 } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { TokenAuthGuard } from '../auth/token-auth.guard';
@@ -28,9 +29,11 @@ export class WishlistController {
   async addProductToWishlist(
     @Req() req: RequestWithUser,
     @Body() addToWishlistDto: AddToWishlistDto,
+    @Headers('session-id') sessionId: string,
   ) {
     const userId = req.user.userId || req.user.id || req.user._id;
     return this.wishlistService.addProductToWishlist(
+      sessionId,
       userId as string,
       addToWishlistDto.productId,
     );

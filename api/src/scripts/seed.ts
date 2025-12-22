@@ -7,6 +7,7 @@ import {
   createProductFixtures,
   createUserFixtures,
   createCategoryFixtures,
+  createSearchQueryFixtures,
 } from '../fixtures';
 
 import { ProductsService } from 'src/products/products.service';
@@ -14,6 +15,7 @@ import { Banner } from 'src/schemas/banner.schema';
 import { Product } from 'src/schemas/product.schema';
 import { User } from 'src/schemas/user.schema';
 import { Category, CategoryDocument } from 'src/schemas/category.schema';
+import { SearchQuery } from 'src/schemas/search-query.schema';
 import { UserService } from 'src/users/user.service';
 import { CategoriesService } from 'src/categories/categories.service';
 import { Types } from 'mongoose';
@@ -31,12 +33,14 @@ async function bootstrap() {
     const productModel = appContext.get(getModelToken(Product.name));
     const bannerModel = appContext.get(getModelToken(Banner.name));
     const categoryModel = appContext.get(getModelToken(Category.name));
+    const searchQueryModel = appContext.get(getModelToken(SearchQuery.name));
 
     console.log('Clearing existing data...');
     await userModel.deleteMany({});
     await productModel.deleteMany({});
     await bannerModel.deleteMany({});
     await categoryModel.deleteMany({});
+    await searchQueryModel.deleteMany({});
 
     console.log('Creating fixtures...');
     await createUserFixtures(userService);
@@ -49,6 +53,8 @@ async function bootstrap() {
     await createProductFixtures(productsService, typedCategories);
 
     await createBannerFixtures(bannerService);
+
+    await createSearchQueryFixtures(searchQueryModel);
 
     console.log('Fixtures inserted successfully!');
     await appContext.close();

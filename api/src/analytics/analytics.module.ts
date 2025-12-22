@@ -14,6 +14,11 @@ import {
   OrderStatsByDaySchema,
 } from './schemas/orderStatsByDay.schema';
 import { Product, ProductSchema } from '../schemas/product.schema';
+import { SearchQuery, SearchQuerySchema } from '../schemas/search-query.schema';
+import {
+  SearchQueryStats,
+  SearchQueryStatsSchema,
+} from './schemas/searchQueryStats.schema';
 
 @Module({
   imports: [
@@ -23,6 +28,8 @@ import { Product, ProductSchema } from '../schemas/product.schema';
       { name: Product.name, schema: ProductSchema },
       { name: ProductStatsByDay.name, schema: ProductStatsByDaySchema },
       { name: OrderStatsByDay.name, schema: OrderStatsByDaySchema },
+      { name: SearchQuery.name, schema: SearchQuerySchema },
+      { name: SearchQueryStats.name, schema: SearchQueryStatsSchema },
     ]),
   ],
   controllers: [AnalyticsController],

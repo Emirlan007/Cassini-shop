@@ -9,9 +9,12 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useAppSelector } from "../../../app/hooks";
-import { selectLoginLoading } from "../../../features/users/usersSlice";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import {
+  selectLoginLoading,
+  selectUser,
+} from "../../../features/users/usersSlice";
 // import { logoutThunk } from "../../../features/users/usersThunks";
 import LanguageSelect from "../LanguageSelect/LanguageSelect.tsx";
 import Badge from "@mui/material/Badge";
@@ -20,10 +23,13 @@ import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
 import BackButton from "../BackButton.tsx";
 import SearchInput from "../SearchInput/SearchInput.tsx";
 import { selectCart } from "../../../features/cart/cartSlice.ts";
-import {selectWishlistCount} from "../../../features/wishlist/wishlistSlice.ts";
+import { selectWishlistCount } from "../../../features/wishlist/wishlistSlice.ts";
+import { fetchWishlist } from "../../../features/wishlist/wishlistThunks.ts";
+import { fetchCart } from "../../../features/cart/cartThunks.ts";
 
 const AppToolbar = () => {
-  
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
   const isLoading = useAppSelector(selectLoginLoading);
   const totalQuantity = useAppSelector(selectCart)?.totalQuantity;
   const navigate = useNavigate();
@@ -32,7 +38,13 @@ const AppToolbar = () => {
   const [open, setOpen] = useState(false);
 
   const toggleDrawer = (value: boolean) => () => setOpen(value);
- 
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchWishlist());
+    }
+    dispatch(fetchCart());
+  }, [dispatch, user]);
 
   return (
     <>

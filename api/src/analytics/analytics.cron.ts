@@ -11,6 +11,14 @@ import {
   OrderStatsByDay,
   OrderStatsByDayDocument,
 } from './schemas/orderStatsByDay.schema';
+import {
+  SearchQuery,
+  SearchQueryDocument,
+} from 'src/schemas/search-query.schema';
+import {
+  SearchQueryStats,
+  SearchQueryStatsDocument,
+} from './schemas/searchQueryStats.schema';
 
 interface AggregatedProduct {
   _id: string;
@@ -28,6 +36,14 @@ interface AggregatedOrder {
   revenue: number;
 }
 
+interface AggregatedSearchQueries {
+  _id: string;
+  normalizedQuery: string;
+  query: string;
+  totalCount: number;
+  uniqueUsers: number;
+}
+
 @Injectable()
 export class AnalyticsCron {
   constructor(
@@ -39,6 +55,12 @@ export class AnalyticsCron {
 
     @InjectModel(OrderStatsByDay.name)
     private orderStatsByDayModel: Model<OrderStatsByDayDocument>,
+
+    @InjectModel(SearchQuery.name)
+    private searchQueryModel: Model<SearchQueryDocument>,
+
+    @InjectModel(SearchQueryStats.name)
+    private searchQueryStatsModel: Model<SearchQueryStatsDocument>,
   ) {}
 
   @Cron('* * * * *')
@@ -203,5 +225,51 @@ export class AnalyticsCron {
     );
 
     return { status: 'ok' };
+  }
+
+  @Cron('15 0 * * *')
+  async aggregateSearchQuery() {
+    const stats =
+      await this.searchQueryModel.aggregate<AggregatedSearchQueries>([
+        {
+          $group: {
+            _id: '$normalizedQuery',
+            query: { $first: '$query' },
+            totalCount: { $sum: 1 },
+            users: {
+              $addToSet: {
+                $cond: [
+                  { $ifNull: ['$userId', false] },
+                  '$userId',
+                  '$sessionId',
+                ],
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            normalizedQuery: '$_id',
+            query: 1,
+            totalCount: 1,
+            uniqueUsers: { $size: '$users' },
+          },
+        },
+      ]);
+
+    for (const item of stats) {
+      await this.searchQueryStatsModel.findOneAndUpdate(
+        { normalizedQuery: item.normalizedQuery },
+        {
+          $set: {
+            query: item.query,
+            totalCount: item.totalCount,
+            uniqueUsers: item.uniqueUsers,
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true },
+      );
+    }
   }
 }

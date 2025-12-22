@@ -342,7 +342,7 @@ const OrderDetails = () => {
         >
           <Typography variant="h6">{t("total")}:</Typography>
           <Typography variant="h5" fontWeight="bold">
-            {order.totalPrice}₸
+            {order.totalPrice} сом
           </Typography>
         </Box>
 

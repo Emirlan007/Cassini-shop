@@ -289,3 +289,16 @@ export interface OrderAnalyticsResponse {
     revenue: number;
   };
 }
+
+export interface SearchKeywordStat {
+  keyword: string;
+  count: number;
+}
+
+export interface PopularSearchKeywordsResponse {
+  items: SearchKeywordStat[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}

@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { API_URL, DeliveryStatus } from "../../../constants";
 import { useTranslation } from "react-i18next";
-import type { Order } from "../../../types";
+import type { Order, OrderItemAdmin } from "../../../types";
 import { useAppSelector } from "../../../app/hooks";
 import { selectUser } from "../../users/usersSlice";
 

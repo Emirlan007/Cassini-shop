@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ProductList from "./ProductsList";
 import { Swiper, SwiperSlide } from "swiper/react";
-import ProductCard from "./ProductCard";
+import ProductCard from "./components/ProductCard";
 import { Navigation } from "swiper/modules";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";

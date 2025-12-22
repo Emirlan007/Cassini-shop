@@ -122,7 +122,10 @@ export class ProductsService {
       }
       query.where('category').equals(new Types.ObjectId(categoryId));
     }
-    return query.populate('category', 'title slug').exec();
+    return query
+      .populate('category', 'title slug')
+      .sort({ createdAt: -1 })
+      .exec();
   }
 
   async findBySearch(searchValue?: string): Promise<Product[]> {

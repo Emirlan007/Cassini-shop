@@ -5,7 +5,6 @@ import { Event } from 'src/analytics/schemas/event.schema';
 import { CreateEventDto } from './dto/create-event.dto';
 import { ProductStatsByDay } from './schemas/productStatsByDay.schema';
 import { OrderStatsByDay } from './schemas/orderStatsByDay.schema';
-import { Product } from '../schemas/product.schema';
 
 type ProductPopulated = {
   name: string;
@@ -17,9 +16,6 @@ export class AnalyticsService {
     @InjectModel(Event.name)
     private eventModel: Model<Event>,
 
-    @InjectModel(Product.name)
-    private productModel: Model<Product>,
-
     @InjectModel(ProductStatsByDay.name)
     private productStatsByDayModel: Model<ProductStatsByDay>,
 
@@ -29,7 +25,6 @@ export class AnalyticsService {
 
   async trackEvent(dto: CreateEventDto) {
     await this.eventModel.create(dto);
-
     return { status: 'ok' };
   }
 

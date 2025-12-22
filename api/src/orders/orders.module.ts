@@ -5,9 +5,8 @@ import { OrderService } from './orders.service';
 import { Order, OrderSchema } from '../schemas/order.schema';
 import { Product, ProductSchema } from '../schemas/product.schema';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
-import { User, UserSchema } from 'src/schemas/user.schema';
-import { TokenAuthGuard } from 'src/auth/token-auth.guard';
-import { Event, EventSchema } from 'src/analytics/schemas/event.schema';
+import { User, UserSchema } from '../schemas/user.schema';
+import { Event, EventSchema } from '../analytics/schemas/event.schema';
 
 @Module({
   imports: [
@@ -19,6 +18,7 @@ import { Event, EventSchema } from 'src/analytics/schemas/event.schema';
     ]),
   ],
   controllers: [OrdersController],
-  providers: [OrderService, FileUploadService, TokenAuthGuard],
+  providers: [OrderService, FileUploadService],
+  exports: [OrderService],
 })
 export class OrdersModule {}

@@ -39,7 +39,7 @@ import {
 import {
   getPaymentStatusColor,
   getPaymentStatusText,
-  getDeliveryStatusText,
+  getDeliveryStatusText, getDeliveryStatusColor,
 } from "../../utils/statusUtils.ts";
 import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.tsx";
 
@@ -194,7 +194,7 @@ const OrderDetails = () => {
             </Typography>
             <Chip
               label={getDeliveryStatusText(order.deliveryStatus)}
-              color="primary"
+              color={getDeliveryStatusColor(order.deliveryStatus)}
             />
           </Box>
         </Box>

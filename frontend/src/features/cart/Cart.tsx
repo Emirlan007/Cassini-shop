@@ -25,6 +25,7 @@ import {
 } from "./cartThunks.ts";
 import type { CartItem } from "../../types";
 import CartItemsList from "./components/CartItemsList.tsx";
+import StepBackButton from "./../../components/UI/StepBackButton.tsx";
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -202,18 +203,30 @@ const Cart = () => {
                 />
             )}
 
-            {step === 2 &&
-                (user ? (
-                    <CheckoutAddressForm
-                        user={user}
-                        onSubmit={handleAddressSubmit}
-                        loading={updateLoading}
-                    />
-                ) : (
-                    <CheckoutForm onSubmit={handleRegister} loading={registerLoading} />
-                ))}
+            {step === 2 && (
+                <Box>
+                    <StepBackButton onBack={() => setStep(1)} />
+                    {user ? (
+                        <CheckoutAddressForm
+                            user={user}
+                            onSubmit={handleAddressSubmit}
+                            loading={updateLoading}
+                        />
+                    ) : (
+                        <CheckoutForm
+                            onSubmit={handleRegister}
+                            loading={registerLoading}
+                        />
+                    )}
+                </Box>
+            )}
 
-            {step === 3 && <PaymentStep onCheckout={handleCheckout} />}
+            {step === 3 && (
+                <Box>
+                    <StepBackButton onBack={() => setStep(2)} />
+                    <PaymentStep onCheckout={handleCheckout} />
+                </Box>
+            )}
         </Stack>
     );
 };

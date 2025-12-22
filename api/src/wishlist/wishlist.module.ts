@@ -6,6 +6,7 @@ import { Wishlist, WishlistSchema } from '../schemas/wishlist.schema';
 import { Product, ProductSchema } from '../schemas/product.schema';
 import { User, UserSchema } from '../schemas/user.schema';
 import { AuthModule } from '../auth/auth.module';
+import { AnalyticsModule } from 'src/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from '../auth/auth.module';
       { name: User.name, schema: UserSchema },
     ]),
     AuthModule,
+    AnalyticsModule,
   ],
   controllers: [WishlistController],
   providers: [WishlistService],

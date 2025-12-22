@@ -7,6 +7,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Wishlist, WishlistDocument } from '../schemas/wishlist.schema';
 import { Product, ProductDocument } from '../schemas/product.schema';
+import { AnalyticsService } from 'src/analytics/analytics.service';
+import { EventType } from 'src/enums/event.enum';
 
 @Injectable()
 export class WishlistService {
@@ -15,6 +17,7 @@ export class WishlistService {
     private wishlistModel: Model<WishlistDocument>,
     @InjectModel(Product.name)
     private productModel: Model<ProductDocument>,
+    private analyticsService: AnalyticsService,
   ) {}
 
   async getWishlist(userId: string): Promise<WishlistDocument> {
@@ -44,6 +47,7 @@ export class WishlistService {
   }
 
   async addProductToWishlist(
+    sessionId: string,
     userId: string,
     productId: string,
   ): Promise<WishlistDocument> {
@@ -97,6 +101,13 @@ export class WishlistService {
     if (!updatedWishlist) {
       throw new NotFoundException('Wishlist not found after update');
     }
+
+    await this.analyticsService.trackEvent({
+      type: EventType.AddToWishlist,
+      sessionId,
+      userId,
+      productId,
+    });
 
     return updatedWishlist;
   }

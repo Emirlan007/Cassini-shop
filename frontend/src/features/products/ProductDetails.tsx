@@ -12,6 +12,7 @@ import { ProductVariants } from "./components/ProductVariants";
 import { useEffect } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../users/usersSlice";
+import { trackProductView } from "../../analytics/analytics";
 
 const ProductDetails = () => {
   const { productId } = useParams() as { productId: string };
@@ -28,6 +29,7 @@ const ProductDetails = () => {
   );
 
   useEffect(() => {
+    trackProductView(productId);
     setSelectedColor(null);
     setSelectedSize(null);
   }, [productId]);

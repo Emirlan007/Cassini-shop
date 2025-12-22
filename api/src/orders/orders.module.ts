@@ -7,6 +7,7 @@ import { Product, ProductSchema } from '../schemas/product.schema';
 import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { User, UserSchema } from '../schemas/user.schema';
 import { Event, EventSchema } from '../analytics/schemas/event.schema';
+import { AnalyticsModule } from 'src/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Event, EventSchema } from '../analytics/schemas/event.schema';
       { name: User.name, schema: UserSchema },
       { name: Event.name, schema: EventSchema },
     ]),
+    AnalyticsModule,
   ],
   controllers: [OrdersController],
   providers: [OrderService, FileUploadService],

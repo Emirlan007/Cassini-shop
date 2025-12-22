@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Product } from '../../schemas/product.schema';
 
 export type ProductStatsByDayDocument = ProductStatsByDay & Document;
 
 @Schema()
 export class ProductStatsByDay {
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  productId: Types.ObjectId;
+  productId: Types.ObjectId | Product;
 
   @Prop({ required: true })
   date: Date;

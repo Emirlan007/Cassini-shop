@@ -6,6 +6,10 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { ProductStatsByDay } from './schemas/productStatsByDay.schema';
 import { OrderStatsByDay } from './schemas/orderStatsByDay.schema';
 
+type ProductPopulated = {
+  name: string;
+};
+
 @Injectable()
 export class AnalyticsService {
   constructor(
@@ -21,20 +25,30 @@ export class AnalyticsService {
 
   async trackEvent(dto: CreateEventDto) {
     await this.eventModel.create(dto);
-
     return { status: 'ok' };
   }
 
   async getProductMetrics(from: Date, to: Date) {
-    return this.productStatsByDayModel
+    const stats = await this.productStatsByDayModel
       .find({
-        date: {
-          $gte: from,
-          $lte: to,
-        },
+        date: { $gte: from, $lte: to },
       })
-      .sort({ date: 1 })
+      .populate({
+        path: 'productId',
+        select: 'name',
+      })
       .lean();
+
+    return stats.map((item) => {
+      const product = item.productId as ProductPopulated | null;
+
+      return {
+        productTitle: product?.name ?? 'Удалённый товар',
+        views: item.views ?? 0,
+        addToCartQty: item.addToCartQty ?? 0,
+        wishlistCount: item.wishlistCount ?? 0,
+      };
+    });
   }
 
   async getOrderMetrics(from: Date, to: Date) {

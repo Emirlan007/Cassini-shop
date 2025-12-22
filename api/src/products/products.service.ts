@@ -14,6 +14,7 @@ import { UpdateDiscountDto } from './dto/update-discount.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
+import { SearchQueriesService } from 'src/search/search-query.service';
 
 interface ProductFilter {
   category?: Types.ObjectId;
@@ -37,6 +38,7 @@ export class ProductsService {
     @InjectModel(Product.name)
     private productModel: Model<ProductDocument>,
     private fileUploadService: FileUploadService,
+    private searchQueriesService: SearchQueriesService,
   ) {}
 
   async create(
@@ -180,9 +182,22 @@ export class ProductsService {
     page: number;
     category?: string;
     colors?: string[];
+    userId?: string;
+    sessionId?: string;
   }) {
-    const { query, category, colors, limit, page } = params;
+    const { query, category, colors, limit, page, userId, sessionId } = params;
 
+    if (query && query.trim().length >= 2) {
+      this.searchQueriesService
+        .saveSearchQuery({
+          query: query.trim(),
+          userId,
+          sessionId,
+        })
+        .catch((error) => {
+          console.error('Error saving search query:', error);
+        });
+    }
     const filter: FilterQuery<ProductDocument> = {};
 
     if (category && Types.ObjectId.isValid(category)) {

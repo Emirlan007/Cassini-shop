@@ -5,7 +5,7 @@ import {
   selectProductsFetchLoading,
   selectProductsFetchError,
 } from "./productsSlice";
-import ProductCard from "./ProductCard";
+import ProductCard from "./components/ProductCard";
 
 interface Props {
   products?: ReturnType<typeof selectProducts>;
@@ -14,7 +14,6 @@ interface Props {
 const ProductList = ({ products }: Props) => {
   const loading = useAppSelector(selectProductsFetchLoading);
   const error = useAppSelector(selectProductsFetchError);
-  const items = products ?? useAppSelector(selectProducts);
 
   if (loading) {
     return (
@@ -33,29 +32,31 @@ const ProductList = ({ products }: Props) => {
   }
 
   return (
-      <Box
-          sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                  xs: "repeat(auto-fit, minmax(150px, 1fr))",
-                  sm: "repeat(auto-fit, minmax(200px, 1fr))",
-                  md: "repeat(auto-fit, minmax(250px, 1fr))",
-                  lg: "repeat(auto-fit, minmax(280px, 1fr))",
-              },
-              gap: { xs: 2, sm: 3 },
-              px: { xs: 1, sm: 2 },
-              width: "100%",
-              maxWidth: "1400px",
-              mx: "auto",
-              boxSizing: "border-box"
-          }}
-      >
-      {items.length == 0 && (
-        <Box sx={{textAlign:"center", textDecoration:"underline"}}>
-          <Typography variant="h3" component="h3">Nothing Found</Typography>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "repeat(auto-fit, minmax(150px, 1fr))",
+          sm: "repeat(auto-fit, minmax(200px, 1fr))",
+          md: "repeat(auto-fit, minmax(250px, 1fr))",
+          lg: "repeat(auto-fit, minmax(280px, 1fr))",
+        },
+        gap: { xs: 2, sm: 3 },
+        px: { xs: 1, sm: 2 },
+        width: "100%",
+        maxWidth: "1400px",
+        mx: "auto",
+        boxSizing: "border-box",
+      }}
+    >
+      {products?.length == 0 && (
+        <Box sx={{ textAlign: "center", textDecoration: "underline" }}>
+          <Typography variant="h3" component="h3">
+            Nothing Found
+          </Typography>
         </Box>
       )}
-      {items.map((product) => (
+      {products?.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}
     </Box>

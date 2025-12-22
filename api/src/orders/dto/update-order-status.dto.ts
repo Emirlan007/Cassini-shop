@@ -1,8 +1,8 @@
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdatePaymentStatusDto {
+export class UpdateOrderStatusDto {
   @IsNotEmpty()
   @IsString()
   @IsIn(['pending', 'paid', 'cancelled'])
-  paymentStatus: 'pending' | 'paid' | 'cancelled';
+  orderStatus: 'pending' | 'paid' | 'cancelled';
 }

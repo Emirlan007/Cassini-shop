@@ -7,8 +7,8 @@ import OrderProduct from "./OrderProduct";
 import {
     getDeliveryStatusColor,
     getDeliveryStatusText,
-    getPaymentStatusColor,
-    getPaymentStatusText,
+    getOrderStatusColor,
+    getOrderStatusText,
 } from "../../../utils/statusUtils";
 import OrderCardComments from "./OrderCardComments";
 import {useNavigate} from "react-router-dom";
@@ -64,8 +64,8 @@ const OrderCard = ({order}: Props) => {
                         size="small"
                     />
                     <Chip
-                        label={getPaymentStatusText(order.paymentStatus)}
-                        color={getPaymentStatusColor(order.paymentStatus)}
+                        label={getOrderStatusText(order.orderStatus)}
+                        color={getOrderStatusColor(order.orderStatus)}
                         size="small"
                     />
                 </Box>

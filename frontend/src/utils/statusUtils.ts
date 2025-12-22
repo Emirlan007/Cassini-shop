@@ -1,4 +1,4 @@
-export const getPaymentStatusColor = (status: string): 'success' | 'error' | 'warning' => {
+export const getOrderStatusColor = (status: string): 'success' | 'error' | 'warning' => {
     switch (status) {
         case "paid":
             return "success";
@@ -10,7 +10,7 @@ export const getPaymentStatusColor = (status: string): 'success' | 'error' | 'wa
     }
 };
 
-export const getPaymentStatusText = (status: string): string => {
+export const getOrderStatusText = (status: string): string => {
     switch (status) {
         case "paid":
             return "Оплачен";

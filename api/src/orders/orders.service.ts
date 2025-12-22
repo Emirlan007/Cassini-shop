@@ -140,15 +140,15 @@ export class OrderService {
     return statusCounts;
   }
 
-  async updateOrderPaymentStatus(
+  async updateOrderStatus(
     orderId: string,
-    paymentStatus: 'pending' | 'paid' | 'cancelled',
+    orderStatus: 'pending' | 'paid' | 'cancelled',
   ) {
     const order = await this.orderModel.findByIdAndUpdate(
       orderId,
       {
         $set: {
-          paymentStatus,
+          orderStatus,
           updatedAt: new Date(),
         },
       },
@@ -204,7 +204,7 @@ export class OrderService {
       items: processedItems,
       paymentMethod,
       status: status ?? OrderStatus.Pending,
-      paymentStatus: 'pending',
+      orderStatus: 'pending',
       userComment: userComment ?? null,
       adminComments: [],
       createdAt: new Date(),

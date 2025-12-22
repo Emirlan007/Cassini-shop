@@ -28,17 +28,17 @@ import { selectUser } from "../users/usersSlice.ts";
 import {
   addAdminCommentToOrder,
   changeOrderDeliveryStatus,
-  updateOrderPaymentStatusThunk,
+  updateOrderStatusThunk,
 } from "./admin/ordersThunks.ts";
 import {
-  clearPaymentStatusError,
+  clearOrderStatusError,
   selectCreateAdminCommentLoading,
-  selectUpdatePaymentStatusError,
-  selectUpdatePaymentStatusLoading,
+  selectUpdateOrderStatusError,
+  selectUpdateOrderStatusLoading,
 } from "./admin/ordersSlice.ts";
 import {
-  getPaymentStatusColor,
-  getPaymentStatusText,
+  getOrderStatusColor,
+  getOrderStatusText,
   getDeliveryStatusText, getDeliveryStatusColor,
 } from "../../utils/statusUtils.ts";
 import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.tsx";
@@ -46,7 +46,7 @@ import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.ts
 const OrderDetails = () => {
   const [userComment, setUserComment] = useState("");
   const [adminComment, setAdminComment] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState<
+  const [orderStatus, setOrderStatus] = useState<
     "pending" | "paid" | "cancelled"
   >("pending");
   const [deliveryStatus, setDeliveryStatus] = useState<string>("");
@@ -60,11 +60,11 @@ const OrderDetails = () => {
   const createAdminCommentLoading = useAppSelector(
     selectCreateAdminCommentLoading
   );
-  const updatePaymentStatusLoading = useAppSelector(
-    selectUpdatePaymentStatusLoading
+  const updateOrderStatusLoading = useAppSelector(
+    selectUpdateOrderStatusLoading
   );
-  const updatePaymentStatusError = useAppSelector(
-    selectUpdatePaymentStatusError
+  const updateOrderStatusError = useAppSelector(
+    selectUpdateOrderStatusError
   );
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -79,8 +79,8 @@ const OrderDetails = () => {
   }, [dispatch, orderId]);
 
   useEffect(() => {
-    if (order?.paymentStatus) {
-      setPaymentStatus(order.paymentStatus);
+    if (order?.orderStatus) {
+      setOrderStatus(order.orderStatus);
     }
     if (order?.deliveryStatus) {
       setDeliveryStatus(order.deliveryStatus);
@@ -105,9 +105,9 @@ const OrderDetails = () => {
     await dispatch(fetchOrderById(orderId));
   };
 
-  const handlePaymentStatusChange = async () => {
-    if (orderId && paymentStatus !== order?.paymentStatus) {
-      await dispatch(updateOrderPaymentStatusThunk({ orderId, paymentStatus }));
+  const handleOrderStatusChange = async () => {
+    if (orderId && orderStatus !== order?.orderStatus) {
+      await dispatch(updateOrderStatusThunk({ orderId, orderStatus }));
       await dispatch(fetchOrderById(orderId));
     }
   };
@@ -179,8 +179,8 @@ const OrderDetails = () => {
               Статус оплаты:
             </Typography>
             <Chip
-              label={getPaymentStatusText(order.paymentStatus)}
-              color={getPaymentStatusColor(order.paymentStatus)}
+              label={getOrderStatusText(order.orderStatus)}
+              color={getOrderStatusColor(order.orderStatus)}
             />
           </Box>
 
@@ -202,13 +202,13 @@ const OrderDetails = () => {
                 Управление статусом оплаты
               </Typography>
 
-              {updatePaymentStatusError && (
+              {updateOrderStatusError && (
                 <Alert
                   severity="error"
                   sx={{ mb: 2 }}
-                  onClose={() => dispatch(clearPaymentStatusError())}
+                  onClose={() => dispatch(clearOrderStatusError())}
                 >
-                  {updatePaymentStatusError}
+                  {updateOrderStatusError}
                 </Alert>
               )}
 
@@ -216,10 +216,10 @@ const OrderDetails = () => {
                 <FormControl sx={{ minWidth: 200 }}>
                   <InputLabel>Статус оплаты</InputLabel>
                   <Select
-                    value={paymentStatus}
+                    value={orderStatus}
                     label="Статус оплаты"
                     onChange={(e) =>
-                      setPaymentStatus(
+                      setOrderStatus(
                         e.target.value as "pending" | "paid" | "cancelled"
                       )
                     }
@@ -232,13 +232,13 @@ const OrderDetails = () => {
 
                 <Button
                   variant="contained"
-                  onClick={handlePaymentStatusChange}
+                  onClick={handleOrderStatusChange}
                   disabled={
-                    paymentStatus === order.paymentStatus ||
-                    updatePaymentStatusLoading
+                    orderStatus === order.orderStatus ||
+                    updateOrderStatusLoading
                   }
                 >
-                  {updatePaymentStatusLoading ? (
+                  {updateOrderStatusLoading ? (
                     <CircularProgress size={20} />
                   ) : (
                     "Обновить"

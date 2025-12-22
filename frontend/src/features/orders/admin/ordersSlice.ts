@@ -3,31 +3,31 @@ import type { OrderItemAdmin } from "../../../types";
 import {
   addAdminCommentToOrder,
   fetchAdminOrders,
-  updateOrderPaymentStatusThunk,
+ updateOrderStatusThunk,
 } from "./ordersThunks";
 
 interface IInitialState {
   orders: OrderItemAdmin[];
   isFetchingLoading: boolean;
   createCommentLoading: boolean;
-  updatePaymentStatusLoading: boolean;
-  updatePaymentStatusError: string | null;
+  updateOrderStatusLoading: boolean;
+  updateOrderStatusError: string | null;
 }
 
 const initialState: IInitialState = {
   orders: [],
   isFetchingLoading: false,
   createCommentLoading: false,
-  updatePaymentStatusLoading: false,
-  updatePaymentStatusError: null,
+  updateOrderStatusLoading: false,
+  updateOrderStatusError: null,
 };
 
 const ordersSlice = createSlice({
   name: "adminOrders",
   initialState,
   reducers: {
-    clearPaymentStatusError: (state) => {
-      state.updatePaymentStatusError = null;
+    clearOrderStatusError: (state) => {
+      state.updateOrderStatusError = null;
     },
   },
   extraReducers: (builder) => {
@@ -55,12 +55,12 @@ const ordersSlice = createSlice({
       });
 
     builder
-      .addCase(updateOrderPaymentStatusThunk.pending, (state) => {
-        state.updatePaymentStatusLoading = true;
-        state.updatePaymentStatusError = null;
+      .addCase(updateOrderStatusThunk.pending, (state) => {
+        state.updateOrderStatusLoading = true;
+        state.updateOrderStatusError = null;
       })
-      .addCase(updateOrderPaymentStatusThunk.fulfilled, (state, action) => {
-        state.updatePaymentStatusLoading = false;
+      .addCase(updateOrderStatusThunk.fulfilled, (state, action) => {
+        state.updateOrderStatusLoading = false;
 
         const updatedOrder = action.payload;
         const index = state.orders.findIndex(
@@ -70,9 +70,9 @@ const ordersSlice = createSlice({
           state.orders[index] = updatedOrder;
         }
       })
-      .addCase(updateOrderPaymentStatusThunk.rejected, (state, action) => {
-        state.updatePaymentStatusLoading = false;
-        state.updatePaymentStatusError =
+      .addCase(updateOrderStatusThunk.rejected, (state, action) => {
+        state.updateOrderStatusLoading = false;
+        state.updateOrderStatusError =
           (action.payload as string) || "Ошибка при обновлении статуса оплаты";
       });
   },
@@ -80,9 +80,9 @@ const ordersSlice = createSlice({
     selectOrders: (state) => state.orders,
     selectFetchingOrders: (state) => state.isFetchingLoading,
     selectCreateAdminCommentLoading: (state) => state.createCommentLoading,
-    selectUpdatePaymentStatusLoading: (state) =>
-      state.updatePaymentStatusLoading,
-    selectUpdatePaymentStatusError: (state) => state.updatePaymentStatusError,
+    selectUpdateOrderStatusLoading: (state) =>
+      state.updateOrderStatusLoading,
+    selectUpdateOrderStatusError: (state) => state.updateOrderStatusError,
   },
 });
 
@@ -91,7 +91,7 @@ export const {
   selectFetchingOrders,
   selectOrders,
   selectCreateAdminCommentLoading,
-  selectUpdatePaymentStatusLoading,
-  selectUpdatePaymentStatusError,
+  selectUpdateOrderStatusLoading,
+  selectUpdateOrderStatusError,
 } = ordersSlice.selectors;
-export const { clearPaymentStatusError } = ordersSlice.actions;
+export const { clearOrderStatusError } = ordersSlice.actions;

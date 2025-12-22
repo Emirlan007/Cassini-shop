@@ -64,18 +64,18 @@ export const changeOrderDeliveryStatus = createAsyncThunk<
     }
 );
 
-export interface UpdatePaymentStatusData {
+export interface UpdateOrderStatusData {
     orderId: string;
-    paymentStatus: 'pending' | 'paid' | 'cancelled';
+    orderStatus: 'pending' | 'paid' | 'cancelled';
 }
 
-export const updateOrderPaymentStatusThunk = createAsyncThunk(
-    'orders/updatePaymentStatus',
-    async (data: UpdatePaymentStatusData, { rejectWithValue }) => {
+export const updateOrderStatusThunk = createAsyncThunk(
+    'orders/updateOrderStatus',
+    async (data: UpdateOrderStatusData, { rejectWithValue }) => {
         try {
             const response = await axiosApi.patch(
-                `/orders/${data.orderId}/payment-status`,
-                { paymentStatus: data.paymentStatus }
+                `/orders/${data.orderId}/order-status`,
+                { orderStatus: data.orderStatus }
             );
             return response.data;
         } catch (error) {

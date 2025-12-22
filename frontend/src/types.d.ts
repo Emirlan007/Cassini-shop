@@ -202,7 +202,7 @@ export interface Order {
   createdAt: string;
   deliveryStatus: "warehouse" | "on_the_way" | "delivered";
   paymentMethod: "cash" | "qrCode";
-  paymentStatus: "pending" | "paid" | "cancelled";
+  orderStatus: "pending" | "paid" | "cancelled";
   userComment: string;
   adminComments: string[];
 }
@@ -243,7 +243,7 @@ export interface OrderItemAdmin {
   totalPrice: number;
   userComment: string;
   adminComments: string[];
-  paymentStatus: "pending" | "paid" | "cancelled";
+  orderStatus: "pending" | "paid" | "cancelled";
 }
 
 export interface PopularProducts {

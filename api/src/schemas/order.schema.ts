@@ -64,7 +64,7 @@ export class Order {
     enum: ['pending', 'paid', 'cancelled'],
     default: 'pending',
   })
-  paymentStatus: string;
+  orderStatus: string;
 
   @Prop({ type: String, default: null })
   userComment: string | null;

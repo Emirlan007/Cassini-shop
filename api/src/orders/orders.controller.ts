@@ -17,7 +17,7 @@ import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { CommentDto } from './dto/comment.dto';
 import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
-import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 
 @Controller('orders')
 export class OrdersController {
@@ -102,7 +102,7 @@ export class OrdersController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   @Patch(':id/status')
-  async updateOrderStatus(
+  async updateDeliveryOrderStatus(
     @Param('id') orderId: string,
     @Body() updateDeliveryStatusDto: UpdateDeliveryStatusDto,
   ) {
@@ -114,14 +114,14 @@ export class OrdersController {
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  @Patch(':id/payment-status')
-  async updatePaymentStatus(
+  @Patch(':id/order-status')
+  async updateOrderStatus(
     @Param('id') orderId: string,
-    @Body() updatePaymentStatusDto: UpdatePaymentStatusDto,
+    @Body() updateOrderStatusDto: UpdateOrderStatusDto,
   ) {
-    return this.ordersService.updateOrderPaymentStatus(
+    return this.ordersService.updateOrderStatus(
       orderId,
-      updatePaymentStatusDto.paymentStatus,
+      updateOrderStatusDto.orderStatus,
     );
   }
 }

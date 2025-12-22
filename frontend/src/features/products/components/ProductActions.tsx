@@ -19,6 +19,7 @@ import {
   selectAdminUpdateDiscountError,
   selectAdminUpdateDiscountLoading,
 } from "../admin/adminProductsSlice";
+import { trackAddToCart } from "../../../analytics/analytics";
 
 interface Props {
   product: Product;
@@ -78,6 +79,8 @@ const ProductActions: React.FC<Props> = ({
     if (!product || !selectedSize || !selectedColor) return;
 
     const productImage = getCurrentImages[0] || product.images?.[0] || "";
+
+    trackAddToCart(product._id);
 
     await dispatch(
       addItemToCart({

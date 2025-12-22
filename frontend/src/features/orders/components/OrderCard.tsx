@@ -1,10 +1,8 @@
-import {Box, Step, StepLabel, Chip, Stepper, Typography} from "@mui/material";
-import {DeliveryStatus} from "../../../constants";
+import {Box, Chip, Typography} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import type {Order, OrderItemAdmin} from "../../../types";
 import {useAppSelector} from "../../../app/hooks";
 import {selectUser} from "../../users/usersSlice";
-import theme from "../../../theme";
 import OrderProduct from "./OrderProduct";
 import {
     getDeliveryStatusColor,
@@ -17,15 +15,12 @@ import {useNavigate} from "react-router-dom";
 
 interface Props {
     order: Order | OrderItemAdmin;
-    isAdmin: boolean;
 }
 
-const OrderCard = ({order, isAdmin}: Props) => {
+const OrderCard = ({order}: Props) => {
     const user = useAppSelector(selectUser);
     const navigate = useNavigate();
     const {t} = useTranslation();
-
-    const steps = Object.values(DeliveryStatus);
 
     return (
         <Box
@@ -88,44 +83,6 @@ const OrderCard = ({order, isAdmin}: Props) => {
                     product={item}
                 />
             ))}
-
-            {!isAdmin && (
-                <Box
-                    sx={{
-                        width: "100%",
-                        background: theme.palette.secondary.main,
-                        py: "1rem",
-                        borderRadius: "10%",
-                    }}
-                >
-                    <Stepper
-                        activeStep={
-                            Object.values(DeliveryStatus).indexOf(order.deliveryStatus) + 1
-                        }
-                        alternativeLabel
-                    >
-                        {steps.map((label) => (
-                            <Step key={label}>
-                                <StepLabel
-                                    sx={{
-                                        "& .MuiStepLabel-label": {
-                                            color: "white !important",
-                                        },
-                                        "& .MuiStepIcon-root": {
-                                            color: "white",
-                                        },
-                                        "& .MuiStepIcon-text": {
-                                            fill: theme.palette.secondary.main,
-                                        },
-                                    }}
-                                >
-                                    {label}
-                                </StepLabel>
-                            </Step>
-                        ))}
-                    </Stepper>
-                </Box>
-            )}
 
             <OrderCardComments
                 userComment={order.userComment}

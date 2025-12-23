@@ -30,12 +30,12 @@ const ProductDetails = () => {
 
   useEffect(() => {
     trackProductView(productId);
-    setSelectedColor(null);
+    setSelectedColor(false);
     setSelectedSize(null);
   }, [productId]);
 
   const handleColorChange = (color: string) => {
-    setSelectedColor((prev) => (prev === color ? null : color));
+    setSelectedColor((prev) => (prev === color ? false : color));
   };
 
   if (loading) {

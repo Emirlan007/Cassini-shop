@@ -37,7 +37,7 @@ interface Props {
 const ProductForm = ({ onSubmit, loading }: Props) => {
   const [isSizesOpen, setSizesOpen] = useState(false);
   const [isColorsOpen, setColorsOpen] = useState(false);
-  const {t} = useTranslation() 
+  const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -102,7 +102,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
       const removedIndex = prev.images.indexOf(file);
 
       const updatedImagesByColor = Object.fromEntries(
-        Object.entries(prev.imagesByColor).map(([color, indexes]) => [
+        Object.entries(prev.imagesByColor || {}).map(([color, indexes]) => [
           color,
           indexes
             .filter((i) => i !== removedIndex)
@@ -150,7 +150,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
 
   const toggleImageColor = (color: string, index: number, checked: boolean) => {
     setState((prev) => {
-      const prevImages = prev.imagesByColor[color] || [];
+      const prevImages = prev.imagesByColor?.[color] || [];
       return {
         ...prev,
         imagesByColor: {
@@ -173,10 +173,10 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     navigate("/admin/products");
   };
 
-   const getClothesColorName = (hex: string) => {
-      const test = findClosestColor(hex);
-      return t(`colors.${test}`);
-    };
+  const getClothesColorName = (hex: string) => {
+    const test = findClosestColor(hex);
+    return t(`colors.${test}`);
+  };
 
   return (
     <Box
@@ -304,19 +304,29 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
           />
 
           <Stack direction="row" spacing={2} alignItems={"center"}>
-           
-          
             <Button variant="contained" onClick={() => setColorsOpen(true)}>
               Расцветки
             </Button>
-             <Box component="div" sx={{display:"flex", gap:2}}>
+            <Box component="div" sx={{ display: "flex", gap: 2 }}>
               {state.colors.map((color) => (
-                <Box key={color} sx={{display:"flex", flexDirection:"column" , alignItems:"center"}}>
-                  <Box component="div" sx={{width:"2rem", height:"2rem", background:color, borderRadius:"50%"}}>
-                  </Box>
-                  <Typography>
-                    {getClothesColorName(color)}
-                  </Typography>
+                <Box
+                  key={color}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    component="div"
+                    sx={{
+                      width: "2rem",
+                      height: "2rem",
+                      background: color,
+                      borderRadius: "50%",
+                    }}
+                  ></Box>
+                  <Typography>{getClothesColorName(color)}</Typography>
                 </Box>
               ))}
             </Box>
@@ -361,7 +371,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
                         control={
                           <Checkbox
                             checked={
-                              state.imagesByColor[color]?.includes(index) ||
+                              state.imagesByColor?.[color]?.includes(index) ||
                               false
                             }
                             onChange={(e) =>

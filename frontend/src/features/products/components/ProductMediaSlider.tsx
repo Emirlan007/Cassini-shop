@@ -9,7 +9,7 @@ import { Navigation, Pagination } from "swiper/modules";
 
 interface Props {
   product?: Product;
-  selectedColor: string | null;
+  selectedColor: string | false;
 }
 
 const ProductMediaSlider: React.FC<Props> = ({ product, selectedColor }) => {

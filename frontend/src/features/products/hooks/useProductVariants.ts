@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { Product } from "../../../types";
 
 export const useProductVariants = (product?: Product) => {
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | false>(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const images = useMemo(() => {

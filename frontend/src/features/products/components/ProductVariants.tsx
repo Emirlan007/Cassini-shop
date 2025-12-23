@@ -16,7 +16,7 @@ import { AVAILABLE_SIZES } from "../../../constants/sizes";
 interface Props {
   colors?: string[];
   sizes?: string[];
-  selectedColor: string | null;
+  selectedColor: string | false;
   selectedSize: string | null;
   onColorChange: (color: string) => void;
   onSizeChange: (size: string) => void;

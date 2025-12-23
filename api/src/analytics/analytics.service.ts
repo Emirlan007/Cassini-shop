@@ -8,6 +8,7 @@ import { OrderStatsByDay } from './schemas/orderStatsByDay.schema';
 
 type ProductPopulated = {
   name: string;
+  images?: string[];
 };
 
 @Injectable()
@@ -33,10 +34,7 @@ export class AnalyticsService {
       .find({
         date: { $gte: from, $lte: to },
       })
-      .populate({
-        path: 'productId',
-        select: 'name',
-      })
+      .populate('productId', 'name images')
       .lean();
 
     return stats.map((item) => {
@@ -44,6 +42,7 @@ export class AnalyticsService {
 
       return {
         productTitle: product?.name ?? 'Удалённый товар',
+        image: product?.images?.[0] ?? undefined,
         views: item.views ?? 0,
         addToCartQty: item.addToCartQty ?? 0,
         wishlistCount: item.wishlistCount ?? 0,

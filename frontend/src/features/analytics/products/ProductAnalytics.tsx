@@ -14,14 +14,17 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
-import {fetchProductAnalytics, type ProductAnalyticsPeriod} from "./productAnalyticsThunks.ts";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import {
+  fetchProductAnalytics,
+  type ProductAnalyticsPeriod,
+} from "./productAnalyticsThunks.ts";
+import TableThumbnail from "../../../components/UI/TableThumbnail/TableThumbnail.tsx";
+import { getImageUrl } from "../../../utils/getImageUrl.ts";
 
 const ProductAnalytics = () => {
   const dispatch = useAppDispatch();
-  const { data, loading } = useAppSelector(
-    (state) => state.productAnalytics
-  );
+  const { data, loading } = useAppSelector((state) => state.productAnalytics);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -56,9 +59,7 @@ const ProductAnalytics = () => {
           {data.map((item) => (
             <Card key={item.productTitle}>
               <CardContent>
-                <Typography fontWeight={600}>
-                  {item.productTitle}
-                </Typography>
+                <Typography fontWeight={600}>{item.productTitle}</Typography>
 
                 <Typography variant="body2">
                   🛒 В корзину: {item.addToCartQty}
@@ -77,6 +78,7 @@ const ProductAnalytics = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Фото</TableCell>
               <TableCell>Название товара</TableCell>
               <TableCell align="right">В корзину</TableCell>
               <TableCell align="right">В вишлист</TableCell>
@@ -86,6 +88,9 @@ const ProductAnalytics = () => {
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.productTitle}>
+                <TableThumbnail
+                  imageUrl={item.image ? getImageUrl(item.image) : undefined}
+                />
                 <TableCell>{item.productTitle}</TableCell>
                 <TableCell align="right">{item.addToCartQty}</TableCell>
                 <TableCell align="right">{item.wishlistCount}</TableCell>

@@ -34,6 +34,10 @@ const ProductDetails = () => {
     setSelectedSize(null);
   }, [productId]);
 
+  const handleColorChange = (color: string) => {
+    setSelectedColor((prev) => (prev === color ? null : color));
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -79,7 +83,7 @@ const ProductDetails = () => {
             sizes={product.size}
             selectedColor={selectedColor}
             selectedSize={selectedSize}
-            onColorChange={setSelectedColor}
+            onColorChange={handleColorChange}
             onSizeChange={setSelectedSize}
           />
 

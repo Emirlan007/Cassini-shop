@@ -53,8 +53,7 @@ export const ProductVariants: React.FC<Props> = ({
           </Typography>
 
           <Tabs
-            value={selectedColor ?? false}
-            onChange={(_, v) => onColorChange(v)}
+            value={selectedColor}
             variant="scrollable"
             scrollButtons="auto"
             sx={{
@@ -70,6 +69,7 @@ export const ProductVariants: React.FC<Props> = ({
               <Tab
                 key={c}
                 value={c}
+                onClick={() => onColorChange(c)}
                 label={
                   <Box
                     sx={{

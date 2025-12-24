@@ -30,7 +30,7 @@ const AccountPage = () => {
     <>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
-          Мой аккаунт
+          {t("profile")}
         </Typography>
 
         <Button
@@ -47,7 +47,7 @@ const AccountPage = () => {
             },
           }}
         >
-          Избранное
+          {t("wishlist")}
         </Button>
       </Box>
 

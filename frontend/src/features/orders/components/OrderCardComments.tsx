@@ -1,5 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material";
 import type React from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   userComment: string;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const OrderCardComments: React.FC<Props> = ({ userComment, adminComments }) => {
+  const { t } = useTranslation();
   return (
     <Box
       sx={{
@@ -17,7 +19,7 @@ const OrderCardComments: React.FC<Props> = ({ userComment, adminComments }) => {
     >
       {userComment && userComment.trim() !== "" && (
         <Stack>
-          <Typography variant="body1">Комментарий</Typography>
+          <Typography variant="body1"> {t("comment")}</Typography>
           <Typography
             variant="body2"
             sx={{

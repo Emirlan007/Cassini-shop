@@ -1,7 +1,8 @@
-import {type FC, useState} from "react";
-import {Box, Button, Stack, TextField, Typography} from "@mui/material";
+import { type FC, useState } from "react";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import toast from "react-hot-toast";
 import PhoneInput from "./PhoneInput.tsx";
+import { useTranslation } from "react-i18next";
 
 interface CheckoutFormProps {
   onSubmit: (data: {
@@ -21,9 +22,16 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
     address: "",
   });
 
+  const { t } = useTranslation();
+
   const handleSubmit = () => {
-    if (!userData.name || !userData.phoneNumber || !userData.city || !userData.address) {
-      toast.error("Пожалуйста, заполните все поля");
+    if (
+      !userData.name ||
+      !userData.phoneNumber ||
+      !userData.city ||
+      !userData.address
+    ) {
+      toast.error(t("fillInAllFields"));
       return;
     }
     onSubmit(userData);
@@ -32,18 +40,18 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
   return (
     <Box>
       <Typography
-         sx={{
-           fontWeight: '700',
-           fontSize: '28px',
-           marginBottom: '20px',
-           color: '#660033'
-         }}
+        sx={{
+          fontWeight: "700",
+          fontSize: "28px",
+          marginBottom: "20px",
+          color: "#660033",
+        }}
       >
-        Личные данные
+        {t("personalData")}
       </Typography>
       <Stack spacing={2}>
         <TextField
-          label="Имя"
+          label={t("name")}
           value={userData.name}
           onChange={(e) => setUserData({ ...userData, name: e.target.value })}
         />
@@ -52,18 +60,20 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           onChange={(value) => setUserData({ ...userData, phoneNumber: value })}
         />
         <TextField
-          label="Город"
+          label={t("city")}
           value={userData.city}
           onChange={(e) => setUserData({ ...userData, city: e.target.value })}
         />
         <TextField
-          label="Адрес"
+          label={t("address")}
           value={userData.address}
-          onChange={(e) => setUserData({ ...userData, address: e.target.value })}
+          onChange={(e) =>
+            setUserData({ ...userData, address: e.target.value })
+          }
         />
 
         <Button variant="contained" onClick={handleSubmit} disabled={loading}>
-          Далее
+          {t("next")}
         </Button>
       </Stack>
     </Box>

@@ -18,6 +18,7 @@ import {
 import { FavoriteBorderOutlined } from "@mui/icons-material";
 import ProductCard from "../products/components/ProductCard";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Wishlist = () => {
   const dispatch = useAppDispatch();
@@ -25,6 +26,8 @@ const Wishlist = () => {
   const loading = useAppSelector(selectWishlistLoading);
   const error = useAppSelector(selectWishlistError);
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(fetchWishlist());
@@ -89,10 +92,10 @@ const Wishlist = () => {
             fontWeight={600}
             gutterBottom
           >
-            Список избранного пуст
+            {t("emptyWishlist")}
           </Typography>
           <Typography color="text.secondary" textAlign="center" sx={{ mb: 2 }}>
-            Добавьте товары в избранное, чтобы не потерять их
+            {t("addItemsToWishlist")}
           </Typography>
           <Button
             variant="contained"
@@ -105,7 +108,7 @@ const Wishlist = () => {
               borderRadius: 2,
             }}
           >
-            Перейти к покупкам
+            {t("toMainPage")}
           </Button>
         </Box>
       </Container>
@@ -130,7 +133,7 @@ const Wishlist = () => {
               fontSize: { xs: "1.75rem", md: "2.125rem" },
             }}
           >
-            Избранное
+            {t("wishlist")}
           </Typography>
           <Typography
             variant="h5"

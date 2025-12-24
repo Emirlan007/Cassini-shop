@@ -1,4 +1,5 @@
 import { Box, Stack } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   discount?: number;
@@ -6,6 +7,8 @@ interface Props {
 }
 
 export const ProductBadges: React.FC<Props> = ({ discount, isNew }) => {
+  const { t } = useTranslation();
+
   if (!discount && !isNew) return null;
 
   return (
@@ -42,7 +45,7 @@ export const ProductBadges: React.FC<Props> = ({ discount, isNew }) => {
             fontWeight: "bold",
           }}
         >
-          New
+          {t("new")}
         </Box>
       )}
     </Stack>

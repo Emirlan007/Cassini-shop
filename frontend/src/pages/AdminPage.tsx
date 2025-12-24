@@ -87,9 +87,9 @@ const AdminPage = () => {
         Панель администратора
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container  spacing={3}>
         {adminLinks.map((link) => (
-          <Grid sx={{ xs: 12, sm: 6, md: 4 }} key={link.path}>
+          <Grid sx={{flex:"1 1 300px"}} key={link.path}>
             <Card
               sx={{
                 height: "100%",

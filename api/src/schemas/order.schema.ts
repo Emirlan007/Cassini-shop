@@ -41,7 +41,7 @@ export class Order {
   @Prop({
     type: String,
     enum: OrderStatus,
-    default: OrderStatus.Pending,
+    default: OrderStatus.Unpaid,
   })
   status: OrderStatus;
 
@@ -61,8 +61,8 @@ export class Order {
 
   @Prop({
     type: String,
-    enum: ['pending', 'paid', 'cancelled'],
-    default: 'pending',
+    enum: ['unpaid', 'paid', 'cancelled'],
+    default: 'unpaid',
   })
   paymentStatus: string;
 

@@ -4,14 +4,13 @@ import { fetchAdminOrders } from "./ordersThunks";
 import { selectOrders, selectFetchingOrders } from "./ordersSlice";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { selectUser } from "../../users/usersSlice";
 import OrderCard from "../components/OrderCard";
 
 const AdminOrders = () => {
   const dispatch = useAppDispatch();
   const orders = useAppSelector(selectOrders);
   const isLoading = useAppSelector(selectFetchingOrders);
-  const user = useAppSelector(selectUser);
+ 
   const { t } = useTranslation();
 
   const fetchAllOrders = useCallback(async () => {
@@ -35,7 +34,6 @@ const AdminOrders = () => {
           <OrderCard
             key={order._id}
             order={order}
-            isAdmin={user?.role === "admin"}
           />
         ))
       )}

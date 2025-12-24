@@ -39,7 +39,8 @@ import {
 import {
   getPaymentStatusColor,
   getPaymentStatusText,
-  getDeliveryStatusText, getDeliveryStatusColor,
+  getDeliveryStatusText,
+  getDeliveryStatusColor,
 } from "../../utils/statusUtils.ts";
 import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.tsx";
 
@@ -47,8 +48,8 @@ const OrderDetails = () => {
   const [userComment, setUserComment] = useState("");
   const [adminComment, setAdminComment] = useState("");
   const [paymentStatus, setPaymentStatus] = useState<
-    "pending" | "paid" | "cancelled"
-  >("pending");
+    "unpaid" | "paid" | "cancelled"
+  >("unpaid");
   const [deliveryStatus, setDeliveryStatus] = useState<string>("");
 
   const dispatch = useAppDispatch();
@@ -162,7 +163,6 @@ const OrderDetails = () => {
           alignItems={{ sm: "center" }}
           mb={3}
         >
-
           <Typography variant="body1" color="text.secondary">
             {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
           </Typography>
@@ -181,6 +181,7 @@ const OrderDetails = () => {
             <Chip
               label={getPaymentStatusText(order.paymentStatus)}
               color={getPaymentStatusColor(order.paymentStatus)}
+              sx={{ minWidth: 140 }}
             />
           </Box>
 
@@ -191,6 +192,7 @@ const OrderDetails = () => {
             <Chip
               label={getDeliveryStatusText(order.deliveryStatus)}
               color={getDeliveryStatusColor(order.deliveryStatus)}
+              sx={{ minWidth: 140 }}
             />
           </Box>
         </Box>
@@ -220,11 +222,11 @@ const OrderDetails = () => {
                     label="Статус оплаты"
                     onChange={(e) =>
                       setPaymentStatus(
-                        e.target.value as "pending" | "paid" | "cancelled"
+                        e.target.value as "unpaid" | "paid" | "cancelled"
                       )
                     }
                   >
-                    <MenuItem value="pending">Ожидает оплаты</MenuItem>
+                    <MenuItem value="unpaid">Ожидает оплаты</MenuItem>
                     <MenuItem value="paid">Оплачен</MenuItem>
                     <MenuItem value="cancelled">Отменен</MenuItem>
                   </Select>

@@ -142,7 +142,7 @@ export class OrderService {
 
   async updateOrderPaymentStatus(
     orderId: string,
-    paymentStatus: 'pending' | 'paid' | 'cancelled',
+    paymentStatus: 'unpaid' | 'paid' | 'cancelled',
   ) {
     const order = await this.orderModel.findByIdAndUpdate(
       orderId,
@@ -203,8 +203,8 @@ export class OrderService {
       user: userId,
       items: processedItems,
       paymentMethod,
-      status: status ?? OrderStatus.Pending,
-      paymentStatus: 'pending',
+      status: status ?? OrderStatus.Unpaid,
+      paymentStatus: 'unpaid',
       userComment: userComment ?? null,
       adminComments: [],
       createdAt: new Date(),

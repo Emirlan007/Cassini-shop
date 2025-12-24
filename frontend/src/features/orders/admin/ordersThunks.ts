@@ -66,7 +66,7 @@ export const changeOrderDeliveryStatus = createAsyncThunk<
 
 export interface UpdatePaymentStatusData {
     orderId: string;
-    paymentStatus: 'pending' | 'paid' | 'cancelled';
+    paymentStatus: 'unpaid' | 'paid' | 'cancelled';
 }
 
 export const updateOrderPaymentStatusThunk = createAsyncThunk(

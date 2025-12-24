@@ -16,7 +16,7 @@ import { AVAILABLE_SIZES } from "../../../constants/sizes";
 interface Props {
   colors?: string[];
   sizes?: string[];
-  selectedColor: string | null;
+  selectedColor: string | false;
   selectedSize: string | null;
   onColorChange: (color: string) => void;
   onSizeChange: (size: string) => void;
@@ -53,8 +53,7 @@ export const ProductVariants: React.FC<Props> = ({
           </Typography>
 
           <Tabs
-            value={selectedColor ?? false}
-            onChange={(_, v) => onColorChange(v)}
+            value={selectedColor}
             variant="scrollable"
             scrollButtons="auto"
             sx={{
@@ -70,6 +69,7 @@ export const ProductVariants: React.FC<Props> = ({
               <Tab
                 key={c}
                 value={c}
+                onClick={() => onColorChange(c)}
                 label={
                   <Box
                     sx={{

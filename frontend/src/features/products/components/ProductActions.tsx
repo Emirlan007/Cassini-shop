@@ -23,7 +23,7 @@ import { trackAddToCart } from "../../../analytics/analytics";
 
 interface Props {
   product: Product;
-  selectedColor: string | null;
+  selectedColor: string | false;
   selectedSize: string | null;
   finalPrice?: number;
   isAdmin: boolean;

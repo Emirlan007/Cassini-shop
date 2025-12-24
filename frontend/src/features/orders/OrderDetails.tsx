@@ -269,6 +269,14 @@ const OrderDetails = () => {
             <Typography variant="body1">
               <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
             </Typography>
+
+            <Typography variant="body1">
+              <b>{t("city")}:</b> {order.user.city}
+            </Typography>
+
+            <Typography variant="body1">
+              <b>{t("address")}:</b> {order.user.address}
+            </Typography>
           </Box>
         )}
 

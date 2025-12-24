@@ -341,29 +341,61 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
           />
 
           {state.images.length > 0 && (
-            <ImageList cols={5} rowHeight={140}>
-              {state.images.map((image, index) => (
-                <Stack key={index}>
-                  <ImageListItem>
-                    <img src={URL.createObjectURL(image)} />
-                  </ImageListItem>
-                  <Button
-                    variant={"contained"}
-                    color="error"
-                    onClick={() => removeImageHandler(image)}
-                  >
-                    Удалить
-                  </Button>
-                </Stack>
-              ))}
-            </ImageList>
+              <ImageList cols={10} rowHeight={164}>
+                {state.images.map((image, index) => (
+                    <Stack key={index}>
+                      <ImageListItem>
+                        <img
+                            src={
+                              image instanceof File
+                                  ? URL.createObjectURL(image)
+                                  : `http://localhost:8000/${image}?w=164&h=164&fit=crop&auto=format`
+                            }
+                            srcSet={
+                              image instanceof File
+                                  ? undefined
+                                  : `http://localhost:8000/${image}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`
+                            }
+                        />
+                      </ImageListItem>
+                      <Button
+                          onClick={() => removeImageHandler(image)}
+                          color="error"
+                          variant="contained"
+                      >
+                        Удалить
+                      </Button>
+                    </Stack>
+                ))}
+              </ImageList>
           )}
 
           {state.images.length > 0 && state.colors.length > 0 && (
             <>
               {state.colors.map((color) => (
                 <Stack key={color}>
-                  <Typography fontWeight={600}>{color}</Typography>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Box
+                        key={color}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: '10px'
+                        }}
+                    >
+                      <Box
+                          component="div"
+                          sx={{
+                            width: "2rem",
+                            height: "2rem",
+                            background: color,
+                            borderRadius: "50%",
+                          }}
+                      ></Box>
+                      <Typography>{getClothesColorName(color)}</Typography>
+                    </Box>
+                  </Stack>
                   <Stack direction="row" flexWrap="wrap">
                     {state.images.map((_, index) => (
                       <FormControlLabel

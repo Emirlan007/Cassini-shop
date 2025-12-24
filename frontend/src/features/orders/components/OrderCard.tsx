@@ -61,12 +61,12 @@ const OrderCard = ({order}: Props) => {
                     <Chip
                         label={getDeliveryStatusText(order.deliveryStatus)}
                         color={getDeliveryStatusColor(order.deliveryStatus)}
-                        size="small"
+                        sx={{width: '150px', height: '25px'}}
                     />
                     <Chip
                         label={getPaymentStatusText(order.paymentStatus)}
                         color={getPaymentStatusColor(order.paymentStatus)}
-                        size="small"
+                        sx={{width: '150px', height: '25px'}}
                     />
                 </Box>
 

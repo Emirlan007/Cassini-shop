@@ -56,17 +56,33 @@ const OrderCard = ({ order, isAdmin }: Props) => {
             order: { xs: 1, sm: 2 },
           }}
         >
-          <Chip
-            label={getDeliveryStatusText(order.deliveryStatus)}
-            color={getDeliveryStatusColor(order.deliveryStatus)}
-            size="small"
-          />
-          <Chip
-            label={getPaymentStatusText(order.paymentStatus)}
-            color={getPaymentStatusColor(order.paymentStatus)}
-            size="small"
-          />
-        </Box>
+            <Box
+                display="flex"
+                flexDirection={{xs: "column", sm: "row"}}
+                justifyContent="space-between"
+                alignItems={{sm: "center"}}
+                mb={1}
+                gap={1}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 1,
+                        flexWrap: "wrap",
+                        order: {xs: 1, sm: 2},
+                    }}
+                >
+                    <Chip
+                        label={getDeliveryStatusText(order.deliveryStatus)}
+                        color={getDeliveryStatusColor(order.deliveryStatus)}
+                        sx={{width: '150px', height: '25px'}}
+                    />
+                    <Chip
+                        label={getPaymentStatusText(order.paymentStatus)}
+                        color={getPaymentStatusColor(order.paymentStatus)}
+                        sx={{width: '150px', height: '25px'}}
+                    />
+                </Box>
 
         <Box>
           <Typography variant="subtitle2" sx={{ order: { xs: 2, sm: 3 } }}>

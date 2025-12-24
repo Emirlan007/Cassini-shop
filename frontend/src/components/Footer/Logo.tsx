@@ -11,7 +11,7 @@ const Logo = () => {
           s: "center",
         }, fontSize: '11px', color: '#808080' }}>
         <Link to="/">
-          <img src="/logoFooter.svg" alt="Cassini" style={{ width: '95px', height: '26px'}} />
+          <img src="/newLogo.png" alt="Cassini" style={{ width: '95px', height: '26px'}} />
         </Link>
         <Typography sx={{pt: '7px', fontSize: '11px'}}>
           Trending fashion for the modern woman.

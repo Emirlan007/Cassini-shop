@@ -25,6 +25,9 @@ import { selectCategories } from "../categories/categorySlice.ts";
 import { fetchCategories } from "../categories/categoryThunk.ts";
 import SizesModal from "../../components/UI/SizesModal/SizesModal.tsx";
 import ColorsModal from "../../components/UI/ColorsModal/ColorsModal.tsx";
+import FileInput from "../../components/UI/FileInput/FileInput.tsx";
+import {findClosestColor} from "../../utils/colorNormalizer.ts";
+import {useTranslation} from "react-i18next";
 
 interface Props {
   product: Omit<ProductInput, "category"> & {
@@ -43,6 +46,8 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
   const navigate = useNavigate();
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
 
   const [state, setState] = useState<ProductInput>({
     name: product.name,
@@ -133,10 +138,16 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
     }));
   };
 
+
+  const getClothesColorName = (hex: string) => {
+    const test = findClosestColor(hex);
+    return t(`colors.${test}`);
+  };
+
   const submitFormHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(state);
-    navigate("/");
+    navigate("/admin/products");
   };
 
   const removeImageHandler = (image: File | string) => {
@@ -259,19 +270,42 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
                 onChange={handleColorsUpdate}
             />
 
-            <Stack direction="row" spacing={2} alignItems="center">
-              <TextField
-                  sx={{ width: "100%" }}
-                  label="Выбранные расцветки"
-                  value={state.colors.join(", ")}
-              />
+            <Stack direction="row" spacing={2} alignItems={"center"}>
               <Button variant="contained" onClick={() => setColorsOpen(true)}>
                 Расцветки
               </Button>
+              <Box component="div" sx={{ display: "flex", gap: 2 }}>
+                {state.colors.map((color) => (
+                    <Box
+                        key={color}
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                    >
+                      <Box
+                          component="div"
+                          sx={{
+                            width: "2rem",
+                            height: "2rem",
+                            background: color,
+                            borderRadius: "50%",
+                          }}
+                      ></Box>
+                      <Typography>{getClothesColorName(color)}</Typography>
+                    </Box>
+                ))}
+              </Box>
             </Stack>
 
-            <FilesInput label="Видео" name="video" onChange={videoChangeHandler} />
-            <FilesInput label="Изображения" name="images" onChange={fileInputChangeHandler} />
+            <FileInput label="Видео" name="video" onChange={videoChangeHandler} />
+
+            <FileInput
+                label="Изображения"
+                name="images"
+                onChange={fileInputChangeHandler}
+            />
 
             {state.images && (
                 <ImageList cols={10} rowHeight={164}>
@@ -307,7 +341,28 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
                 <>
                   {state.colors.map((color) => (
                       <Stack key={color}>
-                        <Typography fontWeight={600}>{color}</Typography>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <Box
+                              key={color}
+                              sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: '10px'
+                              }}
+                          >
+                            <Box
+                                component="div"
+                                sx={{
+                                  width: "2rem",
+                                  height: "2rem",
+                                  background: color,
+                                  borderRadius: "50%",
+                                }}
+                            ></Box>
+                            <Typography>{getClothesColorName(color)}</Typography>
+                          </Box>
+                        </Stack>
                         <Stack direction="row" flexWrap="wrap">
                           {state.images.map((_, index) => (
                               <FormControlLabel

@@ -17,6 +17,7 @@ import { selectUser } from "../../../features/users/usersSlice";
 import { logoutThunk } from "../../../features/users/usersThunks";
 import Categories from "../../../features/categories/Categories.tsx";
 import { clearCart } from "../../../features/cart/cartSlice.ts";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isOpen: boolean;
@@ -29,6 +30,8 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -57,7 +60,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Меню
+            {t("menu")}
           </Typography>
           <IconButton
             onClick={toggleDrawer(false)}
@@ -104,7 +107,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                 }}
               >
                 <ListItemText
-                  primary="Личный кабинет"
+                  primary={t("profile")}
                   primaryTypographyProps={{
                     fontSize: "0.95rem",
                     fontWeight: 500,
@@ -229,7 +232,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                       letterSpacing: "0.5px",
                     }}
                   >
-                    Категории
+                    {t("categories")}
                   </Typography>
                 </Box>
               </Box>
@@ -254,7 +257,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                 }}
               >
                 <ListItemText
-                  primary="Выйти"
+                  primary={t("logout")}
                   primaryTypographyProps={{
                     fontSize: "0.95rem",
                     fontWeight: 500,
@@ -280,7 +283,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                   }}
                 >
                   <ListItemText
-                    primary="Войти"
+                    primary={t("login")}
                     primaryTypographyProps={{
                       fontSize: "0.95rem",
                       fontWeight: 500,
@@ -305,7 +308,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                   }}
                 >
                   <ListItemText
-                    primary="Регистрация"
+                    primary={t("register")}
                     primaryTypographyProps={{
                       fontSize: "0.95rem",
                       fontWeight: 500,
@@ -338,7 +341,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                       letterSpacing: "0.5px",
                     }}
                   >
-                    Категории
+                    {t("categories")}
                   </Typography>
                 </Box>
               </Box>

@@ -12,6 +12,7 @@ import { axiosApi } from "../axiosApi.ts";
 import ProductList from "../features/products/ProductsList.tsx";
 import type { AxiosResponse } from "axios";
 import type { Product } from "../types";
+import { useTranslation } from "react-i18next";
 
 interface ProductsSearch {
   products: Product[];
@@ -25,6 +26,8 @@ interface ProductsSearch {
 const SearchResultsPage = () => {
   const [params] = useSearchParams();
   const query = params.get("q") || "";
+
+  const { t } = useTranslation();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,8 +62,6 @@ const SearchResultsPage = () => {
           totalCount,
           totalPages,
         } = response.data;
-
-        console.log(response.data);
 
         setProducts((prev) => [...prev, ...newProducts]);
 
@@ -130,7 +131,7 @@ const SearchResultsPage = () => {
   return (
     <Box sx={{ px: 2, py: 3 }}>
       <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-        Результаты поиска: "{query}"
+        {t("searchResults")}: "{query}"
       </Typography>
 
       {loading && currentPage === 1 && (
@@ -141,7 +142,7 @@ const SearchResultsPage = () => {
 
       {!loading && products.length === 0 && (
         <Typography sx={{ color: "#6b7280", mt: 2 }}>
-          Ничего не найдено
+          {t("nothingFound")}
         </Typography>
       )}
 
@@ -149,7 +150,7 @@ const SearchResultsPage = () => {
 
       {total > 0 && hasMore && (
         <Typography sx={{ mt: 2, textAlign: "center", color: "#808080" }}>
-          Загружено {products.length} из {total} товаров
+          {t("productsLoaded", { loaded: products.length, total })}
         </Typography>
       )}
 
@@ -164,11 +165,10 @@ const SearchResultsPage = () => {
             }}
             loading={loading}
           >
-            Показать ещё
+            {t("showMore")}
           </Button>
         </Box>
       )}
-
 
       {/*Client sayd may be We do not need the code which is below */}
       {/* {products.length > 0 && !hasMore && (

@@ -1,4 +1,4 @@
-import {type ChangeEvent, type FormEvent, useEffect, useState} from "react";
+import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -10,7 +10,11 @@ import {
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { clearRegisterError, selectRegisterError, selectRegisterLoading} from "./usersSlice";
+import {
+  clearRegisterError,
+  selectRegisterError,
+  selectRegisterLoading,
+} from "./usersSlice";
 import { registerThunk } from "./usersThunks";
 import type { RegisterMutation } from "../../types";
 import { useTranslation } from "react-i18next";
@@ -97,7 +101,7 @@ const Register = () => {
           <TextField
             required
             fullWidth
-            label={t("displayName")}
+            label={t("name")}
             name="name"
             value={state.name}
             onChange={inputChangeHandler}

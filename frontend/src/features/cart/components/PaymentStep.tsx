@@ -11,6 +11,7 @@ import {
 import { useAppSelector } from "../../../app/hooks.ts";
 import React, { useState } from "react";
 import { selectCart } from "../cartSlice.ts";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onCheckout: (paymentData: {
@@ -25,12 +26,14 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
 
   const totalPrice = useAppSelector(selectCart)?.totalPrice;
 
+  const { t } = useTranslation();
+
   return (
     <Paper sx={{ p: 3, mt: 3 }}>
       <Stack spacing={3}>
         <Box>
           <Typography variant="h6" mb={2} color="#660033">
-            Способ оплаты
+            {t("paymentMethod")}
           </Typography>
 
           <ToggleButtonGroup
@@ -39,23 +42,25 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
             onChange={(_, value) => value && setPaymentMethod(value)}
             fullWidth
           >
-            <ToggleButton value="cash">Наличные</ToggleButton>
-            <ToggleButton value="qrCode">QR-код</ToggleButton>
+            <ToggleButton value="cash">{t("cash")}</ToggleButton>
+            <ToggleButton value="qrCode">{t("qrCode")}</ToggleButton>
           </ToggleButtonGroup>
         </Box>
 
         <TextField
-          label="Комментарий к заказу"
+          label={t("orderComment")}
           multiline
           rows={4}
           fullWidth
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Добавьте комментарий..."
+          placeholder={t("addComment")}
         />
 
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Итого: {totalPrice} сом</Typography>
+          <Typography variant="h6">
+            {t("total")}: {totalPrice} сом
+          </Typography>
 
           <Button
             variant="contained"
@@ -67,7 +72,7 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
               padding: "10px 20px",
             }}
           >
-            Оформить заказ
+            {t("placeOrder")}
           </Button>
         </Box>
       </Stack>

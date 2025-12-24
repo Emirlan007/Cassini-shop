@@ -83,6 +83,7 @@ const OrderCard = ({ order, isAdmin }: Props) => {
                         sx={{width: '150px', height: '25px'}}
                     />
                 </Box>
+            </Box>
 
         <Box>
           <Typography variant="subtitle2" sx={{ order: { xs: 2, sm: 3 } }}>
@@ -102,6 +103,7 @@ const OrderCard = ({ order, isAdmin }: Props) => {
         userComment={order.userComment}
         adminComments={isAdmin ? order.adminComments : undefined}
       />
+    </Box>
     </Box>
   );
 };

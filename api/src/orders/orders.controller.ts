@@ -18,10 +18,15 @@ import { Role } from '../enums/role.enum';
 import { CommentDto } from './dto/comment.dto';
 import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { OrderHistoryService } from '../order-history/order-history.service';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrderService) {}
+  constructor(
+    private readonly ordersService: OrderService,
+    private readonly orderHistoryService: OrderHistoryService,
+  ) {}
 
   @UseGuards(TokenAuthGuard)
   @Get('my')
@@ -101,15 +106,49 @@ export class OrdersController {
 
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  @Patch(':id/status')
+  @Patch(':id/order-status')
   async updateOrderStatus(
+    @Param('id') orderId: string,
+    @Body() updateOrderStatusDto: UpdateOrderStatusDto,
+  ) {
+    const order = await this.ordersService.updateOrderStatus(
+      orderId,
+      updateOrderStatusDto,
+    );
+
+    const isReady = await this.ordersService.checkAndAddToHistory(orderId);
+    if (isReady) {
+      try {
+        await this.orderHistoryService.addOrderToHistory(orderId);
+      } catch (error) {
+        console.log('Order already in history or cannot be added:', error);
+      }
+    }
+
+    return order;
+  }
+
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @Patch(':id/delivery-status')
+  async updateDeliveryStatus(
     @Param('id') orderId: string,
     @Body() updateDeliveryStatusDto: UpdateDeliveryStatusDto,
   ) {
-    return this.ordersService.updateDeliveryOrderStatus(
+    const order = await this.ordersService.updateDeliveryOrderStatus(
       orderId,
       updateDeliveryStatusDto,
     );
+    const isReady = await this.ordersService.checkAndAddToHistory(orderId);
+    if (isReady) {
+      try {
+        await this.orderHistoryService.addOrderToHistory(orderId);
+      } catch (error) {
+        console.log('Order already in history or cannot be added:', error);
+      }
+    }
+
+    return order;
   }
 
   @UseGuards(TokenAuthGuard, RolesGuard)
@@ -119,9 +158,20 @@ export class OrdersController {
     @Param('id') orderId: string,
     @Body() updatePaymentStatusDto: UpdatePaymentStatusDto,
   ) {
-    return this.ordersService.updateOrderPaymentStatus(
+    const order = await this.ordersService.updateOrderPaymentStatus(
       orderId,
       updatePaymentStatusDto.paymentStatus,
     );
+
+    const isReady = await this.ordersService.checkAndAddToHistory(orderId);
+    if (isReady) {
+      try {
+        await this.orderHistoryService.addOrderToHistory(orderId);
+      } catch (error) {
+        console.log('Order already in history or cannot be added:', error);
+      }
+    }
+
+    return order;
   }
 }

@@ -17,6 +17,7 @@ import { CartModule } from './cart/cart.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { SearchQueriesModule } from './search/search-query.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { OrderHistoryModule } from './order-history/order-history.module';
 
 @Module({
   imports: [
@@ -37,6 +38,8 @@ import { AnalyticsModule } from './analytics/analytics.module';
     WishlistModule,
     SearchQueriesModule,
     AnalyticsModule,
+    OrderHistoryModule,
   ],
+  providers: [],
 })
 export class AppModule {}

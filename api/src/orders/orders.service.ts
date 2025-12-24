@@ -9,7 +9,8 @@ import { Order, OrderDocument } from '../schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order-dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
 import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
-import { OrderStatus } from '../enums/order.enum';
+import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { OrderStatus, DeliveryStatus } from '../enums/order.enum';
 import { AnalyticsService } from 'src/analytics/analytics.service';
 import { EventType } from 'src/enums/event.enum';
 
@@ -64,19 +65,9 @@ export class OrderService {
     return orders;
   }
 
-  async getOrdersCountByStatus() {
-    const result = await this.orderModel.aggregate<{
-      _id: OrderStatus;
-      count: number;
-    }>([
-      {
-        $group: {
-          _id: '$status',
-          count: { $sum: 1 },
-        },
-      },
-    ]);
-
+  private processStatusCounts(
+    result: Array<{ _id: OrderStatus; count: number }>,
+  ): Record<OrderStatus, number> {
     const statusCounts: Record<OrderStatus, number> = {} as Record<
       OrderStatus,
       number
@@ -93,6 +84,22 @@ export class OrderService {
     });
 
     return statusCounts;
+  }
+
+  async getOrdersCountByStatus() {
+    const result = await this.orderModel.aggregate<{
+      _id: OrderStatus;
+      count: number;
+    }>([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    return this.processStatusCounts(result);
   }
 
   async getOrdersCountByStatusToday() {
@@ -122,22 +129,7 @@ export class OrderService {
       },
     ]);
 
-    const statusCounts: Record<OrderStatus, number> = {} as Record<
-      OrderStatus,
-      number
-    >;
-
-    result.forEach((item) => {
-      statusCounts[item._id] = item.count;
-    });
-
-    Object.values(OrderStatus).forEach((status) => {
-      if (!statusCounts[status]) {
-        statusCounts[status] = 0;
-      }
-    });
-
-    return statusCounts;
+    return this.processStatusCounts(result);
   }
 
   async updateOrderPaymentStatus(
@@ -149,6 +141,30 @@ export class OrderService {
       {
         $set: {
           paymentStatus,
+          updatedAt: new Date(),
+        },
+      },
+      { new: true },
+    );
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+    return order;
+  }
+
+  async updateOrderStatus(
+    orderId: string,
+    updateOrderStatusDto: UpdateOrderStatusDto,
+  ) {
+    const { status } = updateOrderStatusDto;
+
+    const order = await this.orderModel.findByIdAndUpdate(
+      orderId,
+      {
+        $set: {
+          status,
           updatedAt: new Date(),
         },
       },
@@ -303,5 +319,19 @@ export class OrderService {
     }
 
     return order;
+  }
+
+  async checkAndAddToHistory(orderId: string): Promise<boolean> {
+    const order = await this.orderModel.findById(orderId).exec();
+
+    if (!order) {
+      return false;
+    }
+
+    return (
+      order.paymentStatus === 'paid' &&
+      order.deliveryStatus === DeliveryStatus.Delivered &&
+      order.status === OrderStatus.Completed
+    );
   }
 }

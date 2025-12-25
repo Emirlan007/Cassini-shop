@@ -5,3 +5,5 @@ export const DeliveryStatus = {
     OnTheWay: "on_the_way",
     Delivered: "delivered",
 };
+
+

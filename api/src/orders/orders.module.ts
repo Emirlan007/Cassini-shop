@@ -8,6 +8,7 @@ import { FileUploadService } from '../shared/file-upload/file-upload.service';
 import { User, UserSchema } from '../schemas/user.schema';
 import { Event, EventSchema } from '../analytics/schemas/event.schema';
 import { AnalyticsModule } from 'src/analytics/analytics.module';
+import { OrderHistoryModule } from '../order-history/order-history.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AnalyticsModule } from 'src/analytics/analytics.module';
       { name: Event.name, schema: EventSchema },
     ]),
     AnalyticsModule,
+    OrderHistoryModule,
   ],
   controllers: [OrdersController],
   providers: [OrderService, FileUploadService],

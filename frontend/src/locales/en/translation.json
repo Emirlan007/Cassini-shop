@@ -1,4 +1,7 @@
 {
+  "Delivered":"Delivered",
+  "OnTheWay":"On the way",
+  "Warehouse":"Warehouse",
   "inStock": "In Stock",
   "productDetail": "Product Detail",
   "availableSizes": "Available Sizes",

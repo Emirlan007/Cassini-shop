@@ -5,6 +5,9 @@ export type ProductDocument = Product & Document;
 
 @Schema()
 export class Product {
+  @Prop({ required: true, unique: true })
+  slug: string;
+
   @Prop({ required: true })
   name: string;
 
@@ -55,6 +58,8 @@ export class Product {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+
+ProductSchema.index({ slug: 1 }, { unique: true });
 
 ProductSchema.index(
   {

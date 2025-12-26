@@ -5,6 +5,7 @@ import type {ICategory, UpdateCategoryPayload} from "../../../types";
 
 export interface CategoryMutation {
   title: string;
+  slug: string;
 }
 
 export const createCategory = createAsyncThunk<
@@ -44,12 +45,12 @@ export const deleteCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk<ICategory,  UpdateCategoryPayload>(
     "admin/categories/update",
-    async ({ _id, title }, { rejectWithValue }) => {
-        try {
-            const response = await axiosApi.patch(`/categories/${_id}`, { title });
-            return response.data;
-        } catch {
-            return rejectWithValue("Ошибка при обновлении категории");
-        }
+  async ({ _id, title, slug }, { rejectWithValue }) => { // Добавляем slug в параметры
+    try {
+      const response = await axiosApi.patch(`/categories/${_id}`, { title, slug }); // Отправляем slug
+      return response.data;
+    } catch {
+      return rejectWithValue("Ошибка при обновлении категории");
     }
+  }
 );

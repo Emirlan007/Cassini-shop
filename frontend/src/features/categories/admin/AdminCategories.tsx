@@ -57,7 +57,17 @@ const AdminCategories = () => {
     if (!editId) return;
 
     try {
-      await dispatch(updateCategory({ _id: editId, title: editTitle })).unwrap();
+      const newSlug = editTitle
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-');
+
+      await dispatch(updateCategory({
+        _id: editId,
+        title: editTitle,
+        slug: newSlug
+      })).unwrap();
       setEditId(null);
       setEditTitle("");
       dispatch(fetchCategories());
@@ -70,7 +80,16 @@ const AdminCategories = () => {
     if (!newTitle.trim()) return;
 
     try {
-      await dispatch(createCategory({ title: newTitle })).unwrap();
+      const slug = newTitle
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-');
+
+      await dispatch(createCategory({
+        title: newTitle,
+        slug: slug
+      })).unwrap();
       setNewTitle("");
       setCreateMode(false);
       dispatch(fetchCategories());

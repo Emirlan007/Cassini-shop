@@ -57,6 +57,7 @@ export interface ICategory {
 interface UpdateCategoryPayload {
   _id: string;
   title: string;
+  slug: string;
 }
 
 export interface Product {

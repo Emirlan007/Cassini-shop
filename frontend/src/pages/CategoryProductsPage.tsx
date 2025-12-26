@@ -32,7 +32,7 @@ import {selectCategories} from "../features/categories/categorySlice.ts";
 import {fetchCategories} from "../features/categories/categoryThunk.ts";
 
 const CategoryProductsPage = () => {
-    const { categoryId } = useParams<{ categoryId: string }>();
+    const { slug } = useParams<{ slug: string }>();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const categories = useAppSelector(selectCategories);
@@ -47,15 +47,24 @@ const CategoryProductsPage = () => {
     const totalPages = useAppSelector(selectTotalPages);
 
   const currentCategory = useMemo(() => {
-    if (!categoryId || !categories) return null;
-    return categories.find(cat => cat._id === categoryId);
-  }, [categoryId, categories]);
+    if (!slug || !categories) return null;
+    return categories.find(cat => cat.slug === slug);
+  }, [slug, categories]);
+
+  const categoryId = currentCategory?._id;
 
   useEffect(() => {
     if (categories.length === 0) {
       dispatch(fetchCategories());
     }
   }, [dispatch, categories.length]);
+
+  useEffect(() => {
+    if (!currentCategory && categories.length > 0 && slug) {
+      console.error(`Category with slug "${slug}" not found`);
+      navigate("/");
+    }
+  }, [currentCategory, categories, slug, navigate]);
 
     const availableOptions = useMemo(() => {
         if (!allProducts.length) {
@@ -177,6 +186,23 @@ const CategoryProductsPage = () => {
     const hasNoProducts = !loading && !filterLoading && filteredProducts.length === 0;
     const isLoading = loading || filterLoading;
     const showProducts = filteredProducts.length > 0 ? filteredProducts : allProducts;
+
+  if (!currentCategory && categories.length > 0) {
+    return (
+      <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4 }, textAlign: 'center' }}>
+        <Typography variant="h4" color="error" sx={{ mb: 2 }}>
+          Категория не найдена
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/")}
+          startIcon={<HomeIcon />}
+        >
+          На главную
+        </Button>
+      </Container>
+    );
+  }
 
     return (
         <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4 } }}>

@@ -1,11 +1,13 @@
 {
+  "Delivered": "Жеткизилди",
+  "OnTheWay": "Жолдо",
+  "Warehouse": "складда",
   "availableSizes": "Бардык өлчөмдөр",
   "inStock": "Сатууда бар",
   "productDetail": "Продукттун маалыматы",
   "sizingGuide": "Өлчөмдөр боюнча колдонмо",
   "youMightAlsoLike": "Сизге ошондой эле жакшы көрүнүшү мүмкүн",
   "new": "Жаңы",
-
   "moreInfo": "Көбүрөөк билүү",
   "moreDetails": "Толугураак",
   "addToCart": "Себетке кошуу",

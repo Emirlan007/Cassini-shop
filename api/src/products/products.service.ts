@@ -15,6 +15,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { SearchQueriesService } from 'src/search/search-query.service';
+import { generateSlug, generateUniqueSlug } from '../utils/slug';
 
 interface ProductFilter {
   category?: Types.ObjectId;
@@ -56,6 +57,10 @@ export class ProductsService {
     if (category) {
       productData.category = this.validateAndConvertCategory(category);
     }
+
+    // Генерация уникального slug
+    const baseSlug = generateSlug(createProductDto.name);
+    productData.slug = await this.ensureUniqueSlug(baseSlug);
 
     productData.isNew = createProductDto.isNew ?? true;
     productData.createdAt = new Date();
@@ -138,14 +143,25 @@ export class ProductsService {
     return query.populate('category', 'title slug').exec();
   }
 
+
+  ///Searching with Slug is here my BRo
   async findOne(id: string): Promise<Product> {
-    const product = await this.productModel
-      .findById(id)
-      .populate('category', 'title slug')
-      .exec();
+    let product: Product | null = null;
+    if (Types.ObjectId.isValid(id)) {
+      product = await this.productModel
+        .findById(id)
+        .populate('category', 'title slug')
+        .exec();
+    }    
+    if (!product) {
+      product = await this.productModel
+        .findOne({ slug: id })
+        .populate('category', 'title slug')
+        .exec();
+    }
 
     if (!product) {
-      throw new NotFoundException(`Product with ID ${id} not found`);
+      throw new NotFoundException(`Product with ID or slug "${id}" not found`);
     }
 
     return product;
@@ -289,6 +305,11 @@ export class ProductsService {
 
     if (category) {
       updateData.category = this.validateAndConvertCategory(category);
+    }
+
+    if (updateProductDto.name && updateProductDto.name !== product.name) {
+      const baseSlug = generateSlug(updateProductDto.name);
+      updateData.slug = await this.ensureUniqueSlug(baseSlug);
     }
 
     if (files?.images && files.images.length > 0) {
@@ -575,5 +596,28 @@ export class ProductsService {
       hasMore,
       appliedFilters: filters,
     };
+  }
+
+  private async ensureUniqueSlug(baseSlug: string): Promise<string> {
+    let slug = baseSlug;
+    let counter = 1;
+    let isUnique = false;
+
+    while (!isUnique) {
+      const existingProduct = await this.productModel
+        .findOne({ slug })
+        .select('_id')
+        .lean()
+        .exec();
+
+      if (!existingProduct) {
+        isUnique = true;
+      } else {
+        slug = generateUniqueSlug(baseSlug, counter);
+        counter++;
+      }
+    }
+
+    return slug;
   }
 }

@@ -7,6 +7,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./theme.ts";
 import { axiosApi } from "./axiosApi.ts";
 import { PersistGate } from "redux-persist/integration/react";
+import { HelmetProvider } from "react-helmet-async";
 import "./i18n.ts";
 
 axiosApi.interceptors.request.use((config) => {
@@ -40,8 +41,10 @@ createRoot(document.getElementById("root")!).render(
     <PersistGate persistor={persistor}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <App />
+          <HelmetProvider>
+            <CssBaseline />
+            <App />
+          </HelmetProvider>
         </ThemeProvider>
       </BrowserRouter>
     </PersistGate>

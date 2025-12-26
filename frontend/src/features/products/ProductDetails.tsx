@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../users/usersSlice";
 import { trackProductView } from "../../analytics/analytics";
+import { ProductSchema } from "./ProductSchema";
 
 const ProductDetails = () => {
   const { productId } = useParams() as { productId: string };
@@ -100,6 +101,8 @@ const ProductDetails = () => {
       <ProductTabs description={product.description} />
 
       <ProductList products={recommended} />
+
+      <ProductSchema product={product} />
     </>
   );
 };

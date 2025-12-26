@@ -59,7 +59,7 @@ const App = () => {
             element={<UpdateCreateWrap />}
           />
           <Route
-            path="/products/:categoryId"
+            path="/products/:slug"
             element={<CategoryProductsPage />}
           />
           <Route path="/product/:productId" element={<ProductDetails />} />

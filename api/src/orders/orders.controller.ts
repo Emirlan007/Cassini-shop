@@ -120,6 +120,7 @@ export class OrdersController {
     if (isReady) {
       try {
         await this.orderHistoryService.addOrderToHistory(orderId);
+        await this.ordersService.archiveOrder(orderId);
       } catch (error) {
         console.log('Order already in history or cannot be added:', error);
       }
@@ -143,6 +144,7 @@ export class OrdersController {
     if (isReady) {
       try {
         await this.orderHistoryService.addOrderToHistory(orderId);
+        await this.ordersService.archiveOrder(orderId);
       } catch (error) {
         console.log('Order already in history or cannot be added:', error);
       }
@@ -167,6 +169,7 @@ export class OrdersController {
     if (isReady) {
       try {
         await this.orderHistoryService.addOrderToHistory(orderId);
+        await this.ordersService.archiveOrder(orderId);
       } catch (error) {
         console.log('Order already in history or cannot be added:', error);
       }

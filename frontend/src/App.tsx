@@ -34,6 +34,8 @@ import Wishlist from "./features/wishlist/Wishlist.tsx";
 import OrderAnalytics from "./features/analytics/orders/OrderAnalytics.tsx";
 import ProductAnalytics from "./features/analytics/products/ProductAnalytics.tsx";
 import PopularSearchKeywords from "./features/analytics/search/PopularSearchKeywords.tsx";
+import OrderHistoryPage from "./features/OrdersHistory/OrderHistoryPage.tsx";
+import OrderHistoryDetails from "./features/OrdersHistory/OrderHistoryDetails.tsx";
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -82,6 +84,21 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+            <Route
+                path="/order-history"
+                element={
+                    <ProtectedRoute isAllowed={!!user}>
+                        <OrderHistoryPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/order-history/:historyId"
+                element={
+                    <ProtectedRoute isAllowed={!!user}>
+                        <OrderHistoryDetails />
+                    </ProtectedRoute>
+                }  />
           <Route path="/account" element={<AccountPage />} />
           <Route
             path="/admin"

@@ -47,3 +47,29 @@ export const getDeliveryStatusColor = (status: string) => {
             return "default";
     }
 };
+
+export const getOrderStatusText = (status: string): string => {
+    switch (status) {
+        case "pending":
+            return "Ожидает обработки";
+        case "completed":
+            return "Завершен";
+        case "cancelled":
+            return "Отменен";
+        default:
+            return status;
+    }
+};
+
+export const getOrderStatusColor = (status: string) => {
+    switch (status) {
+        case "pending":
+            return "warning";
+        case "completed":
+            return "success";
+        case "cancelled":
+            return "error";
+        default:
+            return "default";
+    }
+};

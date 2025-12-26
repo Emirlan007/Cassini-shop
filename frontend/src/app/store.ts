@@ -24,6 +24,7 @@ import { wishlistReducer } from "../features/wishlist/wishlistSlice.ts";
 import { orderAnalyticsReducer } from "../features/analytics/orders/orderAnalyticsSlice.ts";
 import { productAnalyticsReducer } from "../features/analytics/products/productAnalyticsSlice.ts";
 import { searchKeywordsReducer } from "../features/analytics/search/searchKeywordsSlice.ts";
+import {orderHistoryReducer} from "../features/OrdersHistory/orderHistorySlice.ts";
 
 const userPersistConfig = {
   key: "shop:users",
@@ -47,6 +48,7 @@ const rootReducer = combineReducers({
   orderAnalytics: orderAnalyticsReducer,
   productAnalytics: productAnalyticsReducer,
   searchKeywords: searchKeywordsReducer,
+  orderHistory: orderHistoryReducer,
 });
 
 export const store = configureStore({

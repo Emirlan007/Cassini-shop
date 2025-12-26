@@ -14,7 +14,7 @@ interface Props {
   deliveryStatus: string;
   setDeliveryStatus: (status: string) => void;
   currentDeliveryStatus: string;
-  onSubmit: (status: string) => void;
+  onSubmit: (status: string) => void
 }
 
 const DeliveryStatusSelector: React.FC<Props> = ({

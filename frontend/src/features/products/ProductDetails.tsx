@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router-dom";
 import { useProductDetails } from "./hooks/useProductDetails";
 import { useProductDiscount } from "./hooks/useProductDiscount";
@@ -58,6 +59,35 @@ const ProductDetails = () => {
 
   return (
     <>
+      {product && (
+        <Helmet>
+          <title>{product.name}</title>
+          <meta
+            name="description"
+            content={
+              product.description
+                ? product.description.slice(0, 160)
+                : product.name
+            }
+          />
+
+          <meta property="og:title" content={product.name} />
+          <meta
+            property="og:description"
+            content={
+              product.description
+                ? product.description.slice(0, 200)
+                : product.name
+            }
+          />
+          {product.images?.[0] && (
+            <meta property="og:image" content={product.images[0]} />
+          )}
+          <meta property="og:type" content="product" />
+          <meta property="og:url" content={window.location.href} />
+        </Helmet>
+      )}
+
       <Box
         sx={{
           display: "flex",
@@ -68,11 +98,7 @@ const ProductDetails = () => {
       >
         <ProductMediaSlider product={product} selectedColor={selectedColor} />
 
-        <Box
-          sx={{
-            width: { xs: "100%", md: "50%" },
-          }}
-        >
+        <Box sx={{ width: { xs: "100%", md: "50%" } }}>
           <ProductInfo
             product={product}
             finalPrice={finalPrice ?? product.price}
@@ -100,9 +126,7 @@ const ProductDetails = () => {
       </Box>
 
       <ProductTabs description={product.description} />
-
       <ProductList products={recommended} />
-
       <ProductSchema product={product} />
     </>
   );

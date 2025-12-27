@@ -31,7 +31,7 @@ export class OrderService {
   async findOne(id: string): Promise<Order> {
     const order = await this.orderModel
       .findById(id)
-      .populate('user', 'name phoneNumber')
+      .populate('user', 'name phoneNumber city address')
       .exec();
 
     if (!order) {
@@ -44,7 +44,7 @@ export class OrderService {
   async getAdminOrders() {
     return this.orderModel
       .find()
-      .populate('user', 'name phoneNumber')
+      .populate('user', 'name phoneNumber city address')
       .sort({ createdAt: -1 })
       .exec();
   }

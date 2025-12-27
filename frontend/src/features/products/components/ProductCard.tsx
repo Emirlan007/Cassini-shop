@@ -9,6 +9,7 @@ import { ProductBadges } from "./ProductBadges";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import ProductImageSlider from "./ProductImageSlider";
 import ProductPrice from "./ProductPrice";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   product: Product;
@@ -20,6 +21,8 @@ const ProductCard: React.FC<Props> = ({ product }) => {
   const { isInWishlist, toggleWishlist } = useWishlist(product._id);
   const { hasActiveDiscount, timeLeft, finalPrice } =
     useProductDiscount(product);
+
+  const { t } = useTranslation();
 
   const MotionCard = motion(Card);
 
@@ -95,7 +98,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
             color: "#9ca3af",
           }}
         >
-          Нет изображения
+          {t("noImage")}
         </Box>
       )}
 

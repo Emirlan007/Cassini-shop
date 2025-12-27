@@ -1,6 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {Box, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/material";
-
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  MenuItem,
+  Select,
+  type SelectChangeEvent,
+  TextField,
+} from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface Country {
   code: string;
@@ -30,11 +36,13 @@ const PhoneInput = ({
   onChange,
   error,
   helperText,
-  label = "Номер телефона",
+  label = "phoneNumber",
   required = false,
-  }: PhoneInputProps) => {
+}: PhoneInputProps) => {
   const [country, setCountry] = useState<Country>(countries[0]);
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (value) {
@@ -85,9 +93,14 @@ const PhoneInput = ({
     } else if (digits.length <= 8) {
       return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
     } else {
-      return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 8)} ${digits.slice(8, 10)}`;
+      return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(
+        6,
+        8
+      )} ${digits.slice(8, 10)}`;
     }
   };
+
+  const translatedLabel = t(label);
 
   return (
     <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
@@ -118,7 +131,7 @@ const PhoneInput = ({
       </Select>
 
       <TextField
-        label={label}
+        label={translatedLabel}
         value={formatPhoneNumber(phoneNumber)}
         onChange={handlePhoneChange}
         fullWidth

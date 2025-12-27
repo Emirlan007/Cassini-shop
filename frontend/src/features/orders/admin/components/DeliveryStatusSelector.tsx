@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { DeliveryStatus } from "../../../../constants";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   deliveryStatus: string;
@@ -23,6 +24,8 @@ const DeliveryStatusSelector: React.FC<Props> = ({
   currentDeliveryStatus,
   onSubmit,
 }) => {
+
+  const {t} = useTranslation();
   return (
     <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
       <Typography variant="h6" sx={{ mb: 2 }}>
@@ -42,7 +45,8 @@ const DeliveryStatusSelector: React.FC<Props> = ({
                 key={item}
                 value={DeliveryStatus[item as keyof typeof DeliveryStatus]}
               >
-                {item}
+             {t(item)}
+        
               </MenuItem>
             ))}
           </Select>

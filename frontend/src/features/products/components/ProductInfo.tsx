@@ -129,7 +129,7 @@ const ProductInfo: React.FC<Props> = ({
                 fontWeight: "bold",
               }}
             >
-              Осталось: {timeLeft}
+              {t("timeLeft")}: {timeLeft}
             </Typography>
           )}
         </Box>
@@ -158,7 +158,7 @@ const ProductInfo: React.FC<Props> = ({
               mb: 1,
             }}
           >
-            Материал:{" "}
+            {t("material")}:{" "}
             <strong style={{ color: "#333" }}>{product.material}</strong>
           </Typography>
         </Box>

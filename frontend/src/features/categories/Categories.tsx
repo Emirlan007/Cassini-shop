@@ -47,8 +47,8 @@ const Categories = ({ onCategoryClick }: Props) => {
     );
   }
 
-  const handleCategoryClick = (categoryId: string) => {
-    navigate(`/products/${categoryId}`);
+  const handleCategoryClick = (slug: string) => {
+    navigate(`/products/${slug}`);
     if (onCategoryClick) {
       onCategoryClick();
     }
@@ -75,7 +75,7 @@ const Categories = ({ onCategoryClick }: Props) => {
           }}
         >
           <ListItemButton
-            onClick={() => handleCategoryClick(category._id)}
+            onClick={() => handleCategoryClick(category.slug)}
             sx={{
               mx: 1,
               py: 1.25,

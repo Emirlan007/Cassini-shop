@@ -334,4 +334,18 @@ export class OrderService {
       order.status === OrderStatus.Completed
     );
   }
+
+  async archiveOrder(orderId: string) {
+    const order = await this.orderModel.findByIdAndUpdate(
+      orderId,
+      { $set: { isArchived: true } },
+      { new: true },
+    );
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+    return order;
+  }
 }

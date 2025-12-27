@@ -292,28 +292,22 @@ const OrderDetails = () => {
                   {t("customerInfo")}
                 </Typography>
 
-                <Typography variant="body1">
-                  <b>{t("displayName")}:</b> {order.user.name}
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <b>{t("name")}:</b> {order.user.name}
                 </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" sx={{ mb: 1 }}>
               <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
             </Typography>
 
-            <Typography variant="body1">
+            <Typography variant="body1" sx={{ mb: 1 }}>
               <b>{t("city")}:</b> {order.user.city}
             </Typography>
 
-            <Typography variant="body1">
+            <Typography variant="body1" sx={{ mb: 1 }}>
               <b>{t("address")}:</b> {order.user.address}
             </Typography>
           </Box>
         )}
-
-                <Typography variant="body1">
-                  <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
-                </Typography>
-              </Box>
-          )}
 
           {order.items.map((item, index) => (
               <Box

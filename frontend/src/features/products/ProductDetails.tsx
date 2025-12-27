@@ -16,11 +16,12 @@ import { trackProductView } from "../../analytics/analytics";
 import { ProductSchema } from "./ProductSchema";
 
 const ProductDetails = () => {
-  const { productId } = useParams() as { productId: string };
+  const { productSlug } = useParams() as { productSlug: string };
 
   const user = useAppSelector(selectUser);
 
-  const { product, loading, error, recommended } = useProductDetails(productId);
+  const { product, loading, error, recommended } =
+    useProductDetails(productSlug);
 
   const { selectedColor, setSelectedColor, selectedSize, setSelectedSize } =
     useProductVariants(product ?? undefined);
@@ -30,10 +31,10 @@ const ProductDetails = () => {
   );
 
   useEffect(() => {
-    trackProductView(productId);
+    trackProductView(productSlug);
     setSelectedColor(false);
     setSelectedSize(null);
-  }, [productId]);
+  }, [productSlug]);
 
   const handleColorChange = (color: string) => {
     setSelectedColor((prev) => (prev === color ? false : color));

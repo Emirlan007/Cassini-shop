@@ -11,6 +11,7 @@ export async function createProductFixtures(
   const products = [
     {
       name: 'Classic Black Shawl Lapel Dress',
+      slug: 'classic-black-shawl-lapel-dress-1',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
@@ -41,6 +42,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
+      slug: 'classic-black-shawl-lapel-dress-2',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
@@ -71,6 +73,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
+      slug: 'classic-black-shawl-lapel-dress-3',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
@@ -101,6 +104,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
+      slug: 'classic-black-shawl-lapel-dress-4',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
@@ -131,6 +135,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Black Shawl Lapel Dress',
+      slug: 'classic-black-shawl-lapel-dress-5',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
@@ -158,6 +163,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Midnight Blue Peak Lapel Dress',
+      slug: 'classic-black-shawl-lapel-dress-6',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A sophisticated twist on the traditional black, this midnight blue tuxedo commands attention under evening lights. The peak lapels and slim-fit design highlight modern elegance, making it an ideal choice for the man who wants to stand out—subtly.',
@@ -185,6 +191,7 @@ export async function createProductFixtures(
     },
     {
       name: 'White Dinner Jacket Dress',
+      slug: 'white-dinner-jacket-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         "Crisp, bold, and effortlessly suave, this white dinner jacket tuxedo pairs a cream or ivory jacket with black trousers. Featuring satin-covered buttons and a tailored fit, it channels a vintage James Bond aesthetic that's perfect for summer soirées or destination weddings.",
@@ -212,6 +219,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Velvet Burgundy Dress',
+      slug: 'velvet-burgundy-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'Rich in color and texture, this burgundy velvet tuxedo brings luxury to the forefront. The plush fabric adds depth and warmth, while the black satin lapels introduce a sharp contrast. Ideal for evening events where you want to make a statement without saying a word.',
@@ -239,6 +247,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Modern Slim-Fit Charcoal Dress',
+      slug: 'modern-slim-fit-charcoal-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         "Designed for the contemporary gentleman, this charcoal tuxedo blends formal tradition with modern tailoring. The narrow lapels and tapered trousers create a streamlined silhouette that's both minimalist and fashion-forward — perfect for creative professionals or urban weddings.",
@@ -266,6 +275,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Patterned Jacquard Dress',
+      slug: 'patterned-jacquard-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'For the bold and fashion-savvy, this jacquard tuxedo features an intricate woven pattern that catches the light beautifully. The mix of texture and sheen gives a regal, couture-inspired feel, making it the centerpiece of any red-carpet or high-profile event.',
@@ -293,6 +303,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Elegant Ivory Evening Gown',
+      slug: 'elegant-ivory-evening-gown',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A sophisticated ivory evening gown with a flowing silhouette and delicate satin finish. Ideal for weddings, formal receptions, and evening events.',
@@ -320,6 +331,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Midnight Blue Tailored Suit',
+      slug: 'midnight-blue-tailored-suit',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A sharp tailored suit in midnight blue, crafted for modern elegance. Perfect for business meetings or evening occasions.',
@@ -347,6 +359,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Soft Beige Casual Dress',
+      slug: 'soft-beige-casual-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A lightweight beige casual dress designed for comfort and effortless style. Suitable for daytime outings and relaxed gatherings.',
@@ -374,6 +387,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Emerald Green Cocktail Dress',
+      slug: 'emerald-green-cocktail-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A stunning emerald green cocktail dress with a fitted waist and subtle shimmer. Designed to stand out at parties and special events.',
@@ -401,6 +415,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Classic Grey Wool Coat',
+      slug: 'classic-grey-wool-coat',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A timeless grey wool coat with a clean, structured design. Ideal for colder seasons and elegant layering.',
@@ -428,6 +443,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Minimalist White Summer Dress',
+      slug: 'minimalist-white-summer-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A fresh white summer dress with a minimalist cut. Breathable fabric and relaxed fit make it perfect for warm days.',
@@ -455,6 +471,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Dark Burgundy Velvet Dress',
+      slug: 'dark-burgundy-velvet-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A luxurious velvet dress in deep burgundy, offering a rich texture and elegant drape. Ideal for evening wear.',
@@ -482,6 +499,7 @@ export async function createProductFixtures(
     },
     {
       name: 'Modern Black Jumpsuit',
+      slug: 'modern-black-jumpsuit',
       colors: ['#ff0000', '#0000ff', '#000000'],
       description:
         'A modern black jumpsuit with clean lines and a flattering fit. A versatile piece suitable for both casual and formal styling.',

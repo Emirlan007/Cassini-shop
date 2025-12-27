@@ -28,7 +28,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
 
   return (
     <MotionCard
-      onClick={() => navigate(`/product/${product._id}`)}
+      onClick={() => navigate(`/product/${product.slug}`)}
       sx={{
         width: "100%",
         maxWidth: { xs: "180px", sm: "220px", md: "280px", lg: "336px" },

@@ -25,7 +25,7 @@ export class OrderService {
   ) {}
 
   async getMyOrders(userId: string) {
-    return this.orderModel.find({ user: userId });
+    return this.orderModel.find({ user: userId }).sort({ createdAt: -1 });
   }
 
   async findOne(id: string): Promise<Order> {

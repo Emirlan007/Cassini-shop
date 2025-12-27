@@ -62,6 +62,7 @@ interface UpdateCategoryPayload {
 
 export interface Product {
   _id: string;
+  slug: string;
   name: string;
   description?: string;
   size: string[];

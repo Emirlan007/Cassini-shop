@@ -48,48 +48,21 @@ const OrderCard = ({ order, isAdmin }: Props) => {
         mb={1}
         gap={1}
       >
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            flexWrap: "wrap",
-            order: { xs: 1, sm: 2 },
-          }}
-        >
-            <Box
-                display="flex"
-                flexDirection={{xs: "column", sm: "row"}}
-                justifyContent="space-between"
-                alignItems={{sm: "center"}}
-                mb={1}
-                gap={1}
-            >
-                <Box
-                    sx={{
-                        display: "flex",
-                        gap: 1,
-                        flexWrap: "wrap",
-                        order: {xs: 1, sm: 2},
-                    }}
-                >
-                    <Chip
-                        label={getDeliveryStatusText(order.deliveryStatus)}
-                        color={getDeliveryStatusColor(order.deliveryStatus)}
-                        sx={{width: '150px', height: '25px'}}
-                    />
-                    <Chip
-                        label={getPaymentStatusText(order.paymentStatus)}
-                        color={getPaymentStatusColor(order.paymentStatus)}
-                        sx={{width: '150px', height: '25px'}}
-                    />
-                </Box>
-            </Box>
+        <Typography variant="subtitle2" flexGrow={1}>
+          {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
+        </Typography>
 
-        <Box>
-          <Typography variant="subtitle2" sx={{ order: { xs: 2, sm: 3 } }}>
-            {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-          </Typography>
-        </Box>
+        <Chip
+          label={getDeliveryStatusText(order.deliveryStatus)}
+          color={getDeliveryStatusColor(order.deliveryStatus)}
+          sx={{ width: "150px", height: "25px" }}
+        />
+
+        <Chip
+          label={getPaymentStatusText(order.paymentStatus)}
+          color={getPaymentStatusColor(order.paymentStatus)}
+          sx={{ width: "150px", height: "25px" }}
+        />
       </Box>
 
       {order.items.map((item, index) => (
@@ -104,8 +77,6 @@ const OrderCard = ({ order, isAdmin }: Props) => {
         adminComments={isAdmin ? order.adminComments : undefined}
       />
     </Box>
-    </Box>
   );
 };
-
 export default OrderCard;

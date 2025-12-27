@@ -65,7 +65,7 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
   };
 
   const handleClick = () => {
-    navigate(`/product/${product._id}`);
+    navigate(`/product/${product.slug}`);
   };
 
   return (

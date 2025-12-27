@@ -6,9 +6,9 @@ import {
   selectProductFetchLoading,
   selectProducts,
 } from "../productsSlice";
-import { fetchProductById, fetchProducts } from "../productsThunks";
+import { fetchProductBySlug, fetchProducts } from "../productsThunks";
 
-export const useProductDetails = (productId: string) => {
+export const useProductDetails = (productSlug: string) => {
   const dispatch = useAppDispatch();
 
   const product = useAppSelector(selectProduct);
@@ -17,8 +17,8 @@ export const useProductDetails = (productId: string) => {
   const categoryProducts = useAppSelector(selectProducts);
 
   useEffect(() => {
-    dispatch(fetchProductById(productId));
-  }, [dispatch, productId]);
+    dispatch(fetchProductBySlug(productSlug));
+  }, [dispatch, productSlug]);
 
   useEffect(() => {
     if (product?.category?._id) {

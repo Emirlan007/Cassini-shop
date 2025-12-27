@@ -74,6 +74,9 @@ export class Order {
 
   @Prop({ required: true })
   createdAt: Date;
+
+  @Prop({ default: false })
+  isArchived: boolean;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

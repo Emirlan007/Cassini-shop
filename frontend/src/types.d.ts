@@ -201,11 +201,13 @@ export interface Order {
   items: OrderItem[];
   totalPrice: number;
   createdAt: string;
+  status: "pending" | "processing" | "completed";
   deliveryStatus: "warehouse" | "on_the_way" | "delivered";
   paymentMethod: "cash" | "qrCode";
   paymentStatus: "pending" | "paid" | "cancelled";
   userComment: string;
   adminComments: string[];
+  isArchived: boolean;
 }
 
 export interface OrderItemDto {
@@ -245,6 +247,7 @@ export interface OrderItemAdmin {
   userComment: string;
   adminComments: string[];
   paymentStatus: "pending" | "paid" | "cancelled";
+  isArchived: boolean;
 }
 
 export interface PopularProducts {
@@ -302,4 +305,32 @@ export interface PopularSearchKeywordsResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface OrderHistoryItem {
+  product: string;
+  title: string;
+  image: string;
+  selectedColor: string;
+  selectedSize: string;
+  price: number;
+  finalPrice: number;
+  quantity: number;
+}
+
+export interface OrderHistory {
+  _id: string;
+  user: string;
+  order: string;
+  items: OrderHistoryItem[];
+  totalPrice: number;
+  paymentMethod: 'cash' | 'qrCode';
+  completedAt: string;
+}
+
+export interface OrderHistoryStats {
+  totalOrders: number;
+  totalSpent: number;
+  productsPurchased: number;
+  averageOrderValue: number;
 }

@@ -51,7 +51,7 @@ export const changeOrderDeliveryStatus = createAsyncThunk<
     async ({ orderId, value }, { rejectWithValue }) => {
         try {
             const { data } = await axiosApi.patch<OrderItemAdmin>(
-                `orders/${orderId}/status`,
+                `orders/${orderId}/delivery-status`,
                 { deliveryStatus: value }
             );
             return data;
@@ -77,6 +77,26 @@ export const updateOrderPaymentStatusThunk = createAsyncThunk(
                 `/orders/${data.orderId}/payment-status`,
                 { paymentStatus: data.paymentStatus }
             );
+            return response.data;
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                return rejectWithValue(error.response.data);
+            }
+            throw error;
+        }
+    }
+);
+
+export const updateOrderStatus = createAsyncThunk(
+    "orders/updateOrderStatus",
+    async (
+        { orderId, status }: { orderId: string; status: string },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axiosApi.patch(`/orders/${orderId}/order-status`, {
+                status,
+            });
             return response.data;
         } catch (error) {
             if (isAxiosError(error) && error.response) {

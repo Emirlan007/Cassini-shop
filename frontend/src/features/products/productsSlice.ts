@@ -6,8 +6,11 @@ import {
   fetchFilteredProducts,
   fetchPopularProducts,
   fetchProductById,
+  fetchProductBySlug,
   fetchProducts,
-  fetchSearchedProducts, updateProductNewStatus, updateProductPopular,
+  fetchSearchedProducts,
+  updateProductNewStatus,
+  updateProductPopular,
 } from "./productsThunks";
 
 interface ProductsState {
@@ -110,6 +113,19 @@ const productsSlice = createSlice({
       });
 
     builder
+      .addCase(fetchProductBySlug.pending, (state) => {
+        state.fetchItemLoading = true;
+      })
+      .addCase(fetchProductBySlug.fulfilled, (state, { payload: product }) => {
+        state.fetchItemLoading = false;
+        state.item = product;
+      })
+      .addCase(fetchProductBySlug.rejected, (state, { payload: error }) => {
+        state.fetchItemLoading = false;
+        state.fetchItemError = error?.error ?? null;
+      });
+
+    builder
       .addCase(createProduct.pending, (state) => {
         state.createLoading = true;
       })
@@ -166,29 +182,29 @@ const productsSlice = createSlice({
         state.filterError = error?.error ?? null;
       });
     builder
-        .addCase(updateProductPopular.pending, (state) => {
-          state.updatePopularLoading = true;
-          state.updatePopularError = null;
-        })
-        .addCase(updateProductPopular.fulfilled, (state) => {
-          state.updatePopularLoading = false;
-        })
-        .addCase(updateProductPopular.rejected, (state) => {
-          state.updatePopularLoading = false;
-          state.updatePopularError = "Ошибка обновления статуса";
-        });
+      .addCase(updateProductPopular.pending, (state) => {
+        state.updatePopularLoading = true;
+        state.updatePopularError = null;
+      })
+      .addCase(updateProductPopular.fulfilled, (state) => {
+        state.updatePopularLoading = false;
+      })
+      .addCase(updateProductPopular.rejected, (state) => {
+        state.updatePopularLoading = false;
+        state.updatePopularError = "Ошибка обновления статуса";
+      });
     builder
-        .addCase(updateProductNewStatus.pending, (state) => {
-          state.updateIsNewLoading = true;
-          state.updateIsNewError = null;
-        })
-        .addCase(updateProductNewStatus.fulfilled, (state) => {
-          state.updateIsNewLoading = false;
-        })
-        .addCase(updateProductNewStatus.rejected, (state) => {
-          state.updateIsNewLoading = false;
-          state.updateIsNewError = "Ошибка обновления статуса";
-        });
+      .addCase(updateProductNewStatus.pending, (state) => {
+        state.updateIsNewLoading = true;
+        state.updateIsNewError = null;
+      })
+      .addCase(updateProductNewStatus.fulfilled, (state) => {
+        state.updateIsNewLoading = false;
+      })
+      .addCase(updateProductNewStatus.rejected, (state) => {
+        state.updateIsNewLoading = false;
+        state.updateIsNewError = "Ошибка обновления статуса";
+      });
   },
   selectors: {
     selectProducts: (state) => state.items,

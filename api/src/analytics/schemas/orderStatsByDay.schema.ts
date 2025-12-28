@@ -15,7 +15,7 @@ export class OrderStatsByDay {
   ordersCanceled: number;
 
   @Prop({ default: 0 })
-  ordersCompleted: number;
+  ordersPaid: number;
 
   @Prop({ default: 0 })
   revenue: number;

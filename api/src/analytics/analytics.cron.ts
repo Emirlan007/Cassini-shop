@@ -32,7 +32,7 @@ interface AggregatedOrder {
   _id: string;
   ordersCreated: number;
   ordersCanceled: number;
-  ordersCompleted: number;
+  ordersPaid: number;
   revenue: number;
 }
 
@@ -161,7 +161,7 @@ export class AnalyticsCron {
         $match: {
           createdAt: { $gte: dayStart, $lte: dayEnd },
           type: {
-            $in: ['order_created', 'order_canceled', 'order_completed'],
+            $in: ['order_created', 'order_canceled', 'order_paid'],
           },
         },
       },
@@ -192,19 +192,15 @@ export class AnalyticsCron {
             },
           },
 
-          ordersCompleted: {
+          ordersPaid: {
             $sum: {
-              $cond: [{ $eq: ['$type', 'order_completed'] }, 1, 0],
+              $cond: [{ $eq: ['$type', 'order_paid'] }, 1, 0],
             },
           },
 
           revenue: {
             $sum: {
-              $cond: [
-                { $eq: ['$type', 'order_completed'] },
-                '$order.totalPrice',
-                0,
-              ],
+              $cond: [{ $eq: ['$type', 'order_paid'] }, '$order.totalPrice', 0],
             },
           },
         },
@@ -217,7 +213,7 @@ export class AnalyticsCron {
         $set: {
           ordersCreated: events?.ordersCreated ?? 0,
           ordersCanceled: events?.ordersCanceled ?? 0,
-          ordersCompleted: events?.ordersCompleted ?? 0,
+          ordersPaid: events?.ordersPaid ?? 0,
           revenue: events?.revenue ?? 0,
         },
       },

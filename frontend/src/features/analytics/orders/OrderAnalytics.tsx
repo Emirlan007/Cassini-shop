@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -9,7 +9,7 @@ import {
   ToggleButton,
   useTheme,
   useMediaQuery,
-} from '@mui/material';
+} from "@mui/material";
 import {
   LineChart,
   Line,
@@ -17,18 +17,18 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
 
 const OrderAnalytics = () => {
   const dispatch = useAppDispatch();
-  const { data, loading } = useAppSelector(
-    (state) => state.orderAnalytics
-  );
+  const { data, loading } = useAppSelector((state) => state.orderAnalytics);
+
+  console.log(data);
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [period, setPeriod] = useState<
     "day" | "week" | "month" | "year" | "all"
@@ -46,8 +46,8 @@ const OrderAnalytics = () => {
     <Box
       sx={{
         p: { xs: 2, sm: 3, md: 4 },
-        maxWidth: '100%',
-        overflowX: 'hidden',
+        maxWidth: "100%",
+        overflowX: "hidden",
       }}
     >
       <Typography
@@ -64,12 +64,12 @@ const OrderAnalytics = () => {
         onChange={(_, value) => value && setPeriod(value)}
         sx={{
           mb: 4,
-          display: 'flex',
-          flexWrap: 'wrap',
+          display: "flex",
+          flexWrap: "wrap",
           gap: 1,
         }}
       >
-        <ToggleButton value="day">Сегодня</ToggleButton>
+        <ToggleButton value="day">День</ToggleButton>
         <ToggleButton value="week">Неделя</ToggleButton>
         <ToggleButton value="month">Месяц</ToggleButton>
         <ToggleButton value="year">Год</ToggleButton>
@@ -78,32 +78,20 @@ const OrderAnalytics = () => {
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Создано заказов"
-            value={data.totals.ordersCreated}
-          />
+          <StatCard title="Создано заказов" value={data.totals.ordersCreated} />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Завершено"
-            value={data.totals.ordersCompleted}
-          />
+          <StatCard title="Завершено" value={data.totals.ordersCompleted} />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Отменено"
-            value={data.totals.ordersCanceled}
-          />
+          <StatCard title="Отменено" value={data.totals.ordersCanceled} />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title="Выручка"
-            value={`${data.totals.revenue} ₸`}
-          />
+          <StatCard title="Выручка" value={`${data.totals.revenue} ₸`} />
         </Grid>
       </Grid>
 
-      <Card sx={{ overflowX: 'hidden' }}>
+      <Card sx={{ overflowX: "hidden" }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Динамика заказов
@@ -114,7 +102,8 @@ const OrderAnalytics = () => {
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: isMobile ? 10 : 12 }}
-                interval={isMobile ? 'preserveStartEnd' : 0}
+                interval={isMobile ? "preserveStartEnd" : 0}
+                tickFormatter={(value: string) => value.slice(0, 10)}
               />
               <YAxis
                 tick={{ fontSize: isMobile ? 10 : 12 }}
@@ -135,6 +124,13 @@ const OrderAnalytics = () => {
                 strokeWidth={2}
                 dot={!isMobile}
               />
+              <Line
+                type="monotone"
+                dataKey="ordersCanceled"
+                name="Отменено"
+                strokeWidth={2}
+                dot={!isMobile}
+              />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
@@ -144,13 +140,13 @@ const OrderAnalytics = () => {
 };
 
 const StatCard = ({
-                    title,
-                    value,
-                  }: {
+  title,
+  value,
+}: {
   title: string;
   value: string | number;
 }) => (
-  <Card sx={{ height: '100%' }}>
+  <Card sx={{ height: "100%" }}>
     <CardContent>
       <Typography variant="body2" color="text.secondary">
         {title}

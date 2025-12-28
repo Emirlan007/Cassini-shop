@@ -196,6 +196,10 @@ export interface OrderItem extends CartItem {
   image: string;
 }
 
+export type OrderStatus = "pending" | "completed" | "cancelled";
+
+export type OrderDeliveryStatus = "warehouse" | "on_the_way" | "delivered";
+
 export interface Order {
   _id: string;
   user: AdminUser | null;
@@ -242,12 +246,12 @@ export interface OrderItemAdmin {
   _id: string;
   user: User;
   createdAt: string;
-  deliveryStatus: string;
+  status: OrderStatus;
+  deliveryStatus: OrderDeliveryStatus;
   items: CartItem[];
   totalPrice: number;
   userComment: string;
   adminComments: string[];
-  paymentStatus: "pending" | "paid" | "cancelled";
   isArchived: boolean;
 }
 
@@ -325,7 +329,7 @@ export interface OrderHistory {
   order: string;
   items: OrderHistoryItem[];
   totalPrice: number;
-  paymentMethod: 'cash' | 'qrCode';
+  paymentMethod: "cash" | "qrCode";
   completedAt: string;
 }
 

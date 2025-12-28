@@ -21,17 +21,10 @@ import { selectUser } from "../users/usersSlice.ts";
 import {
   addAdminCommentToOrder,
   changeOrderDeliveryStatus,
-  updateOrderPaymentStatusThunk,
   updateOrderStatus,
 } from "./admin/ordersThunks.ts";
+import { selectCreateAdminCommentLoading } from "./admin/ordersSlice.ts";
 import {
-  selectCreateAdminCommentLoading,
-  selectUpdatePaymentStatusError,
-  selectUpdatePaymentStatusLoading,
-} from "./admin/ordersSlice.ts";
-import {
-  getPaymentStatusColor,
-  getPaymentStatusText,
   getDeliveryStatusText,
   getDeliveryStatusColor,
   getOrderStatusText,
@@ -40,15 +33,11 @@ import {
 import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.tsx";
 import OrderStatusSelector from "./admin/components/OrderStatusSelector.tsx";
 import OrderItem from "./components/OrderItem.tsx";
-import AdminPaymentControl from "./components/AdminPaymentControl.tsx";
 import UserCommentForm from "./components/UserCommentForm.tsx";
 import AdminCommentForm from "./components/AdminCommentForm.tsx";
 import CustomerInfo from "./components/CustomerInfo.tsx";
 
 const OrderDetails = () => {
-  const [paymentStatus, setPaymentStatus] = useState<
-    "pending" | "paid" | "cancelled"
-  >("pending");
   const [deliveryStatus, setDeliveryStatus] = useState<string>("");
   const [orderStatus, setOrderStatus] = useState<string>("");
 
@@ -60,12 +49,6 @@ const OrderDetails = () => {
   );
   const createAdminCommentLoading = useAppSelector(
     selectCreateAdminCommentLoading
-  );
-  const updatePaymentStatusLoading = useAppSelector(
-    selectUpdatePaymentStatusLoading
-  );
-  const updatePaymentStatusError = useAppSelector(
-    selectUpdatePaymentStatusError
   );
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -80,9 +63,6 @@ const OrderDetails = () => {
   }, [dispatch, orderId]);
 
   useEffect(() => {
-    if (order?.paymentStatus) {
-      setPaymentStatus(order.paymentStatus);
-    }
     if (order?.deliveryStatus) {
       setDeliveryStatus(order.deliveryStatus);
     }
@@ -99,13 +79,6 @@ const OrderDetails = () => {
   const handleAdminCommentSubmit = async (comment: string) => {
     await dispatch(addAdminCommentToOrder({ comment, orderId }));
     await dispatch(fetchOrderById(orderId));
-  };
-
-  const handlePaymentStatusChange = async () => {
-    if (orderId && paymentStatus !== order?.paymentStatus) {
-      await dispatch(updateOrderPaymentStatusThunk({ orderId, paymentStatus }));
-      await dispatch(fetchOrderById(orderId));
-    }
   };
 
   const handleDeliveryStatusChange = async () => {
@@ -188,16 +161,6 @@ const OrderDetails = () => {
 
           <Box display="flex" alignItems="center" gap={2}>
             <Typography variant="body1" fontWeight="bold">
-              Статус оплаты:
-            </Typography>
-            <Chip
-              label={getPaymentStatusText(order.paymentStatus)}
-              color={getPaymentStatusColor(order.paymentStatus)}
-            />
-          </Box>
-
-          <Box display="flex" alignItems="center" gap={2}>
-            <Typography variant="body1" fontWeight="bold">
               Статус доставки:
             </Typography>
             <Chip
@@ -214,15 +177,6 @@ const OrderDetails = () => {
               setOrderStatus={setOrderStatus}
               currentOrderStatus={order.status}
               onSubmit={handleOrderStatusChange}
-            />
-
-            <AdminPaymentControl
-              paymentStatus={paymentStatus}
-              setPaymentStatus={setPaymentStatus}
-              currentPaymentStatus={order.paymentStatus}
-              onSubmit={handlePaymentStatusChange}
-              updatePaymentStatusLoading={updatePaymentStatusLoading}
-              updatePaymentStatusError={updatePaymentStatusError}
             />
 
             <DeliveryStatusSelector

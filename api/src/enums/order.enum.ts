@@ -6,5 +6,5 @@ export enum DeliveryStatus {
 export enum OrderStatus {
   Pending = 'pending',
   Completed = 'completed',
-  Cancelled = 'cancelled',
+  Canceled = 'canceled',
 }

@@ -16,8 +16,8 @@ export class Event {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   userId?: Types.ObjectId;
 
-  @Prop({ type: String, required: true })
-  sessionId: string;
+  @Prop({ type: String })
+  sessionId?: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Product' })
   productId?: Types.ObjectId;

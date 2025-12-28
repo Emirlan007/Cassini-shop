@@ -17,7 +17,6 @@ import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { CommentDto } from './dto/comment.dto';
 import { UpdateDeliveryStatusDto } from './dto/update-delivery-status.dto';
-import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrderHistoryService } from '../order-history/order-history.service';
 
@@ -140,31 +139,6 @@ export class OrdersController {
       orderId,
       updateDeliveryStatusDto,
     );
-    const isReady = await this.ordersService.checkAndAddToHistory(orderId);
-    if (isReady) {
-      try {
-        await this.orderHistoryService.addOrderToHistory(orderId);
-        await this.ordersService.archiveOrder(orderId);
-      } catch (error) {
-        console.log('Order already in history or cannot be added:', error);
-      }
-    }
-
-    return order;
-  }
-
-  @UseGuards(TokenAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  @Patch(':id/payment-status')
-  async updatePaymentStatus(
-    @Param('id') orderId: string,
-    @Body() updatePaymentStatusDto: UpdatePaymentStatusDto,
-  ) {
-    const order = await this.ordersService.updateOrderPaymentStatus(
-      orderId,
-      updatePaymentStatusDto.paymentStatus,
-    );
-
     const isReady = await this.ordersService.checkAndAddToHistory(orderId);
     if (isReady) {
       try {

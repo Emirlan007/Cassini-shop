@@ -5,8 +5,8 @@ import OrderProduct from "./OrderProduct";
 import {
   getDeliveryStatusColor,
   getDeliveryStatusText,
-  getPaymentStatusColor,
-  getPaymentStatusText,
+  getOrderStatusColor,
+  getOrderStatusText,
 } from "../../../utils/statusUtils";
 import OrderCardComments from "./OrderCardComments";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ interface Props {
 const OrderCard = ({ order, isAdmin }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
+
   return (
     <Box
       key={order._id}
@@ -55,13 +55,13 @@ const OrderCard = ({ order, isAdmin }: Props) => {
         <Chip
           label={getDeliveryStatusText(order.deliveryStatus)}
           color={getDeliveryStatusColor(order.deliveryStatus)}
-          sx={{ width: "150px", height: "25px" }}
+          sx={{ minWidth: "150px", height: "25px" }}
         />
 
         <Chip
-          label={getPaymentStatusText(order.paymentStatus)}
-          color={getPaymentStatusColor(order.paymentStatus)}
-          sx={{ width: "150px", height: "25px" }}
+          label={getOrderStatusText(order.status)}
+          color={getOrderStatusColor(order.status)}
+          sx={{ minWidth: "150px", height: "25px" }}
         />
       </Box>
 

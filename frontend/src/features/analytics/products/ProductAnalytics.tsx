@@ -47,9 +47,11 @@ const ProductAnalytics = () => {
         onChange={(_, value) => value && setPeriod(value)}
         sx={{ mb: 3, flexWrap: "wrap", gap: 1 }}
       >
-        <ToggleButton value="day">Сегодня</ToggleButton>
+        <ToggleButton value="day">День</ToggleButton>
         <ToggleButton value="week">Неделя</ToggleButton>
         <ToggleButton value="month">Месяц</ToggleButton>
+        <ToggleButton value="year">Год</ToggleButton>
+        <ToggleButton value="all">Всё время</ToggleButton>
       </ToggleButtonGroup>
 
       {loading ? (

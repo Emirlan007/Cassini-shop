@@ -7,6 +7,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { Types } from 'mongoose';
 import { EventType } from 'src/enums/event.enum';
 
 export class CreateEventDto {
@@ -15,19 +16,19 @@ export class CreateEventDto {
 
   @IsOptional()
   @IsMongoId()
-  userId?: string;
+  userId?: Types.ObjectId;
 
   @IsNotEmpty()
   @IsString()
-  sessionId: string;
+  sessionId?: string;
 
   @IsOptional()
   @IsMongoId()
-  productId?: string;
+  productId?: Types.ObjectId;
 
   @IsOptional()
   @IsMongoId()
-  orderId?: string;
+  orderId?: Types.ObjectId;
 
   @IsOptional()
   @IsNumber()

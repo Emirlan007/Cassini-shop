@@ -28,12 +28,6 @@ export class OrderHistoryService {
       throw new NotFoundException(`Order with ID ${orderId} not found`);
     }
 
-    if (order.paymentStatus !== 'paid') {
-      throw new BadRequestException(
-        'Order cannot be added to history: payment status must be "paid"',
-      );
-    }
-
     if (order.deliveryStatus !== DeliveryStatus.Delivered) {
       throw new BadRequestException(
         'Order cannot be added to history: delivery status must be "delivered"',

@@ -8,20 +8,13 @@ import {
 import { useEffect, useState } from "react";
 import { addUserCommentToOrder, fetchOrderById } from "./ordersThunk";
 import {
-  Alert,
   Box,
   Button,
   Chip,
   CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import { API_URL } from "../../constants";
 import { useTranslation } from "react-i18next";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { selectUser } from "../users/usersSlice.ts";
@@ -32,7 +25,6 @@ import {
   updateOrderStatus,
 } from "./admin/ordersThunks.ts";
 import {
-  clearPaymentStatusError,
   selectCreateAdminCommentLoading,
   selectUpdatePaymentStatusError,
   selectUpdatePaymentStatusLoading,
@@ -47,12 +39,15 @@ import {
 } from "../../utils/statusUtils.ts";
 import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.tsx";
 import OrderStatusSelector from "./admin/components/OrderStatusSelector.tsx";
+import OrderItem from "./components/OrderItem.tsx";
+import AdminPaymentControl from "./components/AdminPaymentControl.tsx";
+import UserCommentForm from "./components/UserCommentForm.tsx";
+import AdminCommentForm from "./components/AdminCommentForm.tsx";
+import CustomerInfo from "./components/CustomerInfo.tsx";
 
 const OrderDetails = () => {
-  const [userComment, setUserComment] = useState("");
-  const [adminComment, setAdminComment] = useState("");
   const [paymentStatus, setPaymentStatus] = useState<
-      "pending" | "paid" | "cancelled"
+    "pending" | "paid" | "cancelled"
   >("pending");
   const [deliveryStatus, setDeliveryStatus] = useState<string>("");
   const [orderStatus, setOrderStatus] = useState<string>("");
@@ -61,16 +56,16 @@ const OrderDetails = () => {
   const order = useAppSelector(selectOrderDetails);
   const loading = useAppSelector(selectOrderDetailsLoading);
   const createUserCommentLoading = useAppSelector(
-      selectCreateUserCommentLoading
+    selectCreateUserCommentLoading
   );
   const createAdminCommentLoading = useAppSelector(
-      selectCreateAdminCommentLoading
+    selectCreateAdminCommentLoading
   );
   const updatePaymentStatusLoading = useAppSelector(
-      selectUpdatePaymentStatusLoading
+    selectUpdatePaymentStatusLoading
   );
   const updatePaymentStatusError = useAppSelector(
-      selectUpdatePaymentStatusError
+    selectUpdatePaymentStatusError
   );
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -96,19 +91,13 @@ const OrderDetails = () => {
     }
   }, [order]);
 
-  const handleUserCommentSubmit = async (
-      e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    await dispatch(addUserCommentToOrder({ comment: userComment, orderId }));
+  const handleUserCommentSubmit = async (comment: string) => {
+    await dispatch(addUserCommentToOrder({ comment, orderId }));
     await dispatch(fetchOrderById(orderId));
   };
 
-  const handleAdminCommentSubmit = async (
-      e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    await dispatch(addAdminCommentToOrder({ comment: adminComment, orderId }));
+  const handleAdminCommentSubmit = async (comment: string) => {
+    await dispatch(addAdminCommentToOrder({ comment, orderId }));
     await dispatch(fetchOrderById(orderId));
   };
 
@@ -219,155 +208,41 @@ const OrderDetails = () => {
           </Box>
 
           {user?.role === "admin" && (
-              <>
-                <OrderStatusSelector
-                    orderStatus={orderStatus}
-                    setOrderStatus={setOrderStatus}
-                    currentOrderStatus={order.status}
-                    onSubmit={handleOrderStatusChange}
-                />
+            <>
+              <OrderStatusSelector
+                orderStatus={orderStatus}
+                setOrderStatus={setOrderStatus}
+                currentOrderStatus={order.status}
+                onSubmit={handleOrderStatusChange}
+              />
 
-                <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    Управление статусом оплаты
-                  </Typography>
+              <AdminPaymentControl
+                paymentStatus={paymentStatus}
+                setPaymentStatus={setPaymentStatus}
+                currentPaymentStatus={order.paymentStatus}
+                onSubmit={handlePaymentStatusChange}
+                updatePaymentStatusLoading={updatePaymentStatusLoading}
+                updatePaymentStatusError={updatePaymentStatusError}
+              />
 
-                  {updatePaymentStatusError && (
-                      <Alert
-                          severity="error"
-                          sx={{ mb: 2 }}
-                          onClose={() => dispatch(clearPaymentStatusError())}
-                      >
-                        {updatePaymentStatusError}
-                      </Alert>
-                  )}
-
-                  <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
-                    <FormControl sx={{ minWidth: 200 }}>
-                      <InputLabel>Статус оплаты</InputLabel>
-                      <Select
-                          value={paymentStatus}
-                          label="Статус оплаты"
-                          onChange={(e) =>
-                              setPaymentStatus(
-                                  e.target.value as "pending" | "paid" | "cancelled"
-                              )
-                          }
-                      >
-                        <MenuItem value="pending">Ожидает оплаты</MenuItem>
-                        <MenuItem value="paid">Оплачен</MenuItem>
-                        <MenuItem value="cancelled">Отменен</MenuItem>
-                      </Select>
-                    </FormControl>
-
-                    <Button
-                        variant="contained"
-                        onClick={handlePaymentStatusChange}
-                        disabled={
-                            paymentStatus === order.paymentStatus ||
-                            updatePaymentStatusLoading
-                        }
-                    >
-                      {updatePaymentStatusLoading ? (
-                          <CircularProgress size={20} />
-                      ) : (
-                          "Обновить"
-                      )}
-                    </Button>
-                  </Box>
-                </Box>
-
-                <DeliveryStatusSelector
-                    deliveryStatus={deliveryStatus}
-                    setDeliveryStatus={setDeliveryStatus}
-                    currentDeliveryStatus={order.deliveryStatus}
-                    onSubmit={handleDeliveryStatusChange}
-                />
-              </>
+              <DeliveryStatusSelector
+                deliveryStatus={deliveryStatus}
+                setDeliveryStatus={setDeliveryStatus}
+                currentDeliveryStatus={order.deliveryStatus}
+                onSubmit={handleDeliveryStatusChange}
+              />
+            </>
           )}
 
           {user?.role === "admin" && order.user && (
-              <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  {t("customerInfo")}
-                </Typography>
-
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  <b>{t("name")}:</b> {order.user.name}
-                </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <b>{t("phoneNumber")}:</b> {order.user.phoneNumber}
-            </Typography>
-
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <b>{t("city")}:</b> {order.user.city}
-            </Typography>
-
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <b>{t("address")}:</b> {order.user.address}
-            </Typography>
-          </Box>
-        )}
+            <CustomerInfo user={order.user} />
+          )}
 
           {order.items.map((item, index) => (
-              <Box
-                  key={`${item.product}-${item.selectedColor}-${item.selectedSize}-${index}`}
-                  display="flex"
-                  flexDirection="column"
-                  gap={3}
-                  mb={3}
-                  p={2}
-                  border="1px solid #ccc"
-                  borderRadius={2}
-              >
-                {item.image && (
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        flexDirection="column"
-                        sx={{
-                          height: { xs: 320, sm: 400 },
-                          width: "100%",
-                          overflow: "hidden",
-                          borderRadius: 2,
-                        }}
-                    >
-                      <img
-                          src={`${API_URL}/${item.image.replace(/^\/+/, "")}`}
-                          alt={item.title || "Product"}
-                          style={{
-                            objectFit: "contain",
-                            borderRadius: 8,
-                            maxWidth: "100%",
-                            maxHeight: "100%",
-                            width: "auto",
-                            height: "auto",
-                          }}
-                      />
-                    </Box>
-                )}
-
-                <Box>
-                  <Typography variant="h6" sx={{ mb: 1, mt: 2 }}>
-                    <b>{item.title}</b>
-                  </Typography>
-
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    {t("color")}: {item.selectedColor}
-                  </Typography>
-
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    {t("size")}: {item.selectedSize}
-                  </Typography>
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    {t("price")}: {item.price}₸
-                  </Typography>
-
-                  <Typography variant="body2" sx={{ mb: 0.5 }}>
-                    {t("quantity")}: {item.quantity}
-                  </Typography>
-                </Box>
-              </Box>
+            <OrderItem
+              key={`${item.product}-${item.selectedColor}-${item.selectedSize}-${index}`}
+              item={item}
+            />
           ))}
           <Box
               display="flex"
@@ -384,95 +259,36 @@ const OrderDetails = () => {
           </Box>
 
           {order.userComment && order.userComment.trim() !== "" && (
-              <Stack mt={3}>
-                <Typography variant="h6">Комментарий</Typography>
-                <Typography
-                    variant="body1"
-                    sx={{
-                      background: "#dddddd",
-                      borderRadius: 1,
-                      p: 1,
-                      mb: 1,
-                    }}
-                >
-                  {order.userComment}
-                </Typography>
-              </Stack>
+            <Stack mt={3}>
+              <Typography variant="h6">Комментарий</Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  background: "#dddddd",
+                  borderRadius: 1,
+                  p: 1,
+                  mb: 1,
+                }}
+              >
+                {order.userComment}
+              </Typography>
+            </Stack>
           )}
 
           {user?._id === order.user?._id &&
-              (!order.userComment || order.userComment.trim() === "") && (
-                  <Stack
-                      onSubmit={handleUserCommentSubmit}
-                      component="form"
-                      direction="row"
-                      spacing={1}
-                      mt={3}
-                  >
-                    <TextField
-                        onChange={(e) => setUserComment(e.target.value)}
-                        placeholder="Комментарий к заказу"
-                        sx={{ flexGrow: 1 }}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={userComment.trim() === ""}
-                    >
-                      {createUserCommentLoading ? (
-                          <CircularProgress size={20} />
-                      ) : (
-                          "Отправить"
-                      )}
-                    </Button>
-                  </Stack>
-              )}
-
-          {user?.role === "admin" && order.adminComments.length > 0 && (
-              <Stack mt={3}>
-                <Typography variant="h6">Комментарии админа</Typography>
-                {order.adminComments.map((comment) => (
-                    <Typography
-                        variant="body1"
-                        key={comment}
-                        sx={{
-                          background: "#dddddd",
-                          borderRadius: 1,
-                          p: 1,
-                          mb: 1,
-                        }}
-                    >
-                      {comment}
-                    </Typography>
-                ))}
-              </Stack>
-          )}
+            (!order.userComment || order.userComment.trim() === "") && (
+              <UserCommentForm
+                onSubmit={handleUserCommentSubmit}
+                loading={createUserCommentLoading}
+              />
+            )}
 
           {user?.role === "admin" && (
-              <Stack
-                  onSubmit={handleAdminCommentSubmit}
-                  component="form"
-                  direction="row"
-                  spacing={1}
-                  mt={3}
-              >
-                <TextField
-                    onChange={(e) => setAdminComment(e.target.value)}
-                    placeholder="Комментарий к заказу"
-                    sx={{ flexGrow: 1 }}
-                />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={adminComment.trim() === ""}
-                >
-                  {createAdminCommentLoading ? (
-                      <CircularProgress size={20} />
-                  ) : (
-                      "Отправить"
-                  )}
-                </Button>
-              </Stack>
+            <AdminCommentForm
+              onSubmit={handleAdminCommentSubmit}
+              loading={createAdminCommentLoading}
+              existingComments={order.adminComments}
+            />
           )}
         </Box>
       </Box>

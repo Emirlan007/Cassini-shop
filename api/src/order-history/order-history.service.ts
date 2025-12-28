@@ -34,7 +34,7 @@ export class OrderHistoryService {
       );
     }
 
-    if (order.status !== OrderStatus.Completed) {
+    if (order.status !== OrderStatus.Paid) {
       throw new BadRequestException(
         'Order cannot be added to history: order status must be "completed"',
       );

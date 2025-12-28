@@ -1,7 +1,10 @@
 {
-  "Delivered":"Delivered",
-  "OnTheWay":"On the way",
-  "Warehouse":"Warehouse",
+  "pending": "Pending",
+  "paid": "Paid",
+  "cancelled": "Cancelled",
+  "Delivered": "Delivered",
+  "OnTheWay": "On the way",
+  "Warehouse": "Warehouse",
   "inStock": "In Stock",
   "productDetail": "Product Detail",
   "availableSizes": "Available Sizes",

@@ -19,7 +19,7 @@ interface Props {
 const OrderCard = ({ order, isAdmin }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-
+  
   return (
     <Box
       key={order._id}

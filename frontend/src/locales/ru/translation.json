@@ -1,7 +1,10 @@
 {
-  "Delivered":"Доставлено",
-  "OnTheWay":"В пути",
-  "Warehouse":"На складе",
+  "pending": "В ожидании",
+  "paid": "Оплачено",
+  "cancelled": "Отменено",
+  "Delivered": "Доставлено",
+  "OnTheWay": "В пути",
+  "Warehouse": "На складе",
   "youMightAlsoLike": "Вам также может понравиться",
   "inStock": "В наличии",
   "new": "Новое",

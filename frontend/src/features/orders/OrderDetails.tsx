@@ -111,7 +111,7 @@ const OrderDetails = () => {
   const handleDeliveryStatusChange = async () => {
     if (orderId && deliveryStatus !== order?.deliveryStatus) {
       await dispatch(
-          changeOrderDeliveryStatus({ orderId, value: deliveryStatus })
+        changeOrderDeliveryStatus({ orderId, value: deliveryStatus })
       );
       await dispatch(fetchOrderById(orderId));
     }
@@ -126,172 +126,172 @@ const OrderDetails = () => {
 
   if (loading) {
     return (
-        <Box display="flex" justifyContent="center" mt={4}>
-          <CircularProgress color="inherit" />
-        </Box>
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress color="inherit" />
+      </Box>
     );
   }
 
   if (!order) {
     return (
-        <Typography textAlign="center" mt={2}>
-          {t("orderNotFound")}
-        </Typography>
+      <Typography textAlign="center" mt={2}>
+        {t("orderNotFound")}
+      </Typography>
     );
   }
 
   return (
-      <Box>
-        <Button
-            startIcon={<NavigateBeforeIcon />}
-            onClick={() => {
-              if (window.history.state && window.history.length > 2) {
-                navigate(-1);
-              } else {
-                navigate("/account");
-              }
-            }}
-            sx={{ mb: 3 }}
-            variant="contained"
+    <Box>
+      <Button
+        startIcon={<NavigateBeforeIcon />}
+        onClick={() => {
+          if (window.history.state && window.history.length > 2) {
+            navigate(-1);
+          } else {
+            navigate("/account");
+          }
+        }}
+        sx={{ mb: 3 }}
+        variant="contained"
+      >
+        {t("backToOrders")}
+      </Button>
+
+      <Box mb={4} p={3}>
+        <Box
+          display="flex"
+          flexDirection={{ xs: "column", sm: "row" }}
+          justifyContent="space-between"
+          alignItems={{ sm: "center" }}
+          mb={3}
         >
-          {t("backToOrders")}
-        </Button>
-
-        <Box mb={4} p={3}>
-          <Box
-              display="flex"
-              flexDirection={{ xs: "column", sm: "row" }}
-              justifyContent="space-between"
-              alignItems={{ sm: "center" }}
-              mb={3}
-          >
-            <Typography variant="body1" color="text.secondary">
-              {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
-            </Typography>
-          </Box>
-
-          <Box
-              mb={3}
-              display="flex"
-              flexDirection={{ xs: "column", md: "row" }}
-              gap={2}
-          >
-            <Box display="flex" alignItems="center" gap={2}>
-              <Typography variant="body1" fontWeight="bold">
-                Статус заказа:
-              </Typography>
-              <Chip
-                  label={getOrderStatusText(order.status)}
-                  color={getOrderStatusColor(order.status)}
-              />
-            </Box>
-
-            <Box display="flex" alignItems="center" gap={2}>
-              <Typography variant="body1" fontWeight="bold">
-                Статус оплаты:
-              </Typography>
-              <Chip
-                  label={getPaymentStatusText(order.paymentStatus)}
-                  color={getPaymentStatusColor(order.paymentStatus)}
-              />
-            </Box>
-
-            <Box display="flex" alignItems="center" gap={2}>
-              <Typography variant="body1" fontWeight="bold">
-                Статус доставки:
-              </Typography>
-              <Chip
-                  label={getDeliveryStatusText(order.deliveryStatus)}
-                  color={getDeliveryStatusColor(order.deliveryStatus)}
-              />
-            </Box>
-          </Box>
-
-          {user?.role === "admin" && (
-            <>
-              <OrderStatusSelector
-                orderStatus={orderStatus}
-                setOrderStatus={setOrderStatus}
-                currentOrderStatus={order.status}
-                onSubmit={handleOrderStatusChange}
-              />
-
-              <AdminPaymentControl
-                paymentStatus={paymentStatus}
-                setPaymentStatus={setPaymentStatus}
-                currentPaymentStatus={order.paymentStatus}
-                onSubmit={handlePaymentStatusChange}
-                updatePaymentStatusLoading={updatePaymentStatusLoading}
-                updatePaymentStatusError={updatePaymentStatusError}
-              />
-
-              <DeliveryStatusSelector
-                deliveryStatus={deliveryStatus}
-                setDeliveryStatus={setDeliveryStatus}
-                currentDeliveryStatus={order.deliveryStatus}
-                onSubmit={handleDeliveryStatusChange}
-              />
-            </>
-          )}
-
-          {user?.role === "admin" && order.user && (
-            <CustomerInfo user={order.user} />
-          )}
-
-          {order.items.map((item, index) => (
-            <OrderItem
-              key={`${item.product}-${item.selectedColor}-${item.selectedSize}-${index}`}
-              item={item}
-            />
-          ))}
-          <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              mt={3}
-              pt={2}
-              borderTop="1px solid #e0e0e0"
-          >
-            <Typography variant="h6">{t("total")}:</Typography>
-            <Typography variant="h5" fontWeight="bold">
-              {order.totalPrice} сом
-            </Typography>
-          </Box>
-
-          {order.userComment && order.userComment.trim() !== "" && (
-            <Stack mt={3}>
-              <Typography variant="h6">Комментарий</Typography>
-              <Typography
-                variant="body1"
-                sx={{
-                  background: "#dddddd",
-                  borderRadius: 1,
-                  p: 1,
-                  mb: 1,
-                }}
-              >
-                {order.userComment}
-              </Typography>
-            </Stack>
-          )}
-
-          {user?._id === order.user?._id &&
-            (!order.userComment || order.userComment.trim() === "") && (
-              <UserCommentForm
-                onSubmit={handleUserCommentSubmit}
-                loading={createUserCommentLoading}
-              />
-            )}
-
-          {user?.role === "admin" && (
-            <AdminCommentForm
-              onSubmit={handleAdminCommentSubmit}
-              loading={createAdminCommentLoading}
-              existingComments={order.adminComments}
-            />
-          )}
+          <Typography variant="body1" color="text.secondary">
+            {t("createdAt")}: {new Date(order.createdAt).toLocaleString()}
+          </Typography>
         </Box>
+
+        <Box
+          mb={3}
+          display="flex"
+          flexDirection={{ xs: "column", md: "row" }}
+          gap={2}
+        >
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography variant="body1" fontWeight="bold">
+              Статус заказа:
+            </Typography>
+            <Chip
+              label={getOrderStatusText(order.status)}
+              color={getOrderStatusColor(order.status)}
+            />
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography variant="body1" fontWeight="bold">
+              Статус оплаты:
+            </Typography>
+            <Chip
+              label={getPaymentStatusText(order.paymentStatus)}
+              color={getPaymentStatusColor(order.paymentStatus)}
+            />
+          </Box>
+
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography variant="body1" fontWeight="bold">
+              Статус доставки:
+            </Typography>
+            <Chip
+              label={getDeliveryStatusText(order.deliveryStatus)}
+              color={getDeliveryStatusColor(order.deliveryStatus)}
+            />
+          </Box>
+        </Box>
+
+        {user?.role === "admin" && (
+          <>
+            <OrderStatusSelector
+              orderStatus={orderStatus}
+              setOrderStatus={setOrderStatus}
+              currentOrderStatus={order.status}
+              onSubmit={handleOrderStatusChange}
+            />
+
+            <AdminPaymentControl
+              paymentStatus={paymentStatus}
+              setPaymentStatus={setPaymentStatus}
+              currentPaymentStatus={order.paymentStatus}
+              onSubmit={handlePaymentStatusChange}
+              updatePaymentStatusLoading={updatePaymentStatusLoading}
+              updatePaymentStatusError={updatePaymentStatusError}
+            />
+
+            <DeliveryStatusSelector
+              deliveryStatus={deliveryStatus}
+              setDeliveryStatus={setDeliveryStatus}
+              currentDeliveryStatus={order.deliveryStatus}
+              onSubmit={handleDeliveryStatusChange}
+            />
+          </>
+        )}
+
+        {user?.role === "admin" && order.user && (
+          <CustomerInfo user={order.user} />
+        )}
+
+        {order.items.map((item, index) => (
+          <OrderItem
+            key={`${item.product}-${item.selectedColor}-${item.selectedSize}-${index}`}
+            item={item}
+          />
+        ))}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={3}
+          pt={2}
+          borderTop="1px solid #e0e0e0"
+        >
+          <Typography variant="h6">{t("total")}:</Typography>
+          <Typography variant="h5" fontWeight="bold">
+            {order.totalPrice} сом
+          </Typography>
+        </Box>
+
+        {order.userComment && order.userComment.trim() !== "" && (
+          <Stack mt={3}>
+            <Typography variant="h6">Комментарий</Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                background: "#dddddd",
+                borderRadius: 1,
+                p: 1,
+                mb: 1,
+              }}
+            >
+              {order.userComment}
+            </Typography>
+          </Stack>
+        )}
+
+        {user?._id === order.user?._id &&
+          (!order.userComment || order.userComment.trim() === "") && (
+            <UserCommentForm
+              onSubmit={handleUserCommentSubmit}
+              loading={createUserCommentLoading}
+            />
+          )}
+
+        {user?.role === "admin" && (
+          <AdminCommentForm
+            onSubmit={handleAdminCommentSubmit}
+            loading={createAdminCommentLoading}
+            existingComments={order.adminComments}
+          />
+        )}
       </Box>
+    </Box>
   );
 };
 

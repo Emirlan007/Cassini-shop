@@ -69,8 +69,7 @@ const AdminPaymentControl = ({
           variant="contained"
           onClick={onSubmit}
           disabled={
-            paymentStatus === currentPaymentStatus ||
-            updatePaymentStatusLoading
+            paymentStatus === currentPaymentStatus || updatePaymentStatusLoading
           }
         >
           {updatePaymentStatusLoading ? (

@@ -2,6 +2,7 @@
   "pending": "Pending",
   "paid": "Paid",
   "cancelled": "Cancelled",
+  "completed": "Completed",
   "Delivered": "Delivered",
   "OnTheWay": "On the way",
   "Warehouse": "Warehouse",

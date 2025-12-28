@@ -66,10 +66,5 @@ export class CreateOrderDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['pending', 'processing', 'completed'])
-  status?: 'pending' | 'processing' | 'completed';
-
-  @IsOptional()
-  @IsString()
   userComment?: string;
 }

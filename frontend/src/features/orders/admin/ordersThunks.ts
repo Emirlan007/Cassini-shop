@@ -44,65 +44,42 @@ export const addAdminCommentToOrder = createAsyncThunk(
 );
 
 export const changeOrderDeliveryStatus = createAsyncThunk<
-    OrderItemAdmin,
-    { orderId: string; value: string }
+  OrderItemAdmin,
+  { orderId: string; value: string }
 >(
-    "adminOrder/changeDeliveryStatus",
-    async ({ orderId, value }, { rejectWithValue }) => {
-        try {
-            const { data } = await axiosApi.patch<OrderItemAdmin>(
-                `orders/${orderId}/delivery-status`,
-                { deliveryStatus: value }
-            );
-            return data;
-        } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                return rejectWithValue(error.response.data);
-            }
-            throw error;
-        }
+  "adminOrder/changeDeliveryStatus",
+  async ({ orderId, value }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosApi.patch<OrderItemAdmin>(
+        `orders/${orderId}/delivery-status`,
+        { deliveryStatus: value }
+      );
+      return data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
     }
-);
-
-export interface UpdatePaymentStatusData {
-    orderId: string;
-    paymentStatus: 'pending' | 'paid' | 'cancelled';
-}
-
-export const updateOrderPaymentStatusThunk = createAsyncThunk(
-    'orders/updatePaymentStatus',
-    async (data: UpdatePaymentStatusData, { rejectWithValue }) => {
-        try {
-            const response = await axiosApi.patch(
-                `/orders/${data.orderId}/payment-status`,
-                { paymentStatus: data.paymentStatus }
-            );
-            return response.data;
-        } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                return rejectWithValue(error.response.data);
-            }
-            throw error;
-        }
-    }
+  }
 );
 
 export const updateOrderStatus = createAsyncThunk(
-    "orders/updateOrderStatus",
-    async (
-        { orderId, status }: { orderId: string; status: string },
-        { rejectWithValue }
-    ) => {
-        try {
-            const response = await axiosApi.patch(`/orders/${orderId}/order-status`, {
-                status,
-            });
-            return response.data;
-        } catch (error) {
-            if (isAxiosError(error) && error.response) {
-                return rejectWithValue(error.response.data);
-            }
-            throw error;
-        }
+  "orders/updateOrderStatus",
+  async (
+    { orderId, status }: { orderId: string; status: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosApi.patch(`/orders/${orderId}/order-status`, {
+        status,
+      });
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      throw error;
     }
+  }
 );

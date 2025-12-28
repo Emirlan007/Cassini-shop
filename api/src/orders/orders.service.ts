@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { Order, OrderDocument } from '../schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order-dto';
 import { Product, ProductDocument } from 'src/schemas/product.schema';
@@ -132,47 +132,41 @@ export class OrderService {
     return this.processStatusCounts(result);
   }
 
-  async updateOrderPaymentStatus(
-    orderId: string,
-    paymentStatus: 'pending' | 'paid' | 'cancelled',
-  ) {
-    const order = await this.orderModel.findByIdAndUpdate(
-      orderId,
-      {
-        $set: {
-          paymentStatus,
-          updatedAt: new Date(),
-        },
-      },
-      { new: true },
-    );
-
-    if (!order) {
-      throw new NotFoundException(`Order with ID ${orderId} not found`);
-    }
-
-    return order;
-  }
-
   async updateOrderStatus(
     orderId: string,
     updateOrderStatusDto: UpdateOrderStatusDto,
   ) {
     const { status } = updateOrderStatusDto;
 
-    const order = await this.orderModel.findByIdAndUpdate(
-      orderId,
-      {
-        $set: {
-          status,
-          updatedAt: new Date(),
+    const order: HydratedDocument<Order> | null =
+      await this.orderModel.findByIdAndUpdate(
+        orderId,
+        {
+          $set: {
+            status,
+            updatedAt: new Date(),
+          },
         },
-      },
-      { new: true },
-    );
+        { new: true },
+      );
 
     if (!order) {
       throw new NotFoundException(`Order with ID ${orderId} not found`);
+    }
+
+    const eventTypeByStatus: Partial<Record<OrderStatus, EventType>> = {
+      completed: EventType.OrderCompleted,
+      canceled: EventType.OrderCanceled,
+    };
+
+    const eventType = eventTypeByStatus[status];
+
+    if (eventType) {
+      await this.analyticsService.trackEvent({
+        type: eventType,
+        userId: new Types.ObjectId(order.user),
+        orderId: order._id,
+      });
     }
 
     return order;
@@ -183,7 +177,7 @@ export class OrderService {
     userId: string,
     sessionId: string,
   ) {
-    const { items, paymentMethod, status, userComment } = createOrderDto;
+    const { items, paymentMethod, userComment } = createOrderDto;
 
     const processedItems = await Promise.all(
       items.map(async (item) => {
@@ -219,7 +213,6 @@ export class OrderService {
       user: userId,
       items: processedItems,
       paymentMethod,
-      status: status ?? OrderStatus.Pending,
       paymentStatus: 'pending',
       userComment: userComment ?? null,
       adminComments: [],
@@ -231,9 +224,9 @@ export class OrderService {
 
     await this.analyticsService.trackEvent({
       type: EventType.OrderCreated,
-      userId,
+      userId: new Types.ObjectId(userId),
       sessionId,
-      orderId: String(createdOrder._id),
+      orderId: new Types.ObjectId(String(createdOrder._id)),
     });
 
     return {
@@ -329,7 +322,6 @@ export class OrderService {
     }
 
     return (
-      order.paymentStatus === 'paid' &&
       order.deliveryStatus === DeliveryStatus.Delivered &&
       order.status === OrderStatus.Completed
     );

@@ -105,8 +105,8 @@ export class WishlistService {
     await this.analyticsService.trackEvent({
       type: EventType.AddToWishlist,
       sessionId,
-      userId,
-      productId,
+      userId: new Types.ObjectId(userId),
+      productId: new Types.ObjectId(productId),
     });
 
     return updatedWishlist;

@@ -47,8 +47,8 @@ const OrderTabs = () => {
             },
           }}
         >
-          <Tab label={t("paid")} {...a11yProps(0)} />
-          <Tab label={t("pending")} {...a11yProps(1)} />
+          <Tab label={t("pending")} {...a11yProps(0)} />
+          <Tab label={t("completed")} {...a11yProps(1)} />
           <Tab label={t("cancelled")} {...a11yProps(2)} />
         </Tabs>
       </Box>
@@ -62,7 +62,7 @@ const OrderTabs = () => {
           <Typography>{t("noOrders")}</Typography>
         ) : (
           orders
-            .filter((order) => order.paymentStatus === "paid")
+            .filter((order) => order.status === "pending")
             .map((order) => (
               <OrderCard
                 key={order._id}
@@ -81,7 +81,7 @@ const OrderTabs = () => {
           <Typography>{t("noOrders")}</Typography>
         ) : (
           orders
-            .filter((order) => order.paymentStatus === "pending")
+            .filter((order) => order.status === "completed")
             .map((order) => (
               <OrderCard
                 key={order._id}
@@ -100,7 +100,7 @@ const OrderTabs = () => {
           <Typography>{t("noOrders")}</Typography>
         ) : (
           orders
-            .filter((order) => order.paymentStatus === "cancelled")
+            .filter((order) => order.status === "cancelled")
             .map((order) => (
               <OrderCard
                 key={order._id}

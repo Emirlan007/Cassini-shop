@@ -1,4 +1,7 @@
 {
+  "pending": "Күтүлүүдө",
+  "paid": "Төлөндү",
+  "cancelled": "Жокко чыгарылды",
   "Delivered": "Жеткизилди",
   "OnTheWay": "Жолдо",
   "Warehouse": "складда",

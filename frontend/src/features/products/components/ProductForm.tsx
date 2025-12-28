@@ -53,7 +53,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     category: "",
     size: [],
     colors: [],
-    price: 0,
+    price: "" as unknown as number,
     images: [],
     imagesByColor: {},
     video: null,
@@ -78,7 +78,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     const { name, value } = e.target;
     setState((prev) => ({
       ...prev,
-      [name]: name === "price" ? Number(value) : value,
+      [name]: name === "price" ? Number(value) || 0 : value,
     }));
   };
 
@@ -236,13 +236,20 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
           />
 
           <TextField
-            type="number"
-            label="Цена"
-            name="price"
-            value={state.price}
-            onChange={inputChangeHandler}
-            required
-            sx={fieldSx}
+              type="number"
+              label="Цена"
+              name="price"
+              value={state.price === 0 ? "" : state.price}
+              onChange={inputChangeHandler}
+              required
+              sx={fieldSx}
+              placeholder="Введите цену"
+              slotProps={{
+                htmlInput: {
+                  min: 0.01,
+                  step: 0.01
+                }
+              }}
           />
 
           <TextField

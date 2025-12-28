@@ -7,19 +7,20 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  Min,
   ValidateIf,
   IsBoolean,
+  IsPositive,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { AVAILABLE_SIZES } from '../../shared/constants/sizes.constant';
 
-const transformToArray = ({ value }: { value: unknown }): unknown[] => {
-  if (Array.isArray(value)) return value;
+const transformToArray = ({ value }: { value: unknown }): string[] => {
+  if (Array.isArray(value)) return value as string[];
   if (typeof value === 'string') {
     try {
-      const parsed = JSON.parse(value) as unknown;
-      return Array.isArray(parsed) ? parsed : [parsed];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? (parsed as string[]) : [parsed as string];
     } catch {
       return [value];
     }
@@ -39,12 +40,12 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   @ArrayUnique()
-  @Transform((value) => transformToArray(value))
+  @Transform(transformToArray)
   colors: string[];
 
   @IsArray()
   @IsIn(AVAILABLE_SIZES, { each: true })
-  @Transform((value) => transformToArray(value))
+  @Transform(transformToArray)
   size: string[];
 
   @IsString()
@@ -52,8 +53,8 @@ export class CreateProductDto {
   category: string;
 
   @IsNumber()
-  @Min(0)
-  @Transform(({ value }) => Number(value))
+  @IsPositive({ message: 'Цена должна быть положительным числом' })
+  @Type(() => Number)
   price: number;
 
   @IsOptional()
@@ -63,7 +64,7 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  @Transform((value) => transformToArray(value))
+  @Transform(transformToArray)
   images?: string[];
 
   @IsOptional()
@@ -71,20 +72,12 @@ export class CreateProductDto {
   @Transform(({ value }) => {
     if (typeof value === 'string') {
       try {
-        const parsed = JSON.parse(value) as unknown;
-        if (
-          typeof parsed === 'object' &&
-          parsed !== null &&
-          !Array.isArray(parsed)
-        ) {
-          return parsed as Record<string, number[]>;
-        }
-        return value;
+        return JSON.parse(value) as Record<string, number[]>;
       } catch {
-        return value;
+        return {};
       }
     }
-    return value;
+    return value as Record<string, number[]>;
   })
   @ValidateIf((o: CreateProductDto) => o.imagesByColor !== undefined)
   imagesByColor?: Record<string, number[]>;

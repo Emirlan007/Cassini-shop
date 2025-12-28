@@ -7,7 +7,7 @@ import {
   fetchPopularProducts,
   fetchProductById,
   fetchProducts,
-  fetchSearchedProducts, updateProductNewStatus, updateProductPopular,
+  fetchSearchedProducts, updateProductNewStatus, updateProductPopular, fetchProductBySlug,
 } from "./productsThunks";
 
 interface ProductsState {
@@ -108,6 +108,19 @@ const productsSlice = createSlice({
         state.fetchItemLoading = false;
         state.fetchItemError = error?.error ?? null;
       });
+
+    builder
+        .addCase(fetchProductBySlug.pending, (state) => {
+          state.fetchItemLoading = true;
+        })
+        .addCase(fetchProductBySlug.fulfilled, (state, { payload: product }) => {
+          state.fetchItemLoading = false;
+          state.item = product;
+        })
+        .addCase(fetchProductBySlug.rejected, (state, { payload: error }) => {
+          state.fetchItemLoading = false;
+          state.fetchItemError = error?.error ?? null;
+        });
 
     builder
       .addCase(createProduct.pending, (state) => {

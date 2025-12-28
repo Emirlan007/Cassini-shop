@@ -22,14 +22,14 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
   const dispatch = useAppDispatch();
 
   const handleChangePopularStatus = async (
-    e: ChangeEvent<HTMLInputElement>
+      e: ChangeEvent<HTMLInputElement>
   ) => {
     try {
       await dispatch(
-        updateProductPopular({
-          productId: product._id,
-          isPopular: e.target.checked,
-        })
+          updateProductPopular({
+            productId: product._id,
+            isPopular: e.target.checked,
+          })
       ).unwrap();
       dispatch(fetchProducts());
     } catch (error) {
@@ -41,10 +41,10 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
   const handleChangeNewStatus = async (e: ChangeEvent<HTMLInputElement>) => {
     try {
       await dispatch(
-        updateProductNewStatus({
-          productId: product._id,
-          isNew: e.target.checked,
-        })
+          updateProductNewStatus({
+            productId: product._id,
+            isNew: e.target.checked,
+          })
       ).unwrap();
       dispatch(fetchProducts());
     } catch (error) {
@@ -58,80 +58,81 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
     if (imagePath.startsWith("http")) return imagePath;
 
     const cleanPath = imagePath.startsWith("/")
-      ? imagePath.slice(1)
-      : imagePath;
+        ? imagePath.slice(1)
+        : imagePath;
 
     return `${API_URL}${cleanPath}`;
   };
 
   const handleClick = () => {
-    navigate(`/product/${product._id}`);
+    const identifier = product.slug || product._id;
+    navigate(`/product/${identifier}`);
   };
 
   return (
-    <TableRow
-      hover
-      sx={{ cursor: "pointer" }}
-      onClick={handleClick}
-      data-testid={`admin-product-row-${product._id}`}
-    >
-      <TableThumbnail
-        imageUrl={
-          product.images?.[0] ? getImageUrl(product.images[0]) : undefined
-        }
-      />
+      <TableRow
+          hover
+          sx={{ cursor: "pointer" }}
+          onClick={handleClick}
+          data-testid={`admin-product-row-${product._id}`}
+      >
+        <TableThumbnail
+            imageUrl={
+              product.images?.[0] ? getImageUrl(product.images[0]) : undefined
+            }
+        />
 
-      <TableCell>{product._id}</TableCell>
-      <TableCell>{product.name}</TableCell>
-      <TableCell>{product.category?.title}</TableCell>
-      <TableCell>{product.price} сом</TableCell>
-      <TableCell align="center">
-        {product.discount ? `${product.discount}%` : "-"}
-      </TableCell>
-      <TableCell align="center" onClick={(e) => e.stopPropagation()}>
-        <Checkbox
-          checked={product.isPopular || false}
-          onChange={handleChangePopularStatus}
-        />
-      </TableCell>
-      <TableCell align="center" onClick={(e) => e.stopPropagation()}>
-        <Checkbox
-          checked={product.isNew || false}
-          onChange={handleChangeNewStatus}
-        />
-      </TableCell>
-      <TableCell align="center">
-        <Button
-          onClick={(event) => {
-            event.stopPropagation();
-            navigate(`/products/${product._id}/update`);
-          }}
-          color="secondary"
-          variant="contained"
-          sx={{
-            mr: 2,
-            backgroundColor: "#660033",
-            "&:hover": { backgroundColor: "#F0544F" },
-          }}
-        >
-          edit
-        </Button>
-        <Button
-          onClick={(event) => {
-            event.stopPropagation();
-            removeProduct(product._id);
-          }}
-          color="secondary"
-          variant="contained"
-          sx={{
-            backgroundColor: "#660033",
-            "&:hover": { backgroundColor: "#F0544F" },
-          }}
-        >
-          delete
-        </Button>
-      </TableCell>
-    </TableRow>
+        <TableCell>{product._id}</TableCell>
+        <TableCell>{product.name}</TableCell>
+        <TableCell>{product.category?.title}</TableCell>
+        <TableCell>{product.price} сом</TableCell>
+        <TableCell align="center">
+          {product.discount ? `${product.discount}%` : "-"}
+        </TableCell>
+        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+              checked={product.isPopular || false}
+              onChange={handleChangePopularStatus}
+          />
+        </TableCell>
+        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+              checked={product.isNew || false}
+              onChange={handleChangeNewStatus}
+          />
+        </TableCell>
+        <TableCell align="center">
+          <Button
+              onClick={(event) => {
+                event.stopPropagation();
+                navigate(`/products/${product._id}/update`);
+              }}
+              color="secondary"
+              variant="contained"
+              sx={{
+                mr: 2,
+                backgroundColor: "#660033",
+                "&:hover": { backgroundColor: "#F0544F" },
+              }}
+          >
+            edit
+          </Button>
+          <Button
+              onClick={(event) => {
+                event.stopPropagation();
+                removeProduct(product._id);
+              }}
+              color="secondary"
+              variant="contained"
+              sx={{
+                backgroundColor: "#660033",
+                "&:hover": { backgroundColor: "#F0544F" },
+              }}
+          >
+            delete
+          </Button>
+        </TableCell>
+      </TableRow>
   );
 };
 

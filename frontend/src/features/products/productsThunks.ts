@@ -28,6 +28,23 @@ export const fetchProducts = createAsyncThunk<
   }
 });
 
+export const fetchProductBySlug = createAsyncThunk<
+    Product,
+    string,
+    { rejectValue: IGlobalError }
+>("products/fetchBySlug", async (slug, { rejectWithValue }) => {
+  try {
+    const { data: product } = await axiosApi.get<Product>(`/products/slug/${slug}`);
+    return product;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      return rejectWithValue(error.response.data);
+    }
+
+    throw error;
+  }
+});
+
 export const fetchPopularProducts = createAsyncThunk<
   PopularProducts,
   number | undefined,

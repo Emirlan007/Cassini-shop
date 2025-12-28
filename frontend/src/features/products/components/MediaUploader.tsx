@@ -108,7 +108,9 @@ const MediaUploader = ({
                     key={index}
                     control={
                       <Checkbox
-                        checked={imagesByColor?.[color]?.includes(index) || false}
+                        checked={
+                          imagesByColor?.[color]?.includes(index) || false
+                        }
                         onChange={(e) =>
                           onToggleImageColor(color, index, e.target.checked)
                         }

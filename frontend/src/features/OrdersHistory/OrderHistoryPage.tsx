@@ -10,14 +10,13 @@ import {
 } from "./orderHistoryThunks";
 import {
     Box,
-    Button,
     Card,
     CardContent,
     CircularProgress,
     Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { History, NavigateBefore } from "@mui/icons-material";
+import { History } from "@mui/icons-material";
 import { API_URL } from "../../constants";
 
 const OrderHistoryPage = () => {
@@ -50,7 +49,7 @@ const OrderHistoryPage = () => {
             ) : (
                 <Grid container spacing={3}>
                     {history.map((item) => (
-                        <Grid item xs={12} key={item._id}>
+                        <Grid sx={{ xs: 12 }} key={item._id}>
                             <Card
                                 sx={{
                                     cursor: "pointer",

@@ -196,9 +196,17 @@ export interface OrderItem extends CartItem {
   image: string;
 }
 
-export type OrderStatus = "pending" | "completed" | "cancelled";
+export enum OrderStatus {
+  AwaitingPayment = 'awaiting_payment',
+  Paid = 'paid',
+  Canceled = 'canceled'
+}
 
-export type OrderDeliveryStatus = "warehouse" | "on_the_way" | "delivered";
+export enum DeliveryStatus {
+  Warehouse = 'warehouse',
+  OnTheWay = 'on_the_way',
+  Delivered = 'delivered'
+}
 
 export interface Order {
   _id: string;
@@ -206,10 +214,9 @@ export interface Order {
   items: OrderItem[];
   totalPrice: number;
   createdAt: string;
-  status: "pending" | "processing" | "completed";
-  deliveryStatus: "warehouse" | "on_the_way" | "delivered";
+  status: OrderStatus;
+  deliveryStatus: DeliveryStatus;
   paymentMethod: "cash" | "qrCode";
-  paymentStatus: "pending" | "paid" | "cancelled";
   userComment: string;
   adminComments: string[];
   isArchived: boolean;
@@ -230,7 +237,6 @@ export interface OrderItemDto {
 export interface OrderMutation {
   items: OrderItemDto[];
   totalPrice: number;
-  status?: "pending" | "processing" | "completed";
   paymentMethod: "cash" | "qrCode";
   userComment?: string;
   user?: {
@@ -247,7 +253,7 @@ export interface OrderItemAdmin {
   user: User;
   createdAt: string;
   status: OrderStatus;
-  deliveryStatus: OrderDeliveryStatus;
+  deliveryStatus: DeliveryStatus;
   items: CartItem[];
   totalPrice: number;
   userComment: string;
@@ -285,7 +291,7 @@ export interface OrderAnalyticsItem {
   date: string;
   ordersCreated: number;
   ordersCanceled: number;
-  ordersCompleted: number;
+  ordersPaid: number;
   revenue: number;
 }
 
@@ -294,7 +300,7 @@ export interface OrderAnalyticsResponse {
   totals: {
     ordersCreated: number;
     ordersCanceled: number;
-    ordersCompleted: number;
+    ordersPaid: number;
     revenue: number;
   };
 }

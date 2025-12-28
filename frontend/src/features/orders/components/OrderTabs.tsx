@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Tab, Tabs, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import CustomTabPanel from "../../../components/UI/Tabs/CustomTabPanel";
@@ -31,6 +31,19 @@ const OrderTabs = () => {
     setTabValue(newValue);
   };
 
+  const filteredOrders = useMemo(() => {
+    switch (tabValue) {
+      case 0:
+        return orders.filter((order) => order.status === "awaiting_payment");
+      case 1:
+        return orders.filter((order) => order.status === "paid");
+      case 2:
+        return orders.filter((order) => order.status === "canceled");
+      default:
+        return [];
+    }
+  }, [orders, tabValue]);
+
   return (
     <Box sx={{ width: "100%", mt: 3 }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -47,8 +60,8 @@ const OrderTabs = () => {
             },
           }}
         >
-          <Tab label={t("pending")} {...a11yProps(0)} />
-          <Tab label={t("completed")} {...a11yProps(1)} />
+          <Tab label={t("awaitingPayment")} {...a11yProps(0)} />
+          <Tab label={t("paid")} {...a11yProps(1)} />
           <Tab label={t("cancelled")} {...a11yProps(2)} />
         </Tabs>
       </Box>
@@ -58,18 +71,16 @@ const OrderTabs = () => {
           <Box display="flex" justifyContent="center" p={3}>
             <CircularProgress />
           </Box>
-        ) : orders.length === 0 ? (
+        ) : filteredOrders.length === 0 ? (
           <Typography>{t("noOrders")}</Typography>
         ) : (
-          orders
-            .filter((order) => order.status === "pending")
-            .map((order) => (
-              <OrderCard
-                key={order._id}
-                order={order}
-                isAdmin={user?.role === "admin"}
-              />
-            ))
+          filteredOrders.map((order) => (
+            <OrderCard
+              key={order._id}
+              order={order}
+              isAdmin={user?.role === "admin"}
+            />
+          ))
         )}
       </CustomTabPanel>
       <CustomTabPanel value={tabValue} index={1}>
@@ -77,18 +88,16 @@ const OrderTabs = () => {
           <Box display="flex" justifyContent="center" p={3}>
             <CircularProgress />
           </Box>
-        ) : orders.length === 0 ? (
+        ) : filteredOrders.length === 0 ? (
           <Typography>{t("noOrders")}</Typography>
         ) : (
-          orders
-            .filter((order) => order.status === "completed")
-            .map((order) => (
-              <OrderCard
-                key={order._id}
-                order={order}
-                isAdmin={user?.role === "admin"}
-              />
-            ))
+          filteredOrders.map((order) => (
+            <OrderCard
+              key={order._id}
+              order={order}
+              isAdmin={user?.role === "admin"}
+            />
+          ))
         )}
       </CustomTabPanel>
       <CustomTabPanel value={tabValue} index={2}>
@@ -96,18 +105,16 @@ const OrderTabs = () => {
           <Box display="flex" justifyContent="center" p={3}>
             <CircularProgress />
           </Box>
-        ) : orders.length === 0 ? (
+        ) : filteredOrders.length === 0 ? (
           <Typography>{t("noOrders")}</Typography>
         ) : (
-          orders
-            .filter((order) => order.status === "cancelled")
-            .map((order) => (
-              <OrderCard
-                key={order._id}
-                order={order}
-                isAdmin={user?.role === "admin"}
-              />
-            ))
+          filteredOrders.map((order) => (
+            <OrderCard
+              key={order._id}
+              order={order}
+              isAdmin={user?.role === "admin"}
+            />
+          ))
         )}
       </CustomTabPanel>
     </Box>

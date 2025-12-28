@@ -30,8 +30,12 @@ export const ProductSchema = ({ product }: ProductSchemaProps) => {
     },
   };
 
+  const url = `${window.location.origin}${location.pathname}`;
+
   return (
     <Helmet>
+      <link rel="canonical" href={url} />
+
       <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );

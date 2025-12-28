@@ -155,7 +155,7 @@ export class OrderService {
     }
 
     const eventTypeByStatus: Partial<Record<OrderStatus, EventType>> = {
-      paid: EventType.OrderCompleted,
+      paid: EventType.OrderPaid,
       canceled: EventType.OrderCanceled,
     };
 

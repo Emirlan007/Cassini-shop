@@ -194,7 +194,6 @@ const Cart = () => {
   return (
     <Stack spacing={2} p={2}>
       <Stepper step={step} />
-
       {step === 1 && (
         <CartItemsList
           items={items}
@@ -203,7 +202,6 @@ const Cart = () => {
           onNext={() => setStep(2)}
         />
       )}
-
       {step === 2 && (
         <Box>
           <StepBackButton onBack={() => setStep(1)} />
@@ -218,7 +216,6 @@ const Cart = () => {
           )}
         </Box>
       )}
-
       {step === 3 && (
         <Box>
           <StepBackButton onBack={() => setStep(2)} />

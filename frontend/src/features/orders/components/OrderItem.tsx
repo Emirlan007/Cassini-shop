@@ -59,9 +59,20 @@ const OrderItem = ({ item }: OrderItemProps) => {
           <b>{item.title}</b>
         </Typography>
 
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
-          {t("color")}: {item.selectedColor}
-        </Typography>
+        <Box component="div" sx={{display:"flex", alignItems:"center", gap:1, mg:0.5}}>
+          <Typography variant="body2" >
+            {t("color")}:
+          </Typography>
+          <Box
+            sx={{
+              display: "inline-flex",
+              background: item.selectedColor,
+              borderRadius: "50%",
+              width: "1rem",
+              height: "1rem",
+            }}
+          />
+        </Box>
 
         <Typography variant="body2" sx={{ mb: 0.5 }}>
           {t("size")}: {item.selectedSize}

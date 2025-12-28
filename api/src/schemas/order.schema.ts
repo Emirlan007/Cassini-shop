@@ -41,7 +41,7 @@ export class Order {
   @Prop({
     type: String,
     enum: OrderStatus,
-    default: OrderStatus.Pending,
+    default: OrderStatus.AwaitingPayment,
   })
   status: OrderStatus;
 

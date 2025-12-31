@@ -1,16 +1,16 @@
 import type { FC, PropsWithChildren } from "react";
-import PageNotFound from "../../../PageNotFound";
+import PageNotFound from "../../../pages/PageNotFound";
 
 interface Props extends PropsWithChildren {
-    isAllowed: boolean | null;
+  isAllowed: boolean | null;
 }
 
 const ProtectedRoute: FC<Props> = ({ isAllowed, children }) => {
-    if (!isAllowed) {
-        return <PageNotFound />;
-    }
+  if (!isAllowed) {
+    return <PageNotFound />;
+  }
 
-    return children;
+  return children;
 };
 
 export default ProtectedRoute;

@@ -10,16 +10,82 @@ import { useTranslation } from "react-i18next";
 
 interface Country {
   code: string;
-  name: string;
   dialCode: string;
+  format: (digits: string) => string;
+  maxLength: number;
 }
 
 const countries: Country[] = [
-  { code: "KG", name: "Кыргызстан", dialCode: "+996" },
-  { code: "RU", name: "Россия", dialCode: "+7" },
-  { code: "KZ", name: "Казахстан", dialCode: "+7" },
-  { code: "UZ", name: "Узбекистан", dialCode: "+998" },
-  { code: "TJ", name: "Таджикистан", dialCode: "+992" },
+  {
+    code: "KG",
+    dialCode: "+996",
+    maxLength: 9,
+    format: (d) => {
+      if (d.length <= 3) return d;
+      if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
+      return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 9)}`;
+    },
+  },
+  {
+    code: "RU",
+    dialCode: "+7",
+    maxLength: 10,
+    format: (d) => {
+      if (d.length <= 3) return d;
+      if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
+      if (d.length <= 8)
+        return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
+      return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 8)} ${d.slice(
+        8,
+        10
+      )}`;
+    },
+  },
+  {
+    code: "KZ",
+    dialCode: "+7",
+    maxLength: 10,
+    format: (d) => {
+      if (d.length <= 3) return d;
+      if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
+      if (d.length <= 8)
+        return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
+      return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 8)} ${d.slice(
+        8,
+        10
+      )}`;
+    },
+  },
+  {
+    code: "UZ",
+    dialCode: "+998",
+    maxLength: 9,
+    format: (d) => {
+      if (d.length <= 2) return d;
+      if (d.length <= 5) return `${d.slice(0, 2)} ${d.slice(2)}`;
+      if (d.length <= 7)
+        return `${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}`;
+      return `${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5, 7)} ${d.slice(
+        7,
+        9
+      )}`;
+    },
+  },
+  {
+    code: "TJ",
+    dialCode: "+992",
+    maxLength: 9,
+    format: (d) => {
+      if (d.length <= 2) return d;
+      if (d.length <= 5) return `${d.slice(0, 2)} ${d.slice(2)}`;
+      if (d.length <= 7)
+        return `${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5)}`;
+      return `${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5, 7)} ${d.slice(
+        7,
+        9
+      )}`;
+    },
+  },
 ];
 
 interface PhoneInputProps {
@@ -62,42 +128,27 @@ const PhoneInput = ({
   }, [value]);
 
   const handleCountryChange = (e: SelectChangeEvent) => {
-    const countryCode = e.target.value;
-    const selectedCountry = countries.find((c) => c.code === countryCode);
-    if (selectedCountry) {
-      setCountry(selectedCountry);
-      onChange(`${selectedCountry.dialCode}${phoneNumber}`);
-    }
+    const selectedCountry = countries.find((c) => c.code === e.target.value);
+
+    if (!selectedCountry) return;
+
+    setCountry(selectedCountry);
+
+    const trimmed = phoneNumber.slice(0, selectedCountry.maxLength);
+    setPhoneNumber(trimmed);
+
+    onChange(`${selectedCountry.dialCode}${trimmed}`);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target.value.replace(/\D/g, "");
+    let digits = e.target.value.replace(/\D/g, "");
 
-    let maxLength = 15;
-    if (input.length > maxLength) {
-      input = input.substring(0, maxLength);
+    if (digits.length > country.maxLength) {
+      digits = digits.slice(0, country.maxLength);
     }
 
-    setPhoneNumber(input);
-    onChange(`${country.dialCode}${input}`);
-  };
-
-  const formatPhoneNumber = (value: string) => {
-    if (!value) return "";
-
-    const digits = value.replace(/\D/g, "");
-    if (digits.length <= 3) {
-      return digits;
-    } else if (digits.length <= 6) {
-      return `${digits.slice(0, 3)} ${digits.slice(3)}`;
-    } else if (digits.length <= 8) {
-      return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
-    } else {
-      return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(
-        6,
-        8
-      )} ${digits.slice(8, 10)}`;
-    }
+    setPhoneNumber(digits);
+    onChange(`${country.dialCode}${digits}`);
   };
 
   const translatedLabel = t(label);
@@ -107,8 +158,12 @@ const PhoneInput = ({
       <Select
         value={country.code}
         onChange={handleCountryChange}
+        renderValue={(selected) => {
+          const c = countries.find((c) => c.code === selected);
+          return c ? c.dialCode : "";
+        }}
         sx={{
-          minWidth: 120,
+          minWidth: 100,
           height: 56,
           borderRadius: "12px",
           backgroundColor: "#F5F5F5",
@@ -125,26 +180,26 @@ const PhoneInput = ({
       >
         {countries.map((c) => (
           <MenuItem key={c.code} value={c.code}>
-            {c.name} ({c.dialCode})
+            {c.code} ({c.dialCode})
           </MenuItem>
         ))}
       </Select>
 
       <TextField
         label={translatedLabel}
-        value={formatPhoneNumber(phoneNumber)}
+        value={country.format(phoneNumber)}
         onChange={handlePhoneChange}
         fullWidth
         required={required}
         error={error}
         helperText={helperText}
-        placeholder="XXX XXX XX XX"
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: "12px",
             backgroundColor: "#F5F5F5",
             height: "56px",
             padding: "0 17px",
+            p: 0,
             "& fieldset": {
               border: "2px solid #F5F5F5",
             },

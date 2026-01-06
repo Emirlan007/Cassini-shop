@@ -81,7 +81,7 @@ const OrderAnalytics = () => {
           <StatCard title="Создано заказов" value={data.totals.ordersCreated} />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Завершено" value={data.totals.ordersCompleted} />
+          <StatCard title="Оплачено" value={data.totals.ordersPaid} />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard title="Отменено" value={data.totals.ordersCanceled} />
@@ -119,8 +119,8 @@ const OrderAnalytics = () => {
               />
               <Line
                 type="monotone"
-                dataKey="ordersCompleted"
-                name="Завершено"
+                dataKey="ordersPaid"
+                name="Оплачено"
                 strokeWidth={2}
                 dot={!isMobile}
               />

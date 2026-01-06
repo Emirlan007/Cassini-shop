@@ -7,7 +7,7 @@ export const getDeliveryStatusText = (status: string): string => {
     case "delivered":
       return "Доставлен";
     default:
-      return "default";
+      return status;
   }
 };
 
@@ -26,10 +26,10 @@ export const getDeliveryStatusColor = (status: string) => {
 
 export const getOrderStatusText = (status: string): string => {
   switch (status) {
-    case "pending":
-      return "Ожидает обработки";
-    case "completed":
-      return "Завершен";
+    case "awaiting_payment":
+      return "Ожидает оплаты";
+    case "paid":
+      return "Оплачен";
     case "canceled":
       return "Отменен";
     default:
@@ -39,9 +39,9 @@ export const getOrderStatusText = (status: string): string => {
 
 export const getOrderStatusColor = (status: string) => {
   switch (status) {
-    case "pending":
+    case "awaiting_payment":
       return "warning";
-    case "completed":
+    case "paid":
       return "success";
     case "canceled":
       return "error";

@@ -65,7 +65,7 @@ export class AnalyticsService {
       (acc, item) => {
         acc.ordersCreated += item.ordersCreated ?? 0;
         acc.ordersCanceled += item.ordersCanceled ?? 0;
-        acc.ordersCompleted += item.ordersPaid ?? 0;
+        acc.ordersPaid += item.ordersPaid ?? 0;
         acc.revenue += item.revenue ?? 0;
 
         return acc;
@@ -73,7 +73,7 @@ export class AnalyticsService {
       {
         ordersCreated: 0,
         ordersCanceled: 0,
-        ordersCompleted: 0,
+        ordersPaid: 0,
         revenue: 0,
       },
     );

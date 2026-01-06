@@ -38,8 +38,8 @@ const OrderStatusSelector = ({
             label="Статус заказа"
             onChange={(e) => setOrderStatus(e.target.value)}
           >
-            <MenuItem value="pending">Ожидает обработки</MenuItem>
-            <MenuItem value="completed">Завершен</MenuItem>
+            <MenuItem value="awaiting_payment">Ожидает оплаты</MenuItem>
+            <MenuItem value="paid">Оплачен</MenuItem>
             <MenuItem value="canceled">Отменен</MenuItem>
           </Select>
         </FormControl>

@@ -26,7 +26,7 @@ const AccountPage = () => {
 
     const activeOrders = orders.filter(
         order =>
-            !(order.status === "completed" && order.paymentStatus === "paid" && order.deliveryStatus === "delivered")
+            !(order.status === "paid" && order.deliveryStatus === "delivered")
     );
 
     return (

@@ -34,7 +34,6 @@ const ProductMediaSlider: React.FC<Props> = ({ product, selectedColor }) => {
 
   useEffect(() => {
     setSwiperKey((prev) => prev + 1);
-    console.log(swiperKey, "swiper key");
   }, [selectedColor]);
 
   const handleThumbnailClick = (index: number) => {

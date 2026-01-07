@@ -51,9 +51,10 @@ const PopularProducts: React.FC<Props> = ({ products, loading }) => {
     return (
       <Stack
         sx={{
-          background: "#6600330d",
           p: 2,
           borderRadius: 2,
+          background:
+            "linear-gradient(rgba(102, 0, 51, 0.05), rgb(255, 255, 255))",
         }}
       >
         <Box

@@ -114,6 +114,7 @@ const OrderAnalytics = () => {
                 type="monotone"
                 dataKey="ordersCreated"
                 name="Создано"
+                stroke="#1976d2"
                 strokeWidth={2}
                 dot={!isMobile}
               />
@@ -121,6 +122,7 @@ const OrderAnalytics = () => {
                 type="monotone"
                 dataKey="ordersPaid"
                 name="Оплачено"
+                stroke="#2e7d32"
                 strokeWidth={2}
                 dot={!isMobile}
               />
@@ -128,11 +130,27 @@ const OrderAnalytics = () => {
                 type="monotone"
                 dataKey="ordersCanceled"
                 name="Отменено"
+                stroke="#d32f2f"
                 strokeWidth={2}
                 dot={!isMobile}
               />
             </LineChart>
           </ResponsiveContainer>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 3,
+              mt: 2,
+              flexWrap: "wrap",
+            }}
+          >
+            <LegendItem color="#1976d2" label="Создано" />
+            <LegendItem color="#2e7d32" label="Оплачено" />
+            <LegendItem color="#d32f2f" label="Отменено" />
+
+          </Box>
         </CardContent>
       </Card>
     </Box>
@@ -156,6 +174,26 @@ const StatCard = ({
       </Typography>
     </CardContent>
   </Card>
+);
+
+const LegendItem = ({
+                      color,
+                      label,
+                    }: {
+  color: string;
+  label: string;
+}) => (
+  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    <Box
+      sx={{
+        width: 12,
+        height: 12,
+        borderRadius: "50%",
+        backgroundColor: color,
+      }}
+    />
+    <Typography variant="body2">{label}</Typography>
+  </Box>
 );
 
 export default OrderAnalytics;

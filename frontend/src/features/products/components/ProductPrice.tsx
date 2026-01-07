@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   price: number;
@@ -7,6 +8,8 @@ interface Props {
 }
 
 const ProductPrice: React.FC<Props> = ({ price, finalPrice, showDiscount }) => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       {showDiscount ? (
@@ -19,7 +22,7 @@ const ProductPrice: React.FC<Props> = ({ price, finalPrice, showDiscount }) => {
               textDecoration: "line-through",
             }}
           >
-            {price} сом
+            {price} {t("som")}
           </Typography>
           <Typography
             sx={{
@@ -28,7 +31,7 @@ const ProductPrice: React.FC<Props> = ({ price, finalPrice, showDiscount }) => {
               color: "#ff4444",
             }}
           >
-            {finalPrice} сом
+            {finalPrice} {t("som")}
           </Typography>
         </>
       ) : (
@@ -39,7 +42,7 @@ const ProductPrice: React.FC<Props> = ({ price, finalPrice, showDiscount }) => {
             color: "#4B5563",
           }}
         >
-          {price} сом
+          {price} {t("som")}
         </Typography>
       )}
     </Box>

@@ -135,7 +135,7 @@ const OrderHistoryDetails = () => {
               </Typography>
 
               <Typography variant="body2" sx={{ mb: 0.5 }}>
-                {t("price")}: {item.price}₸
+                {t("price")}: {item.price} {t("som")}
               </Typography>
 
               <Typography variant="body2" sx={{ mb: 0.5 }}>
@@ -161,7 +161,7 @@ const OrderHistoryDetails = () => {
         >
           <Typography variant="h6">{t("total")}:</Typography>
           <Typography variant="h5" fontWeight="bold">
-            {history.totalPrice} сом
+            {history.totalPrice} {t("som")}
           </Typography>
         </Box>
       </Box>

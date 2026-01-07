@@ -32,9 +32,8 @@ const ProductDetails = () => {
   );
 
   useEffect(() => {
-    if (product?._id) {
+    if (product) {
       trackProductView(product?._id);
-      console.log("track view");
     }
     setSelectedColor(false);
     setSelectedSize(null);

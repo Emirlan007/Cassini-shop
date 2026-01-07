@@ -74,7 +74,7 @@ const ProductInfo: React.FC<Props> = ({
                   textDecoration: "line-through",
                 }}
               >
-                {product.price} сом
+                {product.price} {t("som")}
               </Typography>
               <Typography
                 sx={{
@@ -83,7 +83,7 @@ const ProductInfo: React.FC<Props> = ({
                   color: "#ff4444",
                 }}
               >
-                {finalPrice} сом
+                {finalPrice} {t("som")}
               </Typography>
             </>
           ) : (
@@ -94,7 +94,7 @@ const ProductInfo: React.FC<Props> = ({
                 color: "#660033",
               }}
             >
-              {product.price} сом
+              {product.price} {t("som")}
             </Typography>
           )}
 

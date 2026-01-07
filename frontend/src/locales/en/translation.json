@@ -104,9 +104,13 @@
   "completedOrder": "Completed order",
   "historyEntryNotFound": "History entry not found",
   "backToHistory": "Back to history",
-  "deliveredAndPaidFor": "Delivered and paid for",
+  "deliveredAndPaidFor": "Delivered and paid",
   "finalPrice": "Final price",
   "awaiting_payment": "Awaiting payment",
+  "orderStatus": "Order status",
+  "deliveryStatus": "Delivery status",
+  "som": "som",
+  "items": "Item(s)",
 
   "productForm": {
     "name": "Name",

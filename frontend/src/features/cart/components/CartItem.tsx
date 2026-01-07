@@ -40,19 +40,24 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }: Props) => {
           {item.title}
         </Typography>
 
-       <Box sx={{display:"flex", alignItems:"center", gap:1}}>
-         <Typography variant="body2">
-          {t("color")}: 
-        </Typography>
-        <Box component="div" sx={{background:item.selectedColor, borderRadius:"50%", width:"1rem", height:"1rem"}}/>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="body2">{t("color")}:</Typography>
+          <Box
+            component="div"
+            sx={{
+              background: item.selectedColor,
+              borderRadius: "50%",
+              width: "1rem",
+              height: "1rem",
+            }}
+          />
+        </Box>
 
-       </Box>
-   
         <Typography variant="body2">
           {t("size")}: {item.selectedSize}
         </Typography>
         <Typography variant="body2">
-          {t("price")}: {item.price} сом
+          {t("price")}: {item.price} {t("som")}
         </Typography>
       </Box>
 

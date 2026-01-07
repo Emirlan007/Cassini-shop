@@ -74,7 +74,7 @@ const OrderHistoryPage = () => {
                       {new Date(item.completedAt).toLocaleDateString()}
                     </Typography>
                     <Typography variant="h6" fontWeight="bold">
-                      {item.totalPrice} сом
+                      {item.totalPrice} {t("som")}
                     </Typography>
                   </Box>
 
@@ -123,7 +123,7 @@ const OrderHistoryPage = () => {
                   </Box>
 
                   <Typography variant="body2" color="text.secondary" mt={2}>
-                    {item.items.length} товар(ов)
+                    {item.items.length} {t("items")}
                   </Typography>
                 </CardContent>
               </Card>

@@ -32,7 +32,10 @@ const ProductDetails = () => {
   );
 
   useEffect(() => {
-    trackProductView(productSlug);
+    if (product?._id) {
+      trackProductView(product?._id);
+      console.log("track view");
+    }
     setSelectedColor(false);
     setSelectedSize(null);
   }, [productSlug]);
@@ -49,7 +52,7 @@ const ProductDetails = () => {
     );
   }
 
-  if (error || !product?.images) {
+  if (error || !product) {
     return (
       <Typography textAlign="center" mt={2}>
         Ошибка при загрузке товара: {error}

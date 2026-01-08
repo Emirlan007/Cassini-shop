@@ -25,8 +25,6 @@ const OrderAnalytics = () => {
   const dispatch = useAppDispatch();
   const { data, loading } = useAppSelector((state) => state.orderAnalytics);
 
-  console.log(data);
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 

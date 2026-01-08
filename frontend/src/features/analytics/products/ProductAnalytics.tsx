@@ -88,8 +88,8 @@ const ProductAnalytics = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((item) => (
-              <TableRow key={item.productTitle}>
+            {data.map((item, index) => (
+                <TableRow key={index}>
                 <TableThumbnail
                   imageUrl={item.image ? getImageUrl(item.image) : undefined}
                 />

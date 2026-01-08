@@ -20,17 +20,34 @@ export const registerThunk = createAsyncThunk<
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 400) {
-      const raw = error.response.data.message;
+      const data = error.response.data;
+
+      if (data.code === "USER_ALREADY_EXISTS") {
+        return rejectWithValue({
+          errors: {
+            phoneNumber: {
+              message: "Пользователь с таким номером уже существует",
+            },
+          },
+        });
+      }
+
+      const raw = data.message;
       const message = Array.isArray(raw) ? raw[0] : raw;
 
       const normalizedMessage =
-          typeof message === "string" && message.includes("must be a valid phone number")
-              ? "Некорректный формат номера телефона"
-              : message;
+        typeof message === "string" &&
+        message.includes("must be a valid phone number")
+          ? "Некорректный формат номера телефона"
+          : message;
 
       return rejectWithValue({
         errors: {
-          name: message.includes("имя") ? { message } : undefined,
+          ...(message.includes("имя")
+            ? {
+              name: { message },
+            }
+            : {}),
           phoneNumber: { message: normalizedMessage },
         },
       });

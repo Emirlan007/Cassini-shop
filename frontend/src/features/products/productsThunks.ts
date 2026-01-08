@@ -13,12 +13,13 @@ import type { RootState } from "../../app/store.ts";
 
 export const fetchProducts = createAsyncThunk<
   Product[],
-  string | undefined,
+  { categoryId?: string; lang?: "ru" | "en" | "kg" },
   { rejectValue: IGlobalError }
->("products/fetchAll", async (categoryId, { rejectWithValue }) => {
+>("products/fetchAll", async ({ categoryId, lang }, { rejectWithValue }) => {
   try {
-    const url = categoryId ? `/products?categoryId=${categoryId}` : "/products";
-    const { data } = await axiosApi.get<Product[]>(url);
+    const { data } = await axiosApi.get<Product[]>("/products", {
+      params: { categoryId, lang },
+    });
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -30,12 +31,12 @@ export const fetchProducts = createAsyncThunk<
 
 export const fetchPopularProducts = createAsyncThunk<
   PopularProducts,
-  number | undefined,
+  { limit?: number; lang?: "ru" | "en" | "kg" },
   { rejectValue: IGlobalError }
->("products/fetchPopular", async (limit = 8, { rejectWithValue }) => {
+>("products/fetchPopular", async ({ limit = 8, lang }, { rejectWithValue }) => {
   try {
     const { data } = await axiosApi.get<PopularProducts>("/products/popular", {
-      params: { limit },
+      params: { limit, lang },
     });
     return data;
   } catch (error) {
@@ -88,11 +89,13 @@ export const fetchProductById = createAsyncThunk<
 
 export const fetchProductBySlug = createAsyncThunk<
   Product,
-  string,
+  { slug?: string; lang?: "ru" | "en" | "kg" },
   { rejectValue: IGlobalError }
->("products/fetchBySlug", async (slug, { rejectWithValue }) => {
+>("products/fetchBySlug", async ({ slug, lang }, { rejectWithValue }) => {
   try {
-    const { data: product } = await axiosApi.get<Product>("/products/" + slug);
+    const { data: product } = await axiosApi.get<Product>("/products/" + slug, {
+      params: { lang },
+    });
     return product;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -111,12 +114,11 @@ export const createProduct = createAsyncThunk<
   try {
     const formData = new FormData();
 
-    formData.append("name", productData.name);
+    formData.append("name", JSON.stringify(productData.name));
     formData.append("price", String(productData.price));
     formData.append("category", productData.category);
     formData.append("inStock", String(productData.inStock ?? true));
     formData.append("isPopular", String(productData.isPopular ?? false));
-    formData.append("material", productData.material || "");
 
     if (productData.size && productData.size.length > 0) {
       productData.size.forEach((s) => {
@@ -129,8 +131,13 @@ export const createProduct = createAsyncThunk<
         formData.append("colors", c);
       });
     }
-    if (productData.description) {
-      formData.append("description", productData.description);
+
+    if (productData.description.ru) {
+      formData.append("description", JSON.stringify(productData.description));
+    }
+
+    if (productData.material.ru) {
+      formData.append("material", JSON.stringify(productData.material));
     }
 
     if (productData.images) {

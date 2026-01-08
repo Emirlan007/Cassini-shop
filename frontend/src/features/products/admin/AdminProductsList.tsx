@@ -31,7 +31,7 @@ const AdminProductsList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    void dispatch(fetchProducts(undefined));
+    void dispatch(fetchProducts({ lang: "ru" }));
   }, [dispatch]);
 
   if (loading) {

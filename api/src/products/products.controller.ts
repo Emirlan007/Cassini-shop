@@ -31,11 +31,12 @@ export class ProductsController {
   async getAllProducts(
     @Query('searchValue') searchValue?: string,
     @Query('categoryId') categoryId?: string,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
   ) {
     if (searchValue) {
       return this.productsService.findBySearch(searchValue);
     }
-    return this.productsService.findAll(categoryId);
+    return this.productsService.findAll(categoryId, lang);
   }
 
   @Get('search')
@@ -65,8 +66,9 @@ export class ProductsController {
   async getPopularProducts(
     @Query('page') page = '1',
     @Query('limit') limit = '8',
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
   ) {
-    return this.productsService.findPopular(Number(page), Number(limit));
+    return this.productsService.findPopular(Number(page), Number(limit), lang);
   }
 
   @Get('filter')
@@ -75,8 +77,11 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async getProductById(@Param('id') id: string) {
-    return this.productsService.findOne(id);
+  async getProductById(
+    @Param('id') id: string,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
+  ) {
+    return this.productsService.findOne(id, lang);
   }
 
   @Post()

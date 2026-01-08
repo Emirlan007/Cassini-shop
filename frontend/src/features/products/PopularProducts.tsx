@@ -45,9 +45,9 @@ const PopularProducts: React.FC<Props> = ({ products, loading }) => {
     );
   }
 
-  if (products.length === 0) return;
+  if (products?.length === 0) return;
 
-  if (products.length <= 8) {
+  if (products?.length <= 8) {
     return (
       <Stack
         sx={{

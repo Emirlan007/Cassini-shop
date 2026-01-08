@@ -28,6 +28,7 @@ import { fetchCategories } from "../../categories/categoryThunk";
 import type { ProductInput } from "../../../types";
 import { findClosestColor } from "../../../utils/colorNormalizer";
 import { useTranslation } from "react-i18next";
+import { API_URL } from "../../../constants";
 
 interface Props {
   onSubmit: (product: ProductInput) => Promise<void>;
@@ -48,8 +49,8 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
   const MAX_IMAGES = 10;
 
   const [state, setState] = useState<ProductInput>({
-    name: "",
-    description: "",
+    name: { ru: "", en: "", kg: "" },
+    description: { ru: "", en: "", kg: "" },
     category: "",
     size: [],
     colors: [],
@@ -58,9 +59,11 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     imagesByColor: {},
     video: null,
     inStock: true,
-    material: "",
+    material: { ru: "", en: "", kg: "" },
     isPopular: false,
   });
+
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -163,6 +166,52 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
     });
   };
 
+  const translatedChangeHandler =
+    (field: "name" | "description" | "material", lang: "ru" | "en" | "kg") =>
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setState((prev) => ({
+        ...prev,
+        [field]: {
+          ...prev[field],
+          [lang]: value,
+        },
+      }));
+    };
+
+  const translateFieldToEn = async (
+    field: "name" | "description" | "material"
+  ) => {
+    const text = state[field].ru.trim();
+    if (!text) return;
+
+    try {
+      setTranslating(true);
+
+      const res = await fetch(`${API_URL}translation/translate/en`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Translate EN failed");
+      }
+
+      const data: { translation: string } = await res.json();
+
+      setState((prev) => ({
+        ...prev,
+        [field]: {
+          ...prev[field],
+          en: data.translation,
+        },
+      }));
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   const submitFormHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -215,23 +264,76 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
             ))}
           </TextField>
 
+          <Typography fontWeight={600}>Название</Typography>
+
           <TextField
-            label="Название"
-            name="name"
-            value={state.name}
-            onChange={inputChangeHandler}
+            fullWidth
+            label="Название (RU)"
+            value={state.name.ru}
+            onChange={translatedChangeHandler("name", "ru")}
             required
             sx={fieldSx}
           />
 
+          <Stack direction="row" spacing={1} alignItems="center">
+            <TextField
+              label="Название (EN)"
+              value={state.name.en}
+              onChange={translatedChangeHandler("name", "en")}
+              sx={{ ...fieldSx, flexGrow: 1 }}
+            />
+
+            <Button
+              variant="contained"
+              onClick={() => translateFieldToEn("name")}
+              disabled={!state.name.ru}
+              loading={translating}
+              sx={{ minWidth: 48, height: 56 }}
+            >
+              Перевести
+            </Button>
+          </Stack>
+
           <TextField
-            multiline
-            minRows={3}
-            label="Описание"
-            name="description"
-            value={state.description}
-            onChange={inputChangeHandler}
-            required
+            label="Название (KG)"
+            value={state.name.kg}
+            onChange={translatedChangeHandler("name", "kg")}
+            sx={fieldSx}
+          />
+
+          <Typography fontWeight={600}>Описание</Typography>
+
+          <TextField
+            fullWidth
+            label="Описание (RU)"
+            value={state.description.ru}
+            onChange={translatedChangeHandler("description", "ru")}
+            sx={fieldSx}
+          />
+
+          <Stack direction="row" spacing={1} alignItems="center">
+            <TextField
+              label="Описание (EN)"
+              value={state.description.en}
+              onChange={translatedChangeHandler("description", "en")}
+              sx={{ ...fieldSx, flexGrow: 1 }}
+            />
+
+            <Button
+              variant="contained"
+              onClick={() => translateFieldToEn("description")}
+              disabled={!state.description.ru}
+              loading={translating}
+              sx={{ minWidth: 48, height: 56 }}
+            >
+              Перевести
+            </Button>
+          </Stack>
+
+          <TextField
+            label="Описание (KG)"
+            value={state.description.kg}
+            onChange={translatedChangeHandler("description", "kg")}
             sx={fieldSx}
           />
 
@@ -245,11 +347,39 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
             sx={fieldSx}
           />
 
+          <Typography fontWeight={600}>Материал</Typography>
+
           <TextField
-            label="Материал"
-            name="material"
-            value={state.material}
-            onChange={inputChangeHandler}
+            fullWidth
+            label="Материал (RU)"
+            value={state.material.ru}
+            onChange={translatedChangeHandler("material", "ru")}
+            sx={fieldSx}
+          />
+
+          <Stack direction="row" spacing={1} alignItems="center">
+            <TextField
+              label="Материал (EN)"
+              value={state.material.en}
+              onChange={translatedChangeHandler("material", "en")}
+              sx={{ ...fieldSx, flexGrow: 1 }}
+            />
+
+            <Button
+              variant="contained"
+              onClick={() => translateFieldToEn("material")}
+              disabled={!state.material.ru}
+              loading={translating}
+              sx={{ minWidth: 48, height: 56 }}
+            >
+              Перевести
+            </Button>
+          </Stack>
+
+          <TextField
+            label="Материал (KG)"
+            value={state.material.kg}
+            onChange={translatedChangeHandler("material", "kg")}
             sx={fieldSx}
           />
 
@@ -341,33 +471,33 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
           />
 
           {state.images.length > 0 && (
-              <ImageList cols={10} rowHeight={164}>
-                {state.images.map((image, index) => (
-                    <Stack key={index}>
-                      <ImageListItem>
-                        <img
-                            src={
-                              image instanceof File
-                                  ? URL.createObjectURL(image)
-                                  : `http://localhost:8000/${image}?w=164&h=164&fit=crop&auto=format`
-                            }
-                            srcSet={
-                              image instanceof File
-                                  ? undefined
-                                  : `http://localhost:8000/${image}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`
-                            }
-                        />
-                      </ImageListItem>
-                      <Button
-                          onClick={() => removeImageHandler(image)}
-                          color="error"
-                          variant="contained"
-                      >
-                        Удалить
-                      </Button>
-                    </Stack>
-                ))}
-              </ImageList>
+            <ImageList cols={10} rowHeight={164}>
+              {state.images.map((image, index) => (
+                <Stack key={index}>
+                  <ImageListItem>
+                    <img
+                      src={
+                        image instanceof File
+                          ? URL.createObjectURL(image)
+                          : `http://localhost:8000/${image}?w=164&h=164&fit=crop&auto=format`
+                      }
+                      srcSet={
+                        image instanceof File
+                          ? undefined
+                          : `http://localhost:8000/${image}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`
+                      }
+                    />
+                  </ImageListItem>
+                  <Button
+                    onClick={() => removeImageHandler(image)}
+                    color="error"
+                    variant="contained"
+                  >
+                    Удалить
+                  </Button>
+                </Stack>
+              ))}
+            </ImageList>
           )}
 
           {state.images.length > 0 && state.colors.length > 0 && (
@@ -376,22 +506,22 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
                 <Stack key={color}>
                   <Stack direction="row" alignItems="center" spacing={1}>
                     <Box
-                        key={color}
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: '10px'
-                        }}
+                      key={color}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
                     >
                       <Box
-                          component="div"
-                          sx={{
-                            width: "2rem",
-                            height: "2rem",
-                            background: color,
-                            borderRadius: "50%",
-                          }}
+                        component="div"
+                        sx={{
+                          width: "2rem",
+                          height: "2rem",
+                          background: color,
+                          borderRadius: "50%",
+                        }}
                       ></Box>
                       <Typography>{getClothesColorName(color)}</Typography>
                     </Box>

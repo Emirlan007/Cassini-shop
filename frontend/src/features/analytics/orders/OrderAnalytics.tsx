@@ -87,7 +87,7 @@ const OrderAnalytics = () => {
           <StatCard title="Отменено" value={data.totals.ordersCanceled} />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Выручка" value={`${data.totals.revenue} ₸`} />
+          <StatCard title="Выручка" value={`${data.totals.revenue} сом`} />
         </Grid>
       </Grid>
 

@@ -111,6 +111,7 @@
   "deliveryStatus": "Delivery status",
   "som": "som",
   "items": "Item(s)",
+  "itemAddedToCart": "Item added to cart",
 
   "productForm": {
     "name": "Name",

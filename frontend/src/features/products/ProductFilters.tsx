@@ -362,10 +362,10 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
           />
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
             <Typography variant="body2" color="text.secondary">
-              {localFilters.priceRange[0]} сом
+              {localFilters.priceRange[0]} {t("som")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {localFilters.priceRange[1]} сом
+              {localFilters.priceRange[1]} {t("som")}
             </Typography>
           </Box>
         </AccordionDetails>

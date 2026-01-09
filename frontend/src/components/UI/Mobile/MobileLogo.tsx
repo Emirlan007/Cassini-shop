@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -24,13 +24,12 @@ import {
   toggleSearch,
   setSearchQuery,
 } from "../../../features/ui/uiSlice.ts";
-import BackButton from "../BackButton.tsx";
 import {selectWishlistCount} from "../../../features/wishlist/wishlistSlice.ts";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const MobileLogo = () => {
-  const location = useLocation();
-  const isProductDetailsPage = location.pathname.startsWith("/product/");
+  // const location = useLocation();
+  // const isProductDetailsPage = location.pathname.startsWith("/product/");
 
   const searchRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -90,8 +89,6 @@ const MobileLogo = () => {
           }}
         >
           <Box display="flex" alignItems="center" gap={1}>
-            {!isProductDetailsPage && <BackButton />}
-
             <IconButton sx={{ color: "#d9d9d9" }} onClick={toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>

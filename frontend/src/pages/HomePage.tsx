@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Box, Stack } from "@mui/material";
+import { Helmet } from "react-helmet-async";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   fetchPopularProducts,
@@ -14,6 +15,8 @@ import BannersCarousel from "../features/banners/BannersCarousel.tsx";
 import PopularProducts from "../features/products/PopularProducts.tsx";
 import ProductList from "../features/products/ProductsList.tsx";
 import { useTranslation } from "react-i18next";
+import { generateProductListSchema } from "../utils/schemaGenerator";
+import { validateProducts } from "../utils/schemaValidator";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +42,18 @@ const HomePage = () => {
     };
   }, [dispatch, i18n]);
 
+  const allProducts = useMemo(() => {
+    return [...popularProducts, ...products];
+  }, [popularProducts, products]);
+
+  const productListSchema = useMemo(() => {
+    if (allProducts.length === 0) return null;
+
+    validateProducts(allProducts);
+
+    return generateProductListSchema(allProducts);
+  }, [allProducts]);
+
   return (
     <Box
       sx={{
@@ -48,6 +63,14 @@ const HomePage = () => {
         overflow: "hidden",
       }}
     >
+      {productListSchema && (
+        <Helmet>
+          <script type="application/ld+json">
+            {JSON.stringify(productListSchema)}
+          </script>
+        </Helmet>
+      )}
+
       <Stack spacing={{ xs: 2, sm: 3 }} alignItems="center">
         <Box
           sx={{

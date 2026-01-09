@@ -6,11 +6,25 @@ import { RolesGuard } from '../role-auth/role-auth.guard';
 import { Roles } from '../role-auth/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { SearchQuery } from '../schemas/search-query.schema';
+import { AnalyticsService } from '../analytics/analytics.service';
 
 interface SaveQueryResponse {
   success: boolean;
   message?: string;
   data?: SearchQuery;
+}
+
+interface SaveSearchWithResultsDto extends CreateSearchQueryDto {
+  productIds?: string[];
+}
+
+interface SaveSearchWithResultsResponse {
+  success: boolean;
+  message?: string;
+  data?: {
+    searchQuery: SearchQuery | null;
+    trackedImpressions: number;
+  };
 }
 
 interface PopularQuery {
@@ -28,7 +42,10 @@ interface SearchStatistic {
 
 @Controller('search-queries')
 export class SearchQueriesController {
-  constructor(private readonly searchQueriesService: SearchQueriesService) {}
+  constructor(
+    private readonly searchQueriesService: SearchQueriesService,
+    private readonly analyticsService: AnalyticsService, // Добавьте
+  ) {}
 
   @Post()
   async saveSearchQuery(
@@ -42,6 +59,33 @@ export class SearchQueriesController {
         success: false,
         message: 'Query is too short or invalid',
       };
+    }
+
+    return {
+      success: true,
+      data: result,
+    };
+  }
+
+  @Post('with-results')
+  async saveSearchWithResults(
+    @Body() dto: SaveSearchWithResultsDto,
+  ): Promise<SaveSearchWithResultsResponse> {
+    const result = await this.searchQueriesService.saveSearchWithResults(dto);
+
+    if (!result.searchQuery) {
+      return {
+        success: false,
+        message: 'Query is too short or invalid',
+      };
+    }
+    if (dto.productIds && dto.productIds.length > 0) {
+      await this.analyticsService.trackSearchImpressions({
+        productIds: dto.productIds,
+        userId: dto.userId,
+        sessionId: dto.sessionId,
+        searchQuery: dto.query,
+      });
     }
 
     return {

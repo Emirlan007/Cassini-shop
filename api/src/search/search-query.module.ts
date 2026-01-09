@@ -5,6 +5,7 @@ import { SearchQueriesService } from './search-query.service';
 import { SearchQuery, SearchQuerySchema } from '../schemas/search-query.schema';
 import { User, UserSchema } from '../schemas/user.schema';
 import { AuthModule } from '../auth/auth.module';
+import { AnalyticsModule } from '../analytics/analytics.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthModule } from '../auth/auth.module';
       { name: User.name, schema: UserSchema },
     ]),
     AuthModule,
+    AnalyticsModule,
   ],
   controllers: [SearchQueriesController],
   providers: [SearchQueriesService],

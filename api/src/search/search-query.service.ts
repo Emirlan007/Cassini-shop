@@ -6,6 +6,7 @@ import {
   SearchQueryDocument,
 } from '../schemas/search-query.schema';
 import { CreateSearchQueryDto } from './dto/create-search-query.dto';
+import { SaveSearchWithResultsDto } from './dto/safe-search-with-result.dto';
 
 @Injectable()
 export class SearchQueriesService {
@@ -64,6 +65,21 @@ export class SearchQueriesService {
 
     const searchQuery = new this.searchQueryModel(searchQueryData);
     return searchQuery.save();
+  }
+
+  async saveSearchWithResults(dto: SaveSearchWithResultsDto): Promise<{
+    searchQuery: SearchQuery | null;
+    trackedImpressions: number;
+  }> {
+    const searchQuery = await this.saveSearchQuery({
+      query: dto.query,
+      userId: dto.userId,
+      sessionId: dto.sessionId,
+    });
+    return {
+      searchQuery,
+      trackedImpressions: dto.productIds?.length || 0,
+    };
   }
 
   async getPopularQueries(limit: number = 10): Promise<

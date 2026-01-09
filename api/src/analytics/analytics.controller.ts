@@ -1,17 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Headers,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { Model } from 'mongoose';
+import { TrackSearchImpressionsDto} from './dto/track-search-impressions.dto';
 import {
   getEndOfDay,
   getRangeByPeriod,
@@ -35,6 +28,11 @@ export class AnalyticsController {
     return this.analyticsService.trackEvent(dto);
   }
 
+  @Post('search-impressions')
+  async trackSearchImpressions(@Body() dto: TrackSearchImpressionsDto) {
+    return this.analyticsService.trackSearchImpressions(dto);
+  }
+
   @Get('products')
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
@@ -56,6 +54,34 @@ export class AnalyticsController {
     }
 
     return this.analyticsService.getProductMetrics(fromDate, toDate);
+  }
+
+  @Get('products/search-performance')
+  @UseGuards(TokenAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  async getProductSearchAnalytics(
+    @Query('period') period?: 'day' | 'week' | 'month' | 'year' | 'all',
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('limit') limit?: string,
+  ) {
+    let fromDate: Date;
+    let toDate: Date;
+
+    if (period) {
+      ({ fromDate, toDate } = getRangeByPeriod(period));
+    } else if (from && to) {
+      fromDate = getStartOfDay(new Date(from));
+      toDate = getEndOfDay(new Date(to));
+    } else {
+      ({ fromDate, toDate } = getYesterdayRange());
+    }
+
+    const limitNum = limit ? parseInt(limit, 10) : undefined;
+
+    return this.analyticsService.getProductSearchAnalytics(fromDate, toDate, {
+      limit: limitNum,
+    });
   }
 
   @Get('orders')

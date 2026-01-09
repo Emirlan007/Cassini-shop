@@ -6,4 +6,5 @@ export enum EventType {
   OrderCompleted = 'order_completed',
   OrderCanceled = 'order_canceled',
   OrderPaid = 'order_paid',
+  PRODUCT_SEARCH_IMPRESSION = 'product_search_impression',
 }

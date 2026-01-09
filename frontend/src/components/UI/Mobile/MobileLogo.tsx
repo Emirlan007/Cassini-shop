@@ -10,10 +10,10 @@ import {
   Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import React, { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import theme from "../../../theme.ts";
 import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
 import { fetchSearchedProducts } from "../../../features/products/productsThunks.ts";
@@ -24,26 +24,24 @@ import {
   toggleSearch,
   setSearchQuery,
 } from "../../../features/ui/uiSlice.ts";
-import {selectWishlistCount} from "../../../features/wishlist/wishlistSlice.ts";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { selectWishlistCount } from "../../../features/wishlist/wishlistSlice.ts";
 
 const MobileLogo = () => {
-  // const location = useLocation();
-  // const isProductDetailsPage = location.pathname.startsWith("/product/");
-
   const searchRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const isSearchOpen = useAppSelector(selectIsSearchOpen);
   const searchProduct = useAppSelector(selectSearchQuery);
-  const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
   const wishlistCount = useAppSelector(selectWishlistCount);
+
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
+          searchRef.current &&
+          !searchRef.current.contains(event.target as Node)
       ) {
         dispatch(toggleSearch(false));
       }
@@ -70,81 +68,95 @@ const MobileLogo = () => {
 
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-     if (searchProduct.length >= 2 || searchProduct.length === 0) {
-      navigate(`/search?q=${encodeURIComponent(searchProduct)}`);
-    }
     dispatch(setSearchQuery(value));
+
+    if (value.length >= 2 || value.length === 0) {
+      navigate(`/search?q=${encodeURIComponent(value)}`);
+    }
+
     debouncedSearch();
   };
 
   return (
-    <>
-      <AppBar position="sticky">
-        <Toolbar
-          sx={{
-            backdropFilter: "blur(3.200000047683716px)",
-            boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-            justifyContent: "space-between",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-          }}
-        >
-          <Box display="flex" alignItems="center" gap={1}>
-            <IconButton sx={{ color: "#d9d9d9" }} onClick={toggleDrawer(true)}>
-              <MenuIcon />
-            </IconButton>
-          </Box>
+      <>
+        <AppBar position="sticky">
+          <Toolbar
+              sx={{
+                backdropFilter: "blur(3.2px)",
+                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+                justifyContent: "space-between",
+                backgroundColor: "rgba(255, 255, 255, 0.8)",
+              }}
+          >
+            <Box display="flex" alignItems="center">
+              <IconButton sx={{ color: "#d9d9d9" }} onClick={toggleDrawer(true)}>
+                <MenuIcon />
+              </IconButton>
+            </Box>
 
-          <Link to="/" style={{ display: "flex", alignItems: "center" }}>
-            <img src="/newLogo.png" alt="Cassini" style={{ width: "70px" }} />
-          </Link>
+            <Link to="/" style={{ display: "flex", alignItems: "center" }}>
+              <img src="/newLogo.png" alt="Cassini" style={{ width: "70px" }} />
+            </Link>
 
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Badge
-              badgeContent={wishlistCount}
-              max={99}
-              color="error"
-              onClick={() => navigate("/wishlist")}
-              sx={{ cursor: "pointer" }}
-            >
-              <FavoriteIcon sx={{ color: theme.palette.secondary.light }} />
-            </Badge>
-
-            <NotificationsIcon sx={{ color: theme.palette.secondary.light }} />
-            <div ref={searchRef}>
+            <Stack direction="row" spacing={1.5} alignItems="center">
               <Collapse
-                orientation="horizontal"
-                in={isSearchOpen}
-                sx={{
-                  overflow: "hidden",
-                  display: "flex",
-                  transition: "width 300ms ease, opacity 200ms ease",
-                  width: isSearchOpen ? { xs: "100%", sm: "200px" } : "0px",
-                  opacity: isSearchOpen ? 1 : 0,
-                  ml: 1,
-                }}
+                  in={!isSearchOpen}
+                  orientation="horizontal"
+                  timeout={300}
+                  sx={{ display: "flex", alignItems: "center" }}
               >
-                <TextField
-                  autoFocus={isSearchOpen}
-                  placeholder="Поиск товаров..."
-                  size="small"
-                  fullWidth
-                  onChange={handleSearchInput}
-                  value={searchProduct}
-                  sx={{
-                    "& fieldset": { border: "none" },
-                    backgroundColor: "white",
-                    borderRadius: "6px",
-                    width: "180px",
-                  }}
-                />
-              </Collapse>
-            </div>
-          </Stack>
-        </Toolbar>
-      </AppBar>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Badge
+                      badgeContent={wishlistCount}
+                      max={99}
+                      color="error"
+                      onClick={() => navigate("/wishlist")}
+                      sx={{ cursor: "pointer" }}
+                  >
+                    <FavoriteIcon
+                        sx={{ color: theme.palette.secondary.light }}
+                    />
+                  </Badge>
 
-      <CustomDrawer isOpen={open} toggleDrawer={toggleDrawer} />
-    </>
+                  <NotificationsIcon
+                      sx={{ color: theme.palette.secondary.light }}
+                  />
+                </Stack>
+              </Collapse>
+
+              <div ref={searchRef}>
+                <Collapse
+                    orientation="horizontal"
+                    in={isSearchOpen}
+                    sx={{
+                      overflow: "hidden",
+                      display: "flex",
+                      transition: "width 300ms ease, opacity 200ms ease",
+                      width: isSearchOpen ? "180px" : "0px",
+                      opacity: isSearchOpen ? 1 : 0,
+                      ml: 1,
+                    }}
+                >
+                  <TextField
+                      autoFocus
+                      placeholder="Поиск товаров..."
+                      size="small"
+                      value={searchProduct}
+                      onChange={handleSearchInput}
+                      sx={{
+                        "& fieldset": { border: "none" },
+                        backgroundColor: "white",
+                        borderRadius: "6px",
+                      }}
+                  />
+                </Collapse>
+              </div>
+            </Stack>
+          </Toolbar>
+        </AppBar>
+
+        <CustomDrawer isOpen={open} toggleDrawer={toggleDrawer} />
+      </>
   );
 };
 

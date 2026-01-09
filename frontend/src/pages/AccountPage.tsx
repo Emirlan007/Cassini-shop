@@ -45,6 +45,7 @@ const AccountPage = () => {
             startIcon={<Favorite />}
             onClick={() => navigate("/wishlist")}
             sx={{
+              minWidth: 220,
               borderColor: "#ff4444",
               color: "#ff4444",
               "&:hover": {
@@ -61,6 +62,7 @@ const AccountPage = () => {
             startIcon={<History />}
             onClick={() => navigate("/order-history")}
             sx={{
+              minWidth: 220,
               borderColor: "#4CAF50",
               color: "#4CAF50",
               "&:hover": {

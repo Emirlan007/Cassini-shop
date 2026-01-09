@@ -59,10 +59,11 @@ const OrderItem = ({ item }: OrderItemProps) => {
           <b>{item.title}</b>
         </Typography>
 
-        <Box component="div" sx={{display:"flex", alignItems:"center", gap:1, mg:0.5}}>
-          <Typography variant="body2" >
-            {t("color")}:
-          </Typography>
+        <Box
+          component="div"
+          sx={{ display: "flex", alignItems: "center", gap: 1, mg: 0.5 }}
+        >
+          <Typography variant="body2">{t("color")}:</Typography>
           <Box
             sx={{
               display: "inline-flex",
@@ -79,7 +80,7 @@ const OrderItem = ({ item }: OrderItemProps) => {
         </Typography>
 
         <Typography variant="body2" sx={{ mb: 0.5 }}>
-          {t("price")}: {item.price}₸
+          {t("price")}: {item.price} {t("som")}
         </Typography>
 
         <Typography variant="body2" sx={{ mb: 0.5 }}>

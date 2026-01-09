@@ -1,5 +1,6 @@
 import { Button, CircularProgress, Stack, TextField } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface UserCommentFormProps {
   onSubmit: (comment: string) => void;
@@ -8,6 +9,8 @@ interface UserCommentFormProps {
 
 const UserCommentForm = ({ onSubmit, loading }: UserCommentFormProps) => {
   const [comment, setComment] = useState("");
+
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +29,7 @@ const UserCommentForm = ({ onSubmit, loading }: UserCommentFormProps) => {
       <TextField
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder="Комментарий к заказу"
+        placeholder={t("orderComment")}
         sx={{ flexGrow: 1 }}
       />
       <Button
@@ -34,7 +37,7 @@ const UserCommentForm = ({ onSubmit, loading }: UserCommentFormProps) => {
         variant="contained"
         disabled={comment.trim() === "" || loading}
       >
-        {loading ? <CircularProgress size={20} /> : "Отправить"}
+        {loading ? <CircularProgress size={20} /> : t("send")}
       </Button>
     </Stack>
   );

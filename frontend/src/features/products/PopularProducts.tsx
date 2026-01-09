@@ -45,15 +45,16 @@ const PopularProducts: React.FC<Props> = ({ products, loading }) => {
     );
   }
 
-  if (products.length === 0) return;
+  if (products?.length === 0) return;
 
-  if (products.length <= 8) {
+  if (products?.length <= 8) {
     return (
       <Stack
         sx={{
-          background: "#6600330d",
           p: 2,
           borderRadius: 2,
+          background:
+            "linear-gradient(rgba(102, 0, 51, 0.05), rgb(255, 255, 255))",
         }}
       >
         <Box

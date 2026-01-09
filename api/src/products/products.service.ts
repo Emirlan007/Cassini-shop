@@ -58,8 +58,7 @@ export class ProductsService {
       productData.category = this.validateAndConvertCategory(category);
     }
 
-    // Генерация уникального slug
-    const baseSlug = generateSlug(createProductDto.name);
+    const baseSlug = generateSlug(createProductDto.name.ru);
     productData.slug = await this.ensureUniqueSlug(baseSlug);
 
     productData.isNew = createProductDto.isNew ?? true;
@@ -119,18 +118,45 @@ export class ProductsService {
     return products;
   }
 
-  async findAll(categoryId?: string): Promise<Product[]> {
-    const query = this.productModel.find();
-    if (categoryId) {
-      if (!Types.ObjectId.isValid(categoryId)) {
-        throw new BadRequestException(`Invalid category ID: ${categoryId}`);
-      }
-      query.where('category').equals(new Types.ObjectId(categoryId));
-    }
-    return query
-      .populate('category', 'title slug')
-      .sort({ createdAt: -1 })
-      .exec();
+  async findAll(categoryId?: string, lang: 'ru' | 'en' | 'kg' = 'ru') {
+    const match = categoryId
+      ? { category: new Types.ObjectId(categoryId) }
+      : {};
+
+    const products = await this.productModel.aggregate([
+      { $match: match },
+      {
+        $addFields: {
+          name: {
+            $cond: {
+              if: { $eq: [`$name.${lang}`, ''] },
+              then: '$name.ru',
+              else: `$name.${lang}`,
+            },
+          },
+          description: {
+            $cond: {
+              if: { $eq: [`$description.${lang}`, ''] },
+              then: '$description.ru',
+              else: `$description.${lang}`,
+            },
+          },
+          material: {
+            $cond: {
+              if: { $eq: [`$material.${lang}`, ''] },
+              then: '$material.ru',
+              else: `$material.${lang}`,
+            },
+          },
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
+
+    return this.productModel.populate(products, {
+      path: 'category',
+      select: 'title slug',
+    });
   }
 
   async findBySearch(searchValue?: string): Promise<Product[]> {
@@ -143,42 +169,107 @@ export class ProductsService {
     return query.populate('category', 'title slug').exec();
   }
 
+  async findOne(id: string, lang: 'ru' | 'en' | 'kg' = 'ru'): Promise<Product> {
+    const match = Types.ObjectId.isValid(id)
+      ? { _id: new Types.ObjectId(id) }
+      : { slug: id };
 
-  ///Searching with Slug is here my BRo
-  async findOne(id: string): Promise<Product> {
-    let product: Product | null = null;
-    if (Types.ObjectId.isValid(id)) {
-      product = await this.productModel
-        .findById(id)
-        .populate('category', 'title slug')
-        .exec();
-    }    
-    if (!product) {
-      product = await this.productModel
-        .findOne({ slug: id })
-        .populate('category', 'title slug')
-        .exec();
-    }
+    const result = await this.productModel.aggregate([
+      { $match: match },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category',
+        },
+      },
+      { $unwind: '$category' },
+      {
+        $addFields: {
+          name: {
+            $cond: {
+              if: { $eq: [`$name.${lang}`, ''] },
+              then: '$name.ru',
+              else: `$name.${lang}`,
+            },
+          },
+          description: {
+            $cond: {
+              if: { $eq: [`$description.${lang}`, ''] },
+              then: '$description.ru',
+              else: `$description.${lang}`,
+            },
+          },
+          material: {
+            $cond: {
+              if: { $eq: [`$material.${lang}`, ''] },
+              then: '$material.ru',
+              else: `$material.${lang}`,
+            },
+          },
+        },
+      },
+      { $limit: 1 },
+    ]);
 
-    if (!product) {
+    if (!result.length) {
       throw new NotFoundException(`Product with ID or slug "${id}" not found`);
     }
 
-    return product;
+    return result[0] as Product;
   }
 
-  async findPopular(page: number, limit: number) {
+  async findPopular(
+    page: number,
+    limit: number,
+    lang: 'ru' | 'en' | 'kg' = 'ru',
+  ) {
     const skip = (page - 1) * limit;
 
     const filter = { isPopular: true };
 
     const [items, total] = await Promise.all([
-      this.productModel
-        .find(filter)
-        .skip(skip)
-        .limit(limit)
-        .populate('category')
-        .sort({ createdAt: -1 }),
+      this.productModel.aggregate([
+        { $match: filter },
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $lookup: {
+            from: 'categories',
+            localField: 'category',
+            foreignField: '_id',
+            as: 'category',
+          },
+        },
+        { $unwind: '$category' },
+        {
+          $addFields: {
+            name: {
+              $cond: {
+                if: { $eq: [`$name.${lang}`, ''] },
+                then: '$name.ru',
+                else: `$name.${lang}`,
+              },
+            },
+            description: {
+              $cond: {
+                if: { $eq: [`$description.${lang}`, ''] },
+                then: '$description.ru',
+                else: `$description.${lang}`,
+              },
+            },
+            material: {
+              $cond: {
+                if: { $eq: [`$material.${lang}`, ''] },
+                then: '$material.ru',
+                else: `$material.${lang}`,
+              },
+            },
+          },
+        },
+      ]),
 
       this.productModel.countDocuments(filter),
     ]);
@@ -308,7 +399,7 @@ export class ProductsService {
     }
 
     if (updateProductDto.name && updateProductDto.name !== product.name) {
-      const baseSlug = generateSlug(updateProductDto.name);
+      const baseSlug = generateSlug(updateProductDto.name.ru);
       updateData.slug = await this.ensureUniqueSlug(baseSlug);
     }
 

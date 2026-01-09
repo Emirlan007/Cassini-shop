@@ -4,7 +4,7 @@ import { ProductsService } from '../products/products.service';
 import { generateSlug } from '../utils/slug';
 
 import { Model } from 'mongoose';
-import {ProductDocument } from '../schemas/product.schema';
+import { ProductDocument } from '../schemas/product.schema';
 
 async function addSlugsToProducts() {
   console.log('Starting migration: Adding slugs to existing products...');
@@ -27,7 +27,7 @@ async function addSlugsToProducts() {
       }
 
       try {
-        const baseSlug = generateSlug(product.name);
+        const baseSlug = generateSlug(product.name.ru);
         await productsService.update(
           String(product._id),
           { name: product.name },
@@ -36,10 +36,10 @@ async function addSlugsToProducts() {
 
         updated++;
         console.log(
-          `✓ Updated product "${product.name}" with slug: ${baseSlug}`,
+          `✓ Updated product "${product.name.ru}" with slug: ${baseSlug}`,
         );
       } catch (error) {
-        console.error(`✗ Error updating product "${product.name}":`, error);
+        console.error(`✗ Error updating product "${product.name.ru}":`, error);
       }
     }
 

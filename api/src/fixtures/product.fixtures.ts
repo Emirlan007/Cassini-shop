@@ -10,11 +10,18 @@ export async function createProductFixtures(
 
   const products = [
     {
-      name: 'Classic Black Shawl Lapel Dress',
+      name: {
+        ru: 'Классическое черное платье с шалевым воротником',
+        en: 'Classic Black Shawl Lapel Dress',
+        kg: 'Классикалык кара шаль жакалуу көйнөк',
+      },
       slug: 'classic-black-shawl-lapel-dress-1',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
       price: 800,
@@ -37,15 +44,26 @@ export async function createProductFixtures(
         '#000000': [4, 5],
       },
       isPopular: true,
-      material: 'silk',
+      material: {
+        ru: 'шелк',
+        en: 'silk',
+        kg: 'жибек',
+      },
       inStock: true,
     },
     {
-      name: 'Classic Black Shawl Lapel Dress',
+      name: {
+        ru: 'Классическое черное платье с шалевым воротником',
+        en: 'Classic Black Shawl Lapel Dress en',
+        kg: 'Classic Black Shawl Lapel Dress kg',
+      },
       slug: 'classic-black-shawl-lapel-dress-2',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
       price: 1999,
@@ -68,15 +86,26 @@ export async function createProductFixtures(
         '#000000': [4, 5],
       },
       isPopular: true,
-      material: 'silk',
+      material: {
+        ru: 'шелк',
+        en: 'silk',
+        kg: 'жибек',
+      },
       inStock: false,
     },
     {
-      name: 'Classic Black Shawl Lapel Dress',
+      name: {
+        ru: 'Классическое черное платье с шалевым воротником',
+        en: 'Classic Black Shawl Lapel Dress',
+        kg: 'Классикалык кара шаль жакалуу көйнөк',
+      },
       slug: 'classic-black-shawl-lapel-dress-3',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
       price: 999,
@@ -99,15 +128,26 @@ export async function createProductFixtures(
         '#000000': [4, 5],
       },
       isPopular: true,
-      material: 'silk',
+      material: {
+        ru: 'шелк',
+        en: 'silk',
+        kg: 'жибек',
+      },
       inStock: false,
     },
     {
-      name: 'Classic Black Shawl Lapel Dress',
+      name: {
+        ru: 'Классическое черное платье с шалевым воротником',
+        en: 'Classic Black Shawl Lapel Dress',
+        kg: 'Классикалык кара шаль жакалуу көйнөк',
+      },
       slug: 'classic-black-shawl-lapel-dress-4',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
       price: 999,
@@ -130,15 +170,26 @@ export async function createProductFixtures(
         '#000000': [4, 5],
       },
       isPopular: true,
-      material: 'silk',
+      material: {
+        ru: 'шелк',
+        en: 'silk',
+        kg: 'жибек',
+      },
       inStock: true,
     },
     {
-      name: 'Classic Black Shawl Lapel Dress',
+      name: {
+        ru: 'Классическое черное платье с шалевым воротником',
+        en: 'Classic Black Shawl Lapel Dress',
+        kg: 'Классикалык кара шаль жакалуу көйнөк',
+      },
       slug: 'classic-black-shawl-lapel-dress-5',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
       category: categories[0]._id.toString(),
       price: 999,
@@ -158,15 +209,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'silk',
+      material: {
+        ru: 'шелк',
+        en: 'silk',
+        kg: 'жибек',
+      },
       inStock: true,
     },
     {
-      name: 'Midnight Blue Peak Lapel Dress',
+      name: {
+        ru: 'Платье с лацканами цвета «полуночный синий пик»',
+        en: 'Midnight Blue Peak Lapel Dress',
+        kg: 'Түнкү көк чокусу бар лацкан көйнөк',
+      },
       slug: 'classic-black-shawl-lapel-dress-6',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A sophisticated twist on the traditional black, this midnight blue tuxedo commands attention under evening lights. The peak lapels and slim-fit design highlight modern elegance, making it an ideal choice for the man who wants to stand out—subtly.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'XXL'],
       category: categories[1]._id.toString(),
       price: 999,
@@ -186,15 +248,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'silk',
+      material: {
+        ru: 'шелк',
+        en: 'silk',
+        kg: 'жибек',
+      },
       inStock: false,
     },
     {
-      name: 'White Dinner Jacket Dress',
+      name: {
+        ru: 'Белое платье-костюм',
+        en: 'White Dinner Jacket Dress',
+        kg: 'Ак кечки жакет көйнөгү',
+      },
       slug: 'white-dinner-jacket-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        "Crisp, bold, and effortlessly suave, this white dinner jacket tuxedo pairs a cream or ivory jacket with black trousers. Featuring satin-covered buttons and a tailored fit, it channels a vintage James Bond aesthetic that's perfect for summer soirées or destination weddings.",
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'XL', 'XXL'],
       category: categories[2]._id.toString(),
       price: 999,
@@ -214,15 +287,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'cotton',
+      material: {
+        ru: 'хлопок',
+        en: 'cotton',
+        kg: 'пахта',
+      },
       inStock: false,
     },
     {
-      name: 'Velvet Burgundy Dress',
+      name: {
+        ru: 'Бархатное платье бордового цвета',
+        en: 'Velvet Burgundy Dress',
+        kg: 'Сатинден жасалган бордо түстөгү көйнөк',
+      },
       slug: 'velvet-burgundy-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'Rich in color and texture, this burgundy velvet tuxedo brings luxury to the forefront. The plush fabric adds depth and warmth, while the black satin lapels introduce a sharp contrast. Ideal for evening events where you want to make a statement without saying a word.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S'],
       category: categories[3]._id.toString(),
       price: 999,
@@ -242,15 +326,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'cotton',
+      material: {
+        ru: 'хлопок',
+        en: 'cotton',
+        kg: 'пахта',
+      },
       inStock: true,
     },
     {
-      name: 'Modern Slim-Fit Charcoal Dress',
+      name: {
+        ru: 'Современное платье Slim-Fit цвета угольного',
+        en: 'Modern Slim-Fit Charcoal Dress',
+        kg: 'Заманбап ичке тигилген көмүр түстөгү көйнөк',
+      },
       slug: 'modern-slim-fit-charcoal-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        "Designed for the contemporary gentleman, this charcoal tuxedo blends formal tradition with modern tailoring. The narrow lapels and tapered trousers create a streamlined silhouette that's both minimalist and fashion-forward — perfect for creative professionals or urban weddings.",
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XL', 'XXL'],
       category: categories[4]._id.toString(),
       price: 999,
@@ -270,15 +365,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'cotton',
+      material: {
+        ru: 'хлопок',
+        en: 'cotton',
+        kg: 'пахта',
+      },
       inStock: true,
     },
     {
-      name: 'Patterned Jacquard Dress',
+      name: {
+        ru: 'Платье с узором жаккард',
+        en: 'Patterned Jacquard Dress',
+        kg: 'Өрүлгөн жаккард көйнөк',
+      },
       slug: 'patterned-jacquard-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'For the bold and fashion-savvy, this jacquard tuxedo features an intricate woven pattern that catches the light beautifully. The mix of texture and sheen gives a regal, couture-inspired feel, making it the centerpiece of any red-carpet or high-profile event.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S'],
       category: categories[5 % categories.length]._id.toString(),
       price: 999,
@@ -298,15 +404,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'cotton',
+      material: {
+        ru: 'хлопок',
+        en: 'cotton',
+        kg: 'пахта',
+      },
       inStock: true,
     },
     {
-      name: 'Elegant Ivory Evening Gown',
+      name: {
+        ru: 'Элегантное вечернее платье цвета слоновой кости',
+        en: 'Elegant Ivory Evening Gown',
+        kg: 'Салтанаттуу фил сөөгү түстөгү кечки көйнөк',
+      },
       slug: 'elegant-ivory-evening-gown',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A sophisticated ivory evening gown with a flowing silhouette and delicate satin finish. Ideal for weddings, formal receptions, and evening events.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL'],
       category: categories[0]._id.toString(),
       price: 950,
@@ -326,15 +443,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'satin',
+      material: {
+        ru: 'атлас',
+        en: 'satin',
+        kg: 'атлас',
+      },
       inStock: true,
     },
     {
-      name: 'Midnight Blue Tailored Suit',
+      name: {
+        ru: 'Костюм темно-синего цвета с зауженным кроем',
+        en: 'Midnight Blue Tailored Suit',
+        kg: 'Түнкү көк тигилген костюм',
+      },
       slug: 'midnight-blue-tailored-suit',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A sharp tailored suit in midnight blue, crafted for modern elegance. Perfect for business meetings or evening occasions.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['S', 'M', 'L', 'XL', 'XXL'],
       category: categories[1]._id.toString(),
       price: 1200,
@@ -354,15 +482,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'wool',
+      material: {
+        ru: 'шерсть',
+        en: 'wool',
+        kg: 'жүн',
+      },
       inStock: true,
     },
     {
-      name: 'Soft Beige Casual Dress',
+      name: {
+        ru: 'Мягкое бежевое повседневное платье',
+        en: 'Soft Beige Casual Dress',
+        kg: 'Жумшак беж түстөгү күнүмдүк көйнөк',
+      },
       slug: 'soft-beige-casual-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A lightweight beige casual dress designed for comfort and effortless style. Suitable for daytime outings and relaxed gatherings.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L'],
       category: categories[0]._id.toString(),
       price: 420,
@@ -382,15 +521,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'cotton',
+      material: {
+        ru: 'хлопок',
+        en: 'cotton',
+        kg: 'пахта',
+      },
       inStock: true,
     },
     {
-      name: 'Emerald Green Cocktail Dress',
+      name: {
+        ru: 'Изумрудно-зеленое коктейльное платье',
+        en: 'Emerald Green Cocktail Dress',
+        kg: 'Земуркат жашыл коктейль көйнөгү',
+      },
       slug: 'emerald-green-cocktail-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A stunning emerald green cocktail dress with a fitted waist and subtle shimmer. Designed to stand out at parties and special events.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL'],
       category: categories[0]._id.toString(),
       price: 780,
@@ -410,15 +560,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'polyester',
+      material: {
+        ru: 'полиэстер',
+        en: 'polyester',
+        kg: 'полиэстер',
+      },
       inStock: true,
     },
     {
-      name: 'Classic Grey Wool Coat',
+      name: {
+        ru: 'Классическое серое шерстяное пальто',
+        en: 'Classic Grey Wool Coat',
+        kg: 'Классикалык боз жүндөн тигилген пальто',
+      },
       slug: 'classic-grey-wool-coat',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A timeless grey wool coat with a clean, structured design. Ideal for colder seasons and elegant layering.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['S', 'M', 'L', 'XL'],
       category: categories[2]._id.toString(),
       price: 1350,
@@ -438,15 +599,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'wool',
+      material: {
+        ru: 'шерсть',
+        en: 'wool',
+        kg: 'жүн',
+      },
       inStock: true,
     },
     {
-      name: 'Minimalist White Summer Dress',
+      name: {
+        ru: 'Минималистичное белое летнее платье',
+        en: 'Minimalist White Summer Dress',
+        kg: 'Минималисттик ак жайкы көйнөк',
+      },
       slug: 'minimalist-white-summer-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A fresh white summer dress with a minimalist cut. Breathable fabric and relaxed fit make it perfect for warm days.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L'],
       category: categories[0]._id.toString(),
       price: 360,
@@ -466,15 +638,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'linen',
+      material: {
+        ru: 'лён',
+        en: 'linen',
+        kg: 'лен',
+      },
       inStock: true,
     },
     {
-      name: 'Dark Burgundy Velvet Dress',
+      name: {
+        ru: 'Темно-бордовое бархатное платье',
+        en: 'Dark Burgundy Velvet Dress',
+        kg: 'Кара burgundy бархат көйнөк',
+      },
       slug: 'dark-burgundy-velvet-dress',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A luxurious velvet dress in deep burgundy, offering a rich texture and elegant drape. Ideal for evening wear.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['S', 'M', 'L', 'XL'],
       category: categories[0]._id.toString(),
       price: 890,
@@ -494,15 +677,26 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'velvet',
+      material: {
+        ru: 'бархат',
+        en: 'velvet',
+        kg: 'бархат',
+      },
       inStock: true,
     },
     {
-      name: 'Modern Black Jumpsuit',
+      name: {
+        ru: 'Современный черный комбинезон',
+        en: 'Modern Black Jumpsuit',
+        kg: 'Заманбап кара комбинезон',
+      },
       slug: 'modern-black-jumpsuit',
       colors: ['#ff0000', '#0000ff', '#000000'],
-      description:
-        'A modern black jumpsuit with clean lines and a flattering fit. A versatile piece suitable for both casual and formal styling.',
+      description: {
+        ru: 'Это черное платье, отличающееся вневременной элегантностью, имеет гладкий воротник-шаль с атласным покрытием, который придает ему шарм старого Голливуда. Идеально подходящее для торжественных гала-вечеров или мероприятий с дресс-кодом «black tie», оно имеет приталенный силуэт, создающий утонченный и уверенный образ, который никогда не выходит из моды.',
+        en: 'Timeless and elegant, this black dress features a sleek shawl lapel with a satin finish, exuding old-Hollywood charm. Perfect for formal galas or black-tie events, its tailored silhouette creates a refined and confident look that never goes out of style. en',
+        kg: 'Убакыттын сыноосунан өткөн жана элеганттуу бул кара көйнөктө атлас өңдүү жылтыр жалатылган жылмакай шаль жака бар, ал эски Голливуддун сырдуу жагымдуулугун чагылдырат. Формалдуу гала кечелерге же кара галстук кийилүүчү иш-чараларга идеалдуу, анын так тигилген силуэти татаал жана өзүнө ишенген көрүнүштү жаратып, эч качан модадан кетпейт.',
+      },
       size: ['XS', 'S', 'M', 'L', 'XL'],
       category: categories[3]._id.toString(),
       price: 640,
@@ -522,7 +716,11 @@ export async function createProductFixtures(
         '#0000ff': [2, 3],
         '#000000': [4, 5],
       },
-      material: 'crepe',
+      material: {
+        ru: 'бархат',
+        en: 'velvet',
+        kg: 'бархат',
+      },
       inStock: true,
     },
   ];

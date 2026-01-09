@@ -97,7 +97,7 @@ const ProductActions: React.FC<Props> = ({
 
     await dispatch(fetchCart());
 
-    toast.success("Товар добавлен в корзину!");
+    toast.success(t("itemAddedToCart"));
   };
 
   const handleDiscountSubmit = async (event: FormEvent<HTMLFormElement>) => {

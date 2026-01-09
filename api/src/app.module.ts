@@ -18,6 +18,7 @@ import { WishlistModule } from './wishlist/wishlist.module';
 import { SearchQueriesModule } from './search/search-query.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { OrderHistoryModule } from './order-history/order-history.module';
+import { TranslationModule } from './translation/translation.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { OrderHistoryModule } from './order-history/order-history.module';
     SearchQueriesModule,
     AnalyticsModule,
     OrderHistoryModule,
+    TranslationModule,
   ],
   providers: [],
 })

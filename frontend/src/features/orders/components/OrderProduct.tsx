@@ -62,13 +62,14 @@ const OrderProduct: React.FC<Props> = ({ product }) => {
           <strong>{t("size")}</strong>: {product.selectedSize}
         </Typography>
         <Typography variant="body2">
-          <strong>{t("price")}</strong>: {product.price} сом
+          <strong>{t("price")}</strong>: {product.price} {t("som")}
         </Typography>
         <Typography variant="body2">
           <strong>{t("quantity")}</strong>: {product.quantity}
         </Typography>
         <Typography variant="body2">
-          <strong>{t("total")}</strong>: {product.price * product.quantity} сом
+          <strong>{t("total")}</strong>: {product.price * product.quantity}{" "}
+          {t("som")}
         </Typography>
       </Box>
     </Box>

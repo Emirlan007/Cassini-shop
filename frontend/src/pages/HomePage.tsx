@@ -14,6 +14,7 @@ import {
 import BannersCarousel from "../features/banners/BannersCarousel.tsx";
 import PopularProducts from "../features/products/PopularProducts.tsx";
 import ProductList from "../features/products/ProductsList.tsx";
+import { useTranslation } from "react-i18next";
 import { generateProductListSchema } from "../utils/schemaGenerator";
 import { validateProducts } from "../utils/schemaValidator";
 
@@ -23,13 +24,23 @@ const HomePage = () => {
   const popularProducts = useAppSelector(selectPopularProducts);
   const popularProductsLoading = useAppSelector(selectPopularProductsLoading);
 
-  useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
-    dispatch(fetchPopularProducts());
-  }, [dispatch]);
+    const handleChange = () => {
+      const lang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
+      dispatch(fetchProducts({ lang }));
+      dispatch(fetchPopularProducts({ lang }));
+    };
+
+    i18n.on("languageChanged", handleChange);
+
+    handleChange();
+
+    return () => {
+      i18n.off("languageChanged", handleChange);
+    };
+  }, [dispatch, i18n]);
 
   const allProducts = useMemo(() => {
     return [...popularProducts, ...products];

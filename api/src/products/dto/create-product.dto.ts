@@ -10,8 +10,9 @@ import {
   Min,
   ValidateIf,
   IsBoolean,
+  IsDefined,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { AVAILABLE_SIZES } from '../../shared/constants/sizes.constant';
 
 const transformToArray = ({ value }: { value: unknown }): unknown[] => {
@@ -27,14 +28,41 @@ const transformToArray = ({ value }: { value: unknown }): unknown[] => {
   return [];
 };
 
-export class CreateProductDto {
+function transformToObject<T>(value: unknown): T | undefined {
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return undefined;
+    }
+  }
+  return value as T;
+}
+
+export class TranslatedFieldDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  ru: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  en?: string;
+
+  @IsOptional()
+  @IsString()
+  kg?: string;
+}
+
+export class CreateProductDto {
+  @IsDefined()
+  @Transform(({ value }) => transformToObject<TranslatedFieldDto>(value))
+  @Type(() => TranslatedFieldDto)
+  name: TranslatedFieldDto;
+
+  @IsOptional()
+  @Transform(({ value }) => transformToObject<TranslatedFieldDto>(value))
+  @Type(() => TranslatedFieldDto)
+  description?: TranslatedFieldDto;
 
   @IsArray()
   @IsString({ each: true })
@@ -104,6 +132,7 @@ export class CreateProductDto {
   inStock: boolean;
 
   @IsOptional()
-  @IsString()
-  material?: string;
+  @Transform(({ value }) => transformToObject<TranslatedFieldDto>(value))
+  @Type(() => TranslatedFieldDto)
+  material?: TranslatedFieldDto;
 }

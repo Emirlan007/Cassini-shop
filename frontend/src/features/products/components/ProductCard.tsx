@@ -104,9 +104,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
 
       <CardContent
         sx={{
-          p: { xs: 1, sm: 0 },
-          mt: { xs: 0.5, sm: 1 },
-          px: { xs: 1, sm: 0 },
+          p: 1,
         }}
       >
         <Typography

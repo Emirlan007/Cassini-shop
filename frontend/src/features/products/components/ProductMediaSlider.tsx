@@ -6,6 +6,8 @@ import type { Product } from "../../../types";
 import { Box } from "@mui/material";
 import { API_URL } from "../../../constants";
 import { Navigation, Pagination } from "swiper/modules";
+import "swiper/swiper.css";
+import "swiper/swiper-bundle.css";
 
 interface Props {
   product?: Product;

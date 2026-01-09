@@ -172,7 +172,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: 600, color: "#660033" }}>
-          Фильтры
+          {t("filters")}
         </Typography>
         <Button
           variant="text"
@@ -182,7 +182,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
             "&:hover": { color: "#660033" },
           }}
         >
-          Сбросить
+          {t("reset")}
         </Button>
       </Box>
 
@@ -192,7 +192,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            Цвет
+            {t("color")}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -256,7 +256,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            Размер
+            {t("size")}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -295,7 +295,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            Материал
+            {t("material")}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -340,7 +340,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            Цена
+            {t("price")}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -362,10 +362,10 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
           />
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
             <Typography variant="body2" color="text.secondary">
-              {localFilters.priceRange[0]} сом
+              {localFilters.priceRange[0]} {t("som")}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {localFilters.priceRange[1]} сом
+              {localFilters.priceRange[1]} {t("som")}
             </Typography>
           </Box>
         </AccordionDetails>
@@ -377,7 +377,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            Дополнительно
+            {t("additionally")}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -393,7 +393,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                   }}
                 />
               }
-              label="В наличии"
+              label={t("inStock")}
             />
             <FormControlLabel
               control={
@@ -406,7 +406,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                   }}
                 />
               }
-              label="Новинки"
+              label={t("new")}
             />
             <FormControlLabel
               control={
@@ -419,7 +419,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                   }}
                 />
               }
-              label="Популярные"
+              label={t("popular")}
             />
           </Stack>
         </AccordionDetails>
@@ -445,7 +445,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
               },
             }}
           >
-            Фильтры
+            {t("filters")}
           </Button>
         </Box>
 
@@ -475,7 +475,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                 variant="h6"
                 sx={{ fontWeight: 600, color: "#660033" }}
               >
-                Фильтры
+                {t("filters")}
               </Typography>
               <IconButton onClick={() => setMobileOpen(false)}>
                 <CloseIcon />
@@ -497,7 +497,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({
                   "&:hover": { backgroundColor: "#550022" },
                 }}
               >
-                Применить
+                {t("apply")}
               </Button>
             </Box>
           </Box>

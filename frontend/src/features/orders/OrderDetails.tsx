@@ -25,9 +25,7 @@ import {
 } from "./admin/ordersThunks.ts";
 import { selectCreateAdminCommentLoading } from "./admin/ordersSlice.ts";
 import {
-  getDeliveryStatusText,
   getDeliveryStatusColor,
-  getOrderStatusText,
   getOrderStatusColor,
 } from "../../utils/statusUtils.ts";
 import DeliveryStatusSelector from "./admin/components/DeliveryStatusSelector.tsx";
@@ -151,20 +149,20 @@ const OrderDetails = () => {
         >
           <Box display="flex" alignItems="center" gap={2}>
             <Typography variant="body1" fontWeight="bold">
-              Статус заказа:
+              {t("orderStatus")}:
             </Typography>
             <Chip
-              label={getOrderStatusText(order.status)}
+              label={t(order.status)}
               color={getOrderStatusColor(order.status)}
             />
           </Box>
 
           <Box display="flex" alignItems="center" gap={2}>
             <Typography variant="body1" fontWeight="bold">
-              Статус доставки:
+              {t("deliveryStatus")}:
             </Typography>
             <Chip
-              label={getDeliveryStatusText(order.deliveryStatus)}
+              label={t(order.deliveryStatus)}
               color={getDeliveryStatusColor(order.deliveryStatus)}
             />
           </Box>
@@ -208,7 +206,7 @@ const OrderDetails = () => {
         >
           <Typography variant="h6">{t("total")}:</Typography>
           <Typography variant="h5" fontWeight="bold">
-            {order.totalPrice} сом
+            {order.totalPrice} {t("som")}
           </Typography>
         </Box>
 

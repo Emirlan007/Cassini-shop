@@ -7,7 +7,7 @@ import { ProductStatsByDay } from './schemas/productStatsByDay.schema';
 import { OrderStatsByDay } from './schemas/orderStatsByDay.schema';
 
 type ProductPopulated = {
-  name: string;
+  name: { ru: string; en?: string; kg?: string };
   images?: string[];
 };
 
@@ -41,7 +41,7 @@ export class AnalyticsService {
       const product = item.productId as ProductPopulated | null;
 
       return {
-        productTitle: product?.name ?? 'Удалённый товар',
+        productTitle: product?.name.ru ?? 'Удалённый товар',
         image: product?.images?.[0] ?? undefined,
         views: item.views ?? 0,
         addToCartQty: item.addToCartQty ?? 0,

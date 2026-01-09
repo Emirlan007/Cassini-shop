@@ -59,7 +59,7 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
 
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">
-            {t("total")}: {totalPrice} сом
+            {t("total")}: {totalPrice} {t("som")}
           </Typography>
 
           <Button

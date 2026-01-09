@@ -81,9 +81,15 @@ export interface Product {
   material?: string;
 }
 
+export type TranslatedField = {
+  ru: string;
+  en: string;
+  kg: string;
+};
+
 export interface ProductInput {
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description: TranslatedField;
   size: string[];
   colors: string[];
   category: string;
@@ -91,7 +97,7 @@ export interface ProductInput {
   video: File | null;
   price: number;
   inStock: boolean;
-  material?: string;
+  material: TranslatedField;
   isPopular?: boolean;
   imagesByColor?: Record<string, number[]>;
 }
@@ -197,15 +203,15 @@ export interface OrderItem extends CartItem {
 }
 
 export enum OrderStatus {
-  AwaitingPayment = 'awaiting_payment',
-  Paid = 'paid',
-  Canceled = 'canceled'
+  AwaitingPayment = "awaiting_payment",
+  Paid = "paid",
+  Canceled = "canceled",
 }
 
 export enum DeliveryStatus {
-  Warehouse = 'warehouse',
-  OnTheWay = 'on_the_way',
-  Delivered = 'delivered'
+  Warehouse = "warehouse",
+  OnTheWay = "on_the_way",
+  Delivered = "delivered",
 }
 
 export interface Order {

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { type TranslatedField } from 'src/translation/translation.service';
 
 export type ProductDocument = Product & Document;
 
@@ -8,14 +9,27 @@ export class Product {
   @Prop({ required: true, unique: true })
   slug: string;
 
-  @Prop({ required: true })
-  name: string;
+  @Prop({
+    type: {
+      ru: { type: String, required: true },
+      en: { type: String },
+      kg: { type: String },
+    },
+    required: true,
+  })
+  name: TranslatedField;
 
   @Prop({ type: [String], required: true })
   colors: string[];
 
-  @Prop()
-  description?: string;
+  @Prop({
+    type: {
+      ru: { type: String },
+      en: { type: String },
+      kg: { type: String },
+    },
+  })
+  description?: TranslatedField;
 
   @Prop({ type: [String], required: true })
   size: string[];
@@ -50,8 +64,14 @@ export class Product {
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop()
-  material: string;
+  @Prop({
+    type: {
+      ru: { type: String },
+      en: { type: String },
+      kg: { type: String },
+    },
+  })
+  material: TranslatedField;
 
   @Prop({ default: true })
   inStock: boolean;

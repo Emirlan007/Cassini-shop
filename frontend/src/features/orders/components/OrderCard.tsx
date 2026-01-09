@@ -4,9 +4,7 @@ import type { Order, OrderItemAdmin } from "../../../types";
 import OrderProduct from "./OrderProduct";
 import {
   getDeliveryStatusColor,
-  getDeliveryStatusText,
   getOrderStatusColor,
-  getOrderStatusText,
 } from "../../../utils/statusUtils";
 import OrderCardComments from "./OrderCardComments";
 import { useNavigate } from "react-router-dom";
@@ -53,13 +51,13 @@ const OrderCard = ({ order, isAdmin }: Props) => {
         </Typography>
 
         <Chip
-          label={getDeliveryStatusText(order.deliveryStatus)}
+          label={t(order.deliveryStatus)}
           color={getDeliveryStatusColor(order.deliveryStatus)}
           sx={{ minWidth: "150px", height: "25px" }}
         />
 
         <Chip
-          label={getOrderStatusText(order.status)}
+          label={t(order.status)}
           color={getOrderStatusColor(order.status)}
           sx={{ minWidth: "150px", height: "25px" }}
         />

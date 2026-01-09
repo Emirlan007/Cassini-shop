@@ -34,6 +34,7 @@ import ProductFilters from "../features/products/ProductFilters.tsx";
 import { selectCategories } from "../features/categories/categorySlice.ts";
 import { fetchCategories } from "../features/categories/categoryThunk.ts";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 
 const CategoryProductsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -51,6 +52,8 @@ const CategoryProductsPage = () => {
   const totalPages = useAppSelector(selectTotalPages);
 
   const location = useLocation();
+
+  const { t } = useTranslation();
 
   const currentCategory = useMemo(() => {
     if (!slug || !categories) return null;
@@ -226,14 +229,14 @@ const CategoryProductsPage = () => {
         sx={{ py: { xs: 3, sm: 4 }, textAlign: "center" }}
       >
         <Typography variant="h4" color="error" sx={{ mb: 2 }}>
-          Категория не найдена
+          {t("categoryNotFound")}
         </Typography>
         <Button
           variant="contained"
           onClick={() => navigate("/")}
           startIcon={<HomeIcon />}
         >
-          На главную
+          {t("toMainPage")}
         </Button>
       </Container>
     );
@@ -270,7 +273,7 @@ const CategoryProductsPage = () => {
                 },
               }}
             >
-              На главную
+              {t("toMainPage")}
             </Button>
           </Box>
         )}
@@ -308,7 +311,7 @@ const CategoryProductsPage = () => {
                 mb: 2,
               }}
             >
-              Товары не найдены
+              {t("productsNotFound")}
             </Typography>
             <Typography
               variant="body1"
@@ -319,8 +322,7 @@ const CategoryProductsPage = () => {
                 mb: 3,
               }}
             >
-              Попробуйте изменить параметры фильтров или выбрать другую
-              категорию
+              {t("changeTheFilterSettingsOrSelectAnotherCategory")}
             </Typography>
             <Button
               variant="contained"
@@ -330,7 +332,7 @@ const CategoryProductsPage = () => {
                 "&:hover": { backgroundColor: "#550022" },
               }}
             >
-              Сбросить фильтры
+              {t("resetFilters")}
             </Button>
           </Box>
         ) : (
@@ -346,8 +348,8 @@ const CategoryProductsPage = () => {
               }}
             >
               {currentCategory
-                ? `Товары категории: ${currentCategory.title}`
-                : "Товары категории"}
+                ? `${t("productsInCategory")}: ${currentCategory.title}`
+                : t("productsInCategory")}
               {totalCount > 0 && (
                 <Typography
                   component="span"
@@ -359,7 +361,7 @@ const CategoryProductsPage = () => {
                     fontWeight: "normal",
                   }}
                 >
-                  Найдено товаров: {totalCount}
+                  {t("itemsFound")}: {totalCount}
                 </Typography>
               )}
             </Typography>

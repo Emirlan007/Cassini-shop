@@ -127,9 +127,27 @@ export class ProductsService {
       { $match: match },
       {
         $addFields: {
-          name: { $ifNull: [`$name.${lang}`, `$name.ru`] },
-          description: { $ifNull: [`$description.${lang}`, `$description.ru`] },
-          material: { $ifNull: [`$material.${lang}`, `$material.ru`] },
+          name: {
+            $cond: {
+              if: { $eq: [`$name.${lang}`, ''] },
+              then: '$name.ru',
+              else: `$name.${lang}`,
+            },
+          },
+          description: {
+            $cond: {
+              if: { $eq: [`$description.${lang}`, ''] },
+              then: '$description.ru',
+              else: `$description.${lang}`,
+            },
+          },
+          material: {
+            $cond: {
+              if: { $eq: [`$material.${lang}`, ''] },
+              then: '$material.ru',
+              else: `$material.${lang}`,
+            },
+          },
         },
       },
       { $sort: { createdAt: -1 } },
@@ -169,9 +187,27 @@ export class ProductsService {
       { $unwind: '$category' },
       {
         $addFields: {
-          name: { $ifNull: [`$name.${lang}`, `$name.ru`] },
-          description: { $ifNull: [`$description.${lang}`, `$description.ru`] },
-          material: { $ifNull: [`$material.${lang}`, `$material.ru`] },
+          name: {
+            $cond: {
+              if: { $eq: [`$name.${lang}`, ''] },
+              then: '$name.ru',
+              else: `$name.${lang}`,
+            },
+          },
+          description: {
+            $cond: {
+              if: { $eq: [`$description.${lang}`, ''] },
+              then: '$description.ru',
+              else: `$description.${lang}`,
+            },
+          },
+          material: {
+            $cond: {
+              if: { $eq: [`$material.${lang}`, ''] },
+              then: '$material.ru',
+              else: `$material.${lang}`,
+            },
+          },
         },
       },
       { $limit: 1 },
@@ -210,11 +246,27 @@ export class ProductsService {
         { $unwind: '$category' },
         {
           $addFields: {
-            name: { $ifNull: [`$name.${lang}`, `$name.ru`] },
-            description: {
-              $ifNull: [`$description.${lang}`, `$description.ru`],
+            name: {
+              $cond: {
+                if: { $eq: [`$name.${lang}`, ''] },
+                then: '$name.ru',
+                else: `$name.${lang}`,
+              },
             },
-            material: { $ifNull: [`$material.${lang}`, `$material.ru`] },
+            description: {
+              $cond: {
+                if: { $eq: [`$description.${lang}`, ''] },
+                then: '$description.ru',
+                else: `$description.${lang}`,
+              },
+            },
+            material: {
+              $cond: {
+                if: { $eq: [`$material.${lang}`, ''] },
+                then: '$material.ru',
+                else: `$material.${lang}`,
+              },
+            },
           },
         },
       ]),

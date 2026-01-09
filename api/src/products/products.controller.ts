@@ -10,6 +10,7 @@ import {
   Patch,
   UploadedFiles,
   Query,
+  Headers,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -46,18 +47,20 @@ export class ProductsController {
     @Query('colors') colors: string,
     @Query('limit') limit = 16,
     @Query('page') page = 1,
-    @Query('userId') userId?: string,
-    @Query('sessionId') sessionId?: string,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
+    @Headers('authorization') token?: string,
+    @Headers('session-id') sessionId?: string,
   ) {
     const colorsArray = colors ? colors.split(',') : undefined;
 
     return this.productsService.searchProducts({
       query,
+      lang,
       category,
       colors: colorsArray,
       limit: Number(limit),
       page: Number(page),
-      userId,
+      token,
       sessionId,
     });
   }

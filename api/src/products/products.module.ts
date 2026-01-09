@@ -7,6 +7,7 @@ import { FileUploadModule } from '../shared/file-upload/file-upload.module';
 import { SearchQueriesModule } from '../search/search-query.module';
 import { AuthModule } from '../auth/auth.module';
 import { User, UserSchema } from '../schemas/user.schema';
+import { UsersModule } from 'src/users/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { User, UserSchema } from '../schemas/user.schema';
     FileUploadModule,
     SearchQueriesModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

@@ -27,7 +27,7 @@ const SearchResultsPage = () => {
   const [params] = useSearchParams();
   const query = params.get("q") || "";
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,7 +52,7 @@ const SearchResultsPage = () => {
 
       try {
         const response: AxiosResponse<ProductsSearch> = await axiosApi.get(
-          `/products/search?q=${query}&page=${pageToLoad}`
+          `/products/search?q=${query}&page=${pageToLoad}&lang=${currentLang}`
         );
 
         const {
@@ -127,6 +127,8 @@ const SearchResultsPage = () => {
       behavior: "smooth",
     });
   };
+
+  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
   return (
     <Box sx={{ px: 2, py: 3 }}>

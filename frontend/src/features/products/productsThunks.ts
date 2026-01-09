@@ -282,14 +282,19 @@ export const updateProductNewStatus = createAsyncThunk<
 export const deleteProduct = createAsyncThunk<void, string>(
   "products/delete",
   async (id, { dispatch }) => {
+    const currentLang = localStorage.getItem("i18nextLng")?.slice(0, 2) as
+      | "ru"
+      | "en"
+      | "kg";
+
     await axiosApi.delete("/products/" + id);
-    await dispatch(fetchProducts());
+    await dispatch(fetchProducts({ lang: currentLang }));
   }
 );
 
 export const fetchFilteredProducts = createAsyncThunk<
   FilteredProductsResponse,
-  FilterParams & { categoryId: string },
+  FilterParams & { categoryId: string } & { lang?: "ru" | "en" | "kg" },
   { rejectValue: IGlobalError }
 >("products/fetchFiltered", async (filterParams, { rejectWithValue }) => {
   try {
@@ -348,7 +353,8 @@ export const fetchFilteredProducts = createAsyncThunk<
     }
 
     const { data } = await axiosApi.get<FilteredProductsResponse>(
-      `/products/filter?${queryParams.toString()}`
+      `/products/filter?${queryParams.toString()}`,
+      { params: { lang: filterParams.lang } }
     );
 
     return data;

@@ -53,7 +53,7 @@ const CategoryProductsPage = () => {
 
   const location = useLocation();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const currentCategory = useMemo(() => {
     if (!slug || !categories) return null;
@@ -126,7 +126,7 @@ const CategoryProductsPage = () => {
 
   useEffect(() => {
     if (categoryId) {
-      dispatch(fetchProducts(categoryId));
+      dispatch(fetchProducts({ categoryId, lang: currentLang }));
     }
   }, [dispatch, categoryId]);
 
@@ -170,7 +170,7 @@ const CategoryProductsPage = () => {
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      dispatch(fetchFilteredProducts(filterParams));
+      dispatch(fetchFilteredProducts({ ...filterParams, lang: currentLang }));
     }
   }, [dispatch, categoryId, filters, page, availableOptions.priceRange]);
 
@@ -217,6 +217,8 @@ const CategoryProductsPage = () => {
   const isLoading = loading || filterLoading;
   const showProducts =
     filteredProducts.length > 0 ? filteredProducts : allProducts;
+
+  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
   const title = `${currentCategory?.title} — купить онлайн`;
   const description = `Купить товары категории "${currentCategory?.title}". Найдено товаров: ${totalCount}. Актуальные цены и быстрая доставка`;

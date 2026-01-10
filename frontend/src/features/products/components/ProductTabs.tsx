@@ -50,7 +50,7 @@ const ProductTabs: React.FC<Props> = ({ description, sizeGuide }) => {
         </Box>
       </CustomTabPanel>
       <CustomTabPanel value={tabValue} index={1}>
-        Information about sizing and fit guide has not been added yet
+        {t("NoSizingInformation")}
       </CustomTabPanel>
     </Box>
   );

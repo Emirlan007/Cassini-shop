@@ -23,7 +23,7 @@ const Contacts = () => {
         }}
         href="mailto:example@gmail.com"
       >
-        Email
+        {t("email")}
       </Link>
       <Link
         sx={{

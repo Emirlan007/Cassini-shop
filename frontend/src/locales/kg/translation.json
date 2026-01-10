@@ -10,6 +10,7 @@
   "inStock": "Сатууда бар",
   "productDetail": "Продукттун маалыматы",
   "sizingGuide": "Өлчөмдөр боюнча колдонмо",
+  "NoSizingInformation": "Өлчөм жана ылайыктуулук боюнча маалымат азырынча кошула элек",
   "youMightAlsoLike": "Сизге ошондой эле жакшы көрүнүшү мүмкүн",
   "new": "Жаңы",
   "moreInfo": "Көбүрөөк билүү",
@@ -49,6 +50,10 @@
   "selectSizes": "Размерди танданыз",
   "addColor": "Түстү кошуу",
 
+  "email": "Электрондук почта",
+  "allRightsReserved": "Бардык укуктар корголгон",
+  "footerLogoText": "Заманбап аялдар үчүн моданын тренддери",
+
   "wishlist": "",
   "comment": "",
   "dontHaveAccount": "",
@@ -82,6 +87,12 @@
   "itemRemovedFromWishlist": "",
   "itemAddedToWishlist": "",
   "searchForProducts": "",
+
+  "checkoutSteps": {
+    "details": "Буюртма боюнча маалымат",
+    "personalInfo": "Жеке маалымат",
+    "payment": "Төлөм"
+  },
 
   "productForm": {
     "name": "Аталышы",

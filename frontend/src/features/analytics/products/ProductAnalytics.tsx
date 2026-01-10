@@ -72,6 +72,9 @@ const ProductAnalytics = () => {
                 <Typography variant="body2">
                   👀 Просмотры: {item.views}
                 </Typography>
+                <Typography variant="body2">
+                  🔍 Показы в поиске: {item.searchImpressions}
+                </Typography>
               </CardContent>
             </Card>
           ))}
@@ -85,11 +88,12 @@ const ProductAnalytics = () => {
               <TableCell align="right">В корзину</TableCell>
               <TableCell align="right">В вишлист</TableCell>
               <TableCell align="right">Просмотры</TableCell>
+              <TableCell align="right">Показы в поиске</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((item, index) => (
-                <TableRow key={index}>
+              <TableRow key={index}>
                 <TableThumbnail
                   imageUrl={item.image ? getImageUrl(item.image) : undefined}
                 />
@@ -97,6 +101,7 @@ const ProductAnalytics = () => {
                 <TableCell align="right">{item.addToCartQty}</TableCell>
                 <TableCell align="right">{item.wishlistCount}</TableCell>
                 <TableCell align="right">{item.views}</TableCell>
+                <TableCell align="right">{item.searchImpressions}</TableCell>
               </TableRow>
             ))}
           </TableBody>

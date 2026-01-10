@@ -44,7 +44,7 @@ const ProductList = ({ products }: Props) => {
         gap: { xs: 2, sm: 3 },
         px: { xs: 1, sm: 2 },
         width: "100%",
-        maxWidth: "1400px",
+        maxWidth: "1500px",
         mx: "auto",
         boxSizing: "border-box",
       }}

@@ -18,10 +18,11 @@ import {
   selectProductsFetchError,
   selectProductsFetchLoading,
 } from "../productsSlice";
-import { deleteProduct, fetchProducts } from "../productsThunks";
+import { fetchProducts } from "../productsThunks";
 import AdminProductCard from "./components/AdminProductCard";
 import { useNavigate } from "react-router-dom";
 import { Add as AddIcon } from "@mui/icons-material";
+import { deleteProduct } from "./adminProductsThunks.ts";
 
 const AdminProductsList = () => {
   const dispatch = useAppDispatch();

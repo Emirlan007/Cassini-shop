@@ -1,16 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { Product } from "../../types";
 import {
-  createProduct,
-  deleteProduct,
   fetchFilteredProducts,
   fetchPopularProducts,
-  fetchProductById,
   fetchProductBySlug,
   fetchProducts,
   fetchSearchedProducts,
-  updateProductNewStatus,
-  updateProductPopular,
 } from "./productsThunks";
 
 interface ProductsState {
@@ -21,9 +16,6 @@ interface ProductsState {
   fetchItemsError: string | null;
   fetchItemLoading: boolean;
   fetchItemError: string | null;
-  createLoading: boolean;
-  createError: string | null;
-  deleteLoading: boolean | string;
   filteredItems: Product[];
   totalCount: number;
   currentPage: number;
@@ -33,10 +25,6 @@ interface ProductsState {
   filterError: string | null;
   fetchPopularLoading: boolean;
   fetchPopularError: string | null;
-  updatePopularLoading: boolean;
-  updatePopularError: string | null;
-  updateIsNewLoading: boolean;
-  updateIsNewError: string | null;
 }
 
 const initialState: ProductsState = {
@@ -47,9 +35,6 @@ const initialState: ProductsState = {
   fetchItemsError: null,
   fetchItemLoading: false,
   fetchItemError: null,
-  createLoading: false,
-  createError: null,
-  deleteLoading: false,
   filteredItems: [],
   totalCount: 0,
   currentPage: 1,
@@ -59,10 +44,6 @@ const initialState: ProductsState = {
   filterError: null,
   fetchPopularLoading: false,
   fetchPopularError: null,
-  updatePopularLoading: false,
-  updatePopularError: null,
-  updateIsNewLoading: false,
-  updateIsNewError: null,
 };
 
 const productsSlice = createSlice({
@@ -100,19 +81,6 @@ const productsSlice = createSlice({
       });
 
     builder
-      .addCase(fetchProductById.pending, (state) => {
-        state.fetchItemLoading = true;
-      })
-      .addCase(fetchProductById.fulfilled, (state, { payload: product }) => {
-        state.fetchItemLoading = false;
-        state.item = product;
-      })
-      .addCase(fetchProductById.rejected, (state, { payload: error }) => {
-        state.fetchItemLoading = false;
-        state.fetchItemError = error?.error ?? null;
-      });
-
-    builder
       .addCase(fetchProductBySlug.pending, (state) => {
         state.fetchItemLoading = true;
       })
@@ -123,29 +91,6 @@ const productsSlice = createSlice({
       .addCase(fetchProductBySlug.rejected, (state, { payload: error }) => {
         state.fetchItemLoading = false;
         state.fetchItemError = error?.error ?? null;
-      });
-
-    builder
-      .addCase(createProduct.pending, (state) => {
-        state.createLoading = true;
-      })
-      .addCase(createProduct.fulfilled, (state) => {
-        state.createLoading = false;
-      })
-      .addCase(createProduct.rejected, (state, { payload: error }) => {
-        state.createLoading = false;
-        state.createError = error?.error ?? null;
-      });
-
-    builder
-      .addCase(deleteProduct.pending, (state, { meta }) => {
-        state.deleteLoading = meta.arg;
-      })
-      .addCase(deleteProduct.fulfilled, (state) => {
-        state.deleteLoading = false;
-      })
-      .addCase(deleteProduct.rejected, (state) => {
-        state.deleteLoading = false;
       });
 
     builder
@@ -181,30 +126,6 @@ const productsSlice = createSlice({
         state.filterLoading = false;
         state.filterError = error?.error ?? null;
       });
-    builder
-      .addCase(updateProductPopular.pending, (state) => {
-        state.updatePopularLoading = true;
-        state.updatePopularError = null;
-      })
-      .addCase(updateProductPopular.fulfilled, (state) => {
-        state.updatePopularLoading = false;
-      })
-      .addCase(updateProductPopular.rejected, (state) => {
-        state.updatePopularLoading = false;
-        state.updatePopularError = "Ошибка обновления статуса";
-      });
-    builder
-      .addCase(updateProductNewStatus.pending, (state) => {
-        state.updateIsNewLoading = true;
-        state.updateIsNewError = null;
-      })
-      .addCase(updateProductNewStatus.fulfilled, (state) => {
-        state.updateIsNewLoading = false;
-      })
-      .addCase(updateProductNewStatus.rejected, (state) => {
-        state.updateIsNewLoading = false;
-        state.updateIsNewError = "Ошибка обновления статуса";
-      });
   },
   selectors: {
     selectProducts: (state) => state.items,
@@ -213,9 +134,6 @@ const productsSlice = createSlice({
     selectProductsFetchError: (state) => state.fetchItemsError,
     selectProductFetchLoading: (state) => state.fetchItemLoading,
     selectProductFetchError: (state) => state.fetchItemError,
-    selectProductCreateLoading: (state) => state.createLoading,
-    selectProductCreateError: (state) => state.createError,
-    selectProductDeleteLoading: (state) => state.deleteLoading,
     selectFilteredProducts: (state) => state.filteredItems,
     selectTotalCount: (state) => state.totalCount,
     selectCurrentPage: (state) => state.currentPage,
@@ -238,9 +156,6 @@ export const {
   selectProductsFetchError,
   selectProductFetchLoading,
   selectProductFetchError,
-  selectProductCreateLoading,
-  selectProductCreateError,
-  selectProductDeleteLoading,
   selectFilteredProducts,
   selectTotalCount,
   selectCurrentPage,

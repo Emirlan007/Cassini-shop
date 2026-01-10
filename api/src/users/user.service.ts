@@ -12,6 +12,10 @@ export class UserService {
     return this.userModel.find({ role: Role.User }).exec();
   }
 
+  async getUserByToken(token?: string) {
+    return await this.userModel.findOne({ token: token }).exec();
+  }
+
   async create(data: Partial<User>) {
     const createUser = new this.userModel(data);
     return createUser.save();

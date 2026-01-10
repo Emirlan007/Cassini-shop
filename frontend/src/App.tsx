@@ -21,13 +21,13 @@ const ProductDetails = lazy(
   () => import("./features/products/ProductDetails.tsx")
 );
 const NewProduct = lazy(() => import("./features/products/NewProduct.tsx"));
+const UpdateProduct = lazy(
+  () => import("./features/products/UpdateProduct.tsx")
+);
 const AdminProductsList = lazy(
   () => import("./features/products/admin/AdminProductsList.tsx")
 );
 
-const UpdateCreateWrap = lazy(
-  () => import("./components/UpdateCreateWrap/UpdateCreateWrap.tsx")
-);
 const Cart = lazy(() => import("./features/cart/Cart.tsx"));
 const AdminOrders = lazy(
   () => import("./features/orders/admin/AdminOrders.tsx")
@@ -76,10 +76,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path={"/search"} element={<SearchResultsPage />} />
-        <Route
-          path="/products/:productUpdate/update"
-          element={<UpdateCreateWrap />}
-        />
+        <Route path="/products/:productId/update" element={<UpdateProduct />} />
         <Route path="/products/:slug" element={<CategoryProductsPage />} />
         <Route path="/product/:productSlug" element={<ProductDetails />} />
         <Route path="/orders/:orderId" element={<OrderDetails />} />

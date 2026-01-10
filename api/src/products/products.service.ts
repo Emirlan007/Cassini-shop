@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Model, PipelineStage, Types } from 'mongoose';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -16,6 +16,8 @@ import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { SearchQueriesService } from 'src/search/search-query.service';
 import { generateSlug, generateUniqueSlug } from '../utils/slug';
+import { UserService } from 'src/users/user.service';
+import { localizedField } from 'src/utils/localizedField';
 
 interface ProductFilter {
   category?: Types.ObjectId;
@@ -40,6 +42,7 @@ export class ProductsService {
     private productModel: Model<ProductDocument>,
     private fileUploadService: FileUploadService,
     private searchQueriesService: SearchQueriesService,
+    private userService: UserService,
   ) {}
 
   async create(
@@ -127,27 +130,9 @@ export class ProductsService {
       { $match: match },
       {
         $addFields: {
-          name: {
-            $cond: {
-              if: { $eq: [`$name.${lang}`, ''] },
-              then: '$name.ru',
-              else: `$name.${lang}`,
-            },
-          },
-          description: {
-            $cond: {
-              if: { $eq: [`$description.${lang}`, ''] },
-              then: '$description.ru',
-              else: `$description.${lang}`,
-            },
-          },
-          material: {
-            $cond: {
-              if: { $eq: [`$material.${lang}`, ''] },
-              then: '$material.ru',
-              else: `$material.${lang}`,
-            },
-          },
+          name: localizedField('name', lang),
+          description: localizedField('description', lang),
+          material: localizedField('material', lang),
         },
       },
       { $sort: { createdAt: -1 } },
@@ -157,6 +142,18 @@ export class ProductsService {
       path: 'category',
       select: 'title slug',
     });
+  }
+
+  async findById(id: string): Promise<Product | null> {
+    const product = await this.productModel
+      .findById(id)
+      .populate('category', 'title slug');
+
+    if (!product) {
+      throw new NotFoundException(`Product with id "${id}" not found`);
+    }
+
+    return product;
   }
 
   async findBySearch(searchValue?: string): Promise<Product[]> {
@@ -169,13 +166,12 @@ export class ProductsService {
     return query.populate('category', 'title slug').exec();
   }
 
-  async findOne(id: string, lang: 'ru' | 'en' | 'kg' = 'ru'): Promise<Product> {
-    const match = Types.ObjectId.isValid(id)
-      ? { _id: new Types.ObjectId(id) }
-      : { slug: id };
-
+  async findBySlug(
+    slug: string,
+    lang: 'ru' | 'en' | 'kg' = 'ru',
+  ): Promise<Product> {
     const result = await this.productModel.aggregate([
-      { $match: match },
+      { $match: { slug } },
       {
         $lookup: {
           from: 'categories',
@@ -187,34 +183,15 @@ export class ProductsService {
       { $unwind: '$category' },
       {
         $addFields: {
-          name: {
-            $cond: {
-              if: { $eq: [`$name.${lang}`, ''] },
-              then: '$name.ru',
-              else: `$name.${lang}`,
-            },
-          },
-          description: {
-            $cond: {
-              if: { $eq: [`$description.${lang}`, ''] },
-              then: '$description.ru',
-              else: `$description.${lang}`,
-            },
-          },
-          material: {
-            $cond: {
-              if: { $eq: [`$material.${lang}`, ''] },
-              then: '$material.ru',
-              else: `$material.${lang}`,
-            },
-          },
+          name: localizedField('name', lang),
+          description: localizedField('description', lang),
+          material: localizedField('material', lang),
         },
       },
-      { $limit: 1 },
     ]);
 
     if (!result.length) {
-      throw new NotFoundException(`Product with ID or slug "${id}" not found`);
+      throw new NotFoundException(`Product with slug "${slug}" not found`);
     }
 
     return result[0] as Product;
@@ -246,27 +223,9 @@ export class ProductsService {
         { $unwind: '$category' },
         {
           $addFields: {
-            name: {
-              $cond: {
-                if: { $eq: [`$name.${lang}`, ''] },
-                then: '$name.ru',
-                else: `$name.${lang}`,
-              },
-            },
-            description: {
-              $cond: {
-                if: { $eq: [`$description.${lang}`, ''] },
-                then: '$description.ru',
-                else: `$description.${lang}`,
-              },
-            },
-            material: {
-              $cond: {
-                if: { $eq: [`$material.${lang}`, ''] },
-                then: '$material.ru',
-                else: `$material.${lang}`,
-              },
-            },
+            name: localizedField('name', lang),
+            description: localizedField('description', lang),
+            material: localizedField('material', lang),
           },
         },
       ]),
@@ -287,24 +246,33 @@ export class ProductsService {
     query: string;
     limit: number;
     page: number;
+    lang: 'ru' | 'en' | 'kg';
     category?: string;
     colors?: string[];
-    userId?: string;
+    token?: string;
     sessionId?: string;
   }) {
-    const { query, category, colors, limit, page, userId, sessionId } = params;
+    const { query, category, colors, limit, page, token, sessionId, lang } =
+      params;
 
-    if (query && query.trim().length >= 2) {
-      this.searchQueriesService
-        .saveSearchQuery({
-          query: query.trim(),
-          userId,
-          sessionId,
-        })
-        .catch((error) => {
-          console.error('Error saving search query:', error);
-        });
+    if (!query || query.trim().length < 2) {
+      throw new BadRequestException(
+        'The search query must be at least 2 characters long',
+      );
     }
+
+    const user = await this.userService.getUserByToken(token);
+
+    this.searchQueriesService
+      .saveSearchQuery({
+        query: query.trim(),
+        userId: user ? String(user._id) : undefined,
+        sessionId,
+      })
+      .catch(console.error);
+
+    const skip = (page - 1) * limit;
+
     const filter: FilterQuery<ProductDocument> = {};
 
     if (category && Types.ObjectId.isValid(category)) {
@@ -315,61 +283,98 @@ export class ProductsService {
       filter.colors = { $in: colors };
     }
 
-    const textFilter = {
-      ...filter,
-      $text: { $search: query },
+    const textSort: PipelineStage.Sort = {
+      $sort: {
+        score: { $meta: 'textScore' },
+      },
     };
 
-    const textResults = await this.productModel
-      .find(textFilter, { score: { $meta: 'textScore' } })
-      .sort({ score: { $meta: 'textScore' } })
-      .select('_id')
-      .lean();
+    const textPipeline: PipelineStage[] = [
+      {
+        $match: {
+          ...filter,
+          $text: { $search: query },
+        },
+      },
+      {
+        $addFields: {
+          score: { $meta: 'textScore' },
+          name: localizedField('name', lang),
+          description: localizedField('description', lang),
+          material: localizedField('material', lang),
+        },
+      },
+      textSort,
+      {
+        $facet: {
+          items: [{ $skip: skip }, { $limit: limit }],
+          total: [{ $count: 'count' }],
+        },
+      },
+    ];
 
-    const regexFilter = {
-      ...filter,
-      name: { $regex: query, $options: 'i' },
-    };
+    const textResult = await this.productModel
+      .aggregate<{
+        items: ProductDocument[];
+        total: { count: number }[];
+      }>(textPipeline)
+      .exec();
 
-    const regexResults = await this.productModel
-      .find(regexFilter)
-      .select('_id')
-      .lean();
+    if (textResult[0].items.length > 0) {
+      const totalCount = textResult[0].total[0]?.count ?? 0;
 
-    const idMap = new Map<string, boolean>();
+      return {
+        products: textResult[0].items,
+        totalCount,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
+        hasMore: page * limit < totalCount,
+        searchQuery: query,
+      };
+    }
 
-    [...textResults, ...regexResults].forEach((item) => {
-      idMap.set(String(item._id as Types.ObjectId), true);
-    });
+    const regexPipeline: PipelineStage[] = [
+      {
+        $match: {
+          ...filter,
+          $or: [
+            { 'name.ru': { $regex: query, $options: 'i' } },
+            { 'name.en': { $regex: query, $options: 'i' } },
+            { 'name.kg': { $regex: query, $options: 'i' } },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          name: localizedField('name', lang),
+          description: localizedField('description', lang),
+          material: localizedField('material', lang),
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $facet: {
+          items: [{ $skip: skip }, { $limit: limit }],
+          total: [{ $count: 'count' }],
+        },
+      },
+    ];
 
-    const productsIds = [...idMap.keys()];
+    const regexResult = await this.productModel
+      .aggregate<{
+        items: ProductDocument[];
+        total: { count: number }[];
+      }>(regexPipeline)
+      .exec();
 
-    const totalCount = productsIds.length;
-
-    const skip = (page - 1) * limit;
-
-    const paginatedIds = productsIds.slice(skip, skip + limit);
-
-    const products = await this.productModel
-      .find({ _id: { $in: paginatedIds } })
-      .lean();
-
-    const productMap = new Map(
-      products.map((p) => [String(p._id as Types.ObjectId), p]),
-    );
-
-    const orderedProducts = paginatedIds.map((id) => productMap.get(id));
-
-    const totalPages = Math.ceil(totalCount / limit);
-
-    const hasMore = page * limit < totalCount;
+    const totalCount = regexResult[0].total[0]?.count ?? 0;
 
     return {
-      products: orderedProducts,
+      products: regexResult[0].items,
       totalCount,
       currentPage: page,
-      totalPages,
-      hasMore,
+      totalPages: Math.ceil(totalCount / limit),
+      hasMore: page * limit < totalCount,
       searchQuery: query,
     };
   }
@@ -625,7 +630,11 @@ export class ProductsService {
     );
   }
 
-  async filterProducts(filters: FilterProductsDto) {
+  async filterProducts(
+    filters: FilterProductsDto & { lang?: 'ru' | 'en' | 'kg' },
+  ) {
+    const lang = filters.lang ?? 'ru';
+
     const filter: ProductFilter = {};
 
     if (filters.categoryId) {
@@ -644,10 +653,6 @@ export class ProductsService {
       filter.price = {};
       if (filters.minPrice !== undefined) filter.price.$gte = filters.minPrice;
       if (filters.maxPrice !== undefined) filter.price.$lte = filters.maxPrice;
-    }
-
-    if (filters.material) {
-      filter.material = filters.material;
     }
 
     if (filters.inStock !== undefined) {
@@ -671,20 +676,43 @@ export class ProductsService {
       sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
     }
 
-    const [products, totalCount] = await Promise.all([
-      this.productModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
-      this.productModel.countDocuments(filter),
-    ]);
+    const pipeline: PipelineStage[] = [
+      { $match: filter },
+
+      {
+        $addFields: {
+          name: localizedField('name', lang),
+          description: localizedField('description', lang),
+          material: localizedField('material', lang),
+        },
+      },
+
+      { $sort: Object.keys(sort).length ? sort : { createdAt: -1 } },
+
+      {
+        $facet: {
+          items: [{ $skip: skip }, { $limit: limit }],
+          totalCount: [{ $count: 'count' }],
+        },
+      },
+    ];
+
+    const result = await this.productModel.aggregate<{
+      items: ProductDocument[];
+      totalCount: Array<{ count: number }>;
+    }>(pipeline);
+
+    const products = result[0]?.items ?? [];
+    const totalCount = result[0]?.totalCount[0]?.count ?? 0;
 
     const totalPages = Math.ceil(totalCount / limit);
-    const hasMore = page < totalPages;
 
     return {
       products,
       totalCount,
       currentPage: page,
       totalPages,
-      hasMore,
+      hasMore: page < totalPages,
       appliedFilters: filters,
     };
   }

@@ -25,7 +25,7 @@ import {
 } from "../../categories/categorySlice";
 import { fetchCategories } from "../../categories/categoryThunk";
 
-import type { ProductInput } from "../../../types";
+import type { ICategory, ProductInput } from "../../../types";
 import { findClosestColor } from "../../../utils/colorNormalizer";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "../../../constants";
@@ -33,9 +33,10 @@ import { API_URL } from "../../../constants";
 interface Props {
   onSubmit: (product: ProductInput) => Promise<void>;
   loading: boolean;
+  productData?: ProductInput & { category: ICategory };
 }
 
-const ProductForm = ({ onSubmit, loading }: Props) => {
+const ProductForm = ({ onSubmit, loading, productData }: Props) => {
   const [isSizesOpen, setSizesOpen] = useState(false);
   const [isColorsOpen, setColorsOpen] = useState(false);
   const { t } = useTranslation();
@@ -68,6 +69,17 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!productData) return;
+
+    const { category, ...rest } = productData;
+
+    setState({
+      ...rest,
+      category: category._id,
+    });
+  }, [productData]);
 
   const fieldSx = {
     "& .MuiOutlinedInput-root": {
@@ -230,7 +242,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
   return (
     <Box
       sx={{
-        mt: { xs: 4, sm: 8 },
+        mt: { xs: 2, sm: 4 },
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -238,10 +250,6 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
         px: 2,
       }}
     >
-      <Typography variant="h5" sx={{ color: "#660033", mb: 2 }}>
-        Новый товар
-      </Typography>
-
       <Box component="form" onSubmit={submitFormHandler} sx={{ width: "100%" }}>
         <Stack spacing={2}>
           <TextField
@@ -551,7 +559,7 @@ const ProductForm = ({ onSubmit, loading }: Props) => {
           )}
 
           <Button type="submit" variant="contained" disabled={loading}>
-            Создать товар
+            Сохранить
           </Button>
         </Stack>
       </Box>

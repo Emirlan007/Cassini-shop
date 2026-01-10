@@ -26,21 +26,12 @@ const HomePage = () => {
 
   const { i18n } = useTranslation();
 
+  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
+
   useEffect(() => {
-    const handleChange = () => {
-      const lang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
-      dispatch(fetchProducts({ lang }));
-      dispatch(fetchPopularProducts({ lang }));
-    };
-
-    i18n.on("languageChanged", handleChange);
-
-    handleChange();
-
-    return () => {
-      i18n.off("languageChanged", handleChange);
-    };
-  }, [dispatch, i18n]);
+    dispatch(fetchProducts({ lang: currentLang }));
+    dispatch(fetchPopularProducts({ lang: currentLang }));
+  }, [dispatch, currentLang]);
 
   const allProducts = useMemo(() => {
     return [...popularProducts, ...products];

@@ -16,6 +16,7 @@ export class Product {
       kg: { type: String },
     },
     required: true,
+    _id: false,
   })
   name: TranslatedField;
 
@@ -28,6 +29,7 @@ export class Product {
       en: { type: String },
       kg: { type: String },
     },
+    _id: false,
   })
   description?: TranslatedField;
 
@@ -70,6 +72,7 @@ export class Product {
       en: { type: String },
       kg: { type: String },
     },
+    _id: false,
   })
   material: TranslatedField;
 

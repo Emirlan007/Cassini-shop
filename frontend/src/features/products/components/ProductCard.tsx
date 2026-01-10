@@ -32,7 +32,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
       sx={{
         width: "100%",
         maxWidth: { xs: "180px", sm: "220px", md: "280px", lg: "336px" },
-        height: { xs: "auto", sm: "380px", md: "450px", lg: "504.2px" },
+        // height: { xs: "auto", sm: "380px", md: "450px", lg: "504.2px" },
         borderRadius: "5px",
         border: "1px solid #f3f3f3",
         boxShadow: "none",
@@ -105,6 +105,9 @@ const ProductCard: React.FC<Props> = ({ product }) => {
       <CardContent
         sx={{
           p: 1,
+          "&:last-child": {
+            pb: 1,
+          },
         }}
       >
         <Typography

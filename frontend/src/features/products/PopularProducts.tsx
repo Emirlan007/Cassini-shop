@@ -59,11 +59,7 @@ const PopularProducts: React.FC<Props> = ({ products, loading }) => {
       >
         <Box
           sx={{
-            pl: {
-              xs: 2,
-              sm: 3,
-              md: 4,
-            },
+            px: { xs: 1, sm: 2 },
             mb: 2,
             alignSelf: {
               sm: "flex-start",

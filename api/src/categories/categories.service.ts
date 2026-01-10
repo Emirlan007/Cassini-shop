@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import slugify from 'slugify';
@@ -15,7 +19,7 @@ export class CategoriesService {
   ) {}
 
   async create(dto: CreateCategoryDto): Promise<CategoryDocument> {
-    const slug = slugify(dto.title, { lower: true, strict: true });
+    const slug = slugify(dto.title.ru, { lower: true, strict: true });
 
     const existing = await this.categoryModel.findOne({ slug }).exec();
     if (existing) {
@@ -35,7 +39,7 @@ export class CategoriesService {
 
     for (const dto of dtos) {
       const slug =
-        dto.slug || slugify(dto.title, { lower: true, strict: true });
+        dto.slug || slugify(dto.title.ru, { lower: true, strict: true });
 
       const existing = await this.categoryModel.findOne({ slug }).exec();
       if (!existing) {
@@ -62,10 +66,10 @@ export class CategoriesService {
 
   async update(id: string, dto: UpdateCategoryDto): Promise<CategoryDocument> {
     if (dto.title) {
-      const slug = slugify(dto.title, { lower: true, strict: true });
+      const slug = slugify(dto.title.ru, { lower: true, strict: true });
       const existing = await this.categoryModel.findOne({ slug }).exec();
 
-      if (existing) {
+      if (existing && existing._id && existing._id.toString() !== id) {
         throw new ConflictException(
           `Category with slug "${slug}" already exists`,
         );

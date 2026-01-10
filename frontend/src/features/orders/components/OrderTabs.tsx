@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Tab, Tabs, Typography } from "@mui/material";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import CustomTabPanel from "../../../components/UI/Tabs/CustomTabPanel";

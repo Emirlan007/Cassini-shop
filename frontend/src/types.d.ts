@@ -50,7 +50,7 @@ export interface IValidationError {
 
 export interface ICategory {
   _id: string;
-  title: string;
+  title: TranslatedField;
   slug: string;
 }
 

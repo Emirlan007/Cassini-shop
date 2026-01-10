@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchCategories } from "./categoryThunk";
 import {
@@ -20,6 +21,7 @@ interface Props {
 const Categories = ({ onCategoryClick }: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   const categories = useAppSelector((state) => state.categories.categoriesAll);
   const loading = useAppSelector(
@@ -110,7 +112,10 @@ const Categories = ({ onCategoryClick }: Props) => {
             }}
           >
             <ListItemText
-              primary={category.title}
+              primary={
+                category.title[i18n.language as "ru" | "en" | "kg"] ||
+                category.title.ru
+              }
               primaryTypographyProps={{
                 fontSize: "0.9375rem",
                 fontWeight: 500,

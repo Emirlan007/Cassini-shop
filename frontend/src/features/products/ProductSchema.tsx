@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import type { Product } from "../../types";
 
 interface ProductSchemaProps {
@@ -6,6 +7,8 @@ interface ProductSchemaProps {
 }
 
 export const ProductSchema = ({ product }: ProductSchemaProps) => {
+  const { i18n } = useTranslation();
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -14,7 +17,12 @@ export const ProductSchema = ({ product }: ProductSchemaProps) => {
     image: product?.images,
     // sku: product?.sku,
     category: product?.category
-      ? { "@type": "Thing", name: product?.category.title }
+      ? {
+          "@type": "Thing",
+          name:
+            product?.category.title[i18n.language as "ru" | "en" | "kg"] ||
+            product?.category.title.ru,
+        }
       : undefined,
     // brand: {
     //   "@type": "Brand",

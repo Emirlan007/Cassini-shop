@@ -348,7 +348,11 @@ const CategoryProductsPage = () => {
               }}
             >
               {currentCategory
-                ? `${t("productsInCategory")}: ${currentCategory.title}`
+                ? `${t("productsInCategory")}: ${
+                    currentCategory.title[
+                      i18n.language as "ru" | "en" | "kg"
+                    ] || currentCategory.title.ru
+                  }`
                 : t("productsInCategory")}
               {totalCount > 0 && (
                 <Typography

@@ -12,14 +12,16 @@ import {
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
-import { updateProductDiscount } from "../admin/adminProductsThunks";
-import toast from "react-hot-toast";
-import { fetchProductById } from "../productsThunks";
 import {
-  selectAdminUpdateDiscountError,
-  selectAdminUpdateDiscountLoading,
-} from "../admin/adminProductsSlice";
+  fetchProductById,
+  updateProductDiscount,
+} from "../admin/adminProductsThunks";
+import toast from "react-hot-toast";
 import { trackAddToCart } from "../../../analytics/analytics";
+import {
+  selectUpdateDiscountError,
+  selectUpdateDiscountLoading,
+} from "../admin/adminProductsSlice";
 
 interface Props {
   product: Product;
@@ -40,11 +42,9 @@ const ProductActions: React.FC<Props> = ({
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
   const dispatch = useAppDispatch();
 
-  const updateDiscountLoading = useAppSelector(
-    selectAdminUpdateDiscountLoading
-  );
+  const updateDiscountLoading = useAppSelector(selectUpdateDiscountLoading);
 
-  const updateDiscountError = useAppSelector(selectAdminUpdateDiscountError);
+  const updateDiscountError = useAppSelector(selectUpdateDiscountError);
 
   const { isInWishlist, toggleWishlist } = useWishlist(product._id);
 

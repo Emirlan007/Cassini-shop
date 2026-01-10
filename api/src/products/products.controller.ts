@@ -79,12 +79,17 @@ export class ProductsController {
     return this.productsService.filterProducts(filters);
   }
 
-  @Get(':id')
-  async getProductById(
-    @Param('id') id: string,
+  @Get('id/:id')
+  async getProductById(@Param('id') id: string) {
+    return this.productsService.findById(id);
+  }
+
+  @Get('slug/:slug')
+  async getProductBySlug(
+    @Param('slug') slug: string,
     @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
   ) {
-    return this.productsService.findOne(id, lang);
+    return this.productsService.findBySlug(slug, lang);
   }
 
   @Post()

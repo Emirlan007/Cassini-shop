@@ -144,6 +144,18 @@ export class ProductsService {
     });
   }
 
+  async findById(id: string): Promise<Product | null> {
+    const product = await this.productModel
+      .findById(id)
+      .populate('category', 'title slug');
+
+    if (!product) {
+      throw new NotFoundException(`Product with id "${id}" not found`);
+    }
+
+    return product;
+  }
+
   async findBySearch(searchValue?: string): Promise<Product[]> {
     const query = this.productModel.find();
     if (searchValue) {
@@ -154,13 +166,12 @@ export class ProductsService {
     return query.populate('category', 'title slug').exec();
   }
 
-  async findOne(id: string, lang: 'ru' | 'en' | 'kg' = 'ru'): Promise<Product> {
-    const match = Types.ObjectId.isValid(id)
-      ? { _id: new Types.ObjectId(id) }
-      : { slug: id };
-
+  async findBySlug(
+    slug: string,
+    lang: 'ru' | 'en' | 'kg' = 'ru',
+  ): Promise<Product> {
     const result = await this.productModel.aggregate([
-      { $match: match },
+      { $match: { slug } },
       {
         $lookup: {
           from: 'categories',
@@ -177,11 +188,10 @@ export class ProductsService {
           material: localizedField('material', lang),
         },
       },
-      { $limit: 1 },
     ]);
 
     if (!result.length) {
-      throw new NotFoundException(`Product with ID or slug "${id}" not found`);
+      throw new NotFoundException(`Product with slug "${slug}" not found`);
     }
 
     return result[0] as Product;

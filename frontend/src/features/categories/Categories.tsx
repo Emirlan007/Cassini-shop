@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchCategories } from "./categoryThunk";
 import {
@@ -12,14 +13,21 @@ import {
   alpha,
 } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import type { ICategory } from "../../types";
 
 interface Props {
   onCategoryClick?: () => void;
 }
 
+const getTranslatedTitle = (category: ICategory, language: string): string => {
+  const lang = language.split("-")[0] as "ru" | "en" | "kg";
+  return category.title?.[lang] || category.title?.ru || "";
+};
+
 const Categories = ({ onCategoryClick }: Props) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
 
   const categories = useAppSelector((state) => state.categories.categoriesAll);
   const loading = useAppSelector(
@@ -110,7 +118,7 @@ const Categories = ({ onCategoryClick }: Props) => {
             }}
           >
             <ListItemText
-              primary={category.title}
+              primary={getTranslatedTitle(category, i18n.language)}
               primaryTypographyProps={{
                 fontSize: "0.9375rem",
                 fontWeight: 500,

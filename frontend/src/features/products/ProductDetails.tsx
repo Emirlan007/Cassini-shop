@@ -15,6 +15,17 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../users/usersSlice";
 import { trackProductView } from "../../analytics/analytics";
 import { ProductSchema } from "./ProductSchema";
+import i18n from "../../i18n";
+import type { TranslatedField } from "../../types";
+
+const getTranslatedText = (
+  field: TranslatedField | string | undefined
+): string => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  const lang = i18n.language.split("-")[0] as "ru" | "en" | "kg";
+  return field?.[lang] || field?.ru || "";
+};
 
 const ProductDetails = () => {
   const { productSlug } = useParams() as { productSlug: string };
@@ -63,23 +74,23 @@ const ProductDetails = () => {
     <>
       {product && (
         <Helmet>
-          <title>{product.name}</title>
+          <title>{getTranslatedText(product.name)}</title>
           <meta
             name="description"
             content={
               product.description
-                ? product.description.slice(0, 160)
-                : product.name
+                ? getTranslatedText(product.description).slice(0, 160)
+                : getTranslatedText(product.name)
             }
           />
 
-          <meta property="og:title" content={product.name} />
+          <meta property="og:title" content={getTranslatedText(product.name)} />
           <meta
             property="og:description"
             content={
               product.description
-                ? product.description.slice(0, 200)
-                : product.name
+                ? getTranslatedText(product.description).slice(0, 200)
+                : getTranslatedText(product.name)
             }
           />
           {product.images?.[0] && (

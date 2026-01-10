@@ -4,11 +4,22 @@ import theme from "../../../theme";
 import a11yProps from "../../../components/UI/Tabs/AllyProps";
 import { useTranslation } from "react-i18next";
 import CustomTabPanel from "../../../components/UI/Tabs/CustomTabPanel";
+import i18n from "../../../i18n";
+import type { TranslatedField } from "../../../types";
 
 interface Props {
-  description?: string;
+  description?: TranslatedField | string;
   sizeGuide?: string;
 }
+
+const getTranslatedText = (
+  field: TranslatedField | string | undefined
+): string => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  const lang = i18n.language.split("-")[0] as "ru" | "en" | "kg";
+  return field?.[lang] || field?.ru || "";
+};
 
 const ProductTabs: React.FC<Props> = ({ description, sizeGuide }) => {
   const [tabValue, setTabValue] = useState(0);
@@ -45,7 +56,7 @@ const ProductTabs: React.FC<Props> = ({ description, sizeGuide }) => {
             variant="body1"
             sx={{ color: "#525252", fontSize: "14px" }}
           >
-            {description}
+            {getTranslatedText(description)}
           </Typography>
         </Box>
       </CustomTabPanel>

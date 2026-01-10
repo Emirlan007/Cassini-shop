@@ -41,10 +41,13 @@ const SearchResultsPage = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const loadMoreRef = useRef(null);
   const scrollPositionRef = useRef(0);
+  const totalPagesRef = useRef(0);
 
   const fetchResults = useCallback(
     async (pageToLoad: number) => {
-      if (totalPages > 0 && pageToLoad > totalPages) return;
+      if (totalPagesRef.current > 0 && pageToLoad > totalPagesRef.current)
+        return;
+      if (loading) return;
 
       scrollPositionRef.current = window.scrollY;
 
@@ -69,36 +72,42 @@ const SearchResultsPage = () => {
         setCurrentPage(currentPage);
         setTotal(totalCount ?? 0);
         setTotalPages(totalPages ?? 0);
+        totalPagesRef.current = totalPages ?? 0;
+      } catch (error) {
+        console.error("Search error:", error);
       } finally {
         setLoading(false);
       }
     },
-    [totalPages, query]
+    [query, loading]
   );
 
   useEffect(() => {
     setProducts([]);
     setCurrentPage(1);
+    setHasMore(true);
+    setTotalPages(0);
+    totalPagesRef.current = 0;
     fetchResults(1);
-  }, [query, fetchResults]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
 
   useEffect(() => {
-    if (!isMobile || !loadMoreRef.current) return;
+    if (!isMobile || !loadMoreRef.current || !hasMore || loading) return;
 
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0];
 
-      if (!entry.isIntersecting || !hasMore || loading) return;
-
-      const next = currentPage + 1;
-      setCurrentPage(next);
-      fetchResults(next);
+      if (entry.isIntersecting) {
+        fetchResults(currentPage + 1);
+      }
     });
 
     observer.observe(loadMoreRef.current);
 
     return () => observer.disconnect();
-  }, [isMobile, hasMore, loading, currentPage, fetchResults]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile, hasMore, loading, currentPage]);
 
   useEffect(() => {
     requestAnimationFrame(() => {

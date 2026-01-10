@@ -17,39 +17,36 @@ import {
   fetchFilteredProducts,
   fetchProducts,
 } from "../features/products/productsThunks";
-import {
-  selectProducts,
-  selectProductsFetchLoading,
-  selectProductsFetchError,
-  selectFilteredProducts,
-  selectFilterLoading,
-  selectFilterError,
-  selectTotalCount,
-  selectCurrentPage,
-  selectTotalPages,
-} from "../features/products/productsSlice";
 import ProductList from "../features/products/ProductsList.tsx";
-import type { FilterState, FilterParams } from "../types";
+import type { FilterState, FilterParams, ICategory } from "../types";
 import ProductFilters from "../features/products/ProductFilters.tsx";
 import { selectCategories } from "../features/categories/categorySlice.ts";
 import { fetchCategories } from "../features/categories/categoryThunk.ts";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import i18n from "../i18n.ts";
+
+const getTranslatedTitle = (category: ICategory, language: string): string => {
+  const lang = language.split("-")[0] as "ru" | "en" | "kg";
+  return category.title?.[lang] || category.title?.ru || "";
+};
 
 const CategoryProductsPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const categories = useAppSelector(selectCategories);
-  const loading = useAppSelector(selectProductsFetchLoading);
-  const error = useAppSelector(selectProductsFetchError);
-  const allProducts = useAppSelector(selectProducts);
-  const filteredProducts = useAppSelector(selectFilteredProducts);
-  const filterLoading = useAppSelector(selectFilterLoading);
-  const filterError = useAppSelector(selectFilterError);
-  const totalCount = useAppSelector(selectTotalCount);
-  const currentPage = useAppSelector(selectCurrentPage);
-  const totalPages = useAppSelector(selectTotalPages);
+  const loading = useAppSelector((state) => state.products.fetchItemsLoading);
+  const error = useAppSelector((state) => state.products.fetchItemsError);
+  const allProducts = useAppSelector((state) => state.products.items);
+  const filteredProducts = useAppSelector(
+    (state) => state.products.filteredItems
+  );
+  const filterLoading = useAppSelector((state) => state.products.filterLoading);
+  const filterError = useAppSelector((state) => state.products.filterError);
+  const totalCount = useAppSelector((state) => state.products.totalCount);
+  const currentPage = useAppSelector((state) => state.products.currentPage);
+  const totalPages = useAppSelector((state) => state.products.totalPages);
 
   const location = useLocation();
 
@@ -70,7 +67,6 @@ const CategoryProductsPage = () => {
 
   useEffect(() => {
     if (!currentCategory && categories.length > 0 && slug) {
-      console.error(`Category with slug "${slug}" not found`);
       navigate("/");
     }
   }, [currentCategory, categories, slug, navigate]);
@@ -126,7 +122,7 @@ const CategoryProductsPage = () => {
 
   useEffect(() => {
     if (categoryId) {
-      dispatch(fetchProducts(categoryId));
+      dispatch(fetchProducts({ categoryId }));
     }
   }, [dispatch, categoryId]);
 
@@ -172,7 +168,14 @@ const CategoryProductsPage = () => {
       // @ts-expect-error
       dispatch(fetchFilteredProducts(filterParams));
     }
-  }, [dispatch, categoryId, filters, page, availableOptions.priceRange]);
+  }, [
+    dispatch,
+    categoryId,
+    filters,
+    page,
+    availableOptions.priceRange,
+    allProducts.length,
+  ]);
 
   useEffect(() => {
     setPage(1);
@@ -187,7 +190,6 @@ const CategoryProductsPage = () => {
   ]);
 
   const handleFilterChange = (newFilters: FilterState) => {
-    console.log("Filters changed:", newFilters);
     setFilters(newFilters);
   };
 
@@ -218,8 +220,11 @@ const CategoryProductsPage = () => {
   const showProducts =
     filteredProducts.length > 0 ? filteredProducts : allProducts;
 
-  const title = `${currentCategory?.title} — купить онлайн`;
-  const description = `Купить товары категории "${currentCategory?.title}". Найдено товаров: ${totalCount}. Актуальные цены и быстрая доставка`;
+  const categoryTitle = currentCategory
+    ? getTranslatedTitle(currentCategory, i18n.language)
+    : "";
+  const title = `${categoryTitle} — купить онлайн`;
+  const description = `Купить товары категории "${categoryTitle}". Найдено товаров: ${totalCount}. Актуальные цены и быстрая доставка`;
   const url = `${window.location.origin}${location.pathname}`;
 
   if (!currentCategory && categories.length > 0) {
@@ -348,7 +353,10 @@ const CategoryProductsPage = () => {
               }}
             >
               {currentCategory
-                ? `${t("productsInCategory")}: ${currentCategory.title}`
+                ? `${t("productsInCategory")}: ${getTranslatedTitle(
+                    currentCategory,
+                    i18n.language
+                  )}`
                 : t("productsInCategory")}
               {totalCount > 0 && (
                 <Typography

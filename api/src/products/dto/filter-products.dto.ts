@@ -87,4 +87,9 @@ export class FilterProductsDto {
   @IsString()
   @IsIn(['asc', 'desc'])
   sortOrder?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['ru', 'en', 'kg'])
+  lang?: 'ru' | 'en' | 'kg';
 }

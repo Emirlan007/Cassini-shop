@@ -1,7 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
-import type { Product } from "../../../types";
+import type { Product, TranslatedField } from "../../../types";
 import type React from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n";
 
 interface Props {
   product: Product;
@@ -9,6 +10,15 @@ interface Props {
   showDiscount: boolean;
   timeLeft: string;
 }
+
+const getTranslatedText = (
+  field: TranslatedField | string | undefined
+): string => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  const lang = i18n.language.split("-")[0] as "ru" | "en" | "kg";
+  return field?.[lang] || field?.ru || "";
+};
 
 const ProductInfo: React.FC<Props> = ({
   product,
@@ -28,7 +38,7 @@ const ProductInfo: React.FC<Props> = ({
       >
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="h6" sx={{ marginBottom: 1 }}>
-            <b>{product?.name}</b>
+            <b>{getTranslatedText(product?.name)}</b>
           </Typography>
 
           {product?.isNew && (
@@ -159,7 +169,9 @@ const ProductInfo: React.FC<Props> = ({
             }}
           >
             {t("material")}:{" "}
-            <strong style={{ color: "#333" }}>{product.material}</strong>
+            <strong style={{ color: "#333" }}>
+              {getTranslatedText(product.material)}
+            </strong>
           </Typography>
         </Box>
       )}

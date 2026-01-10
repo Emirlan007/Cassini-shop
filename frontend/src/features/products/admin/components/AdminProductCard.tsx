@@ -1,5 +1,5 @@
 import { TableRow, TableCell, Button, Checkbox } from "@mui/material";
-import type { Product } from "../../../../types";
+import type { Product, ICategory, TranslatedField } from "../../../../types";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../../constants";
 import { useAppDispatch } from "../../../../app/hooks.ts";
@@ -11,11 +11,21 @@ import {
 import type { ChangeEvent } from "react";
 import toast from "react-hot-toast";
 import TableThumbnail from "../../../../components/UI/TableThumbnail/TableThumbnail.tsx";
+import i18n from "../../../../i18n";
 
 interface Props {
   product: Product;
   removeProduct: (id: string) => void;
 }
+
+const getTranslatedText = (
+  field: TranslatedField | string | undefined
+): string => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  const lang = i18n.language.split("-")[0] as "ru" | "en" | "kg";
+  return field?.[lang] || field?.ru || "";
+};
 
 const AdminProductCard = ({ product, removeProduct }: Props) => {
   const navigate = useNavigate();
@@ -82,8 +92,8 @@ const AdminProductCard = ({ product, removeProduct }: Props) => {
       />
 
       <TableCell>{product._id}</TableCell>
-      <TableCell>{product.name}</TableCell>
-      <TableCell>{product.category?.title}</TableCell>
+      <TableCell>{getTranslatedText(product.name)}</TableCell>
+      <TableCell>{getTranslatedText(product.category?.title)}</TableCell>
       <TableCell>{product.price} сом</TableCell>
       <TableCell align="center">
         {product.discount ? `${product.discount}%` : "-"}

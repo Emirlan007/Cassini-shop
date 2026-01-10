@@ -123,40 +123,13 @@ export class ProductsService {
       ? { category: new Types.ObjectId(categoryId) }
       : {};
 
-    const products = await this.productModel.aggregate([
-      { $match: match },
-      {
-        $addFields: {
-          name: {
-            $cond: {
-              if: { $eq: [`$name.${lang}`, ''] },
-              then: '$name.ru',
-              else: `$name.${lang}`,
-            },
-          },
-          description: {
-            $cond: {
-              if: { $eq: [`$description.${lang}`, ''] },
-              then: '$description.ru',
-              else: `$description.${lang}`,
-            },
-          },
-          material: {
-            $cond: {
-              if: { $eq: [`$material.${lang}`, ''] },
-              then: '$material.ru',
-              else: `$material.${lang}`,
-            },
-          },
-        },
-      },
-      { $sort: { createdAt: -1 } },
-    ]);
+    const products = await this.productModel
+      .find(match)
+      .sort({ createdAt: -1 })
+      .populate('category', 'title slug')
+      .lean();
 
-    return this.productModel.populate(products, {
-      path: 'category',
-      select: 'title slug',
-    });
+    return products;
   }
 
   async findBySearch(searchValue?: string): Promise<Product[]> {
@@ -174,50 +147,16 @@ export class ProductsService {
       ? { _id: new Types.ObjectId(id) }
       : { slug: id };
 
-    const result = await this.productModel.aggregate([
-      { $match: match },
-      {
-        $lookup: {
-          from: 'categories',
-          localField: 'category',
-          foreignField: '_id',
-          as: 'category',
-        },
-      },
-      { $unwind: '$category' },
-      {
-        $addFields: {
-          name: {
-            $cond: {
-              if: { $eq: [`$name.${lang}`, ''] },
-              then: '$name.ru',
-              else: `$name.${lang}`,
-            },
-          },
-          description: {
-            $cond: {
-              if: { $eq: [`$description.${lang}`, ''] },
-              then: '$description.ru',
-              else: `$description.${lang}`,
-            },
-          },
-          material: {
-            $cond: {
-              if: { $eq: [`$material.${lang}`, ''] },
-              then: '$material.ru',
-              else: `$material.${lang}`,
-            },
-          },
-        },
-      },
-      { $limit: 1 },
-    ]);
+    const product = await this.productModel
+      .findOne(match)
+      .populate('category', 'title slug')
+      .lean();
 
-    if (!result.length) {
+    if (!product) {
       throw new NotFoundException(`Product with ID or slug "${id}" not found`);
     }
 
-    return result[0] as Product;
+    return product as Product;
   }
 
   async findPopular(
@@ -230,46 +169,13 @@ export class ProductsService {
     const filter = { isPopular: true };
 
     const [items, total] = await Promise.all([
-      this.productModel.aggregate([
-        { $match: filter },
-        { $sort: { createdAt: -1 } },
-        { $skip: skip },
-        { $limit: limit },
-        {
-          $lookup: {
-            from: 'categories',
-            localField: 'category',
-            foreignField: '_id',
-            as: 'category',
-          },
-        },
-        { $unwind: '$category' },
-        {
-          $addFields: {
-            name: {
-              $cond: {
-                if: { $eq: [`$name.${lang}`, ''] },
-                then: '$name.ru',
-                else: `$name.${lang}`,
-              },
-            },
-            description: {
-              $cond: {
-                if: { $eq: [`$description.${lang}`, ''] },
-                then: '$description.ru',
-                else: `$description.${lang}`,
-              },
-            },
-            material: {
-              $cond: {
-                if: { $eq: [`$material.${lang}`, ''] },
-                then: '$material.ru',
-                else: `$material.${lang}`,
-              },
-            },
-          },
-        },
-      ]),
+      this.productModel
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate('category', 'title slug')
+        .lean(),
 
       this.productModel.countDocuments(filter),
     ]);
@@ -328,7 +234,11 @@ export class ProductsService {
 
     const regexFilter = {
       ...filter,
-      name: { $regex: query, $options: 'i' },
+      $or: [
+        { 'name.ru': { $regex: query, $options: 'i' } },
+        { 'name.en': { $regex: query, $options: 'i' } },
+        { 'name.kg': { $regex: query, $options: 'i' } },
+      ],
     };
 
     const regexResults = await this.productModel
@@ -626,40 +536,40 @@ export class ProductsService {
   }
 
   async filterProducts(filters: FilterProductsDto) {
-    const filter: ProductFilter = {};
+    const match: ProductFilter = {};
 
     if (filters.categoryId) {
-      filter.category = new Types.ObjectId(filters.categoryId);
+      match.category = new Types.ObjectId(filters.categoryId);
     }
 
     if (filters.colors?.length) {
-      filter.colors = { $in: filters.colors };
+      match.colors = { $in: filters.colors };
     }
 
     if (filters.sizes?.length) {
-      filter.size = { $in: filters.sizes };
+      match.size = { $in: filters.sizes };
     }
 
     if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-      filter.price = {};
-      if (filters.minPrice !== undefined) filter.price.$gte = filters.minPrice;
-      if (filters.maxPrice !== undefined) filter.price.$lte = filters.maxPrice;
+      match.price = {};
+      if (filters.minPrice !== undefined) match.price.$gte = filters.minPrice;
+      if (filters.maxPrice !== undefined) match.price.$lte = filters.maxPrice;
     }
 
     if (filters.material) {
-      filter.material = filters.material;
+      match.material = filters.material;
     }
 
     if (filters.inStock !== undefined) {
-      filter.inStock = filters.inStock;
+      match.inStock = filters.inStock;
     }
 
     if (filters.isNew !== undefined) {
-      filter.isNew = filters.isNew;
+      match.isNew = filters.isNew;
     }
 
     if (filters.isPopular !== undefined) {
-      filter.isPopular = filters.isPopular;
+      match.isPopular = filters.isPopular;
     }
 
     const page = filters.page || 1;
@@ -669,11 +579,32 @@ export class ProductsService {
     const sort: ProductSort = {};
     if (filters.sortBy) {
       sort[filters.sortBy] = filters.sortOrder === 'asc' ? 1 : -1;
+    } else {
+      sort.createdAt = -1;
     }
 
+    const lang = filters.lang || 'ru';
+
+    // Use aggregation to handle category population
+    const pipeline: any[] = [
+      { $match: match },
+      { $sort: sort },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'category',
+        },
+      },
+      { $unwind: '$category' },
+    ];
+
     const [products, totalCount] = await Promise.all([
-      this.productModel.find(filter).sort(sort).skip(skip).limit(limit).exec(),
-      this.productModel.countDocuments(filter),
+      this.productModel.aggregate(pipeline).exec(),
+      this.productModel.countDocuments(match),
     ]);
 
     const totalPages = Math.ceil(totalCount / limit);

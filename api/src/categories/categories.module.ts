@@ -6,6 +6,7 @@ import { Category, CategorySchema } from '../schemas/category.schema';
 import { FileUploadModule } from '../shared/file-upload/file-upload.module';
 import { AuthModule } from '../auth/auth.module';
 import { User, UserSchema } from '../schemas/user.schema';
+import { TranslationModule } from '../translation/translation.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { User, UserSchema } from '../schemas/user.schema';
     ]),
     FileUploadModule,
     AuthModule,
+    TranslationModule,
   ],
   controllers: [CategoriesController],
   providers: [CategoriesService],

@@ -50,21 +50,21 @@ export interface IValidationError {
 
 export interface ICategory {
   _id: string;
-  title: string;
+  title: TranslatedField;
   slug: string;
 }
 
 interface UpdateCategoryPayload {
   _id: string;
-  title: string;
-  slug: string;
+  title: TranslatedField;
+  slug?: string;
 }
 
 export interface Product {
   _id: string;
   slug: string;
-  name: string;
-  description?: string;
+  name: TranslatedField;
+  description?: TranslatedField;
   size: string[];
   colors: string[];
   category: ICategory;
@@ -78,7 +78,7 @@ export interface Product {
   isNew: boolean;
   isPopular: boolean;
   inStock?: boolean;
-  material?: string;
+  material?: TranslatedField;
 }
 
 export type TranslatedField = {

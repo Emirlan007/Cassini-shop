@@ -61,9 +61,10 @@ export class UsersController {
 
     const existingUser = await this.userModel.findOne({ phoneNumber });
     if (existingUser) {
-      throw new BadRequestException(
-        'Пользователь с таким номером уже существует',
-      );
+      throw new BadRequestException({
+        code: 'USER_ALREADY_EXISTS',
+        message: 'Пользователь с таким номером уже существует',
+      });
     }
 
     const user = new this.userModel({

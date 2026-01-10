@@ -23,6 +23,7 @@
   "logout": "Logout",
   "login": "Login",
   "register": "Register",
+  "userAlreadyExists": "User already exists",
   "profile": "Profile",
   "categories": "Categories",
   "menu": "Menu",

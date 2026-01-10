@@ -59,9 +59,12 @@ const Cart = () => {
     phoneNumber: string;
     city: string;
     address: string;
-  }) => {
-    await dispatch(registerThunk(userData));
+  }) => {try {
+    await dispatch(registerThunk(userData)).unwrap();
     setStep(3);
+  } catch (error) {
+    toast.error(t("userAlreadyExists"));
+  }
   };
 
   const handleAddressSubmit = async (userData: {
@@ -96,6 +99,10 @@ const Cart = () => {
     paymentMethod: "cash" | "qrCode";
     comment?: string;
   }) => {
+    if (!user) {
+      toast.error(t("loginRequired"));
+      return;
+    }
     if (items.length === 0) {
       toast.error(t("emptyCart"));
       return;

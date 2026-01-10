@@ -23,6 +23,7 @@
   "logout": "Выйти",
   "login": "Войти",
   "register": "Зарегистрироваться",
+  "userAlreadyExists": "Пользователь уже существует",
   "profile": "Профиль",
   "categories": "Категории",
   "menu": "Меню",

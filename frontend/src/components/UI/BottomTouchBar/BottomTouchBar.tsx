@@ -39,7 +39,7 @@ const BottomTouchBar = () => {
     >
       <BottomNavigationAction
         sx={{ "&.Mui-selected": { color: theme.palette.secondary.light } }}
-        label={t("touchBar.home")}
+        // label={t("touchBar.home")}
         value="home"
         onClick={() => navigate("/")}
         icon={<HomeIcon />}

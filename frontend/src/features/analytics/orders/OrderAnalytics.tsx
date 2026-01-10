@@ -9,6 +9,9 @@ import {
   ToggleButton,
   useTheme,
   useMediaQuery,
+  TableContainer,
+  Table,
+  TableHead, TableCell, TableRow, TableBody, Chip,
 } from "@mui/material";
 import {
   LineChart,
@@ -20,10 +23,16 @@ import {
 } from "recharts";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
+import {selectOrders} from "../../orders/admin/ordersSlice.ts";
+import {fetchAdminOrders} from "../../orders/admin/ordersThunks.ts";
+import {getOrderStatusColor} from "../../../utils/statusUtils.ts";
+import {useTranslation} from "react-i18next";
 
 const OrderAnalytics = () => {
   const dispatch = useAppDispatch();
   const { data, loading } = useAppSelector((state) => state.orderAnalytics);
+  const orders = useAppSelector(selectOrders);
+  const { t } = useTranslation();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -36,9 +45,19 @@ const OrderAnalytics = () => {
     dispatch(fetchOrderAnalytics({ period }));
   }, [dispatch, period]);
 
+  useEffect(() => {
+    dispatch(fetchAdminOrders());
+  }, [dispatch]);
+
   if (loading || !data) {
     return <Typography>Загрузка...</Typography>;
   }
+
+  const sortedOrders = [...orders].sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() -
+      new Date(a.createdAt).getTime()
+  );
 
   return (
     <Box
@@ -149,6 +168,64 @@ const OrderAnalytics = () => {
             <LegendItem color="#d32f2f" label="Отменено" />
 
           </Box>
+        </CardContent>
+      </Card>
+
+      <Card sx={{ mt: 4 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Таблица заказов
+          </Typography>
+
+          <TableContainer>
+            <Table size={isMobile ? "small" : "medium"}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Дата</TableCell>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Статус</TableCell>
+                  <TableCell>Товары</TableCell>
+                  <TableCell align="center">Кол-во</TableCell>
+                  <TableCell align="right">Сумма</TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {sortedOrders.map((order) => (
+                  <TableRow key={order._id} hover>
+                    <TableCell>
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </TableCell>
+
+                    <TableCell>{order._id}</TableCell>
+
+                    <TableCell>
+                      <Chip
+                        label={t(order.status)}
+                        color={getOrderStatusColor(order.status)}
+                        sx={{ minWidth: "150px", height: "25px" }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      {order.items.map((item) => item.title).join(", ")}
+                    </TableCell>
+
+                    <TableCell align="center">
+                      {order.items.reduce(
+                        (sum, item) => sum + item.quantity,
+                        0
+                      )}
+                    </TableCell>
+
+                    <TableCell align="right">
+                      {order.totalPrice} сом
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Card>
     </Box>

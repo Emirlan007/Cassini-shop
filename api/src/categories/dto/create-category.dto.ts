@@ -1,9 +1,30 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class CreateCategoryDto {
+export class TranslatedFieldDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  ru: string;
+
+  @IsString()
+  @IsNotEmpty()
+  en: string;
+
+  @IsString()
+  @IsNotEmpty()
+  kg: string;
+}
+
+export class CreateCategoryDto {
+  @ValidateNested()
+  @Type(() => TranslatedFieldDto)
+  @IsNotEmpty()
+  title: TranslatedFieldDto;
 
   @IsString()
   @IsOptional()

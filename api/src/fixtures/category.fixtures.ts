@@ -6,43 +6,83 @@ export async function createCategoryFixtures(
 
   const setOfFixtures = [
     {
-      title: 'Верхняя одежда',
+      title: {
+        ru: 'Верхняя одежда',
+        en: 'Outerwear',
+        kg: 'Үстүңкү кийим',
+      },
       slug: 'top_closes',
     },
     {
-      title: 'Платья и сарафаны ',
+      title: {
+        ru: 'Платья и сарафаны',
+        en: 'Dresses and Sundresses',
+        kg: 'Көйнөктөр жана сарафандар',
+      },
       slug: 'dresses',
     },
     {
-      title: 'Блузы и рубашки ',
+      title: {
+        ru: 'Блузы и рубашки',
+        en: 'Blouses and Shirts',
+        kg: 'Блузалар жана көйнөктөр',
+      },
       slug: 'blousesNshirts',
     },
     {
-      title: 'Брюки и шорты',
+      title: {
+        ru: 'Брюки и шорты',
+        en: 'Pants and Shorts',
+        kg: 'Шым жана шорттор',
+      },
       slug: 'pants-and-shorts',
     },
     {
-      title: 'Юбки',
+      title: {
+        ru: 'Юбки',
+        en: 'Skirts',
+        kg: 'Белдемчилер',
+      },
       slug: 'skirts',
     },
     {
-      title: 'Свитеры и кардиганы',
+      title: {
+        ru: 'Свитеры и кардиганы',
+        en: 'Sweaters and Cardigans',
+        kg: 'Свитерлер жана кардигандар',
+      },
       slug: 'Sweaters-and-cardigans',
     },
     {
-      title: 'Спортивная одежда',
+      title: {
+        ru: 'Спортивная одежда',
+        en: 'Sportswear',
+        kg: 'Спорттук кийим',
+      },
       slug: 'sportsWear',
     },
     {
-      title: 'Нижнее бельё',
+      title: {
+        ru: 'Нижнее бельё',
+        en: 'Underwear',
+        kg: 'Ич кийим',
+      },
       slug: 'underwear',
     },
     {
-      title: 'Купальники и пляжная одежда',
+      title: {
+        ru: 'Купальники и пляжная одежда',
+        en: 'Swimwear and Beachwear',
+        kg: 'Суу кийимдер жана пляж кийимдери',
+      },
       slug: 'Swimwear-and-beachwear',
     },
     {
-      title: 'Домашняя одежда',
+      title: {
+        ru: 'Домашняя одежда',
+        en: 'Homewear',
+        kg: 'Үй кийимдер',
+      },
       slug: 'Homewear',
     },
   ];

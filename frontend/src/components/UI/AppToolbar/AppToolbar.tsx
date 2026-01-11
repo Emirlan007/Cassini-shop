@@ -26,6 +26,7 @@ import { selectCart } from "../../../features/cart/cartSlice.ts";
 import { selectWishlistCount } from "../../../features/wishlist/wishlistSlice.ts";
 import { fetchWishlist } from "../../../features/wishlist/wishlistThunks.ts";
 import { fetchCart } from "../../../features/cart/cartThunks.ts";
+import { useTranslation } from "react-i18next";
 
 const AppToolbar = () => {
   const dispatch = useAppDispatch();
@@ -37,14 +38,18 @@ const AppToolbar = () => {
 
   const [open, setOpen] = useState(false);
 
+  const { i18n } = useTranslation();
+
   const toggleDrawer = (value: boolean) => () => setOpen(value);
+
+  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchWishlist());
+      dispatch(fetchWishlist({ lang: currentLang }));
     }
     dispatch(fetchCart());
-  }, [dispatch, user]);
+  }, [dispatch, user, currentLang]);
 
   return (
     <>

@@ -1,20 +1,14 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { useAppSelector } from "../../app/hooks";
-import {
-  selectProducts,
-  selectProductsFetchLoading,
-  selectProductsFetchError,
-} from "./productsSlice";
 import ProductCard from "./components/ProductCard";
+import type { Product } from "../../types";
 
 interface Props {
-  products?: ReturnType<typeof selectProducts>;
+  products: Product[];
+  loading?: boolean;
+  error?: string | null;
 }
 
-const ProductList = ({ products }: Props) => {
-  const loading = useAppSelector(selectProductsFetchLoading);
-  const error = useAppSelector(selectProductsFetchError);
-
+const ProductList = ({ products, loading, error }: Props) => {
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>

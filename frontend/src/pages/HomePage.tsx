@@ -10,6 +10,8 @@ import {
   selectPopularProducts,
   selectPopularProductsLoading,
   selectProducts,
+  selectProductsFetchError,
+  selectProductsFetchLoading,
 } from "../features/products/productsSlice";
 import BannersCarousel from "../features/banners/BannersCarousel.tsx";
 import PopularProducts from "../features/products/PopularProducts.tsx";
@@ -21,6 +23,8 @@ import { validateProducts } from "../utils/schemaValidator";
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
+  const productsLoading = useAppSelector(selectProductsFetchLoading);
+  const productsError = useAppSelector(selectProductsFetchError);
   const popularProducts = useAppSelector(selectPopularProducts);
   const popularProductsLoading = useAppSelector(selectPopularProductsLoading);
 
@@ -80,7 +84,11 @@ const HomePage = () => {
             loading={popularProductsLoading}
           />
 
-          <ProductList products={products} />
+          <ProductList
+            products={products}
+            loading={productsLoading}
+            error={productsError}
+          />
         </Stack>
       </Stack>
     </Box>

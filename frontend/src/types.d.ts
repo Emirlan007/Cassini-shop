@@ -347,3 +347,5 @@ export interface OrderHistoryStats {
   productsPurchased: number;
   averageOrderValue: number;
 }
+
+export type Lang = "ru" | "en" | "kg";

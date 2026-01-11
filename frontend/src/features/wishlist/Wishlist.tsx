@@ -27,11 +27,13 @@ const Wishlist = () => {
   const error = useAppSelector(selectWishlistError);
   const navigate = useNavigate();
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
   useEffect(() => {
-    dispatch(fetchWishlist());
-  }, [dispatch]);
+    dispatch(fetchWishlist({ lang: currentLang }));
+  }, [dispatch, currentLang]);
 
   if (loading) {
     return (

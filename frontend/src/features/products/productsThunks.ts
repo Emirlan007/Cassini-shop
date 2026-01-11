@@ -3,6 +3,7 @@ import type {
   FilteredProductsResponse,
   FilterParams,
   IGlobalError,
+  Lang,
   PopularProducts,
   Product,
 } from "../../types";
@@ -11,7 +12,7 @@ import { isAxiosError } from "axios";
 
 export const fetchProducts = createAsyncThunk<
   Product[],
-  { categoryId?: string; lang?: "ru" | "en" | "kg" },
+  { categoryId?: string; lang?: Lang },
   { rejectValue: IGlobalError }
 >("products/fetchAll", async ({ categoryId, lang }, { rejectWithValue }) => {
   try {
@@ -29,7 +30,7 @@ export const fetchProducts = createAsyncThunk<
 
 export const fetchPopularProducts = createAsyncThunk<
   PopularProducts,
-  { limit?: number; lang?: "ru" | "en" | "kg" },
+  { limit?: number; lang?: Lang },
   { rejectValue: IGlobalError }
 >("products/fetchPopular", async ({ limit = 8, lang }, { rejectWithValue }) => {
   try {
@@ -70,7 +71,7 @@ export const fetchSearchedProducts = createAsyncThunk<
 
 export const fetchProductBySlug = createAsyncThunk<
   Product,
-  { slug?: string; lang?: "ru" | "en" | "kg" },
+  { slug?: string; lang?: Lang },
   { rejectValue: IGlobalError }
 >("products/fetchBySlug", async ({ slug, lang }, { rejectWithValue }) => {
   try {
@@ -92,7 +93,7 @@ export const fetchProductBySlug = createAsyncThunk<
 
 export const fetchFilteredProducts = createAsyncThunk<
   FilteredProductsResponse,
-  FilterParams & { categoryId: string } & { lang?: "ru" | "en" | "kg" },
+  FilterParams & { categoryId: string } & { lang?: Lang },
   { rejectValue: IGlobalError }
 >("products/fetchFiltered", async (filterParams, { rejectWithValue }) => {
   try {

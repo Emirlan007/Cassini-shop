@@ -8,6 +8,7 @@ import {
   Body,
   Req,
   Headers,
+  Query,
 } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { TokenAuthGuard } from '../auth/token-auth.guard';
@@ -20,9 +21,12 @@ export class WishlistController {
   constructor(private readonly wishlistService: WishlistService) {}
 
   @Get()
-  async getWishlist(@Req() req: RequestWithUser) {
+  async getWishlist(
+    @Req() req: RequestWithUser,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
+  ) {
     const userId = req.user.userId || req.user.id || req.user._id;
-    return this.wishlistService.getWishlist(userId as string);
+    return await this.wishlistService.getWishlist(userId as string, lang);
   }
 
   @Post('add')
@@ -30,12 +34,14 @@ export class WishlistController {
     @Req() req: RequestWithUser,
     @Body() addToWishlistDto: AddToWishlistDto,
     @Headers('session-id') sessionId: string,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
   ) {
     const userId = req.user.userId || req.user.id || req.user._id;
     return this.wishlistService.addProductToWishlist(
       sessionId,
       userId as string,
       addToWishlistDto.productId,
+      lang,
     );
   }
 
@@ -43,11 +49,13 @@ export class WishlistController {
   async removeProductFromWishlist(
     @Req() req: RequestWithUser,
     @Param('productId') productId: string,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
   ) {
     const userId = req.user.userId || req.user.id || req.user._id;
     return this.wishlistService.removeProductFromWishlist(
       userId as string,
       productId,
+      lang,
     );
   }
 }

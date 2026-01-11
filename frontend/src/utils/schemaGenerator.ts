@@ -1,5 +1,15 @@
-import type { Product } from "../types";
+import type { Product, TranslatedField } from "../types";
 import { API_URL } from "../constants";
+import i18n from "../i18n";
+
+const getTranslatedText = (
+  field: TranslatedField | string | undefined
+): string => {
+  if (!field) return "";
+  if (typeof field === "string") return field;
+  const lang = i18n.language.split("-")[0] as "ru" | "en" | "kg";
+  return field?.[lang] || field?.ru || "";
+};
 
 interface SchemaProduct {
   "@type": "Product";
@@ -45,7 +55,7 @@ export const generateProductListSchema = (
       position: index + 1,
       item: {
         "@type": "Product" as const,
-        name: product.name,
+        name: getTranslatedText(product.name),
         image: imageUrl ? [imageUrl] : [],
         offers: {
           "@type": "Offer" as const,

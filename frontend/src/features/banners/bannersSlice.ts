@@ -53,7 +53,7 @@ const bannersSlice = createSlice({
             })
             .addCase(fetchBanners.rejected, (state, { payload }) => {
                 state.fetchBannersLoading = false;
-                state.fetchBannersError = (payload as IGlobalError)?.error || "Failed to fetch banners";
+                state.fetchBannersError = (payload as IGlobalError)?.error || "banners.fetchFailed";
             });
 
         builder
@@ -67,7 +67,7 @@ const bannersSlice = createSlice({
             })
             .addCase(fetchAllBanners.rejected, (state, { payload }) => {
                 state.fetchBannersLoading = false;
-                state.fetchBannersError = (payload as IGlobalError)?.error || "Failed to fetch banners";
+                state.fetchBannersError = (payload as IGlobalError)?.error || "banners.fetchFailed";
             });
 
         builder

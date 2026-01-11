@@ -6,6 +6,7 @@ import {
   selectProductsFetchError,
 } from "./productsSlice";
 import ProductCard from "./components/ProductCard";
+import {useTranslation} from "react-i18next";
 
 interface Props {
   products?: ReturnType<typeof selectProducts>;
@@ -14,6 +15,7 @@ interface Props {
 const ProductList = ({ products }: Props) => {
   const loading = useAppSelector(selectProductsFetchLoading);
   const error = useAppSelector(selectProductsFetchError);
+  const { t } = useTranslation();
 
   if (loading) {
     return (
@@ -26,7 +28,7 @@ const ProductList = ({ products }: Props) => {
   if (error) {
     return (
       <Typography color="#F0544F" textAlign="center" mt={2}>
-        Ошибка при загрузке товаров: {error}
+        {t("productsLoadError")}
       </Typography>
     );
   }
@@ -52,7 +54,7 @@ const ProductList = ({ products }: Props) => {
       {products?.length == 0 && (
         <Box sx={{ textAlign: "center", textDecoration: "underline" }}>
           <Typography variant="h3" component="h3">
-            Nothing Found
+            {t("nothingFound")}
           </Typography>
         </Box>
       )}

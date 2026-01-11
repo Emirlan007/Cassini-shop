@@ -59,7 +59,7 @@
   "dontHaveAccount": "",
   "toMainPage": "",
   "searchResults": "",
-  "nothingFound": "",
+  "nothingFound": "Эч нерсе табылган жок",
   "showMore": "",
   "productsLoaded": "",
   "timeLeft": "",
@@ -118,6 +118,24 @@
   "customerInfo": "Кардар боюнча маалымат",
   "edit": "Түзөтүү",
   "back": "Кайтуу",
+
+  "banners": {
+    "fetchFailed": "Баннерлер жүктөнө албады"
+  },
+  "errors": {
+    "network": "Тармак катасы. Интернет байланышыңызды текшериңиз",
+    "server": "Сервер катасы. Кийинчерээк кайра аракет кылыңыз",
+    "unauthorized": "Бул аракетти аткаруу үчүн уруксатыңыз жок"
+  },
+  "productsLoadError": "Товарларды жүктөө катасы",
+  "seo": {
+    "categoryTitle": "{{category}} — онлайн сатып алуу",
+    "defaultTitle": "Товарлар — онлайн дүкөн",
+    "categoryDescription": "\"{{category}}\" категориясындагы товарларды сатып алуу. Табылган товарлар: {{count}}. Актуалдуу баалар жана тез жеткирүү",
+    "defaultDescription": "Кең товар тандоосу бар онлайн дүкөн. Тез жеткирүү жана сапаттын кепилдиги"
+  },
+  "filterError": "Фильтрленген товарлардын жүктөө катасы",
+
   "colors": {
     "AliceBlue": "Элис көк",
     "AntiqueWhite": "Эски ак",

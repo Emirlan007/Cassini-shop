@@ -9,19 +9,37 @@ import { API_URL } from "../../constants";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";
 import "./styles.css";
+import {useTranslation} from "react-i18next";
 
 const BannersCarousel = () => {
   const dispatch = useAppDispatch();
   const banners = useAppSelector(selectBanners);
   const bannersError = useAppSelector(selectBannersError);
+  const { t } = useTranslation();
   useEffect(() => {
     dispatch(fetchBanners());
   }, [dispatch]);
 
+  const getTranslatedErrorMessage = (error: string | null) => {
+    if (!error) return "";
+
+    if (error.includes("banners.") || error.includes("error.")) {
+      return t(error);
+    }
+
+    switch (error) {
+      case "Failed to fetch banners":
+      case "banners.fetchFailed":
+        return t("banners.fetchFailed");
+      default:
+        return error;
+    }
+  };
+
   return (
     <>
       {bannersError ? (
-        <Alert severity="error">{bannersError}</Alert>
+        <Alert severity="error"> {getTranslatedErrorMessage(bannersError)}</Alert>
       ) : (
         <Box
           sx={{

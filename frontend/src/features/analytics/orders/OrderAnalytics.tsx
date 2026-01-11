@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,6 +12,8 @@ import {
   TableContainer,
   Table,
   TableHead, TableCell, TableRow, TableBody, Chip,
+  TablePagination,
+  CircularProgress
 } from "@mui/material";
 import {
   LineChart,
@@ -26,13 +28,13 @@ import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
 import {selectOrders} from "../../orders/admin/ordersSlice.ts";
 import {fetchAdminOrders} from "../../orders/admin/ordersThunks.ts";
 import {getOrderStatusColor} from "../../../utils/statusUtils.ts";
-import {useTranslation} from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const OrderAnalytics = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate(); // Добавим для редиректа
   const { data, loading } = useAppSelector((state) => state.orderAnalytics);
   const orders = useAppSelector(selectOrders);
-  const { t } = useTranslation();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -40,6 +42,9 @@ const OrderAnalytics = () => {
   const [period, setPeriod] = useState<
     "day" | "week" | "month" | "year" | "all"
   >("week");
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     dispatch(fetchOrderAnalytics({ period }));
@@ -49,15 +54,39 @@ const OrderAnalytics = () => {
     dispatch(fetchAdminOrders());
   }, [dispatch]);
 
-  if (loading || !data) {
-    return <Typography>Загрузка...</Typography>;
-  }
+  const handleChangePage = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const sortedOrders = [...orders].sort(
     (a, b) =>
       new Date(b.createdAt).getTime() -
       new Date(a.createdAt).getTime()
   );
+
+  const paginatedOrders = sortedOrders.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  const handleOrderClick = (orderId: string) => {
+    navigate(`/orders/${orderId}`);
+  };
+
+  if (loading || !data) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -166,7 +195,6 @@ const OrderAnalytics = () => {
             <LegendItem color="#1976d2" label="Создано" />
             <LegendItem color="#2e7d32" label="Оплачено" />
             <LegendItem color="#d32f2f" label="Отменено" />
-
           </Box>
         </CardContent>
       </Card>
@@ -191,24 +219,39 @@ const OrderAnalytics = () => {
               </TableHead>
 
               <TableBody>
-                {sortedOrders.map((order) => (
-                  <TableRow key={order._id} hover>
+                {paginatedOrders.map((order) => (
+                  <TableRow
+                    key={order._id}
+                    hover
+                    onClick={() => handleOrderClick(order._id)}
+                    sx={{
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      },
+                    }}
+                  >
                     <TableCell>
                       {new Date(order.createdAt).toLocaleDateString()}
                     </TableCell>
 
-                    <TableCell>{order._id}</TableCell>
+                    <TableCell>
+                      {order._id.slice(-8)}...
+                    </TableCell>
 
                     <TableCell>
                       <Chip
-                        label={t(order.status)}
+                        label={order.status === "awaiting_payment" ? "Ожидает оплаты" :
+                          order.status === "paid" ? "Оплачен" :
+                            order.status === "canceled" ? "Отменен" : order.status}
                         color={getOrderStatusColor(order.status)}
                         sx={{ minWidth: "150px", height: "25px" }}
                       />
                     </TableCell>
 
                     <TableCell>
-                      {order.items.map((item) => item.title).join(", ")}
+                      {order.items.map((item) => item.title).slice(0, 2).join(", ")}
+                      {order.items.length > 2 && "..."}
                     </TableCell>
 
                     <TableCell align="center">
@@ -226,6 +269,20 @@ const OrderAnalytics = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          <TablePagination
+            component="div"
+            count={sortedOrders.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            labelRowsPerPage="Строк на странице:"
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}-${to} из ${count}`
+            }
+          />
         </CardContent>
       </Card>
     </Box>

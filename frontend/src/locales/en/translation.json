@@ -149,6 +149,25 @@
   "edit": "Edit",
   "back": "Back",
 
+
+  "banners": {
+    "fetchFailed": "Failed to load banners"
+  },
+  "errors": {
+    "network": "Network error. Please check your internet connection",
+    "server": "Server error. Please try again later",
+    "unauthorized": "You are not authorized to perform this action"
+  },
+
+  "productsLoadError": "Error loading products",
+  "seo": {
+    "categoryTitle": "{{category}} — buy online",
+    "defaultTitle": "Products — online store",
+    "categoryDescription": "Buy products in category \"{{category}}\". Found items: {{count}}. Actual prices and fast delivery",
+    "defaultDescription": "Online store with a wide selection of products. Fast delivery and quality guarantee"
+  },
+  "filterError": "Failed to load filtered products",
+
   "colors": {
     "AliceBlue": "AliceBlue",
     "AntiqueWhite": "AntiqueWhite",

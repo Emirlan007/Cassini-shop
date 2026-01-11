@@ -220,8 +220,16 @@ const CategoryProductsPage = () => {
 
   const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
-  const title = `${currentCategory?.title} — купить онлайн`;
-  const description = `Купить товары категории "${currentCategory?.title}". Найдено товаров: ${totalCount}. Актуальные цены и быстрая доставка`;
+  const title = currentCategory
+    ? t("seo.categoryTitle", { category: currentCategory.title })
+    : t("seo.defaultTitle");
+
+  const description = currentCategory
+    ? t("seo.categoryDescription", {
+      category: currentCategory.title,
+      count: totalCount
+    })
+    : t("seo.defaultDescription");
   const url = `${window.location.origin}${location.pathname}`;
 
   if (!currentCategory && categories.length > 0) {
@@ -282,13 +290,13 @@ const CategoryProductsPage = () => {
 
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
+            {t("productsLoadError")}
           </Alert>
         )}
 
         {filterError && (
           <Alert severity="warning" sx={{ mb: 3 }}>
-            {filterError}
+            {t("filterError")}
           </Alert>
         )}
 

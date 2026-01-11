@@ -488,6 +488,37 @@ export async function createProductFixtures(
       },
       inStock: false,
     },
+    {
+      name: {
+        ru: 'Атласное миди-платье с кружевной отделкой',
+        en: 'Satin lace midi dress',
+        kg: 'Кружевдүү атлас миди көйнөк',
+      },
+      slug: 'satin-midi-skirt',
+      colors: ['#e4c62d'],
+      description: {
+        ru: 'Миди-платье из атласной ткани с V-образным вырезом и регулируемыми тонкими бретелями. Тональная кружевная отделка, внутренняя подкладка и потайная застёжка-молния сзади.',
+        en: 'Midi dress made from satin fabric. Features a V-neckline and adjustable thin straps. Tonal lace detailing. Inner lining. Invisible back zip fastening.',
+        kg: 'Атлас кездемеден тигилген миди көйнөк. V-түрүндөгү жакасы жана узундугу жөнгө салынуучу ичке бретелдери бар. Тоналдуу кружевдүү жасалгасы, ички подкладкасы жана арт жагында көрүнбөгөн сыдырма бекиткичи бар.',
+      },
+      size: ['XS', 'XXL'],
+      category: categories[1]._id.toString(),
+      price: 2500,
+      images: [
+        'fixtures/dress1.jpg',
+        'fixtures/dress2.jpg',
+      ],
+      imagesByColor: {
+        '#e4c62d': [0, 1],
+      } as Record<string, number[]>,
+      isPopular: false,
+      material: {
+        ru: 'атлас',
+        en: 'satin',
+        kg: 'атлас',
+      },
+      inStock: false,
+    },
   ];
 
   return await productsService.createMany(products);

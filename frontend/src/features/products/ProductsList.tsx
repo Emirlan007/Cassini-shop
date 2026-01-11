@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 import ProductCard from "./components/ProductCard";
+import {useTranslation} from "react-i18next";
 import type { Product } from "../../types";
 
 interface Props {
@@ -9,6 +10,8 @@ interface Props {
 }
 
 const ProductList = ({ products, loading, error }: Props) => {
+  const { t } = useTranslation();
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
@@ -20,7 +23,7 @@ const ProductList = ({ products, loading, error }: Props) => {
   if (error) {
     return (
       <Typography color="#F0544F" textAlign="center" mt={2}>
-        Ошибка при загрузке товаров: {error}
+        {t("productsLoadError")}
       </Typography>
     );
   }
@@ -46,7 +49,7 @@ const ProductList = ({ products, loading, error }: Props) => {
       {products?.length == 0 && (
         <Box sx={{ textAlign: "center", textDecoration: "underline" }}>
           <Typography variant="h3" component="h3">
-            Nothing Found
+            {t("nothingFound")}
           </Typography>
         </Box>
       )}

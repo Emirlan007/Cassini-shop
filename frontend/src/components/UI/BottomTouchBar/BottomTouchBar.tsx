@@ -1,9 +1,4 @@
-import {
-  Badge,
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-} from "@mui/material";
+import { Badge, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import { useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
@@ -11,11 +6,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import theme from "../../../theme";
 import { useTranslation } from "react-i18next";
-import { useAppSelector, useAppDispatch } from "../../../app/hooks";
+import { useAppSelector } from "../../../app/hooks";
 import { useNavigate } from "react-router-dom";
 import { selectUser } from "../../../features/users/usersSlice";
-import { selectIsSearchOpen, toggleSearch } from "../../../features/ui/uiSlice";
-import CloseIcon from "@mui/icons-material/Close";
 import { selectCart } from "../../../features/cart/cartSlice";
 
 const BottomTouchBar = () => {
@@ -23,9 +16,7 @@ const BottomTouchBar = () => {
   const user = useAppSelector(selectUser);
   const totalQuantity = useAppSelector(selectCart)?.totalQuantity;
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const isSearchOpen = useAppSelector(selectIsSearchOpen);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
     setSelectTouchBar(newValue);
@@ -33,7 +24,7 @@ const BottomTouchBar = () => {
 
   return (
     <BottomNavigation
-      sx={{ position: "sticky", bottom: 1 }}
+      sx={{ position: "sticky", bottom: 0, zIndex: 999 }}
       value={selectTouchBar}
       onChange={handleChange}
     >
@@ -48,18 +39,8 @@ const BottomTouchBar = () => {
         sx={{ "&.Mui-selected": { color: theme.palette.secondary.light } }}
         label={t("touchBar.search")}
         value="search"
-        onClick={() => dispatch(toggleSearch(true))}
-        icon={
-          isSearchOpen ? (
-            <Box component="div" onClick={() => dispatch(toggleSearch(false))}>
-              <CloseIcon sx={{ color: "#808080" }} />
-            </Box>
-          ) : (
-            <Box component="div" onClick={() => dispatch(toggleSearch(true))}>
-              <SearchIcon sx={{ color: "#808080" }} />
-            </Box>
-          )
-        }
+        onClick={() => navigate("/search")}
+        icon={<SearchIcon sx={{ color: "#808080" }} />}
       />
 
       <BottomNavigationAction

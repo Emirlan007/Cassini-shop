@@ -18,6 +18,8 @@ const SearchInput = () => {
     }
   };
 
+  console.log("SearchInput render");
+
   return (
     <Box
       component="form"
@@ -30,14 +32,16 @@ const SearchInput = () => {
       }}
     >
       <TextField
+        value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder={t("searchForProducts")}
         sx={{
           input: { p: 1 },
-          width: 400,
+          flexGrow: 1,
+          maxWidth: 500,
         }}
       />
-      <Button variant="contained" type="submit">
+      <Button variant="contained" type="submit" sx={{ flexShrink: 0 }}>
         Искать
       </Button>
     </Box>

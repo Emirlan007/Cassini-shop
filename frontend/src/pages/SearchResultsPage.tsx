@@ -75,7 +75,7 @@ const SearchResultsPage = () => {
         setLoading(false);
       }
     },
-    [totalPages, query]
+    [query]
   );
 
   useEffect(() => {
@@ -89,18 +89,20 @@ const SearchResultsPage = () => {
 
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0];
+      if (!entry.isIntersecting) return;
 
-      if (!entry.isIntersecting || !hasMore || loading) return;
-
-      const next = currentPage + 1;
-      setCurrentPage(next);
-      fetchResults(next);
+      setCurrentPage((prev) => {
+        if (loading || !hasMore) return prev;
+        const next = prev + 1;
+        fetchResults(next);
+        return next;
+      });
     });
 
     observer.observe(loadMoreRef.current);
 
     return () => observer.disconnect();
-  }, [isMobile, hasMore, loading, currentPage, fetchResults]);
+  }, [isMobile, hasMore, loading, fetchResults]);
 
   useEffect(() => {
     requestAnimationFrame(() => {

@@ -9,9 +9,7 @@ interface Props {
   error?: string | null;
 }
 
-const ProductList = ({ products }: Props) => {
-  const loading = useAppSelector(selectProductsFetchLoading);
-  const error = useAppSelector(selectProductsFetchError);
+const ProductList = ({ products, loading, error }: Props) => {
   const { t } = useTranslation();
 
   if (loading) {

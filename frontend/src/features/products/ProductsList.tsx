@@ -1,15 +1,12 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { useAppSelector } from "../../app/hooks";
-import {
-  selectProducts,
-  selectProductsFetchLoading,
-  selectProductsFetchError,
-} from "./productsSlice";
 import ProductCard from "./components/ProductCard";
 import {useTranslation} from "react-i18next";
+import type { Product } from "../../types";
 
 interface Props {
-  products?: ReturnType<typeof selectProducts>;
+  products: Product[];
+  loading?: boolean;
+  error?: string | null;
 }
 
 const ProductList = ({ products }: Props) => {

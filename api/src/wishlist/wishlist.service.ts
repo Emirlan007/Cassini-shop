@@ -9,6 +9,7 @@ import { Wishlist, WishlistDocument } from '../schemas/wishlist.schema';
 import { Product, ProductDocument } from '../schemas/product.schema';
 import { AnalyticsService } from 'src/analytics/analytics.service';
 import { EventType } from 'src/enums/event.enum';
+import { localizedField } from 'src/utils/localizedField';
 
 @Injectable()
 export class WishlistService {
@@ -20,36 +21,71 @@ export class WishlistService {
     private analyticsService: AnalyticsService,
   ) {}
 
-  async getWishlist(userId: string): Promise<WishlistDocument> {
+  async getWishlist(
+    userId: string,
+    lang: 'ru' | 'en' | 'kg' = 'ru',
+  ): Promise<WishlistDocument> {
     if (!Types.ObjectId.isValid(userId)) {
       throw new BadRequestException('Invalid user ID');
     }
 
-    let wishlist = await this.wishlistModel
-      .findOne({ userId: new Types.ObjectId(userId) })
-      .populate({
-        path: 'products',
-        populate: {
-          path: 'category',
-          select: 'title slug',
+    const wishlist = await this.wishlistModel.aggregate([
+      {
+        $match: { userId: new Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products',
+          foreignField: '_id',
+          as: 'products',
+          pipeline: [
+            {
+              $addFields: {
+                name: localizedField('name', lang),
+                description: localizedField('description', lang),
+                material: localizedField('material', lang),
+              },
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category',
+                pipeline: [
+                  {
+                    $project: {
+                      title: localizedField('title', lang),
+                      slug: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $unwind: '$category',
+            },
+          ],
         },
-      })
-      .exec();
+      },
+    ]);
 
-    if (!wishlist) {
-      wishlist = await this.wishlistModel.create({
+    if (!wishlist.length) {
+      return this.wishlistModel.create({
         userId: new Types.ObjectId(userId),
         products: [],
       });
     }
 
-    return wishlist;
+    return wishlist[0] as WishlistDocument;
   }
 
   async addProductToWishlist(
     sessionId: string,
     userId: string,
     productId: string,
+    lang: 'ru' | 'en' | 'kg' = 'ru',
   ): Promise<WishlistDocument> {
     if (!Types.ObjectId.isValid(userId)) {
       throw new BadRequestException('Invalid user ID');
@@ -64,22 +100,21 @@ export class WishlistService {
       throw new NotFoundException(`Product with ID ${productId} not found`);
     }
 
-    let wishlist = await this.wishlistModel
-      .findOne({ userId: new Types.ObjectId(userId) })
-      .exec();
+    let wishlist = await this.wishlistModel.findOne({
+      userId: new Types.ObjectId(userId),
+    });
+
+    const productObjectId = new Types.ObjectId(productId);
 
     if (!wishlist) {
       wishlist = await this.wishlistModel.create({
         userId: new Types.ObjectId(userId),
-        products: [new Types.ObjectId(productId)],
+        products: [productObjectId],
       });
     } else {
-      const productObjectId = new Types.ObjectId(productId);
-      const productExists = wishlist.products.some((id) =>
-        id.equals(productObjectId),
-      );
+      const exists = wishlist.products.some((id) => id.equals(productObjectId));
 
-      if (productExists) {
+      if (exists) {
         throw new BadRequestException('Product already in wishlist');
       }
 
@@ -87,34 +122,60 @@ export class WishlistService {
       await wishlist.save();
     }
 
-    const updatedWishlist = await this.wishlistModel
-      .findOne({ userId: new Types.ObjectId(userId) })
-      .populate({
-        path: 'products',
-        populate: {
-          path: 'category',
-          select: 'title slug',
+    const localizedWishlist = await this.wishlistModel.aggregate([
+      {
+        $match: { userId: new Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products',
+          foreignField: '_id',
+          as: 'products',
+          pipeline: [
+            {
+              $addFields: {
+                name: localizedField('name', lang),
+                description: localizedField('description', lang),
+                material: localizedField('material', lang),
+              },
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category',
+                pipeline: [
+                  {
+                    $project: {
+                      title: localizedField('title', lang),
+                      slug: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            { $unwind: '$category' },
+          ],
         },
-      })
-      .exec();
-
-    if (!updatedWishlist) {
-      throw new NotFoundException('Wishlist not found after update');
-    }
+      },
+    ]);
 
     await this.analyticsService.trackEvent({
       type: EventType.AddToWishlist,
       sessionId,
       userId: new Types.ObjectId(userId),
-      productId: new Types.ObjectId(productId),
+      productId: productObjectId,
     });
 
-    return updatedWishlist;
+    return localizedWishlist[0] as WishlistDocument;
   }
 
   async removeProductFromWishlist(
     userId: string,
     productId: string,
+    lang: 'ru' | 'en' | 'kg' = 'ru',
   ): Promise<WishlistDocument> {
     if (!Types.ObjectId.isValid(userId)) {
       throw new BadRequestException('Invalid user ID');
@@ -124,41 +185,66 @@ export class WishlistService {
       throw new BadRequestException('Invalid product ID');
     }
 
-    const wishlist = await this.wishlistModel
-      .findOne({ userId: new Types.ObjectId(userId) })
-      .exec();
+    const wishlist = await this.wishlistModel.findOne({
+      userId: new Types.ObjectId(userId),
+    });
 
     if (!wishlist) {
       throw new NotFoundException('Wishlist not found');
     }
 
     const productObjectId = new Types.ObjectId(productId);
-    const productIndex = wishlist.products.findIndex((id) =>
+    const index = wishlist.products.findIndex((id) =>
       id.equals(productObjectId),
     );
 
-    if (productIndex === -1) {
+    if (index === -1) {
       throw new NotFoundException('Product not found in wishlist');
     }
 
-    wishlist.products.splice(productIndex, 1);
+    wishlist.products.splice(index, 1);
     await wishlist.save();
 
-    const updatedWishlist = await this.wishlistModel
-      .findOne({ userId: new Types.ObjectId(userId) })
-      .populate({
-        path: 'products',
-        populate: {
-          path: 'category',
-          select: 'title slug',
+    const localizedWishlist = await this.wishlistModel.aggregate([
+      {
+        $match: { userId: new Types.ObjectId(userId) },
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'products',
+          foreignField: '_id',
+          as: 'products',
+          pipeline: [
+            {
+              $addFields: {
+                name: localizedField('name', lang),
+                description: localizedField('description', lang),
+                material: localizedField('material', lang),
+              },
+            },
+            {
+              $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category',
+                pipeline: [
+                  {
+                    $project: {
+                      title: localizedField('title', lang),
+                      slug: 1,
+                    },
+                  },
+                ],
+              },
+            },
+            { $unwind: '$category' },
+          ],
         },
-      })
-      .exec();
+      },
+    ]);
 
-    if (!updatedWishlist) {
-      throw new NotFoundException('Wishlist not found after removal');
-    }
-
-    return updatedWishlist;
+    return localizedWishlist[0] as WishlistDocument;
   }
 }

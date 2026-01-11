@@ -43,46 +43,66 @@ const SearchResultsPage = () => {
   const loadMoreRef = useRef(null);
   const scrollPositionRef = useRef(0);
 
+  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
+
   const fetchResults = useCallback(
-    async (pageToLoad: number) => {
-      if ((totalPages > 0 && pageToLoad > totalPages) || query.trim() === "")
-        return;
+    async (pageToLoad: number, replace = false) => {
+      if ((totalPages > 0 && pageToLoad > totalPages) || !query.trim()) return;
 
       scrollPositionRef.current = window.scrollY;
 
-      setLoading(true);
-
       try {
+        setLoading(true);
+
         const response: AxiosResponse<ProductsSearch> = await axiosApi.get(
-          `/products/search?q=${query}&page=${pageToLoad}&lang=${currentLang}`
+          `/products/search?q=${query}&limit=${2}&page=${pageToLoad}&lang=${currentLang}`
         );
 
         const {
           products: newProducts,
-          currentPage,
           hasMore,
           totalCount,
           totalPages,
         } = response.data;
 
-        setProducts((prev) => [...prev, ...newProducts]);
+        setProducts((prev) =>
+          replace ? newProducts : [...prev, ...newProducts]
+        );
 
         setHasMore(hasMore);
-        setCurrentPage(currentPage);
         setTotal(totalCount ?? 0);
         setTotalPages(totalPages ?? 0);
       } finally {
         setLoading(false);
       }
     },
-    [query]
+    [query, currentLang]
   );
 
   useEffect(() => {
-    setProducts([]);
+    if (!query.trim()) return;
+
     setCurrentPage(1);
-    fetchResults(1);
-  }, [query, fetchResults]);
+    setHasMore(true);
+    fetchResults(1, currentPage === 1);
+  }, [query]);
+
+  useEffect(() => {
+    if (!query.trim()) return;
+
+    const pagesToLoad = currentPage;
+
+    setProducts([]);
+    setHasMore(true);
+
+    const reload = async () => {
+      for (let page = 1; page <= pagesToLoad; page++) {
+        await fetchResults(page, page === 1);
+      }
+    };
+
+    reload();
+  }, [currentLang]);
 
   useEffect(() => {
     if (!isMobile || !loadMoreRef.current) return;
@@ -132,8 +152,6 @@ const SearchResultsPage = () => {
     });
   };
 
-  const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
-
   return (
     <Box>
       <SearchInput />
@@ -146,7 +164,7 @@ const SearchResultsPage = () => {
 
       {loading && currentPage === 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
-          <CircularProgress />
+          <CircularProgress color="inherit" />
         </Box>
       )}
 
@@ -168,24 +186,21 @@ const SearchResultsPage = () => {
         <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
           <Button
             variant="contained"
-            onClick={() => {
-              const next = currentPage + 1;
-              setCurrentPage(next);
-              fetchResults(next);
-            }}
+            onClick={() =>
+              setCurrentPage((prev) => {
+                if (loading || !hasMore) return prev;
+
+                const next = prev + 1;
+                fetchResults(next);
+                return next;
+              })
+            }
             loading={loading}
           >
             {t("showMore")}
           </Button>
         </Box>
       )}
-
-      {/*Client sayd may be We do not need the code which is below */}
-      {/* {products.length > 0 && !hasMore && (
-        <Typography variant="h4" sx={{ mt: 2, textAlign: "center" }}>
-          Все результаты загружены
-        </Typography>
-      )} */}
 
       {isMobile && loading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>

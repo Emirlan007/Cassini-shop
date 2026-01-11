@@ -18,8 +18,6 @@ const SearchInput = () => {
     }
   };
 
-  console.log("SearchInput render");
-
   return (
     <Box
       component="form"

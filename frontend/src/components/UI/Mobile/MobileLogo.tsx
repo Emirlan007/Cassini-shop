@@ -1,80 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Stack,
-  Collapse,
-  TextField,
-  Badge,
-} from "@mui/material";
+import { AppBar, Box, Toolbar, IconButton, Stack, Badge } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import React, { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useState } from "react";
+import { useAppSelector } from "../../../app/hooks";
 import theme from "../../../theme.ts";
 import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
-import { fetchSearchedProducts } from "../../../features/products/productsThunks.ts";
-import { useDebouncedCallback } from "use-debounce";
-import {
-  selectIsSearchOpen,
-  selectSearchQuery,
-  toggleSearch,
-  setSearchQuery,
-} from "../../../features/ui/uiSlice.ts";
-import {selectWishlistCount} from "../../../features/wishlist/wishlistSlice.ts";
+import { selectWishlistCount } from "../../../features/wishlist/wishlistSlice.ts";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const MobileLogo = () => {
-  // const location = useLocation();
-  // const isProductDetailsPage = location.pathname.startsWith("/product/");
-
-  const searchRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
-  const isSearchOpen = useAppSelector(selectIsSearchOpen);
-  const searchProduct = useAppSelector(selectSearchQuery);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const wishlistCount = useAppSelector(selectWishlistCount);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        dispatch(toggleSearch(false));
-      }
-    };
-
-    if (isSearchOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isSearchOpen, dispatch]);
 
   const toggleDrawer = (value: boolean) => () => {
     setOpen(value);
-  };
-
-  const debouncedSearch = useDebouncedCallback(() => {
-    if (searchProduct.length >= 2 || searchProduct.length === 0) {
-      dispatch(fetchSearchedProducts(searchProduct));
-    }
-  }, 500);
-
-  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-     if (searchProduct.length >= 2 || searchProduct.length === 0) {
-      navigate(`/search?q=${encodeURIComponent(searchProduct)}`);
-    }
-    dispatch(setSearchQuery(value));
-    debouncedSearch();
   };
 
   return (
@@ -108,37 +48,6 @@ const MobileLogo = () => {
             >
               <FavoriteIcon sx={{ color: theme.palette.secondary.light }} />
             </Badge>
-
-            <NotificationsIcon sx={{ color: theme.palette.secondary.light }} />
-            <div ref={searchRef}>
-              <Collapse
-                orientation="horizontal"
-                in={isSearchOpen}
-                sx={{
-                  overflow: "hidden",
-                  display: "flex",
-                  transition: "width 300ms ease, opacity 200ms ease",
-                  width: isSearchOpen ? { xs: "100%", sm: "200px" } : "0px",
-                  opacity: isSearchOpen ? 1 : 0,
-                  ml: 1,
-                }}
-              >
-                <TextField
-                  autoFocus={isSearchOpen}
-                  placeholder="Поиск товаров..."
-                  size="small"
-                  fullWidth
-                  onChange={handleSearchInput}
-                  value={searchProduct}
-                  sx={{
-                    "& fieldset": { border: "none" },
-                    backgroundColor: "white",
-                    borderRadius: "6px",
-                    width: "180px",
-                  }}
-                />
-              </Collapse>
-            </div>
           </Stack>
         </Toolbar>
       </AppBar>

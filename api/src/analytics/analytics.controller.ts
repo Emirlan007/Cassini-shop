@@ -1,10 +1,21 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { AnalyticsService } from './analytics.service';
+// src/analytics/analytics.controller.ts
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import {
+  AnalyticsService,
+  ProductMetrics,
+  TopSearchedProduct,
+} from './analytics.service';
 import { CreateEventDto } from './dto/create-event.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from 'src/schemas/user.schema';
-import { Model } from 'mongoose';
-import { TrackSearchImpressionsDto} from './dto/track-search-impressions.dto';
+import { TrackSearchImpressionsDto } from './dto/track-search-impressions.dto';
 import {
   getEndOfDay,
   getRangeByPeriod,
@@ -16,19 +27,55 @@ import { RolesGuard } from 'src/role-auth/role-auth.guard';
 import { Roles } from 'src/role-auth/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 
+type PeriodType = 'day' | 'week' | 'month' | 'year' | 'all';
+
+interface DateRange {
+  fromDate: Date;
+  toDate: Date;
+}
+
 @Controller('analytics')
 export class AnalyticsController {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private analyticsService: AnalyticsService,
-  ) {}
+  constructor(private analyticsService: AnalyticsService) {}
+
+  /**
+   * Вспомогательный метод для получения диапазона дат
+   */
+  private getDateRange(
+    period?: PeriodType,
+    from?: string,
+    to?: string,
+  ): DateRange {
+    if (period) {
+      return getRangeByPeriod(period);
+    } else if (from && to) {
+      return {
+        fromDate: getStartOfDay(new Date(from)),
+        toDate: getEndOfDay(new Date(to)),
+      };
+    } else {
+      return getYesterdayRange();
+    }
+  }
 
   @Post('event')
   async trackEvent(@Body() dto: CreateEventDto) {
     return this.analyticsService.trackEvent(dto);
   }
 
+  /**
+   * Трекинг показов товаров в результатах поиска
+   * POST /analytics/search-impressions
+   * Body: { productIds: string[], userId?: string, sessionId?: string, searchQuery?: string }
+   */
   @Post('search-impressions')
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  )
   async trackSearchImpressions(@Body() dto: TrackSearchImpressionsDto) {
     return this.analyticsService.trackSearchImpressions(dto);
   }
@@ -37,73 +84,46 @@ export class AnalyticsController {
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async getProductMetrics(
-    @Query('period') period?: 'day' | 'week' | 'month' | 'year' | 'all',
+    @Query('period') period?: PeriodType,
     @Query('from') from?: string,
     @Query('to') to?: string,
-  ) {
-    let fromDate: Date;
-    let toDate: Date;
-
-    if (period) {
-      ({ fromDate, toDate } = getRangeByPeriod(period));
-    } else if (from && to) {
-      fromDate = getStartOfDay(new Date(from));
-      toDate = getEndOfDay(new Date(to));
-    } else {
-      ({ fromDate, toDate } = getYesterdayRange());
-    }
-
+  ): Promise<ProductMetrics[]> {
+    const { fromDate, toDate } = this.getDateRange(period, from, to);
     return this.analyticsService.getProductMetrics(fromDate, toDate);
   }
 
-  @Get('products/search-performance')
+  /**
+   * Получить топ товаров по показам в поиске
+   * GET /analytics/products/top-searched?period=week&limit=20
+   */
+  @Get('products/top-searched')
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async getProductSearchAnalytics(
-    @Query('period') period?: 'day' | 'week' | 'month' | 'year' | 'all',
+  async getTopSearchedProducts(
+    @Query('period') period?: PeriodType,
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('limit') limit?: string,
-  ) {
-    let fromDate: Date;
-    let toDate: Date;
+  ): Promise<TopSearchedProduct[]> {
+    const { fromDate, toDate } = this.getDateRange(period, from, to);
+    const limitNum = limit ? parseInt(limit, 10) : 10;
 
-    if (period) {
-      ({ fromDate, toDate } = getRangeByPeriod(period));
-    } else if (from && to) {
-      fromDate = getStartOfDay(new Date(from));
-      toDate = getEndOfDay(new Date(to));
-    } else {
-      ({ fromDate, toDate } = getYesterdayRange());
-    }
-
-    const limitNum = limit ? parseInt(limit, 10) : undefined;
-
-    return this.analyticsService.getProductSearchAnalytics(fromDate, toDate, {
-      limit: limitNum,
-    });
+    return this.analyticsService.getTopSearchedProducts(
+      fromDate,
+      toDate,
+      limitNum,
+    );
   }
 
   @Get('orders')
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
   async getOrdersMetrics(
-    @Query('period') period?: 'day' | 'week' | 'month' | 'year' | 'all',
+    @Query('period') period?: PeriodType,
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
-    let fromDate: Date;
-    let toDate: Date;
-
-    if (period) {
-      ({ fromDate, toDate } = getRangeByPeriod(period));
-    } else if (from && to) {
-      fromDate = getStartOfDay(new Date(from));
-      toDate = getEndOfDay(new Date(to));
-    } else {
-      ({ fromDate, toDate } = getYesterdayRange());
-    }
-
+    const { fromDate, toDate } = this.getDateRange(period, from, to);
     return this.analyticsService.getOrderMetrics(fromDate, toDate);
   }
 }

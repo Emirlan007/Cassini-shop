@@ -1,13 +1,24 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { TranslatedFieldDto } from './translate-banner.dto';
+import { type TranslatedField } from '../../translation/translation.service';
 
 export class CreateBannerDto {
+  @ValidateNested()
+  @Type(() => TranslatedFieldDto)
   @IsNotEmpty()
-  @IsString()
-  title: string;
+  title: TranslatedField;
 
+  @ValidateNested()
+  @Type(() => TranslatedFieldDto)
   @IsOptional()
-  @IsString()
-  description?: string;
+  description?: TranslatedField;
 
   @IsOptional()
   @IsString()

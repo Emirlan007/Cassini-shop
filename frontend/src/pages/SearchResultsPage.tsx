@@ -170,13 +170,6 @@ const SearchResultsPage = () => {
         </Box>
       )}
 
-      {/*Client sayd may be We do not need the code which is below */}
-      {/* {products.length > 0 && !hasMore && (
-        <Typography variant="h4" sx={{ mt: 2, textAlign: "center" }}>
-          Все результаты загружены
-        </Typography>
-      )} */}
-
       {isMobile && loading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
           <CircularProgress color="secondary" />

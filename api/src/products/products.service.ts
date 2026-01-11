@@ -16,6 +16,7 @@ import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { SearchQueriesService } from 'src/search/search-query.service';
 import { generateSlug, generateUniqueSlug } from '../utils/slug';
+import { AnalyticsService } from '../analytics/analytics.service';
 
 interface ProductFilter {
   category?: Types.ObjectId;
@@ -40,6 +41,7 @@ export class ProductsService {
     private productModel: Model<ProductDocument>,
     private fileUploadService: FileUploadService,
     private searchQueriesService: SearchQueriesService,
+    private analyticsService: AnalyticsService,
   ) {}
 
   async create(
@@ -305,6 +307,7 @@ export class ProductsService {
           console.error('Error saving search query:', error);
         });
     }
+
     const filter: FilterQuery<ProductDocument> = {};
 
     if (category && Types.ObjectId.isValid(category)) {
@@ -349,6 +352,19 @@ export class ProductsService {
     const skip = (page - 1) * limit;
 
     const paginatedIds = productsIds.slice(skip, skip + limit);
+
+    if (paginatedIds.length > 0) {
+      this.analyticsService
+        .trackSearchImpressions({
+          productIds: paginatedIds,
+          searchQuery: query,
+          userId,
+          sessionId,
+        })
+        .catch((error) => {
+          console.error('Error tracking search impressions:', error);
+        });
+    }
 
     const products = await this.productModel
       .find({ _id: { $in: paginatedIds } })

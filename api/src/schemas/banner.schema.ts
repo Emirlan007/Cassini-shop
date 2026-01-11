@@ -1,12 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { type TranslatedField } from '../translation/translation.service';
 
 export type BannerDocument = Banner & Document;
 
 @Schema()
 export class Banner {
-  @Prop({ required: true })
-  title: string;
+  @Prop({
+    type: {
+      ru: { type: String, required: true },
+      en: { type: String },
+      kg: { type: String },
+    },
+    required: true,
+  })
+  title: TranslatedField;
 
   @Prop()
   description?: string;

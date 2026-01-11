@@ -1,7 +1,7 @@
 import type { ICategory, ProductInput } from "../../types";
 import { type FC, type FormEvent, useEffect } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks.ts";
 import { selectCategories } from "../categories/categorySlice.ts";
 import { fetchCategories } from "../categories/categoryThunk.ts";
@@ -22,7 +22,7 @@ interface Props {
   onSubmit(product: ProductInput): void;
 }
 
-const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
+const UpdateProductForm: FC<Props> = ({ product, onSubmit }) => {
   const navigate = useNavigate();
   const categories = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
@@ -51,7 +51,7 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
   });
 
   const { fileInputChangeHandler, videoChangeHandler, removeImageHandler } =
-    useMediaFiles(setState);
+      useMediaFiles(setState);
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -64,64 +64,70 @@ const UpdateProduct: FC<Props> = ({ product, onSubmit }) => {
   };
 
   return (
-    <Box
-      sx={{
-        marginTop: { xs: 4, sm: 8 },
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: "100%",
-        px: 2,
-      }}
-    >
-      <Typography component="h1" variant="h5" sx={{ color: "#660033" }}>
-        Редактировать товар
-      </Typography>
-
       <Box
-        component="form"
-        onSubmit={submitFormHandler}
-        sx={{ mt: 3, width: "100%" }}
+          sx={{
+            marginTop: { xs: 4, sm: 8 },
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            px: 2,
+          }}
       >
-        <Stack spacing={2}>
-          <ProductFormFields
-            name={state.name}
-            description={state.description}
-            price={state.price}
-            material={state.material}
-            inStock={state.inStock}
-            isPopular={state.isPopular}
-            category={state.category}
-            categories={categories}
-            onInputChange={inputChangeHandler}
-            onCheckboxChange={handleCheckboxChange}
-          />
+        <Typography component="h1" variant="h5" sx={{ color: "#660033" }}>
+          Редактировать товар
+        </Typography>
 
-          <SizesSelector sizes={state.size} onSizeUpdate={handleSizeUpdate} />
+        <Box
+            component="form"
+            onSubmit={submitFormHandler}
+            sx={{ mt: 3, width: "100%" }}
+        >
+          <Stack spacing={2}>
+            <ProductFormFields
+                name={state.name}
+                description={state.description}
+                price={state.price}
+                material={state.material}
+                inStock={state.inStock}
+                isPopular={state.isPopular}
+                category={state.category}
+                categories={categories}
+                onInputChange={inputChangeHandler}
+                onCheckboxChange={handleCheckboxChange}
+            />
 
-          <ColorsSelector
-            colors={state.colors}
-            onColorsUpdate={handleColorsUpdate}
-          />
+            <SizesSelector sizes={state.size} onSizeUpdate={handleSizeUpdate} />
 
-          <MediaUploader
-            images={state.images}
-            video={state.video}
-            colors={state.colors}
-            imagesByColor={state.imagesByColor}
-            onImagesChange={fileInputChangeHandler}
-            onVideoChange={videoChangeHandler}
-            onRemoveImage={removeImageHandler}
-            onToggleImageColor={toggleImageColor}
-          />
+            <ColorsSelector
+                colors={state.colors}
+                onColorsUpdate={handleColorsUpdate}
+            />
 
-          <Button type="submit" fullWidth variant="contained">
-            Редактировать
-          </Button>
-        </Stack>
+            <MediaUploader
+                images={state.images}
+                video={state.video}
+                colors={state.colors}
+                imagesByColor={state.imagesByColor}
+                onImagesChange={fileInputChangeHandler}
+                onVideoChange={videoChangeHandler}
+                onRemoveImage={removeImageHandler}
+                onToggleImageColor={toggleImageColor}
+            />
+
+            <Button type="submit" fullWidth variant="contained">
+              Редактировать
+            </Button>
+          </Stack>
+        </Box>
       </Box>
-    </Box>
   );
+};
+
+const UpdateProduct: FC<Props> = (props) => {
+  const { id } = useParams();
+
+  return <UpdateProductForm key={id || props.product.category._id} {...props} />;
 };
 
 export default UpdateProduct;

@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -24,6 +25,15 @@ import { RolesGuard } from 'src/role-auth/role-auth.guard';
 import { Roles } from 'src/role-auth/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 import { BannerService } from './banner.service';
+import { TranslatedField } from 'src/translation/translation.service';
+
+interface BannerUpdateData {
+  title?: TranslatedField;
+  description?: TranslatedField;
+  link?: string;
+  isActive?: boolean;
+  image?: string;
+}
 
 @Controller('banners')
 export class BannersController {
@@ -33,26 +43,42 @@ export class BannersController {
   ) {}
 
   @Get()
-  async getActiveBanners() {
-    return this.bannerService.getActiveBanners();
+  async getActiveBanners(@Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru') {
+    return this.bannerService.getActiveBanners(lang);
   }
 
   @Get('all')
   @UseGuards(TokenAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async getAllBanners() {
-    return this.bannerService.getAllBanners();
+  async getAllBanners(@Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru') {
+    return this.bannerService.getAllBanners(lang);
   }
 
   @Get(':id')
-  async getBannerById(@Param('id') id: string) {
-    const banner = await this.bannerModel.findById(id);
+  async getBannerById(
+    @Param('id') id: string,
+    @Query('lang') lang: 'ru' | 'en' | 'kg' = 'ru',
+  ) {
+    const banner = await this.bannerModel.findById(id).lean();
 
     if (!banner) {
       throw new NotFoundException('Banner not found');
     }
 
-    return banner;
+    const title = banner.title as unknown as TranslatedField;
+    const description = banner.description as unknown as
+      | TranslatedField
+      | undefined;
+
+    return {
+      ...banner,
+      title: lang === 'ru' ? title.ru : title[lang] || title.ru,
+      description: description
+        ? lang === 'ru'
+          ? description.ru
+          : description[lang] || description.ru
+        : undefined,
+    };
   }
 
   @Post()
@@ -63,17 +89,36 @@ export class BannersController {
     @Body() bannerData: CreateBannerDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const { title, description, link, isActive } = bannerData;
-
     if (!file) {
       throw new BadRequestException('Image is required');
     }
 
+    const titleTranslations = await this.bannerService.autoTranslate(
+      bannerData.title.ru,
+    );
+
+    let descriptionTranslations = { en: '' };
+    if (bannerData.description?.ru) {
+      descriptionTranslations = await this.bannerService.autoTranslate(
+        bannerData.description.ru,
+      );
+    }
+
     const banner = new this.bannerModel({
-      title,
-      description,
-      link,
-      isActive,
+      title: {
+        ru: bannerData.title.ru,
+        en: bannerData.title.en || titleTranslations.en,
+        kg: bannerData.title.kg || '',
+      },
+      description: bannerData.description
+        ? {
+            ru: bannerData.description.ru,
+            en: bannerData.description.en || descriptionTranslations.en,
+            kg: bannerData.description.kg || '',
+          }
+        : undefined,
+      link: bannerData.link,
+      isActive: bannerData.isActive ?? true,
       image: `/public/files/${file.filename}`,
     });
 
@@ -89,22 +134,58 @@ export class BannersController {
     @Body() bannerData: UpdateBannerDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const newBannerData = {
-      ...bannerData,
-      ...(file && { image: `/public/files/${file.filename}` }),
-    };
+    const existingBanner = await this.bannerModel.findById(id);
 
-    const updatedBanner = await this.bannerModel.findByIdAndUpdate(
-      id,
-      newBannerData,
-      { new: true, runValidators: true },
-    );
-
-    if (!updatedBanner) {
+    if (!existingBanner) {
       throw new NotFoundException('Banner not found');
     }
 
-    return updatedBanner;
+    const updateData: BannerUpdateData = {};
+
+    if (bannerData.title) {
+      const titleTranslations = await this.bannerService.autoTranslate(
+        bannerData.title.ru,
+      );
+
+      updateData.title = {
+        ru: bannerData.title.ru,
+        en: bannerData.title.en || titleTranslations.en,
+        kg: bannerData.title.kg || existingBanner.title.kg || '',
+      };
+    }
+
+    if (bannerData.description) {
+      const descriptionTranslations = await this.bannerService.autoTranslate(
+        bannerData.description.ru,
+      );
+
+      const existingDescription = existingBanner.description as
+        | TranslatedField
+        | undefined;
+
+      updateData.description = {
+        ru: bannerData.description.ru,
+        en: bannerData.description.en || descriptionTranslations.en,
+        kg: bannerData.description.kg || existingDescription?.kg || '',
+      };
+    }
+
+    if (bannerData.link !== undefined) {
+      updateData.link = bannerData.link;
+    }
+
+    if (bannerData.isActive !== undefined) {
+      updateData.isActive = bannerData.isActive;
+    }
+
+    if (file) {
+      updateData.image = `/public/files/${file.filename}`;
+    }
+
+    return this.bannerModel.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
   }
 
   @Patch(':id')

@@ -22,7 +22,6 @@ import {
 
 interface AggregatedProduct {
   _id: string;
-  searchImpressions: number;
   views: number;
   addToCart: number;
   addToCartQty: number;
@@ -66,7 +65,15 @@ export class AnalyticsCron {
 
   @Cron('* * * * *')
   async aggregateProductStatsByDay() {
+    // const yesterday = new Date();
+    // yesterday.setDate(yesterday.getDate() - 1);
+
+    // const dateStr = yesterday.toISOString().split('T')[0];
+    // const dayStart = new Date(`${dateStr}T00:00:00.000Z`);
+    // const dayEnd = new Date(`${dateStr}T23:59:59.999Z`);
+
     const dateStr = new Date().toISOString().split('T')[0];
+
     const dayStart = new Date(`${dateStr}T00:00:00.000Z`);
     const dayEnd = new Date(`${dateStr}T23:59:59.999Z`);
 
@@ -81,24 +88,16 @@ export class AnalyticsCron {
         $group: {
           _id: '$productId',
 
-          searchImpressions: {
-            $sum: {
-              $cond: [{ $eq: ['$type', 'product_search_impression'] }, 1, 0],
-            },
-          },
-
           views: {
             $sum: {
               $cond: [{ $eq: ['$type', 'product_view'] }, 1, 0],
             },
           },
-
           addToCart: {
             $sum: {
               $cond: [{ $eq: ['$type', 'add_to_cart'] }, 1, 0],
             },
           },
-
           addToCartQty: {
             $sum: {
               $cond: [
@@ -120,7 +119,7 @@ export class AnalyticsCron {
 
     for (const item of events) {
       console.log(
-        `Product ${item._id}: searchImpressions=${item.searchImpressions}, views=${item.views}, cart=${item.addToCart}, wishlist=${item.wishlistCount}`,
+        `Product ${item._id}: views=${item.views}, cart=${item.addToCart}, wishlist=${item.wishlistCount}`,
       );
 
       await this.productStatsByDayModel.findOneAndUpdate(
@@ -130,7 +129,6 @@ export class AnalyticsCron {
         },
         {
           $set: {
-            searchImpressions: item.searchImpressions,
             views: item.views,
             addToCart: item.addToCart,
             addToCartQty: item.addToCartQty,
@@ -146,7 +144,15 @@ export class AnalyticsCron {
 
   @Cron('* * * * *')
   async aggregateOrderStatsByDay() {
+    // const yesterday = new Date();
+    // yesterday.setDate(yesterday.getDate() - 1);
+
+    // const dateStr = yesterday.toISOString().split('T')[0];
+    // const dayStart = new Date(`${dateStr}T00:00:00.000Z`);
+    // const dayEnd = new Date(`${dateStr}T23:59:59.999Z`);
+
     const dateStr = new Date().toISOString().split('T')[0];
+
     const dayStart = new Date(`${dateStr}T00:00:00.000Z`);
     const dayEnd = new Date(`${dateStr}T23:59:59.999Z`);
 

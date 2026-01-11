@@ -5,17 +5,19 @@ import {
     selectBanner,
     selectFetchBannerLoading,
     selectUpdateBannerLoading,
-    clearBanner
+    clearBanner,
 } from "../bannersSlice";
 import type { BannerInput } from "../../../types";
 import BannerForm from "./components/BannerForm";
 import { Alert, CircularProgress, Box } from "@mui/material";
-import {fetchBannerById, updateBanner} from "./BannersThunks.ts";
+import { fetchBannerById, updateBanner } from "./BannersThunks.ts";
+import { useTranslation } from "react-i18next";
 
 const UpdateBanner = () => {
     const { bannerId } = useParams<{ bannerId: string }>();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { i18n } = useTranslation();
 
     const banner = useAppSelector(selectBanner);
     const fetchLoading = useAppSelector(selectFetchBannerLoading);
@@ -25,13 +27,15 @@ const UpdateBanner = () => {
 
     useEffect(() => {
         if (bannerId) {
-            dispatch(fetchBannerById(bannerId));
+            const lang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
+            // @ts-ignore
+            dispatch(fetchBannerById({ id: bannerId, lang }));
         }
 
         return () => {
             dispatch(clearBanner());
         };
-    }, [dispatch, bannerId]);
+    }, [dispatch, bannerId, i18n]);
 
     const onFormSubmit = async (data: BannerInput) => {
         if (!bannerId) return;
@@ -49,31 +53,45 @@ const UpdateBanner = () => {
                 })
             ).unwrap();
 
-            navigate("/"); //куда нужно после обновления
-        } catch (error) {
-            setError("Failed to update banner");
+            navigate("/admin/banners");
+        } catch (err) {
+            setError("Не удалось обновить баннер");
+            console.error("Update banner error:", err);
         }
     };
 
     if (fetchLoading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-                <CircularProgress />
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="200px"
+            >
+                <CircularProgress sx={{ color: "#660033" }} />
             </Box>
         );
     }
 
     if (!banner && !fetchLoading) {
-        return <Alert severity="error">Banner not found</Alert>;
+        return (
+            <Alert severity="error" sx={{ mt: 2 }}>
+                Баннер не найден
+            </Alert>
+        );
     }
 
     return (
         <>
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+            )}
             <BannerForm
                 onSubmit={onFormSubmit}
                 loading={updateLoading}
-                existingBanner={banner} // Передаем существующий баннер для предзаполнения формы
+                existingBanner={banner}
                 isEdit={true}
             />
         </>

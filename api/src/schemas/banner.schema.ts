@@ -16,8 +16,15 @@ export class Banner {
   })
   title: TranslatedField;
 
-  @Prop()
-  description?: string;
+  @Prop({
+    type: {
+      ru: { type: String },
+      en: { type: String },
+      kg: { type: String },
+    },
+    required: false,
+  })
+  description?: TranslatedField;
 
   @Prop({ required: true })
   image: string;

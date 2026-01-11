@@ -151,23 +151,23 @@ export interface AvailableOptions {
 
 export interface Banner {
   _id: string;
-  title: string;
-  description?: string;
+  title: TranslatedField;
+  description?: TranslatedField;
   image: string;
   link?: string;
   isActive: boolean;
 }
 
 export interface BannerInput {
-  title: string;
-  description: string;
+  title: TranslatedField;
+  description: TranslatedField;
   link: string;
   image: File | null;
 }
 
 export interface BannerFormData {
-  title: string;
-  description?: string;
+  title: TranslatedField;
+  description?: TranslatedField;
   link?: string;
   image: File | null;
 }

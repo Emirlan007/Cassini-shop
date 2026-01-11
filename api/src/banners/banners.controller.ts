@@ -18,8 +18,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Model } from 'mongoose';
 import { Banner, BannerDocument } from 'src/schemas/banner.schema';
-import { CreateBannerDto } from './dto/create-banner.dto';
-import { UpdateBannerDto } from './dto/update-banner.dto';
 import { TokenAuthGuard } from 'src/auth/token-auth.guard';
 import { RolesGuard } from 'src/role-auth/role-auth.guard';
 import { Roles } from 'src/role-auth/roles.decorator';
@@ -33,6 +31,38 @@ interface BannerUpdateData {
   link?: string;
   isActive?: boolean;
   image?: string;
+}
+
+function parseTranslatedField(value: unknown): TranslatedField | undefined {
+  if (!value) return undefined;
+
+  if (typeof value === 'string') {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      if (
+        parsed &&
+        typeof parsed === 'object' &&
+        parsed !== null &&
+        'ru' in parsed &&
+        typeof (parsed as Record<string, unknown>).ru === 'string'
+      ) {
+        return parsed as TranslatedField;
+      }
+    } catch {
+      return undefined;
+    }
+  }
+
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    'ru' in value &&
+    typeof (value as Record<string, unknown>).ru === 'string'
+  ) {
+    return value as TranslatedField;
+  }
+
+  return undefined;
 }
 
 @Controller('banners')
@@ -86,39 +116,44 @@ export class BannersController {
   @Roles(Role.Admin)
   @UseInterceptors(FileInterceptor('image'))
   async createBanner(
-    @Body() bannerData: CreateBannerDto,
+    @Body() rawData: Record<string, unknown>,
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (!file) {
       throw new BadRequestException('Image is required');
     }
 
-    const titleTranslations = await this.bannerService.autoTranslate(
-      bannerData.title.ru,
-    );
+    const title = parseTranslatedField(rawData.title);
+    if (!title) {
+      throw new BadRequestException('Invalid title format');
+    }
+
+    const description = parseTranslatedField(rawData.description);
+
+    const titleTranslations = await this.bannerService.autoTranslate(title.ru);
 
     let descriptionTranslations = { en: '' };
-    if (bannerData.description?.ru) {
+    if (description?.ru) {
       descriptionTranslations = await this.bannerService.autoTranslate(
-        bannerData.description.ru,
+        description.ru,
       );
     }
 
     const banner = new this.bannerModel({
       title: {
-        ru: bannerData.title.ru,
-        en: bannerData.title.en || titleTranslations.en,
-        kg: bannerData.title.kg || '',
+        ru: title.ru,
+        en: title.en || titleTranslations.en,
+        kg: title.kg || '',
       },
-      description: bannerData.description
+      description: description
         ? {
-            ru: bannerData.description.ru,
-            en: bannerData.description.en || descriptionTranslations.en,
-            kg: bannerData.description.kg || '',
+            ru: description.ru,
+            en: description.en || descriptionTranslations.en,
+            kg: description.kg || '',
           }
         : undefined,
-      link: bannerData.link,
-      isActive: bannerData.isActive ?? true,
+      link: typeof rawData.link === 'string' ? rawData.link : undefined,
+      isActive: rawData.isActive ?? true,
       image: `/public/files/${file.filename}`,
     });
 
@@ -131,7 +166,7 @@ export class BannersController {
   @UseInterceptors(FileInterceptor('image'))
   async updateBanner(
     @Param('id') id: string,
-    @Body() bannerData: UpdateBannerDto,
+    @Body() rawData: Record<string, unknown>,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     const existingBanner = await this.bannerModel.findById(id);
@@ -142,40 +177,40 @@ export class BannersController {
 
     const updateData: BannerUpdateData = {};
 
-    if (bannerData.title) {
+    const title = parseTranslatedField(rawData.title);
+    if (title) {
       const titleTranslations = await this.bannerService.autoTranslate(
-        bannerData.title.ru,
+        title.ru,
       );
 
       updateData.title = {
-        ru: bannerData.title.ru,
-        en: bannerData.title.en || titleTranslations.en,
-        kg: bannerData.title.kg || existingBanner.title.kg || '',
+        ru: title.ru,
+        en: title.en || titleTranslations.en,
+        kg: title.kg || existingBanner.title.kg || '',
       };
     }
 
-    if (bannerData.description) {
+    const description = parseTranslatedField(rawData.description);
+    if (description) {
       const descriptionTranslations = await this.bannerService.autoTranslate(
-        bannerData.description.ru,
+        description.ru,
       );
 
-      const existingDescription = existingBanner.description as
-        | TranslatedField
-        | undefined;
+      const existingDescription = existingBanner.description;
 
       updateData.description = {
-        ru: bannerData.description.ru,
-        en: bannerData.description.en || descriptionTranslations.en,
-        kg: bannerData.description.kg || existingDescription?.kg || '',
+        ru: description.ru,
+        en: description.en || descriptionTranslations.en,
+        kg: description.kg || existingDescription?.kg || '',
       };
     }
 
-    if (bannerData.link !== undefined) {
-      updateData.link = bannerData.link;
+    if (typeof rawData.link === 'string') {
+      updateData.link = rawData.link;
     }
 
-    if (bannerData.isActive !== undefined) {
-      updateData.isActive = bannerData.isActive;
+    if (typeof rawData.isActive === 'boolean') {
+      updateData.isActive = rawData.isActive;
     }
 
     if (file) {

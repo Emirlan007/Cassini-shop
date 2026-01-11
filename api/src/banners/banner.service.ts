@@ -7,12 +7,26 @@ import {
   TranslatedField,
 } from 'src/translation/translation.service';
 
+export interface CreateBannerDto {
+  title: TranslatedField;
+  description?: TranslatedField;
+  image: string;
+  link?: string;
+  isActive: boolean;
+}
+
 @Injectable()
 export class BannerService {
   constructor(
     @InjectModel(Banner.name) private bannerModel: Model<BannerDocument>,
     private translationService: TranslationService,
   ) {}
+
+  async createMany(banners: CreateBannerDto[]): Promise<BannerDocument[]> {
+    return (await this.bannerModel.insertMany(
+      banners,
+    )) as unknown as BannerDocument[];
+  }
 
   async getActiveBanners(lang: 'ru' | 'en' | 'kg' = 'ru') {
     const banners = await this.bannerModel

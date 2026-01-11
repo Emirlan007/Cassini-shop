@@ -1,36 +1,39 @@
-import {createAsyncThunk} from "@reduxjs/toolkit";
-import type {Banner, BannerFormData, IGlobalError} from "../../../types";
-import {axiosApi} from "../../../axiosApi.ts";
-import {isAxiosError} from "axios";
-import type {RootState} from "../../../app/store.ts";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import type { Banner, BannerFormData, IGlobalError } from "../../../types";
+import { axiosApi } from "../../../axiosApi.ts";
+import { isAxiosError } from "axios";
+import type { RootState } from "../../../app/store.ts";
 
 export const createBanner = createAsyncThunk<
     Banner,
     BannerFormData,
     { rejectValue: IGlobalError }
 >("banners/createBanner", async (bannerData, { rejectWithValue }) => {
-  try {
-    const formData = new FormData();
-    formData.append("title", bannerData.title);
+    try {
+        const formData = new FormData();
 
-    if (bannerData.description) {
-      formData.append("description", bannerData.description);
-    }
-    if (bannerData.link) {
-      formData.append("link", bannerData.link);
-    }
-    if (bannerData.image) {
-      formData.append("image", bannerData.image);
-    }
+        formData.append("title", JSON.stringify(bannerData.title));
 
-    const response = await axiosApi.post<Banner>("/banners", formData);
-    return response.data;
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      return rejectWithValue(error.response.data);
+        if (bannerData.description) {
+            formData.append("description", JSON.stringify(bannerData.description));
+        }
+
+        if (bannerData.link) {
+            formData.append("link", bannerData.link);
+        }
+
+        if (bannerData.image) {
+            formData.append("image", bannerData.image);
+        }
+
+        const response = await axiosApi.post<Banner>("/banners", formData);
+        return response.data;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            return rejectWithValue(error.response.data);
+        }
+        throw error;
     }
-    throw error;
-  }
 });
 
 export const fetchBannerById = createAsyncThunk<
@@ -82,14 +85,17 @@ export const updateBanner = createAsyncThunk<
         const token = getState().users.user?.token;
 
         const formData = new FormData();
-        formData.append("title", data.title);
+
+        formData.append("title", JSON.stringify(data.title));
 
         if (data.description) {
-            formData.append("description", data.description);
+            formData.append("description", JSON.stringify(data.description));
         }
+
         if (data.link) {
             formData.append("link", data.link);
         }
+
         if (data.image) {
             formData.append("image", data.image);
         }

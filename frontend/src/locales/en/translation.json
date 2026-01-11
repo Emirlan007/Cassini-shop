@@ -10,6 +10,7 @@
   "productDetail": "Product Detail",
   "availableSizes": "Available Sizes",
   "sizingGuide": "Sizing Guide",
+  "NoSizingInformation": "Information about sizing and fit guide has not been added yet",
   "youMightAlsoLike": "You Might Also Like",
   "new": "New",
   "moreInfo": "More Info",
@@ -93,11 +94,14 @@
   "popular": "Popular",
   "apply": "Apply",
   "contacts": "Contacts",
+  "email": "Email",
   "links": "Links",
   "aboutUs": "About us",
   "privacyPolicy": "Privacy policy",
   "termsOfService": "Terms of service",
   "followUs": "Follow us",
+  "allRightsReserved": "All Rights Reserved",
+  "footerLogoText": "Trending fashion for the modern woman",
   "orderHistory": "Order history",
   "send": "Send",
   "orderFrom": "Order from",
@@ -113,6 +117,12 @@
   "som": "som",
   "items": "Item(s)",
   "itemAddedToCart": "Item added to cart",
+
+  "checkoutSteps": {
+    "details": "Details",
+    "personalInfo": "Personal Info",
+    "payment": "Payment"
+  },
 
   "productForm": {
     "name": "Name",

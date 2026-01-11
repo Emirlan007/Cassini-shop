@@ -3,9 +3,12 @@ import DocLinks from "./DocLinks.tsx";
 import Contacts from "./Contacts.tsx";
 import SocialLinks from "./SocialLinks.tsx";
 import Logo from "./Logo.tsx";
+import {useTranslation} from "react-i18next";
 
 
 const Footer = () => {
+  const { t } = useTranslation();
+
     return (
         <>
           <Box sx={{
@@ -27,7 +30,7 @@ const Footer = () => {
           </Box>
           <Box sx={{display: 'flex', justifyContent: 'center',}}>
             <Typography sx={{width: '70%' ,pt: '26px', pb: '38px', borderTop: '0.80px solid #e5e7eb', fontSize: '11px', lineHeight: '143%',color: '#808080'}} display={'flex'} justifyContent={'center'}>
-              © 2024 Cassini. All Rights Reserved.
+              © 2024 Cassini. {t("allRightsReserved")}.
             </Typography>
           </Box>
         </>

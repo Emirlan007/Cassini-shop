@@ -1,8 +1,11 @@
 import {Link} from "react-router-dom";
 import {Box, Typography} from "@mui/material";
+import {useTranslation} from "react-i18next";
 
 
 const Logo = () => {
+  const { t } = useTranslation();
+
   return (
       <Box sx={{ display: "flex", flexDirection: 'column', alignItems: {
           lg: "flex-start",
@@ -14,7 +17,7 @@ const Logo = () => {
           <img src="/newLogo.png" alt="Cassini" style={{ width: '95px', height: '26px'}} />
         </Link>
         <Typography sx={{pt: '7px', fontSize: '11px'}}>
-          Trending fashion for the modern woman.
+          {t("footerLogoText")}
         </Typography>
       </Box>
   );

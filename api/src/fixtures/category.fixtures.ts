@@ -10,16 +10,16 @@ export async function createCategoryFixtures(
       slug: 'top_closes',
     },
     {
-      title: 'Платья и сарафаны ',
+      title: 'Платья и сарафаны',
       slug: 'dresses',
     },
     {
-      title: 'Блузы и рубашки ',
-      slug: 'blousesNshirts',
+      title: 'Топы',
+      slug: 'tops',
     },
     {
-      title: 'Брюки и шорты',
-      slug: 'pants-and-shorts',
+      title: 'Брюки и джинсы',
+      slug: 'pants-and-jeans',
     },
     {
       title: 'Юбки',

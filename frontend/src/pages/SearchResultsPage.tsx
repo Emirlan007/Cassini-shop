@@ -13,6 +13,7 @@ import ProductList from "../features/products/ProductsList.tsx";
 import type { AxiosResponse } from "axios";
 import type { Product } from "../types";
 import { useTranslation } from "react-i18next";
+import SearchInput from "../components/UI/SearchInput/SearchInput.tsx";
 
 interface ProductsSearch {
   products: Product[];
@@ -44,7 +45,8 @@ const SearchResultsPage = () => {
 
   const fetchResults = useCallback(
     async (pageToLoad: number) => {
-      if (totalPages > 0 && pageToLoad > totalPages) return;
+      if ((totalPages > 0 && pageToLoad > totalPages) || query.trim() === "")
+        return;
 
       scrollPositionRef.current = window.scrollY;
 
@@ -131,10 +133,14 @@ const SearchResultsPage = () => {
   const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
   return (
-    <Box sx={{ px: 2, py: 3 }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-        {t("searchResults")}: "{query}"
-      </Typography>
+    <Box>
+      <SearchInput />
+
+      {query && (
+        <Typography variant="h5" sx={{ my: 3, fontWeight: 700 }}>
+          {t("searchResults")}: "{query}"
+        </Typography>
+      )}
 
       {loading && currentPage === 1 && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
@@ -142,7 +148,7 @@ const SearchResultsPage = () => {
         </Box>
       )}
 
-      {!loading && products.length === 0 && (
+      {!loading && products.length === 0 && query && (
         <Typography sx={{ color: "#6b7280", mt: 2 }}>
           {t("nothingFound")}
         </Typography>
@@ -156,7 +162,7 @@ const SearchResultsPage = () => {
         </Typography>
       )}
 
-      {!isMobile && hasMore && (
+      {!isMobile && hasMore && query && (
         <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
           <Button
             variant="contained"

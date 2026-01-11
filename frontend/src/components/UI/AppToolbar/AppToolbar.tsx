@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import SearchIcon from "@mui/icons-material/Search";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -21,7 +22,6 @@ import Badge from "@mui/material/Badge";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CustomDrawer from "../CustomDrawer/CustomDrawer.tsx";
 import BackButton from "../BackButton.tsx";
-import SearchInput from "../SearchInput/SearchInput.tsx";
 import { selectCart } from "../../../features/cart/cartSlice.ts";
 import { selectWishlistCount } from "../../../features/wishlist/wishlistSlice.ts";
 import { fetchWishlist } from "../../../features/wishlist/wishlistThunks.ts";
@@ -91,7 +91,9 @@ const AppToolbar = () => {
             >
               <ShoppingCartIcon sx={{ color: "#374151" }} />
             </Badge>
-            <SearchInput />
+            <IconButton onClick={() => navigate("/search")}>
+              <SearchIcon sx={{ color: "#808080" }} />
+            </IconButton>
           </Stack>
         </Toolbar>
       </AppBar>

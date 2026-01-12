@@ -15,6 +15,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../users/usersSlice";
 import { trackProductView } from "../../analytics/analytics";
 import { ProductSchema } from "./ProductSchema";
+import {useTranslation} from "react-i18next";
 
 const ProductDetails = () => {
   const { productSlug } = useParams() as { productSlug: string };
@@ -30,6 +31,7 @@ const ProductDetails = () => {
   const { hasActiveDiscount, timeLeft, finalPrice } = useProductDiscount(
     product ?? undefined
   );
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (product) {
@@ -54,7 +56,7 @@ const ProductDetails = () => {
   if (error || !product) {
     return (
       <Typography textAlign="center" mt={2}>
-        Ошибка при загрузке товара: {error}
+        {t("productsLoadError")}
       </Typography>
     );
   }

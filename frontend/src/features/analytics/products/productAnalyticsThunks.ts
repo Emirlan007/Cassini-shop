@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { isAxiosError } from "axios";
 import { axiosApi } from "../../../axiosApi.ts";
 
-export type ProductAnalyticsPeriod = "day" | "week" | "month";
+export type ProductAnalyticsPeriod = "day" | "week" | "month" | "year" | "all";
 
 export interface ProductAnalyticsItem {
   productTitle: string;
@@ -10,6 +10,7 @@ export interface ProductAnalyticsItem {
   addToCartQty: number;
   wishlistCount: number;
   views: number;
+  searchImpressions: number;
 }
 
 export const fetchProductAnalytics = createAsyncThunk<

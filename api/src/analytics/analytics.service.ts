@@ -46,6 +46,7 @@ export class AnalyticsService {
         views: item.views ?? 0,
         addToCartQty: item.addToCartQty ?? 0,
         wishlistCount: item.wishlistCount ?? 0,
+        searchImpressions: item.searchImpressions ?? 0,
       };
     });
   }

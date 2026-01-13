@@ -52,10 +52,13 @@ export class SearchQueriesController {
 
   @Get('popular')
   async getPopularQueries(
+    @Query('page') page?: string,
     @Query('limit') limit?: string,
-  ): Promise<PopularQuery[]> {
+  ) {
+    const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 10;
-    return this.searchQueriesService.getPopularQueries(limitNum);
+
+    return this.searchQueriesService.getPopularQueries(pageNum, limitNum);
   }
 
   @Get('user/recent')

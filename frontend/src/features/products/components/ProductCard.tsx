@@ -38,7 +38,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
       sx={{
         width: "100%",
         maxWidth: { xs: "180px", sm: "220px", md: "280px", lg: "336px" },
-        height: { xs: "auto", sm: "380px", md: "450px", lg: "504.2px" },
+        height: "auto",
         borderRadius: "5px",
         border: "1px solid #f3f3f3",
         boxShadow: "none",
@@ -47,7 +47,8 @@ const ProductCard: React.FC<Props> = ({ product }) => {
         overflow: "hidden",
         position: "relative",
         mx: "auto",
-        display: { xs: "block", md: "block" },
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <ProductBadges
@@ -90,30 +91,35 @@ const ProductCard: React.FC<Props> = ({ product }) => {
         </Box>
       )}
 
-      {product.images && product.images.length > 0 ? (
-        <ProductImageSlider
-          images={product.images}
-          name={getTranslatedName(product)}
-        />
-      ) : (
-        <Box
-          sx={{
-            width: "100%",
-            height: { xs: "180px", sm: "240px", md: "320px", lg: "448px" },
-            backgroundColor: "#f3f4f6",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#9ca3af",
-          }}
-        >
-          {t("noImage")}
-        </Box>
-      )}
+      <Box sx={{ flex: "0 0 auto", overflow: "hidden" }}>
+        {product.images && product.images.length > 0 ? (
+          <ProductImageSlider
+            images={product.images}
+            name={getTranslatedName(product)}
+          />
+        ) : (
+          <Box
+            sx={{
+              width: "100%",
+              height: { xs: "180px", sm: "240px", md: "300px", lg: "340px" },
+              backgroundColor: "#f3f4f6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#9ca3af",
+            }}
+          >
+            {t("noImage")}
+          </Box>
+        )}
+      </Box>
 
       <CardContent
         sx={{
           p: 1,
+          "&:last-child": {
+            pb: 1,
+          },
         }}
       >
         <Typography
@@ -122,7 +128,13 @@ const ProductCard: React.FC<Props> = ({ product }) => {
             fontSize: "12.8px",
             color: "#111827",
             lineHeight: 1.3,
-            mb: "4px",
+            mb: 0.5,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            minHeight: { xs: "32px", sm: "33px" },
           }}
         >
           {getTranslatedName(product)}

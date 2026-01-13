@@ -16,6 +16,8 @@ import { UpdatePopularStatusDto } from './dto/update-popular-status.dto';
 import { FilterProductsDto } from './dto/filter-products.dto';
 import { SearchQueriesService } from 'src/search/search-query.service';
 import { generateSlug, generateUniqueSlug } from '../utils/slug';
+import { AnalyticsService } from '../analytics/analytics.service';
+import { EventType } from '../enums/event.enum';
 
 interface ProductFilter {
   category?: Types.ObjectId;
@@ -40,6 +42,7 @@ export class ProductsService {
     private productModel: Model<ProductDocument>,
     private fileUploadService: FileUploadService,
     private searchQueriesService: SearchQueriesService,
+    private analyticsService: AnalyticsService,
   ) {}
 
   async create(
@@ -328,7 +331,11 @@ export class ProductsService {
 
     const regexFilter = {
       ...filter,
-      name: { $regex: query, $options: 'i' },
+      $or: [
+        { 'name.ru': { $regex: query, $options: 'i' } },
+        { 'name.en': { $regex: query, $options: 'i' } },
+        { 'name.kg': { $regex: query, $options: 'i' } },
+      ],
     };
 
     const regexResults = await this.productModel
@@ -358,7 +365,25 @@ export class ProductsService {
       products.map((p) => [String(p._id as Types.ObjectId), p]),
     );
 
-    const orderedProducts = paginatedIds.map((id) => productMap.get(id));
+    const orderedProducts = paginatedIds
+      .map((id) => productMap.get(id))
+      .filter((p) => p !== undefined);
+
+    // Track search impressions for displayed products
+    if (orderedProducts.length > 0) {
+      for (const product of orderedProducts) {
+        this.analyticsService
+          .trackEvent({
+            type: EventType.SearchImpression,
+            productId: product._id as Types.ObjectId,
+            userId: userId ? new Types.ObjectId(userId) : undefined,
+            sessionId: sessionId,
+          })
+          .catch((error) => {
+            console.error('Error tracking search impression:', error);
+          });
+      }
+    }
 
     const totalPages = Math.ceil(totalCount / limit);
 

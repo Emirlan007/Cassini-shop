@@ -10,10 +10,16 @@ import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import ProductImageSlider from "./ProductImageSlider";
 import ProductPrice from "./ProductPrice";
 import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n";
 
 interface Props {
   product: Product;
 }
+
+const getTranslatedName = (product: Product): string => {
+  const lang = i18n.language.split("-")[0] as "ru" | "en" | "kg";
+  return product.name?.[lang] || product.name?.ru || "";
+};
 
 const ProductCard: React.FC<Props> = ({ product }) => {
   const navigate = useNavigate();
@@ -114,9 +120,15 @@ const ProductCard: React.FC<Props> = ({ product }) => {
             color: "#111827",
             lineHeight: 1.3,
             mb: "4px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            minHeight: { xs: "32px", sm: "33px" },
           }}
         >
-          {product.name}
+          {getTranslatedName(product)}
         </Typography>
 
         <ProductPrice

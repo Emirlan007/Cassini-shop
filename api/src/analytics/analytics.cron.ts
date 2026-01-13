@@ -26,6 +26,7 @@ interface AggregatedProduct {
   addToCart: number;
   addToCartQty: number;
   wishlistCount: number;
+  searchImpressions: number;
 }
 
 interface AggregatedOrder {
@@ -113,13 +114,19 @@ export class AnalyticsCron {
               $cond: [{ $eq: ['$type', 'add_to_wishlist'] }, 1, 0],
             },
           },
+
+          searchImpressions: {
+            $sum: {
+              $cond: [{ $eq: ['$type', 'search_impression'] }, 1, 0],
+            },
+          },
         },
       },
     ]);
 
     for (const item of events) {
       console.log(
-        `Product ${item._id}: views=${item.views}, cart=${item.addToCart}, wishlist=${item.wishlistCount}`,
+        `Product ${item._id}: views=${item.views}, cart=${item.addToCart}, wishlist=${item.wishlistCount}, searchImpressions=${item.searchImpressions}`,
       );
 
       await this.productStatsByDayModel.findOneAndUpdate(
@@ -133,6 +140,7 @@ export class AnalyticsCron {
             addToCart: item.addToCart,
             addToCartQty: item.addToCartQty,
             wishlistCount: item.wishlistCount,
+            searchImpressions: item.searchImpressions,
           },
         },
         { upsert: true },

@@ -158,8 +158,8 @@ const Wishlist = () => {
             },
           }}
         >
-          {wishlist.products.map((product) => (
-            <Grid item xs={6} sm={6} md={4} lg={3} key={product._id}>
+          {wishlist.products && wishlist.products.map((product) => (
+            <Grid key={product._id} component={'div'}> // needs to be fixed
               <Box sx={{ width: "100%" }}>
                 <ProductCard product={product} />
               </Box>

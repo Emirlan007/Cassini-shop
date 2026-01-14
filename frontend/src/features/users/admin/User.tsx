@@ -160,7 +160,8 @@ const User = () => {
                 <OrderCard
                   key={order._id}
                   order={order}
-                  onClick={() => navigate(`/orders/${order._id}`)}
+                  isAdmin={true} //needs to be checked
+                  // onClick={() => navigate(`/orders/${order._id}`)} //needs to be checked
                 />
               ))}
             </Box>

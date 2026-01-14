@@ -10,7 +10,7 @@ interface Props {
   sizeGuide?: string;
 }
 
-const ProductTabs: React.FC<Props> = ({ description, sizeGuide }) => {
+const ProductTabs: React.FC<Props> = ({ description }) => {
   const [tabValue, setTabValue] = useState(0);
 
   const { t } = useTranslation();

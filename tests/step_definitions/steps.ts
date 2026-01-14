@@ -27,3 +27,19 @@ Then("the user sees the message {string}", (message: string) => {
 Then("the user stays on the {string} page", (page: string) => {
   I.seeCurrentUrlEquals(page);
 });
+
+When("the user selects {string} color", (color: string) => {
+  I.click(`[data-testid="color-${color}"]`);
+});
+
+When("the user selects {string} size", (size: string) => {
+  I.click(`[data-testid="size-${size}"]`);
+});
+
+When("the user adds the product to the cart", () => {
+  I.click('button[data-testid="add-to-cart"]');
+});
+
+Then("the number of items in the cart is {int}", (count: number) => {
+  I.see(`${count}`, '[data-testid="cart-items-count"]');
+});

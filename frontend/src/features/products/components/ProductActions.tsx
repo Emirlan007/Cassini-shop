@@ -161,6 +161,7 @@ const ProductActions: React.FC<Props> = ({
               variant="contained"
               disabled={isDisabled}
               onClick={handleAddToCart}
+              data-testid="add-to-cart"
             >
               {t("addToCart")}
             </Button>

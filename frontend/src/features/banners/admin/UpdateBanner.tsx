@@ -5,12 +5,12 @@ import {
     selectBanner,
     selectFetchBannerLoading,
     selectUpdateBannerLoading,
-    clearBanner
+    clearBanner,
 } from "../bannersSlice";
 import type { BannerInput } from "../../../types";
 import BannerForm from "./components/BannerForm";
 import { Alert, CircularProgress, Box } from "@mui/material";
-import {fetchBannerById, updateBanner} from "./BannersThunks.ts";
+import { fetchBannerById, updateBanner } from "./BannersThunks.ts";
 
 const UpdateBanner = () => {
     const { bannerId } = useParams<{ bannerId: string }>();
@@ -49,31 +49,45 @@ const UpdateBanner = () => {
                 })
             ).unwrap();
 
-            navigate("/"); //куда нужно после обновления
-        } catch (error) {
-            setError("Failed to update banner");
+            navigate("/admin/banners");
+        } catch (err) {
+            setError("Не удалось обновить баннер");
+            console.error("Update banner error:", err);
         }
     };
 
     if (fetchLoading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-                <CircularProgress />
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="200px"
+            >
+                <CircularProgress sx={{ color: "#660033" }} />
             </Box>
         );
     }
 
     if (!banner && !fetchLoading) {
-        return <Alert severity="error">Banner not found</Alert>;
+        return (
+            <Alert severity="error" sx={{ mt: 2 }}>
+                Баннер не найден
+            </Alert>
+        );
     }
 
     return (
         <>
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+            )}
             <BannerForm
                 onSubmit={onFormSubmit}
                 loading={updateLoading}
-                existingBanner={banner} // Передаем существующий баннер для предзаполнения формы
+                existingBanner={banner}
                 isEdit={true}
             />
         </>

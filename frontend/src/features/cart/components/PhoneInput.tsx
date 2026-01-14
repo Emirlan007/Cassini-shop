@@ -187,6 +187,7 @@ const PhoneInput = ({
 
       <TextField
         label={translatedLabel}
+        name="phoneNumber"
         value={country.format(phoneNumber)}
         onChange={handlePhoneChange}
         fullWidth

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -20,7 +20,7 @@ import { fetchPopularSearchKeywords } from "./searchKeywordsThunks.ts";
 
 const PopularSearchKeywords = () => {
   const dispatch = useAppDispatch();
-  const { items, total, page, limit, loading } = useAppSelector(
+  const { items, total, loading } = useAppSelector(
     (state) => state.searchKeywords
   );
 

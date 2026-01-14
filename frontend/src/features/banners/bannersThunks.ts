@@ -39,7 +39,9 @@ export const toggleBannerActive = createAsyncThunk<
 export const deleteBanner = createAsyncThunk<
     string,
     string,
-    { getState, rejectValue: IGlobalError }
+    {
+        // @ts-ignore
+        getState, rejectValue: IGlobalError }
 >("banners/deleteBanner", async (id, {dispatch, rejectWithValue }) => {
     try {
         await axiosApi.delete(`/banners/${id}`);

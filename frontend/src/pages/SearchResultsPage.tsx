@@ -55,7 +55,7 @@ const SearchResultsPage = () => {
         setLoading(true);
 
         const response: AxiosResponse<ProductsSearch> = await axiosApi.get(
-          `/products/search?q=${query}&limit=${2}&page=${pageToLoad}&lang=${currentLang}`
+          `/products/search?q=${query}&page=${pageToLoad}&lang=${currentLang}`
         );
 
         const {

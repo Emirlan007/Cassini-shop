@@ -10,21 +10,11 @@ export const fetchPopularSearchKeywords = createAsyncThunk<
   "analytics/fetchPopularSearchKeywords",
   async ({ page, limit }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosApi.get<
-        Array<{ query: string; count: number }>
-      >(`/search-queries/popular?limit=${limit}`);
-      const items = data.map((item) => ({
-        keyword: item.query,
-        count: item.count,
-      }));
+      const { data } = await axiosApi.get<PopularSearchKeywordsResponse>(
+        `/search-queries/popular?page=${page}&limit=${limit}`
+      );
 
-      return {
-        items,
-        total: items.length,
-        page,
-        limit,
-        totalPages: 1,
-      };
+      return data;
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data);

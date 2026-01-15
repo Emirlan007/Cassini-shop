@@ -7,29 +7,29 @@ import BannerForm from "./components/BannerForm";
 import { selectCreateBannerLoading } from "../bannersSlice";
 
 const CreateBanner = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const creating = useAppSelector(selectCreateBannerLoading);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const creating = useAppSelector(selectCreateBannerLoading);
 
-  const onFormSubmit = async (data: BannerInput) => {
-    await dispatch(
-        createBanner({
-          title: data.title,
-          description: data.description,
-          link: data.link,
-          image: data.image!,
-        })
-    ).unwrap();
+    const onFormSubmit = async (data: BannerInput) => {
+        await dispatch(
+            createBanner({
+                title: data.title,
+                description: data.description,
+                link: data.link,
+                image: data.image!,
+            })
+        ).unwrap();
 
-    dispatch(fetchBanners());
-    navigate("/");
-  };
+        dispatch(fetchBanners());
+        navigate("/admin/banners");
+    };
 
-  return (
-      <>
-        <BannerForm onSubmit={onFormSubmit} loading={creating} />
-      </>
-  );
+    return (
+        <>
+            <BannerForm onSubmit={onFormSubmit} loading={creating} />
+        </>
+    );
 };
 
 export default CreateBanner;

@@ -1,7 +1,7 @@
 {
   "pending": "В ожидании",
   "paid": "Оплачено",
-  "canceled": "Отменено",
+  "cancelled": "Отменено",
   "completed": "Завершено",
   "delivered": "Доставлено",
   "on_the_way": "В пути",

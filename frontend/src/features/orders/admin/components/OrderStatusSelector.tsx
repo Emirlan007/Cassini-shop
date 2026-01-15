@@ -34,9 +34,10 @@ const OrderStatusSelector = ({
         <FormControl sx={{ minWidth: 200 }}>
           <InputLabel>Статус заказа</InputLabel>
           <Select
-            value={orderStatus}
-            label="Статус заказа"
-            onChange={(e) => setOrderStatus(e.target.value)}
+              variant="outlined"
+              value={orderStatus}
+              label="Статус заказа"
+              onChange={(e) => setOrderStatus(e.target.value)}
           >
             <MenuItem value="awaiting_payment">Ожидает оплаты</MenuItem>
             <MenuItem value="paid">Оплачен</MenuItem>

@@ -60,7 +60,7 @@ const OrderTabs = () => {
             },
           }}
         >
-          <Tab label={t("awaitingPayment")} {...a11yProps(0)} />
+          <Tab label={t("pending")} {...a11yProps(0)} />
           <Tab label={t("paid")} {...a11yProps(1)} />
           <Tab label={t("cancelled")} {...a11yProps(2)} />
         </Tabs>

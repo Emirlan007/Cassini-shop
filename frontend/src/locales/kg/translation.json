@@ -56,7 +56,8 @@
 
   "wishlist": "",
   "comment": "",
-  "dontHaveAccount": "",
+  "dontHaveAccount": "Аккаунтуңуз жокбу? Катталуу",
+  "alreadyHaveAccount": "Аккаунтуңуз барбы? Кирүү",
   "toMainPage": "",
   "searchResults": "",
   "nothingFound": "Эч нерсе табылган жок",

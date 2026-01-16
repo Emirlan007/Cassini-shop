@@ -1,12 +1,12 @@
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 import {
-  Avatar,
-  Box,
-  Button,
-  Stack,
-  TextField,
-  Typography,
+    Avatar,
+    Box,
+    Button, Link,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -155,6 +155,22 @@ const Register = () => {
           </Button>
         </Stack>
       </Box>
+        <Link
+            component={RouterLink}
+            to="/login"
+            sx={{
+                mt: 2,
+                color: "#660033",
+                textDecoration: "none",
+                textAlign: "center",
+                "&:hover": {
+                    color: "#F0544F",
+                    textDecoration: "underline",
+                },
+            }}
+        >
+            {t("alreadyHaveAccount")}
+        </Link>
     </Box>
   );
 };

@@ -30,6 +30,7 @@ const SearchInput = () => {
       }}
     >
       <TextField
+        name="searchQuery"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder={t("searchForProducts")}

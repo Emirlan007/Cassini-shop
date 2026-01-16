@@ -24,6 +24,7 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }: Props) => {
       border="1px solid #ccc"
       borderRadius={2}
       gap={1}
+      data-testid="cart-item"
     >
       <img
         src={`${API_URL}/${item.image.replace(/^\/+/, "")}`}
@@ -67,10 +68,13 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }: Props) => {
           sx={{ color: "red", fontSize: 30, height: "30px" }}
           onClick={() => onUpdateQuantity(item, item.quantity - 1)}
           disabled={item.quantity <= 1}
+          data-testid="decrease-cart-item-quantity"
         >
           -
         </Button>
-        <Typography>{item.quantity}</Typography>
+        <Typography data-testid="cart-item-quantity">
+          {item.quantity}
+        </Typography>
         <Button
           size="small"
           sx={{ color: "red", fontSize: 20, height: "30px" }}
@@ -78,10 +82,15 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }: Props) => {
             onUpdateQuantity(item, item.quantity + 1);
             trackAddToCart(item._id ?? "");
           }}
+          data-testid="increase-cart-item-quantity"
         >
           +
         </Button>
-        <IconButton color="error" onClick={() => onRemove(item)}>
+        <IconButton
+          color="error"
+          onClick={() => onRemove(item)}
+          data-testid="remove-from-cart"
+        >
           <DeleteIcon />
         </IconButton>
       </Box>

@@ -116,7 +116,7 @@
   "deliveryStatus": "Статус доставки",
   "som": "сом",
   "items": "Товар(ы)",
-  "itemAddedToCart": "Товары добавлен в корзину",
+  "itemAddedToCart": "Товар добавлен в корзину",
 
   "checkoutSteps": {
     "details": "Детали заказа",

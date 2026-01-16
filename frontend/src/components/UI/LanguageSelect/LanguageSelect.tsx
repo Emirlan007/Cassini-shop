@@ -12,7 +12,12 @@ const LanguageSelect = () => {
   ];
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={1}
+      data-testid="language-select"
+    >
       <FormControl
         size="small"
         sx={{
@@ -41,6 +46,7 @@ const LanguageSelect = () => {
                 justifyContent: "center",
                 fontWeight: currentLang === code ? "bold" : "normal",
               }}
+              data-testid={`language-${code}`}
             >
               {label}
             </MenuItem>

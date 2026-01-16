@@ -93,6 +93,7 @@ const AppToolbar = () => {
               color="error"
               onClick={() => navigate("/cart")}
               sx={{ cursor: "pointer" }}
+              data-testid="cart-items-count"
             >
               <ShoppingCartIcon sx={{ color: "#374151" }} />
             </Badge>

@@ -161,6 +161,7 @@ const ProductActions: React.FC<Props> = ({
               variant="contained"
               disabled={isDisabled}
               onClick={handleAddToCart}
+              data-testid="add-to-cart"
             >
               {t("addToCart")}
             </Button>
@@ -171,6 +172,8 @@ const ProductActions: React.FC<Props> = ({
                 border: "1px solid #808080",
                 borderRadius: "10%",
               }}
+              data-testid="toggle-is-product-in-wishlist"
+              data-active={isInWishlist}
             >
               <Box
                 sx={{

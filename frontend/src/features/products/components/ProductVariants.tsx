@@ -83,6 +83,7 @@ export const ProductVariants: React.FC<Props> = ({
                           : "4px solid #ccc",
                       backgroundClip: "content-box",
                     }}
+                    data-testid={`color-${c.replace("#", "")}`}
                   />
                 }
                 sx={{
@@ -175,6 +176,7 @@ export const ProductVariants: React.FC<Props> = ({
                     color: "#999",
                   },
                 }}
+                data-testid={`size-${size.toLocaleLowerCase()}`}
               >
                 {size}
               </ToggleButton>

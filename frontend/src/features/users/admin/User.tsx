@@ -160,6 +160,7 @@ const User = () => {
                 <OrderCard
                   key={order._id}
                   order={order}
+                  isAdmin={true}
                 />
               ))}
             </Box>

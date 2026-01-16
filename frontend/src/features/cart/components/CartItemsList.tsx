@@ -41,6 +41,7 @@ const CartItemsList = ({
       ))}
 
       <Button
+        data-testid="checkout-next-from-cart"
         variant="contained"
         sx={{
           borderRadius: "14px",

@@ -30,7 +30,7 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
 
   return (
     <Paper sx={{ p: 3, mt: 3 }}>
-      <Stack spacing={3}>
+      <Stack data-testid="payment-step" spacing={3}>
         <Box>
           <Typography variant="h6" mb={2} color="#660033">
             {t("paymentMethod")}
@@ -42,12 +42,14 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
             onChange={(_, value) => value && setPaymentMethod(value)}
             fullWidth
           >
-            <ToggleButton value="cash">{t("cash")}</ToggleButton>
-            <ToggleButton value="qrCode">{t("qrCode")}</ToggleButton>
+            <ToggleButton data-testid="payment-cash" value="cash">{t("cash")}</ToggleButton>
+            <ToggleButton data-testid="payment-qr" value="qrCode">{t("qrCode")}</ToggleButton>
           </ToggleButtonGroup>
         </Box>
 
         <TextField
+          name="comment"
+          data-testid="order-comment"
           label={t("orderComment")}
           multiline
           rows={4}
@@ -58,11 +60,12 @@ const PaymentStep: React.FC<Props> = ({ onCheckout }) => {
         />
 
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">
+          <Typography data-testid="order-total" variant="h6">
             {t("total")}: {totalPrice} {t("som")}
           </Typography>
 
           <Button
+            data-testid="place-order-button"
             variant="contained"
             onClick={() => onCheckout({ paymentMethod, comment })}
             sx={{

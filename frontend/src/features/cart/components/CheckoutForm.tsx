@@ -49,8 +49,9 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
       >
         {t("personalData")}
       </Typography>
-      <Stack spacing={2}>
+      <Stack data-testid="checkout-form" spacing={2}>
         <TextField
+          name="name"
           label={t("name")}
           value={userData.name}
           onChange={(e) => setUserData({ ...userData, name: e.target.value })}
@@ -60,11 +61,13 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           onChange={(value) => setUserData({ ...userData, phoneNumber: value })}
         />
         <TextField
+          name="city"
           label={t("city")}
           value={userData.city}
           onChange={(e) => setUserData({ ...userData, city: e.target.value })}
         />
         <TextField
+          name="address"
           label={t("address")}
           value={userData.address}
           onChange={(e) =>
@@ -72,7 +75,12 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           }
         />
 
-        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+        <Button
+          data-testid="checkout-submit"
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
           {t("next")}
         </Button>
       </Stack>

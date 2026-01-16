@@ -167,7 +167,8 @@
     "defaultDescription": "Online store with a wide selection of products. Fast delivery and quality guarantee"
   },
   "filterError": "Failed to load filtered products",
-
+  "noSimilarProductsFound": "No similar products found",
+  "notAuthorized": "Not Authorized",
   "colors": {
     "AliceBlue": "AliceBlue",
     "AntiqueWhite": "AntiqueWhite",

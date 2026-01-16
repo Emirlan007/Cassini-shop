@@ -32,12 +32,12 @@ interface Props {
 }
 
 const ProductActions: React.FC<Props> = ({
-  product,
-  selectedColor,
-  selectedSize,
-  finalPrice,
-  isAdmin,
-}) => {
+                                           product,
+                                           selectedColor,
+                                           selectedSize,
+                                           finalPrice,
+                                           isAdmin,
+                                         }) => {
   const [discountValue, setDiscountValue] = useState<string>("0");
   const [discountUntilValue, setDiscountUntilValue] = useState<string>("");
   const dispatch = useAppDispatch();

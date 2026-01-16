@@ -28,7 +28,7 @@ const HomePage = () => {
   const popularProducts = useAppSelector(selectPopularProducts);
   const popularProductsLoading = useAppSelector(selectPopularProductsLoading);
 
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const currentLang = i18n.language.slice(0, 2) as "ru" | "en" | "kg";
 
@@ -58,13 +58,40 @@ const HomePage = () => {
         overflow: "hidden",
       }}
     >
-      {productListSchema && (
-        <Helmet>
-          <script type="application/ld+json">
-            {JSON.stringify(productListSchema)}
-          </script>
-        </Helmet>
-      )}
+      <Helmet>
+        <title>
+          {t("siteName", "Cassini Shop - Интернет-магазин модной одежды")}
+        </title>
+        <meta
+          name="description"
+          content={t(
+            "siteDescription",
+            "Широкий выбор качественной одежды. Популярные товары и новинки каждый день."
+          )}
+        />
+        <link rel="canonical" href={window.location.origin} />
+
+        <meta
+          property="og:title"
+          content={t(
+            "siteName",
+            "Cassini Shop - Интернет-магазин модной одежды"
+          )}
+        />
+        <meta
+          property="og:description"
+          content={t(
+            "siteDescription",
+            "Широкий выбор качественной одежды. Популярные товары и новинки каждый день."
+          )}
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={window.location.origin} />
+
+        <script type="application/ld+json">
+          {JSON.stringify(productListSchema)}
+        </script>
+      </Helmet>
 
       <Stack spacing={{ xs: 2, sm: 3 }} alignItems="center">
         <Box

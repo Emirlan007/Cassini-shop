@@ -1,7 +1,7 @@
 {
   "pending": "Күтүлүүдө",
   "paid": "Төлөндү",
-  "canceled": "Жокко чыгарылды",
+  "cancelled": "Жокко чыгарылды",
   "completed": "",
   "delivered": "Жеткизилди",
   "on_the_way": "Жолдо",

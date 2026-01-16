@@ -9,14 +9,12 @@ import { fetchMyOrderHistory } from "./orderHistoryThunks";
 import {
   Box,
   Card,
-  CardContent,
   CircularProgress,
   Typography,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import { History } from "@mui/icons-material";
-import { API_URL } from "../../constants";
 import { useTranslation } from "react-i18next";
+import OrderProduct from "../orders/components/OrderProduct.tsx";
 
 const OrderHistoryPage = () => {
   const dispatch = useAppDispatch();
@@ -48,88 +46,38 @@ const OrderHistoryPage = () => {
       {history.length === 0 ? (
         <Typography>{t("youDontHaveAnyCompletedOrdersYet")}</Typography>
       ) : (
-        <Grid container spacing={3}>
+        <>
           {history.map((item) => (
-            <Grid sx={{ xs: 12 }} key={item._id}>
               <Card
-                sx={{
-                  cursor: "pointer",
-                  transition: "transform 0.2s",
-                  "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 3,
-                  },
-                }}
-                onClick={() => navigate(`/order-history/${item._id}`)}
+                  key={item._id}
+                  sx={{
+                    cursor: "pointer",
+                    padding: "20px",
+                    transition: "transform 0.2s",
+                    marginBottom: "15px",
+                    backgroundColor: "white",
+                    border: "1px solid #CCCCCC",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: 3,
+                    },
+                  }}
+                  onClick={() => navigate(`/order-history/${item._id}`)}
               >
-                <CardContent>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={2}
-                  >
-                    <Typography variant="h6">
-                      {t("orderFrom")}{" "}
-                      {new Date(item.completedAt).toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="h6" fontWeight="bold">
-                      {item.totalPrice} {t("som")}
-                    </Typography>
-                  </Box>
+                <Typography variant="subtitle2" flexGrow={1} sx={{mb: 2}}>
+                  {t("createdAt")}: {new Date(item.completedAt).toLocaleString()}
+                </Typography>
 
-                  <Box display="flex" gap={2} flexWrap="wrap">
-                    {item.items.slice(0, 4).map((product, index) => (
-                      <Box
-                        key={index}
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: 1,
-                          overflow: "hidden",
-                        }}
-                      >
-                        <img
-                          src={`${API_URL}/${product.image.replace(
-                            /^\/+/,
-                            ""
-                          )}`}
-                          alt={product.title}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      </Box>
-                    ))}
-                    {item.items.length > 4 && (
-                      <Box
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: 1,
-                          backgroundColor: "#f5f5f5",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography variant="h6">
-                          +{item.items.length - 4}
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-
-                  <Typography variant="body2" color="text.secondary" mt={2}>
-                    {item.items.length} {t("items")}
-                  </Typography>
-                </CardContent>
+                {item.items.map((product, index) => (
+                    <Box key={`${product.product}-${product.selectedColor}-${product.selectedSize}-${index}`}
+                         mb={2}
+                    >
+                      <OrderProduct product={product} />
+                    </Box>
+                ))}
               </Card>
-            </Grid>
           ))}
-        </Grid>
+        </>
       )}
     </Box>
   );

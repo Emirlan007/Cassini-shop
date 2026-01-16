@@ -1,7 +1,7 @@
 {
-  "pending": "Pending",
+  "pending": "Awaiting Payment",
   "paid": "Paid",
-  "canceled": "Canceled",
+  "cancelled": "Cancelled",
   "completed": "Completed",
   "delivered": "Delivered",
   "on_the_way": "On the way",

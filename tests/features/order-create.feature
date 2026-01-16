@@ -10,7 +10,7 @@ Feature: Order creation
     And the user clicks "checkout-next-from-cart"
     Then the user sees the "checkout-form"
     Then the user enters "New Name" in the "name" field
-    And the user enters "888888899" in the "phoneNumber" field
+    And the user enters "888888888" in the "phoneNumber" field
     And the user enters "Bishkek" in the "city" field
     And the user enters "Chui 123" in the "address" field
     And the user submits checkout form

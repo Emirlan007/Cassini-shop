@@ -51,7 +51,6 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
       </Typography>
       <Stack data-testid="checkout-form" spacing={2}>
         <TextField
-          name="name"
           label={t("name")}
           value={userData.name}
           onChange={(e) => setUserData({ ...userData, name: e.target.value })}
@@ -61,13 +60,11 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           onChange={(value) => setUserData({ ...userData, phoneNumber: value })}
         />
         <TextField
-          name="city"
           label={t("city")}
           value={userData.city}
           onChange={(e) => setUserData({ ...userData, city: e.target.value })}
         />
         <TextField
-          name="address"
           label={t("address")}
           value={userData.address}
           onChange={(e) =>

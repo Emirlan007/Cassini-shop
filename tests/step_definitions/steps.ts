@@ -156,7 +156,7 @@ Then('only one order is displayed', async () => {
 });
 
 Then('the order contains the product {string}', (product: string) => {
-  I.see(product, '[data-testid="order-card"]');
+  I.see(product, '[data-testid="order-card"]')});
 Then("the number of items in the cart increases by 1", async () => {
   const value = await I.grabTextFrom('[data-testid="cart-items-count"]');
   const newCartItemsCount = Number(value || 0);

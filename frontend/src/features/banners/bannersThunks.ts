@@ -40,7 +40,6 @@ export const deleteBanner = createAsyncThunk<
     string,
     string,
     {
-        // @ts-ignore
         getState, rejectValue: IGlobalError }
 >("banners/deleteBanner", async (id, {dispatch, rejectWithValue }) => {
     try {

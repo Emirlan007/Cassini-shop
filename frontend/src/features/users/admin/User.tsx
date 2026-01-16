@@ -160,7 +160,6 @@ const User = () => {
                 <OrderCard
                   key={order._id}
                   order={order}
-                  onClick={() => navigate(`/orders/${order._id}`)}
                 />
               ))}
             </Box>

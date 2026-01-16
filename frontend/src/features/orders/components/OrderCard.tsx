@@ -11,10 +11,9 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
   order: Order | OrderItemAdmin;
-  isAdmin: boolean;
 }
 
-const OrderCard = ({ order, isAdmin }: Props) => {
+const OrderCard = ({ order }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -72,7 +71,7 @@ const OrderCard = ({ order, isAdmin }: Props) => {
 
       <OrderCardComments
         userComment={order.userComment}
-        adminComments={isAdmin ? order.adminComments : undefined}
+        adminComments={order.adminComments}
       />
     </Box>
   );

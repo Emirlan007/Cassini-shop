@@ -8,10 +8,10 @@ import {
   updateProductNewStatus,
   updateProductPopular,
 } from "./adminProductsThunks.ts";
-import type { ProductInput } from "../../../types";
+import type {ICategory, ProductInput} from "../../../types";
 
 interface AdminProductsState {
-  item: ProductInput | null;
+  item: (ProductInput & {category: ICategory}) | null;
   fetchItemLoading: boolean;
   fetchItemError: string | null;
   createLoading: boolean;

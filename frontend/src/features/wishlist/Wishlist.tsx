@@ -154,12 +154,15 @@ const Wishlist = () => {
           spacing={{ xs: 2, sm: 2.5, md: 3 }}
           sx={{
             "& .MuiGrid-item": {
-              display: "flex",
+              display: "grid",
             },
+
           }}
         >
           {wishlist.products.map((product) => (
-            <Grid item xs={6} sm={6} md={4} lg={3} key={product._id}>
+            <Grid //needs to be fixed
+                key={product._id}
+            >
               <Box sx={{ width: "100%" }}>
                 <ProductCard product={product} />
               </Box>

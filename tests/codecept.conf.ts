@@ -2,10 +2,14 @@ exports.config = {
   output: "./output",
   helpers: {
     Puppeteer: {
-      url: "http://localhost:5173",
-      show: true,
-      windowSize: "1200x900",
-    },
+      url: "http://localhost:5174",
+      show: process.env.CI !== 'true',
+      windowSize: '1200x900',
+      headless: process.env.CI !== 'true',
+      chrome: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      }
+    }
   },
   include: {
     I: "./steps_file",

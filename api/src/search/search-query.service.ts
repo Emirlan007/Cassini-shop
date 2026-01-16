@@ -66,15 +66,14 @@ export class SearchQueriesService {
     return searchQuery.save();
   }
 
-  async getPopularQueries(limit: number = 10): Promise<
-    Array<{
-      query: string;
-      normalizedQuery: string;
-      count: number;
-      lastSearched: Date;
-    }>
-  > {
-    return this.searchQueryModel.aggregate([
+  async getPopularQueries(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    const total = await this.searchQueryModel
+      .distinct('normalizedQuery')
+      .then((res) => res.length);
+
+    const items = await this.searchQueryModel.aggregate([
       {
         $group: {
           _id: '$normalizedQuery',
@@ -83,22 +82,25 @@ export class SearchQueriesService {
           originalQuery: { $first: '$query' },
         },
       },
-      {
-        $sort: { count: -1, lastSearched: -1 },
-      },
-      {
-        $limit: limit,
-      },
+      { $sort: { count: -1, lastSearched: -1 } },
+      { $skip: skip },
+      { $limit: limit },
       {
         $project: {
           _id: 0,
-          query: '$originalQuery',
-          normalizedQuery: '$_id',
+          keyword: '$originalQuery',
           count: 1,
-          lastSearched: 1,
         },
       },
     ]);
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getUserRecentQueries(

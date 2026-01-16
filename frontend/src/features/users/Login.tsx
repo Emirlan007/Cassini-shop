@@ -83,12 +83,10 @@ const Login = () => {
       <Avatar sx={{ m: 1, bgcolor: "#F0544F" }}>
         <LockOpenIcon />
       </Avatar>
-      <Typography
-        component="h1"
-        variant="h5"
-        sx={{ color: "#660033" }}
-      ></Typography>
-      {t("login")}
+        <Typography component="h1" variant="h5" sx={{ color: "#660033" }}>
+            {t("login")}
+        </Typography>
+
       <Box
         component="form"
         onSubmit={submitFormHandler}

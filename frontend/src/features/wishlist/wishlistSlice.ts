@@ -2,6 +2,7 @@ import {createSelector, createSlice} from "@reduxjs/toolkit";
 import type { WishlistState } from "../../types";
 import { addToWishlist, fetchWishlist, removeFromWishlist } from "./wishlistThunks.ts";
 import type { RootState } from "../../app/store";
+import {logoutThunk} from "../users/usersThunks.ts";
 
 const initialState: WishlistState = {
     wishlist: null,
@@ -27,7 +28,7 @@ const wishlistSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || "Failed to fetch wishlist";
             })
-
+        builder
             .addCase(addToWishlist.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -40,7 +41,7 @@ const wishlistSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || "Failed to add to wishlist";
             })
-
+        builder
             .addCase(removeFromWishlist.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -53,6 +54,8 @@ const wishlistSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message || "Failed to remove from wishlist";
             });
+        builder
+            .addCase(logoutThunk.fulfilled, () => initialState);
     },
 });
 

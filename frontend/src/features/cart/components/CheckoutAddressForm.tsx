@@ -76,7 +76,12 @@ const CheckoutAddressForm: FC<Props> = ({ user, onSubmit, loading }) => {
           }
         />
 
-        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+        <Button
+          data-testid="checkout-submit"
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
           {t("next")}
         </Button>
       </Stack>

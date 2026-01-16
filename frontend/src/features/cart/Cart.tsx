@@ -199,7 +199,7 @@ const Cart = () => {
   }
 
   return (
-    <Stack spacing={2} p={2}>
+    <Stack spacing={2} p={2} data-testid="checkout-page">
       <Stepper step={step} />
       {step === 1 && (
         <CartItemsList

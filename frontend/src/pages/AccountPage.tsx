@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import {Box, Button, Grid, Typography} from "@mui/material";
 import { Favorite, History } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,10 @@ const AccountPage = () => {
     dispatch(fetchOrders());
   }, [dispatch]);
 
+  if (!user) {
+    return <Typography>{t("notAuthorized")}</Typography>;
+  }
+
   if (loading) return <Typography>{t("loading")}</Typography>;
 
   const activeOrders = orders.filter(
@@ -38,6 +42,24 @@ const AccountPage = () => {
         <Typography variant="h4" sx={{ mb: 3, fontWeight: 600 }}>
           {t("profile")}
         </Typography>
+        <Box sx={{
+          mb: 2,
+          borderRadius: 2,
+        }}>
+          <Grid container spacing={2} sx={{flexDirection:"column"}}>
+            <Grid sx={{ xs: 12, sm: 6 }}>
+              <Typography>
+                <strong>{t("name")}:</strong> {user.name}
+              </Typography>
+
+            </Grid>
+            <Grid sx={{ xs: 12, sm: 6 }}>
+              <Typography>
+                <strong>{t("phoneNumber")}:</strong> {user.phoneNumber}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
 
         <Box display="flex" gap={2} flexWrap="wrap">
           <Button
@@ -76,7 +98,11 @@ const AccountPage = () => {
         </Box>
       </Box>
 
-      <Typography variant="h5" sx={{ mb: 2 }}>
+      <Typography
+        data-testid="user-orders-title"
+        variant="h5"
+        sx={{ mb: 2 }}
+      >
         {t("yourOrders")}:
       </Typography>
 

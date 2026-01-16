@@ -49,7 +49,7 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
       >
         {t("personalData")}
       </Typography>
-      <Stack spacing={2}>
+      <Stack data-testid="checkout-form" spacing={2}>
         <TextField
           label={t("name")}
           value={userData.name}
@@ -72,7 +72,12 @@ const CheckoutForm: FC<CheckoutFormProps> = ({ onSubmit, loading }) => {
           }
         />
 
-        <Button variant="contained" onClick={handleSubmit} disabled={loading}>
+        <Button
+          data-testid="checkout-submit"
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
           {t("next")}
         </Button>
       </Stack>

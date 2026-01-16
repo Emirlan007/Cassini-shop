@@ -47,9 +47,9 @@ const ProductList = ({ products, loading, error }: Props) => {
       }}
     >
       {products?.length == 0 && (
-        <Box sx={{ textAlign: "center", textDecoration: "underline" }}>
-          <Typography variant="h3" component="h3">
-            {t("nothingFound")}
+        <Box sx={{ textAlign: "center", mt: 3,bgcolor: "lightgrey"}}>
+          <Typography variant="h5" component="h5">
+            {t("noSimilarProductsFound")}
           </Typography>
         </Box>
       )}

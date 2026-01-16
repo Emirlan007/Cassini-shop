@@ -20,6 +20,7 @@ const OrderCard = ({ order, isAdmin }: Props) => {
 
   return (
     <Box
+      data-testid="order-card"
       key={order._id}
       mb={3}
       p={2}

@@ -10,7 +10,6 @@ import {
     Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LanguageIcon from "@mui/icons-material/Language";
 import React, { useEffect, useRef, useState } from "react";
@@ -190,10 +189,6 @@ const MobileLogo = () => {
                                         sx={{ color: theme.palette.secondary.light }}
                                     />
                                 </Badge>
-
-                                <NotificationsIcon
-                                    sx={{ color: theme.palette.secondary.light }}
-                                />
                             </Stack>
                         </Collapse>
 

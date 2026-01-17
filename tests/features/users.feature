@@ -5,7 +5,7 @@ Feature: User features
   Scenario: Successful user registration
     Given the user is on the "/register" page
     When the user enters "Test user" in the "name" field
-    And the user enters "550871243" in the "phoneNumber" field
+    And the user enters "550871242" in the "phoneNumber" field
     And the form is submitted
     Then the user is redirected to the "/" page
 
@@ -15,7 +15,7 @@ Feature: User features
     When the user enters "Admin User" in the "name" field
     And the user enters "999999999" in the "phoneNumber" field
     And the form is submitted
-    Then the user sees the message "Пользователь с таким номером уже существует"
+    Then the user sees the phone number error message "Пользователь с таким номером уже существует"
     And the user stays on the "/register" page
 
   @login
@@ -32,5 +32,5 @@ Feature: User features
     When the user enters "Nonexistent User" in the "name" field
     And the user enters "000000000" in the "phoneNumber" field
     And the form is submitted
-    Then the user sees the message "Пользователь с таким номером не найден"
+    Then the user sees the phone number error message "Пользователь с таким номером не найден"
     And the user stays on the "/login" page

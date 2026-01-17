@@ -194,6 +194,11 @@ const PhoneInput = ({
         required={required}
         error={error}
         helperText={helperText}
+        slotProps={{
+          formHelperText: {
+            "data-testid": "phone-number-error",
+          },
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
             borderRadius: "12px",

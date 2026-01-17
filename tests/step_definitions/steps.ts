@@ -407,3 +407,11 @@ Then("the banner {string} is present on the page", (title: string) => {
 Then("the banner {string} is not present on the page", (title: string) => {
   I.dontSeeElement(locate('[data-testid="banner"]').withText(title));
 });
+
+Then(
+  "the user sees the phone number error message {string}",
+  (message: string) => {
+    I.waitForElement('[data-testid="phone-number-error"]', 10);
+    I.see(message, '[data-testid="phone-number-error"]');
+  }
+);

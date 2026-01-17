@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosApi } from "../../axiosApi";
 import type {Banner, IGlobalError} from "../../types";
 import { isAxiosError } from "axios";
+import type {RootState} from "../../app/store.ts";
 
 
 export const fetchBanners = createAsyncThunk<
@@ -39,8 +40,7 @@ export const toggleBannerActive = createAsyncThunk<
 export const deleteBanner = createAsyncThunk<
     string,
     string,
-    {
-        getState, rejectValue: IGlobalError }
+    { getState: RootState, rejectValue: IGlobalError }
 >("banners/deleteBanner", async (id, {dispatch, rejectWithValue }) => {
     try {
         await axiosApi.delete(`/banners/${id}`);

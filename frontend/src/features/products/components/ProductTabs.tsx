@@ -7,10 +7,10 @@ import CustomTabPanel from "../../../components/UI/Tabs/CustomTabPanel";
 
 interface Props {
   description?: string;
-  sizeGuide?: string;
+  sizeGuide?: string; // ? needs to be checked
 }
 
-const ProductTabs: React.FC<Props> = ({ description, sizeGuide }) => {
+const ProductTabs: React.FC<Props> = ({ description }) => {
   const [tabValue, setTabValue] = useState(0);
 
   const { t } = useTranslation();

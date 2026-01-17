@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start:test": "PORT=5174 VITE_API_URL=http://localhost:8010/ vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:test": "vite preview --port=5174"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

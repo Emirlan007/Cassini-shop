@@ -43,6 +43,7 @@ const ProductCard: React.FC<Props> = ({ product }) => {
         mx: "auto",
         display: { xs: "block", md: "block" },
       }}
+      data-testid="product-card"
     >
       <ProductBadges
         discount={hasActiveDiscount ? product.discount : undefined}

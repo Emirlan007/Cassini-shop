@@ -13,22 +13,22 @@ const CreateBanner = () => {
 
   const onFormSubmit = async (data: BannerInput) => {
     await dispatch(
-        createBanner({
-          title: data.title,
-          description: data.description,
-          link: data.link,
-          image: data.image!,
-        })
+      createBanner({
+        title: data.title,
+        description: data.description,
+        link: data.link,
+        image: data.image!,
+      })
     ).unwrap();
 
     dispatch(fetchBanners());
-    navigate("/");
+    navigate("/admin/banners");
   };
 
   return (
-      <>
-        <BannerForm onSubmit={onFormSubmit} loading={creating} />
-      </>
+    <>
+      <BannerForm onSubmit={onFormSubmit} loading={creating} />
+    </>
   );
 };
 

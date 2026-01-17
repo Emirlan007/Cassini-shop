@@ -1,4 +1,4 @@
-import {Button, type ButtonProps, Stack} from "@mui/material";
+import { Button, type ButtonProps, Stack } from "@mui/material";
 
 interface ActionButtonsProps {
   onEdit: () => void;
@@ -12,15 +12,15 @@ interface ActionButtonsProps {
 }
 
 const ActionButtons = ({
-                         onEdit,
-                         onDelete,
-                         onToggleActive,
-                         isActive,
-                         isSmallScreen = false,
-                         editButtonProps,
-                         deleteButtonProps,
-                         toggleButtonProps,
-                       }: ActionButtonsProps) => {
+  onEdit,
+  onDelete,
+  onToggleActive,
+  isActive,
+  isSmallScreen = false,
+  editButtonProps,
+  deleteButtonProps,
+  toggleButtonProps,
+}: ActionButtonsProps) => {
   return (
     <Stack spacing={1}>
       <Button
@@ -32,12 +32,13 @@ const ActionButtons = ({
         sx={{
           color: "#660033",
           borderColor: "#660033",
-          '&:hover': {
+          "&:hover": {
             backgroundColor: "rgba(102, 0, 51, 0.04)",
             borderColor: "#660033",
           },
           ...editButtonProps?.sx,
         }}
+        data-testid="edit-banner"
       >
         {isSmallScreen ? "Ред." : "Редактировать"}
       </Button>
@@ -50,12 +51,13 @@ const ActionButtons = ({
         sx={{
           color: "#F0544F",
           borderColor: "#F0544F",
-          '&:hover': {
+          "&:hover": {
             backgroundColor: "rgba(240, 84, 79, 0.04)",
             borderColor: "#F0544F",
           },
           ...deleteButtonProps?.sx,
         }}
+        data-testid="delete-banner"
       >
         {isSmallScreen ? "Удалить" : "Удалить"}
       </Button>
@@ -68,17 +70,21 @@ const ActionButtons = ({
         sx={{
           color: "#660033",
           borderColor: "#660033",
-          '&:hover': {
+          "&:hover": {
             backgroundColor: "rgba(102, 0, 51, 0.04)",
             borderColor: "#660033",
           },
           ...toggleButtonProps?.sx,
         }}
+        data-testid="toggle-banner"
       >
         {isSmallScreen
-          ? isActive ? "Выкл." : "Вкл."
-          : isActive ? "Деактивировать" : "Активировать"
-        }
+          ? isActive
+            ? "Выкл."
+            : "Вкл."
+          : isActive
+          ? "Деактивировать"
+          : "Активировать"}
       </Button>
     </Stack>
   );

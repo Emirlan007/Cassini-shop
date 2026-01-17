@@ -9,7 +9,7 @@ import { API_URL } from "../../constants";
 import "swiper/swiper.css";
 import "swiper/swiper-bundle.css";
 import "./styles.css";
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const BannersCarousel = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +39,10 @@ const BannersCarousel = () => {
   return (
     <>
       {bannersError ? (
-        <Alert severity="error"> {getTranslatedErrorMessage(bannersError)}</Alert>
+        <Alert severity="error">
+          {" "}
+          {getTranslatedErrorMessage(bannersError)}
+        </Alert>
       ) : (
         <Box
           sx={{
@@ -61,7 +64,7 @@ const BannersCarousel = () => {
             style={{ minHeight: "550px" }}
           >
             {banners.map((banner) => (
-              <SwiperSlide key={banner._id}>
+              <SwiperSlide key={banner._id} data-testid="banner">
                 <Box
                   rel="noopener noreferrer"
                   sx={{

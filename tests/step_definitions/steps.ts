@@ -20,8 +20,8 @@ When("the form is submitted", () => {
 });
 
 Then("the user is redirected to the {string} page", (page: string) => {
-  I.waitInUrl(page, 1);
-  I.seeCurrentUrlEquals("/");
+  I.waitInUrl(page);
+  I.seeCurrentUrlEquals(page);
 });
 
 Then("the user sees the message {string}", (message: string) => {
@@ -252,8 +252,8 @@ When("the user removes the product from the wishlist", () => {
   I.click('[data-testid="toggle-is-product-in-wishlist"]');
 });
 
-Then("the user sees the product {string} on the page", (product: string) => {
-  I.see(product);
+Then("the user sees the product {string} on the page", (title: string) => {
+  I.see(title, '[data-testid="product-card"]');
 });
 
 Then(
@@ -266,6 +266,15 @@ Then(
 Given("the user is not logged in", () => {
   I.amOnPage("/");
   I.executeScript(() => localStorage.removeItem("persist:shop:users"));
+});
+
+Given("the admin user is logged in", () => {
+  I.amOnPage("/");
+  I.executeScript(() => localStorage.removeItem("persist:shop:users"));
+  I.amOnPage("/login");
+  I.fillField("name", "Admin User");
+  I.fillField("phoneNumber", "999999999");
+  I.click('button[type="submit"]');
 });
 
 Then("the user sees {int} products", async (count: number) => {
@@ -286,4 +295,115 @@ When("the user is searching for {string}", (text: string) => {
 When("the user switches the language to {string}", (lang: string) => {
   I.click('[data-testid="language-select"]');
   I.click(`[data-testid="language-${lang}"]`);
+});
+
+When("the user uploads an image {string}", (file: string) => {
+  I.attachFile('[data-testid="image-input"]', `/data/${file}`);
+});
+
+Then("the user sees the banner {string} in the list", async (title: string) => {
+  I.see(title, '[data-testid="banner"]');
+});
+
+Given("the banner {string} exists", async (title: string) => {
+  I.amOnPage("/admin/banners");
+
+  const exists = await I.grabNumberOfVisibleElements(
+    locate('[data-testid="banner"]').withText(title)
+  );
+
+  if (exists === 0) {
+    I.amOnPage("/admin/banners/new");
+    I.fillField("title", title);
+    I.attachFile('[data-testid="image-input"]', "/data/dress.png");
+    I.click('button[type="submit"]');
+  }
+});
+
+When(
+  "the user opens the edit page for the banner {string}",
+  (title: string) => {
+    const banner = locate('[data-testid="banner"]').withText(title);
+    I.click(banner.find('[data-testid="edit-banner"]'));
+  }
+);
+
+When(
+  "the user changes the {string} field to {string}",
+  async (field: string, value: string) => {
+    I.clearField(field);
+    I.fillField(field, value);
+  }
+);
+
+When("the user deletes the banner {string}", async (title: string) => {
+  const banner = locate('[data-testid="banner"]').withText(title);
+  I.click(banner.find('[data-testid="delete-banner"]'));
+});
+
+Then(
+  "the user does not see the banner {string} in the list",
+  async (title: string) => {
+    I.dontSee(title, '[data-testid="banner"]');
+  }
+);
+
+Given("the banner {string} is active", async (title: string) => {
+  const banner = locate('[data-testid="banner"]').withText(title);
+
+  const isActive = await I.grabAttributeFrom(banner, "data-active");
+
+  if (isActive === "false") {
+    I.click(banner.find('[data-testid="toggle-banner"]'));
+  }
+});
+
+Given("the banner {string} is inactive", async (title: string) => {
+  const banner = locate('[data-testid="banner"]').withText(title);
+
+  const isActive = await I.grabAttributeFrom(banner, "data-active");
+
+  if (isActive === "true") {
+    I.click(banner.find('[data-testid="toggle-banner"]'));
+  }
+});
+
+When(
+  "the user switches the status of the {string} banner",
+  async (title: string) => {
+    const banner = locate('[data-testid="banner"]').withText(title);
+    I.click(banner.find('[data-testid="toggle-banner"]'));
+  }
+);
+
+Then(
+  "the user sees the status active for the {string} banner",
+  async (title: string) => {
+    const banner = locate('[data-testid="banner"]').withText(title);
+
+    const isActive = await I.grabAttributeFrom(banner, "data-active");
+    if (isActive === "false") {
+      throw new Error(`Banner "${title}" is not active`);
+    }
+  }
+);
+
+Then(
+  "the user sees the status inactive for the {string} banner",
+  async (title: string) => {
+    const banner = locate('[data-testid="banner"]').withText(title);
+
+    const isActive = await I.grabAttributeFrom(banner, "data-active");
+    if (isActive === "true") {
+      throw new Error(`Banner "${title}" is active`);
+    }
+  }
+);
+
+Then("the banner {string} is present on the page", (title: string) => {
+  I.seeElement(locate('[data-testid="banner"]').withText(title));
+});
+
+Then("the banner {string} is not present on the page", (title: string) => {
+  I.dontSeeElement(locate('[data-testid="banner"]').withText(title));
 });

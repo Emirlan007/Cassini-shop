@@ -1,7 +1,15 @@
-import { Box, Chip, Link as MuiLink, Typography, Stack, Card, CardContent } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Link as MuiLink,
+  Typography,
+  Stack,
+  Card,
+  CardContent,
+} from "@mui/material";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import { API_URL } from "../../../../constants.ts";
-import type {Banner} from "../../../../types";
+import type { Banner } from "../../../../types";
 import ActionButtons from "./ActionButtons.tsx";
 
 interface BannerCardProps {
@@ -11,9 +19,14 @@ interface BannerCardProps {
   onDelete: (id: string) => void;
 }
 
-const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProps) => {
+const BannerCard = ({
+  banner,
+  onEdit,
+  onToggleActive,
+  onDelete,
+}: BannerCardProps) => {
   return (
-    <Card sx={{ width: '100%' }}>
+    <Card sx={{ width: "100%" }} data-testid="banner">
       <CardContent>
         <Stack spacing={2}>
           <Box>
@@ -25,7 +38,13 @@ const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProp
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="subtitle1" fontWeight="bold">
               {banner.title}
             </Typography>
@@ -41,9 +60,7 @@ const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProp
               <Typography variant="caption" color="text.secondary">
                 Описание:
               </Typography>
-              <Typography variant="body2">
-                {banner.description}
-              </Typography>
+              <Typography variant="body2">{banner.description}</Typography>
             </Box>
           )}
 
@@ -68,11 +85,11 @@ const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProp
                   bgcolor: "rgba(0, 0, 0, 0.04)",
                   color: "text.primary",
                   fontWeight: 500,
-                  fontSize: '0.875rem',
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
+                  fontSize: "0.875rem",
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
                 <span>{banner.link}</span>
@@ -84,7 +101,12 @@ const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProp
           </Box>
 
           <Box>
-            <Typography variant="caption" color="text.secondary" display="block" mb={1}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              display="block"
+              mb={1}
+            >
               Изображение:
             </Typography>
             {banner.image ? (
@@ -93,7 +115,7 @@ const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProp
                 src={`${API_URL}${banner.image}`}
                 alt={banner.title}
                 sx={{
-                  width: '100%',
+                  width: "100%",
                   maxWidth: 300,
                   height: 120,
                   objectFit: "cover",
@@ -112,15 +134,15 @@ const BannerCard = ({ banner, onEdit, onToggleActive, onDelete }: BannerCardProp
             isActive={banner.isActive}
             editButtonProps={{
               fullWidth: true,
-              sx: { mt: 1 }
+              sx: { mt: 1 },
             }}
             deleteButtonProps={{
               fullWidth: true,
-              sx: { mt: 1 }
+              sx: { mt: 1 },
             }}
             toggleButtonProps={{
               fullWidth: true,
-              sx: { mt: 1 }
+              sx: { mt: 1 },
             }}
           />
         </Stack>

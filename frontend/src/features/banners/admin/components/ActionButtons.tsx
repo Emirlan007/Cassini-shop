@@ -1,4 +1,5 @@
-import {Button, type ButtonProps, Stack} from "@mui/material";
+import { Button, type ButtonProps, Stack } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface ActionButtonsProps {
   onEdit: () => void;
@@ -12,15 +13,17 @@ interface ActionButtonsProps {
 }
 
 const ActionButtons = ({
-                         onEdit,
-                         onDelete,
-                         onToggleActive,
-                         isActive,
-                         isSmallScreen = false,
-                         editButtonProps,
-                         deleteButtonProps,
-                         toggleButtonProps,
-                       }: ActionButtonsProps) => {
+  onEdit,
+  onDelete,
+  onToggleActive,
+  isActive,
+  isSmallScreen = false,
+  editButtonProps,
+  deleteButtonProps,
+  toggleButtonProps,
+}: ActionButtonsProps) => {
+  const { t } = useTranslation();
+
   return (
     <Stack spacing={1}>
       <Button
@@ -32,14 +35,14 @@ const ActionButtons = ({
         sx={{
           color: "#660033",
           borderColor: "#660033",
-          '&:hover': {
+          "&:hover": {
             backgroundColor: "rgba(102, 0, 51, 0.04)",
             borderColor: "#660033",
           },
           ...editButtonProps?.sx,
         }}
       >
-        {isSmallScreen ? "Ред." : "Редактировать"}
+        {isSmallScreen ? t("buttons.editShort") : t("buttons.edit")}
       </Button>
 
       <Button
@@ -50,14 +53,14 @@ const ActionButtons = ({
         sx={{
           color: "#F0544F",
           borderColor: "#F0544F",
-          '&:hover': {
+          "&:hover": {
             backgroundColor: "rgba(240, 84, 79, 0.04)",
             borderColor: "#F0544F",
           },
           ...deleteButtonProps?.sx,
         }}
       >
-        {isSmallScreen ? "Удалить" : "Удалить"}
+        {isSmallScreen ? t("buttons.deleteShort") : t("buttons.delete")}
       </Button>
 
       <Button
@@ -68,7 +71,7 @@ const ActionButtons = ({
         sx={{
           color: "#660033",
           borderColor: "#660033",
-          '&:hover': {
+          "&:hover": {
             backgroundColor: "rgba(102, 0, 51, 0.04)",
             borderColor: "#660033",
           },
@@ -76,9 +79,10 @@ const ActionButtons = ({
         }}
       >
         {isSmallScreen
-          ? isActive ? "Выкл." : "Вкл."
-          : isActive ? "Деактивировать" : "Активировать"
-        }
+          ? isActive
+            ? t("buttons.deleteShort")
+            : t("buttons.editShort")
+          : t("buttons.toggleActive")}
       </Button>
     </Stack>
   );

@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface AdminCommentFormProps {
   onSubmit: (comment: string) => void;
@@ -19,6 +20,7 @@ const AdminCommentForm = ({
   existingComments = [],
 }: AdminCommentFormProps) => {
   const [comment, setComment] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,7 +60,7 @@ const AdminCommentForm = ({
         <TextField
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Комментарий к заказу"
+          placeholder={t("forms.orderCommentPlaceholder")}
           sx={{ flexGrow: 1 }}
         />
         <Button
@@ -66,7 +68,7 @@ const AdminCommentForm = ({
           variant="contained"
           disabled={comment.trim() === "" || loading}
         >
-          {loading ? <CircularProgress size={20} /> : "Отправить"}
+          {loading ? <CircularProgress size={20} /> : t("send")}
         </Button>
       </Stack>
     </>

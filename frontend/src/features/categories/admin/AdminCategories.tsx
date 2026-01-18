@@ -1,26 +1,34 @@
-import {useAppDispatch, useAppSelector} from "../../../app/hooks.ts";
-import {useEffect, useState} from "react";
-import {fetchCategories} from "../categoryThunk.ts";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
+import { useEffect, useState } from "react";
+import { fetchCategories } from "../categoryThunk.ts";
 import {
   Box,
   Button,
   CircularProgress,
   Divider,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import {
   selectCategoryDeleteLoading,
   selectCategoryUpdateLoading,
-  selectCategoryCreateLoading
+  selectCategoryCreateLoading,
 } from "./categorySlice.ts";
-import {createCategory, deleteCategory, updateCategory} from "./categoryThunk.ts";
+import {
+  createCategory,
+  deleteCategory,
+  updateCategory,
+} from "./categoryThunk.ts";
+import { useTranslation } from "react-i18next";
 
 const AdminCategories = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const categories = useAppSelector((state) => state.categories.categoriesAll);
-  const loading = useAppSelector((state) => state.categories.fetchingCategories);
+  const loading = useAppSelector(
+    (state) => state.categories.fetchingCategories,
+  );
 
   const deleteLoading = useAppSelector(selectCategoryDeleteLoading);
   const updateLoading = useAppSelector(selectCategoryUpdateLoading);
@@ -36,15 +44,15 @@ const AdminCategories = () => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  const handleDelete = async  (id: string) => {
-    const isConfirmed = window.confirm("Вы уверены, что хотите удалить эту категорию?");
+  const handleDelete = async (id: string) => {
+    const isConfirmed = window.confirm(t("confirmDeleteCategory"));
     if (!isConfirmed) return;
 
     try {
       await dispatch(deleteCategory(id)).unwrap();
       dispatch(fetchCategories());
     } catch (err) {
-      console.error("Ошибка при удалении категории:", err);
+      console.error(t("deleteError"), err);
     }
   };
 
@@ -59,15 +67,17 @@ const AdminCategories = () => {
     try {
       const newSlug = editTitle
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/--+/g, '-');
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/--+/g, "-");
 
-      await dispatch(updateCategory({
-        _id: editId,
-        title: editTitle,
-        slug: newSlug
-      })).unwrap();
+      await dispatch(
+        updateCategory({
+          _id: editId,
+          title: editTitle,
+          slug: newSlug,
+        }),
+      ).unwrap();
       setEditId(null);
       setEditTitle("");
       dispatch(fetchCategories());
@@ -82,14 +92,16 @@ const AdminCategories = () => {
     try {
       const slug = newTitle
         .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/--+/g, '-');
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/--+/g, "-");
 
-      await dispatch(createCategory({
-        title: newTitle,
-        slug: slug
-      })).unwrap();
+      await dispatch(
+        createCategory({
+          title: newTitle,
+          slug: slug,
+        }),
+      ).unwrap();
       setNewTitle("");
       setCreateMode(false);
       dispatch(fetchCategories());
@@ -100,178 +112,183 @@ const AdminCategories = () => {
 
   if (loading) {
     return (
-        <Box sx={{display: "flex", justifyContent: "center", py: 3}}>
-          <CircularProgress size={24} sx={{color: "secondary.main"}}/>
-        </Box>
+      <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
+        <CircularProgress size={24} sx={{ color: "secondary.main" }} />
+      </Box>
     );
   }
 
   return (
-      <Box sx={{pb: 1}}>
-        {categories.map((category) => (
-            <Box key={category._id}>
-              <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mb: 1,
-                  }}
-              >
-                {editId === category._id ? (
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, width: "100%"  }}>
-                      <TextField
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
-                          disabled={updateLoading === category._id}
-                          fullWidth
-                      />
-
-                      <Box sx={{ display: "flex", gap: 1 }}>
-                        <Button
-                            variant="contained"
-                            onClick={handleSave}
-                            disabled={updateLoading === category._id}
-                            sx={{
-                              backgroundColor: "#660033",
-                              "&:hover": { backgroundColor: "#F0544F" },
-                            }}
-                        >
-                          {updateLoading === category._id ? (
-                              <CircularProgress size={20} color="inherit" />
-                          ) : (
-                              "Сохранить"
-                          )}
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => {
-                              setEditId(null);
-                              setEditTitle("");
-                            }}
-                            sx={{
-                              backgroundColor: "#660033",
-                              "&:hover": { backgroundColor: "#F0544F" },
-                            }}
-                        >
-                          Отмена
-                        </Button>
-                      </Box>
-                    </Box>
-                ) : (
-                    <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: { xs: "column", sm: "row" },
-                          justifyContent: "space-between",
-                          alignItems: { xs: "flex-start", sm: "center" },
-                          gap: { xs: 1, sm: 0 },
-                          width: "100%",
-                        }}
-                    >
-                      <Typography
-                          variant={'h6'}
-                          sx={{ color: "#660033" }}
-                      >
-                        {category.title}
-                      </Typography>
-                      <Box sx={{ display: "flex", gap: 2 }} >
-                        <Button
-                            variant="contained"
-                            size="small"
-                            sx={{
-                              backgroundColor: "#660033",
-                              "&:hover": { backgroundColor: "#F0544F" },
-                            }}
-                            onClick={() => handleEdit(category._id, category.title)}
-                        >
-                          Редактировать
-                        </Button>
-
-                        <Button
-                            sx={{
-                              backgroundColor: "#660033",
-                              "&:hover": { backgroundColor: "#F0544F" },
-                            }}
-                            onClick={() => handleDelete(category._id)}
-                            disabled={deleteLoading === category._id}
-                        >
-                          {deleteLoading === category._id ? (
-                              <CircularProgress size={20} color="inherit" />
-                          ) : (
-                              "Удалить"
-                          )}
-                        </Button>
-                      </Box>
-                    </Box>
-                )}
-              </Box>
-              <Divider sx={{my: 1}}/>
-            </Box>
-        ))}
-        {!createMode ? (
-            <Button
-                variant="contained"
-                sx={{
-                  mt: 2,
-                  backgroundColor: "#660033",
-                  "&:hover": { backgroundColor: "#F0544F" },
-                }}
-                onClick={() => setCreateMode(true)}
-            >
-              Создать категорию
-            </Button>
-        ) : (
-            <Box sx={{
+    <Box sx={{ pb: 1 }}>
+      {categories.map((category) => (
+        <Box key={category._id}>
+          <Box
+            sx={{
               display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              alignItems: { xs: "stretch", sm: "center" },
-              gap: 2,
-              mt: 2,
-             }}>
-              <TextField
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 1,
+            }}
+          >
+            {editId === category._id ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  width: "100%",
+                }}
+              >
+                <TextField
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  disabled={updateLoading === category._id}
                   fullWidth
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Название категории"
-                  sx={{ mb: 1 }}
-              />
+                />
 
-              <Box sx={{ display: "flex",}}>
-                <Button
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <Button
                     variant="contained"
-                    disabled={createLoading}
-                    onClick={handleCreate}
+                    onClick={handleSave}
+                    disabled={updateLoading === category._id}
                     sx={{
                       backgroundColor: "#660033",
                       "&:hover": { backgroundColor: "#F0544F" },
-                      width: "100%",
                     }}
-                >
-                  {createLoading ? (
+                  >
+                    {updateLoading === category._id ? (
                       <CircularProgress size={20} color="inherit" />
-                  ) : (
-                      "Создать"
-                  )}
-                </Button>
-
-                <Button
-                    variant="outlined"
-                    sx={{ width: "100%" }}
+                    ) : (
+                      "Сохранить"
+                    )}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
                     onClick={() => {
-                      setCreateMode(false);
-                      setNewTitle("");
+                      setEditId(null);
+                      setEditTitle("");
                     }}
-                >
-                  Отмена
-                </Button>
+                    sx={{
+                      backgroundColor: "#660033",
+                      "&:hover": { backgroundColor: "#F0544F" },
+                    }}
+                  >
+                    Отмена
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-        )}
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: "space-between",
+                  alignItems: { xs: "flex-start", sm: "center" },
+                  gap: { xs: 1, sm: 0 },
+                  width: "100%",
+                }}
+              >
+                <Typography variant={"h6"} sx={{ color: "#660033" }}>
+                  {category.title}
+                </Typography>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      backgroundColor: "#660033",
+                      "&:hover": { backgroundColor: "#F0544F" },
+                    }}
+                    onClick={() => handleEdit(category._id, category.title)}
+                  >
+                    Редактировать
+                  </Button>
 
-      </Box>
+                  <Button
+                    sx={{
+                      backgroundColor: "#660033",
+                      "&:hover": { backgroundColor: "#F0544F" },
+                    }}
+                    onClick={() => handleDelete(category._id)}
+                    disabled={deleteLoading === category._id}
+                  >
+                    {deleteLoading === category._id ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      "Удалить"
+                    )}
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Box>
+          <Divider sx={{ my: 1 }} />
+        </Box>
+      ))}
+      {!createMode ? (
+        <Button
+          variant="contained"
+          sx={{
+            mt: 2,
+            backgroundColor: "#660033",
+            "&:hover": { backgroundColor: "#F0544F" },
+          }}
+          onClick={() => setCreateMode(true)}
+        >
+          {t("buttons.createCategory")}
+        </Button>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "center" },
+            gap: 2,
+            mt: 2,
+          }}
+        >
+          <TextField
+            fullWidth
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder={t("forms.categoryNamePlaceholder")}
+            sx={{ mb: 1 }}
+          />
+
+          <Box sx={{ display: "flex" }}>
+            <Button
+              variant="contained"
+              disabled={createLoading}
+              onClick={handleCreate}
+              sx={{
+                backgroundColor: "#660033",
+                "&:hover": { backgroundColor: "#F0544F" },
+                width: "100%",
+              }}
+            >
+              {createLoading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                "Создать"
+              )}
+            </Button>
+
+            <Button
+              variant="outlined"
+              sx={{ width: "100%" }}
+              onClick={() => {
+                setCreateMode(false);
+                setNewTitle("");
+              }}
+            >
+              Отмена
+            </Button>
+          </Box>
+        </Box>
+      )}
+    </Box>
   );
 };
 

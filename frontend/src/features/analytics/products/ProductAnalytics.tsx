@@ -21,8 +21,10 @@ import {
 } from "./productAnalyticsThunks.ts";
 import TableThumbnail from "../../../components/UI/TableThumbnail/TableThumbnail.tsx";
 import { getImageUrl } from "../../../utils/getImageUrl.ts";
+import { useTranslation } from "react-i18next";
 
 const ProductAnalytics = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { data, loading } = useAppSelector((state) => state.productAnalytics);
 
@@ -38,7 +40,7 @@ const ProductAnalytics = () => {
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
       <Typography variant="h5" fontWeight={600} gutterBottom>
-        Аналитика товаров
+        {t("analytics.productsTitle")}
       </Typography>
 
       <ToggleButtonGroup
@@ -47,15 +49,15 @@ const ProductAnalytics = () => {
         onChange={(_, value) => value && setPeriod(value)}
         sx={{ mb: 3, flexWrap: "wrap", gap: 1 }}
       >
-        <ToggleButton value="day">День</ToggleButton>
-        <ToggleButton value="week">Неделя</ToggleButton>
-        <ToggleButton value="month">Месяц</ToggleButton>
-        <ToggleButton value="year">Год</ToggleButton>
-        <ToggleButton value="all">Всё время</ToggleButton>
+        <ToggleButton value="day">{t("analytics.day")}</ToggleButton>
+        <ToggleButton value="week">{t("analytics.week")}</ToggleButton>
+        <ToggleButton value="month">{t("analytics.month")}</ToggleButton>
+        <ToggleButton value="year">{t("analytics.year")}</ToggleButton>
+        <ToggleButton value="all">{t("analytics.allTime")}</ToggleButton>
       </ToggleButtonGroup>
 
       {loading ? (
-        <Typography>Загрузка...</Typography>
+        <Typography>{t("loading")}</Typography>
       ) : isMobile ? (
         <Box display="flex" flexDirection="column" gap={2}>
           {data.map((item) => (
@@ -64,13 +66,13 @@ const ProductAnalytics = () => {
                 <Typography fontWeight={600}>{item.productTitle}</Typography>
 
                 <Typography variant="body2">
-                  🛒 В корзину: {item.addToCartQty}
+                  🛒 {t("analytics.addedToCart")}: {item.addToCartQty}
                 </Typography>
                 <Typography variant="body2">
-                  ❤️ Вишлист: {item.wishlistCount}
+                  ❤️ {t("analytics.wishlist")}: {item.wishlistCount}
                 </Typography>
                 <Typography variant="body2">
-                  👀 Просмотры: {item.views}
+                  👀 {t("analytics.views")}: {item.views}
                 </Typography>
               </CardContent>
             </Card>
@@ -80,16 +82,16 @@ const ProductAnalytics = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Фото</TableCell>
-              <TableCell>Название товара</TableCell>
-              <TableCell align="right">В корзину</TableCell>
-              <TableCell align="right">В вишлист</TableCell>
-              <TableCell align="right">Просмотры</TableCell>
+              <TableCell>{t("analytics.photo")}</TableCell>
+              <TableCell>{t("analytics.productName")}</TableCell>
+              <TableCell align="right">{t("analytics.toCart")}</TableCell>
+              <TableCell align="right">{t("analytics.toWishlist")}</TableCell>
+              <TableCell align="right">{t("analytics.views")}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((item, index) => (
-                <TableRow key={index}>
+              <TableRow key={index}>
                 <TableThumbnail
                   imageUrl={item.image ? getImageUrl(item.image) : undefined}
                 />

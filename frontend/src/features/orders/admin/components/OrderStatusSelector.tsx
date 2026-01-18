@@ -8,6 +8,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface OrderStatusSelectorProps {
   orderStatus: string;
@@ -24,23 +25,27 @@ const OrderStatusSelector = ({
   onSubmit,
   loading = false,
 }: OrderStatusSelectorProps) => {
+  const { t } = useTranslation();
+
   return (
     <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
       <Typography variant="h6" sx={{ mb: 2 }}>
-        Управление статусом заказа
+        {t("orderStatus")}
       </Typography>
 
       <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel>Статус заказа</InputLabel>
+          <InputLabel>{t("orderStatus")}</InputLabel>
           <Select
             value={orderStatus}
-            label="Статус заказа"
+            label={t("orderStatus")}
             onChange={(e) => setOrderStatus(e.target.value)}
           >
-            <MenuItem value="awaiting_payment">Ожидает оплаты</MenuItem>
-            <MenuItem value="paid">Оплачен</MenuItem>
-            <MenuItem value="canceled">Отменен</MenuItem>
+            <MenuItem value="awaiting_payment">
+              {t("awaiting_payment")}
+            </MenuItem>
+            <MenuItem value="paid">{t("paid")}</MenuItem>
+            <MenuItem value="canceled">{t("canceled")}</MenuItem>
           </Select>
         </FormControl>
 
@@ -49,7 +54,7 @@ const OrderStatusSelector = ({
           onClick={onSubmit}
           disabled={orderStatus === currentOrderStatus || loading}
         >
-          {loading ? <CircularProgress size={20} /> : "Обновить"}
+          {loading ? <CircularProgress size={20} /> : t("edit")}
         </Button>
       </Box>
     </Box>

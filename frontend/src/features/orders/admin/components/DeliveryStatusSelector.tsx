@@ -15,7 +15,7 @@ interface Props {
   deliveryStatus: string;
   setDeliveryStatus: (status: string) => void;
   currentDeliveryStatus: string;
-  onSubmit: (status: string) => void
+  onSubmit: (status: string) => void;
 }
 
 const DeliveryStatusSelector: React.FC<Props> = ({
@@ -24,20 +24,19 @@ const DeliveryStatusSelector: React.FC<Props> = ({
   currentDeliveryStatus,
   onSubmit,
 }) => {
-
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   return (
     <Box mb={3} p={2} border="1px solid #ccc" borderRadius={2}>
       <Typography variant="h6" sx={{ mb: 2 }}>
-        Управление статусом доставки
+        {t("deliveryStatus")}
       </Typography>
 
       <Box display="flex" gap={2} alignItems="center" flexWrap="wrap">
         <FormControl sx={{ minWidth: 200 }}>
-          <InputLabel>Статус доставки</InputLabel>
+          <InputLabel>{t("deliveryStatus")}</InputLabel>
           <Select
             value={deliveryStatus}
-            label="Статус доставки"
+            label={t("deliveryStatus")}
             onChange={(e) => setDeliveryStatus(e.target.value)}
           >
             {Object.keys(DeliveryStatus).map((item: string) => (
@@ -45,8 +44,7 @@ const DeliveryStatusSelector: React.FC<Props> = ({
                 key={item}
                 value={DeliveryStatus[item as keyof typeof DeliveryStatus]}
               >
-             {t(item)}
-        
+                {t(item)}
               </MenuItem>
             ))}
           </Select>
@@ -57,7 +55,7 @@ const DeliveryStatusSelector: React.FC<Props> = ({
           onClick={() => deliveryStatus && onSubmit(deliveryStatus)}
           disabled={!deliveryStatus || deliveryStatus === currentDeliveryStatus}
         >
-          Обновить
+          {t("edit")}
         </Button>
       </Box>
     </Box>

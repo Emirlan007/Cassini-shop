@@ -17,11 +17,13 @@ import {
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { fetchPopularSearchKeywords } from "./searchKeywordsThunks.ts";
+import { useTranslation } from "react-i18next";
 
 const PopularSearchKeywords = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { items, total, loading } = useAppSelector(
-    (state) => state.searchKeywords
+    (state) => state.searchKeywords,
   );
 
   const theme = useTheme();
@@ -35,7 +37,7 @@ const PopularSearchKeywords = () => {
       fetchPopularSearchKeywords({
         page: currentPage + 1,
         limit: rowsPerPage,
-      })
+      }),
     );
   }, [dispatch, currentPage, rowsPerPage]);
 
@@ -44,7 +46,7 @@ const PopularSearchKeywords = () => {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(0);
@@ -64,7 +66,7 @@ const PopularSearchKeywords = () => {
         gutterBottom
         sx={{ mb: 3 }}
       >
-        Популярные поисковые запросы
+        {t("analytics.popularSearches")}
       </Typography>
 
       <Card>
@@ -83,11 +85,13 @@ const PopularSearchKeywords = () => {
                         <Typography fontWeight={600}>#</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography fontWeight={600}>Ключевое слово</Typography>
+                        <Typography fontWeight={600}>
+                          {t("analytics.keyword")}
+                        </Typography>
                       </TableCell>
                       <TableCell align="right">
                         <Typography fontWeight={600}>
-                          Количество запросов
+                          {t("analytics.searchCount")}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -97,7 +101,7 @@ const PopularSearchKeywords = () => {
                       <TableRow>
                         <TableCell colSpan={3} align="center">
                           <Typography color="text.secondary" py={4}>
-                            Нет данных для отображения
+                            {t("analytics.noData")}
                           </Typography>
                         </TableCell>
                       </TableRow>

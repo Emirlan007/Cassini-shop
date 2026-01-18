@@ -11,9 +11,13 @@ import {
   useMediaQuery,
   TableContainer,
   Table,
-  TableHead, TableCell, TableRow, TableBody, Chip,
+  TableHead,
+  TableCell,
+  TableRow,
+  TableBody,
+  Chip,
   TablePagination,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import {
   LineChart,
@@ -25,14 +29,16 @@ import {
 } from "recharts";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks.ts";
 import { fetchOrderAnalytics } from "./orderAnalyticsThunks.ts";
-import {selectOrders} from "../../orders/admin/ordersSlice.ts";
-import {fetchAdminOrders} from "../../orders/admin/ordersThunks.ts";
-import {getOrderStatusColor} from "../../../utils/statusUtils.ts";
+import { selectOrders } from "../../orders/admin/ordersSlice.ts";
+import { fetchAdminOrders } from "../../orders/admin/ordersThunks.ts";
+import { getOrderStatusColor } from "../../../utils/statusUtils.ts";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const OrderAnalytics = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate(); // Добавим для редиректа
+  const { t } = useTranslation();
   const { data, loading } = useAppSelector((state) => state.orderAnalytics);
   const orders = useAppSelector(selectOrders);
 
@@ -59,21 +65,19 @@ const OrderAnalytics = () => {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
   const sortedOrders = [...orders].sort(
-    (a, b) =>
-      new Date(b.createdAt).getTime() -
-      new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
   const paginatedOrders = sortedOrders.slice(
     page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+    page * rowsPerPage + rowsPerPage,
   );
 
   const handleOrderClick = (orderId: string) => {
@@ -82,7 +86,12 @@ const OrderAnalytics = () => {
 
   if (loading || !data) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
       </Box>
     );
@@ -124,16 +133,28 @@ const OrderAnalytics = () => {
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Создано заказов" value={data.totals.ordersCreated} />
+          <StatCard
+            title={t("analytics.ordersCreated")}
+            value={data.totals.ordersCreated}
+          />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Оплачено" value={data.totals.ordersPaid} />
+          <StatCard
+            title={t("analytics.paid")}
+            value={data.totals.ordersPaid}
+          />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Отменено" value={data.totals.ordersCanceled} />
+          <StatCard
+            title={t("analytics.canceled")}
+            value={data.totals.ordersCanceled}
+          />
         </Grid>
         <Grid sx={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Выручка" value={`${data.totals.revenue} сом`} />
+          <StatCard
+            title={t("analytics.revenue")}
+            value={`${data.totals.revenue} ${t("som")}`}
+          />
         </Grid>
       </Grid>
 
@@ -159,7 +180,7 @@ const OrderAnalytics = () => {
               <Line
                 type="monotone"
                 dataKey="ordersCreated"
-                name="Создано"
+                name={t("analytics.created")}
                 stroke="#1976d2"
                 strokeWidth={2}
                 dot={!isMobile}
@@ -167,7 +188,7 @@ const OrderAnalytics = () => {
               <Line
                 type="monotone"
                 dataKey="ordersPaid"
-                name="Оплачено"
+                name={t("analytics.paid")}
                 stroke="#2e7d32"
                 strokeWidth={2}
                 dot={!isMobile}
@@ -175,7 +196,7 @@ const OrderAnalytics = () => {
               <Line
                 type="monotone"
                 dataKey="ordersCanceled"
-                name="Отменено"
+                name={t("analytics.canceled")}
                 stroke="#d32f2f"
                 strokeWidth={2}
                 dot={!isMobile}
@@ -202,19 +223,21 @@ const OrderAnalytics = () => {
       <Card sx={{ mt: 4 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Таблица заказов
+            {t("analytics.ordersTable")}
           </Typography>
 
           <TableContainer>
             <Table size={isMobile ? "small" : "medium"}>
               <TableHead>
                 <TableRow>
-                  <TableCell>Дата</TableCell>
+                  <TableCell>{t("analytics.date")}</TableCell>
                   <TableCell>ID</TableCell>
-                  <TableCell>Статус</TableCell>
-                  <TableCell>Товары</TableCell>
-                  <TableCell align="center">Кол-во</TableCell>
-                  <TableCell align="right">Сумма</TableCell>
+                  <TableCell>{t("analytics.status")}</TableCell>
+                  <TableCell>{t("analytics.products")}</TableCell>
+                  <TableCell align="center">
+                    {t("analytics.quantity")}
+                  </TableCell>
+                  <TableCell align="right">{t("analytics.amount")}</TableCell>
                 </TableRow>
               </TableHead>
 
@@ -225,9 +248,9 @@ const OrderAnalytics = () => {
                     hover
                     onClick={() => handleOrderClick(order._id)}
                     sx={{
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
                       },
                     }}
                   >
@@ -235,35 +258,40 @@ const OrderAnalytics = () => {
                       {new Date(order.createdAt).toLocaleDateString()}
                     </TableCell>
 
-                    <TableCell>
-                      {order._id.slice(-8)}...
-                    </TableCell>
+                    <TableCell>{order._id.slice(-8)}...</TableCell>
 
                     <TableCell>
                       <Chip
-                        label={order.status === "awaiting_payment" ? "Ожидает оплаты" :
-                          order.status === "paid" ? "Оплачен" :
-                            order.status === "canceled" ? "Отменен" : order.status}
+                        label={
+                          order.status === "awaiting_payment"
+                            ? "Ожидает оплаты"
+                            : order.status === "paid"
+                              ? "Оплачен"
+                              : order.status === "canceled"
+                                ? "Отменен"
+                                : order.status
+                        }
                         color={getOrderStatusColor(order.status)}
                         sx={{ minWidth: "150px", height: "25px" }}
                       />
                     </TableCell>
 
                     <TableCell>
-                      {order.items.map((item) => item.title).slice(0, 2).join(", ")}
+                      {order.items
+                        .map((item) => item.title)
+                        .slice(0, 2)
+                        .join(", ")}
                       {order.items.length > 2 && "..."}
                     </TableCell>
 
                     <TableCell align="center">
                       {order.items.reduce(
                         (sum, item) => sum + item.quantity,
-                        0
+                        0,
                       )}
                     </TableCell>
 
-                    <TableCell align="right">
-                      {order.totalPrice} сом
-                    </TableCell>
+                    <TableCell align="right">{order.totalPrice} сом</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -308,13 +336,7 @@ const StatCard = ({
   </Card>
 );
 
-const LegendItem = ({
-                      color,
-                      label,
-                    }: {
-  color: string;
-  label: string;
-}) => (
+const LegendItem = ({ color, label }: { color: string; label: string }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
     <Box
       sx={{

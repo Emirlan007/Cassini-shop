@@ -155,7 +155,7 @@ const CustomDrawer: React.FC<Props> = ({ isOpen, toggleDrawer }) => {
                     }}
                   >
                     <ListItemText
-                      primary="Админ панель"
+                      primary={t("admin.panel")}
                       primaryTypographyProps={{
                         fontSize: "0.95rem",
                         fontWeight: 500,

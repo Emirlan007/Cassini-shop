@@ -13,8 +13,10 @@ import {
   fetchProductById,
   updateProduct,
 } from "./admin/adminProductsThunks.ts";
+import { useTranslation } from "react-i18next";
 
 const UpdateProduct = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const product = useAppSelector(selectUpdatingProduct);
@@ -34,7 +36,7 @@ const UpdateProduct = () => {
   return (
     <>
       <Typography variant="h4" sx={{ mb: 2 }}>
-        Редактирование товара
+        {t("products.editProduct")}
       </Typography>
       <ProductForm
         onSubmit={handleSubmit}

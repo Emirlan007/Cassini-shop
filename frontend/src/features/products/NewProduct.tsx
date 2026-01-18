@@ -6,8 +6,10 @@ import type { ProductInput } from "../../types";
 import { fetchProducts } from "./productsThunks.ts";
 import { selectProductCreateLoading } from "./admin/adminProductsSlice.ts";
 import { createProduct } from "./admin/adminProductsThunks.ts";
+import { useTranslation } from "react-i18next";
 
 const NewProduct = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const productCreating = useAppSelector(selectProductCreateLoading);
@@ -21,7 +23,7 @@ const NewProduct = () => {
   return (
     <>
       <Typography variant="h4" sx={{ mb: 2 }}>
-        Новый товар
+        {t("products.newProduct")}
       </Typography>
       <ProductForm onSubmit={handleSubmit} loading={productCreating} />
     </>
